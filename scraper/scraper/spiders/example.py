@@ -4,8 +4,15 @@ from scrapy.spiders import Rule
 from urllib.parse import urlparse
 import re
 
+from crawls.models import CrawlJob, CrawledURL
+
 class CustomItem(scrapy.Item):
+    job_id = scrapy.Field()
+    # The url of this item
     url = scrapy.Field()
+    # The url that this item was found on
+    request_url = scrapy.Field()
+    # The url that linked to this page, None if it is the start page
     from_url = scrapy.Field()
     title = scrapy.Field()
     content = scrapy.Field()
@@ -24,10 +31,15 @@ class ExampleSpider(scrapy.Spider):
         self.follow_links = to_bool(follow_links)
         self.link_extractor = LinkExtractor()
 
+        crawl_job = CrawlJob.objects.create(start_url=start_url, follow_links=self.follow_links)
+        self.crawl_job = crawl_job
+        crawl_job.save()
+
 
     def parse(self, response: scrapy.http.Response, from_url=None):
         """
-            from_url: the url that linked to this page
+            from_url: the url that linked to this page, None if it is the start page
+            respose.request.url: the url of this page
         """
         request_origin = get_origin(response.request.url)
         # If these are base urls, scrapy *should* fill in the correct
@@ -37,6 +49,7 @@ class ExampleSpider(scrapy.Spider):
                 print(f"Skipping {link.url}")
                 continue
             item = CustomItem()
+            item['job_id'] = self.crawl_job.id
             item['request_url'] = response.request.url
             item['url'] = link.url
             if from_url:

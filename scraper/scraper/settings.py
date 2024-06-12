@@ -10,8 +10,12 @@
 
 import os
 import sys
-import django
 from pathlib import Path
+import django
+
+# project_root = Path(__file__).resolve().parents[2]
+# sys.path.append(str(project_root))
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ui.crawler_ui.settings")
 django_root = Path(__file__).resolve().parents[2] / "ui"
 sys.path.append(str(django_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crawler_ui.settings")
@@ -74,9 +78,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "scraper.pipelines.ScraperPipeline": 300,
-#}
+ITEM_PIPELINES = {
+    "scraper.pipelines.ScraperPipeline": 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
