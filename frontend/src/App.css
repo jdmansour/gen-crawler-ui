@@ -1,0 +1,193 @@
+
+/* .root {
+  display: flex;
+} */
+
+.page {
+  position: absolute;
+  background-color: #fff;
+  color: #333;
+  width: 100%;
+  min-height: 100%;
+  padding: 8px 16px;
+  box-sizing: border-box;
+}
+
+table.table {
+  width: 100%;
+  /* border-collapse: collapse; */
+  border-spacing: 0;
+  /* border: 1px solid #d9e2eb; */
+  border-radius: 8px;
+}
+/* 
+table tr {
+  border-radius: 8px;
+} */
+
+/* table.table tr > *:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+table.table tr > *:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+} */
+
+table.table tr:first-child > *:first-child {
+  border-start-start-radius: 8px;
+}
+table.table tr:first-child > *:last-child {
+  border-start-end-radius: 8px;
+}
+table.table tr:last-child > *:first-child {
+  border-end-start-radius: 8px;
+}
+table.table tr:last-child > *:last-child {
+  border-end-end-radius: 8px;
+}
+
+table.table tr td,
+table.table tr th {
+  border: 0 solid #bfc7ce;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  padding: 8px;
+  text-align: left;
+  
+}
+table.table tr th:first-child,
+table.table tr td:first-child {
+  border-left-width: 1px;
+}
+
+table.table tr:first-child th,
+table.table tr:first-child td {
+  border-top-width: 1px;
+}
+
+
+
+table.table td, table.table th {
+  /* border: 1px solid #888; */
+  padding: 8px;
+  /* border-radius: 8px; */
+}
+
+table.table th {
+  background-color: #d9e2eb;
+
+}
+
+
+h1, h2, h3, h4, h5, .table th {
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* @property --button-color {
+  syntax: '<color>';
+  initial-value: magenta;
+  inherits: false;
+} */
+
+.mybutton {
+  padding: 8px 12px;
+  margin: 8px;
+  /* font: inherit; */
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8em;
+  font-weight: bold;;
+  --button-color: #f700a9;
+  background-color: var(--button-color);
+  /* background: linear-gradient(to bottom, #d4e702, #dff309); */
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--button-color), black 8%),
+    color-mix(in srgb, var(--button-color), white 8%)
+  );
+  border: 1px solid var(--button-color);
+  /* border: 0; */
+  border-radius: 60px;
+  box-shadow: 1px 1px 2px color-mix(in srgb, var(--button-color), black 40%);
+  transition: all ease-out 0.2s;
+  cursor: pointer;
+}
+
+.mybutton-fancy {
+  --button-color: #e4f700;
+  margin: 16px 8px;
+}
+
+.mybutton-table {
+  --button-color: #f71500;
+  color: #eee;
+  border-radius: 4px;
+  margin: 0px;
+  padding: 6px 10px;
+
+}
+
+
+.mybutton:hover {
+  
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--button-color), white 8%),
+    color-mix(in srgb, var(--button-color), white 0%)
+  );
+  /* background-position-y: 50%; */
+  /* background: #f700a9; */
+  /* color-mix(in srgb, var(--button-color), white 8%); */
+}
+
+.mybutton:active {
+  /* background-color: #f7f700; */
+  box-shadow: none;
+  transform: translate(1px, 1px);
+  box-shadow: 0 0 2px color-mix(in srgb, var(--button-color), black 40%);;
+  transition: none;
+}
+
+
+
+
+/* .App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} */

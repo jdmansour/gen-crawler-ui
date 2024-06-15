@@ -15,8 +15,8 @@ from crawls.models import CrawlJob, CrawledURL
 from scripts.radix import RadixTree
 
 def main():
-    # job = CrawlJob.objects.get(pk=9)
-    job = CrawlJob.objects.get(pk=6)
+    job = CrawlJob.objects.get(pk=9)
+    # job = CrawlJob.objects.get(pk=6)
     urls = CrawledURL.objects.filter(crawl_job=job)
     # for url in urls[0:10]:
     #     print(url.url)
