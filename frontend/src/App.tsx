@@ -3,31 +3,32 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import RuleTable from './RuleTable'
+import { FilterSet, Rule } from './schema'
 
 
-const initialRules = [
-  {
-    "id": 1,
-    "url_pattern": "https://example.com/blog/...",
-    "matches": 344,
-    "include": "Yes",
-    "type": "Article"
-  },
-  {
-    "id": 2,
-    "url_pattern": "https://example.com/videos/...",
-    "matches": 123,
-    "include": "Yes",
-    "type": "(Pointer to) Video"
-  },
-  {
-    "id": 3,
-    "url_pattern": "https://example.com/videos/about",
-    "matches": 1,
-    "include": "No",
-    "type": "-"
-  }
-]
+// const initialRules = [
+//   {
+//     "id": 1,
+//     "url_pattern": "https://example.com/blog/...",
+//     "matches": 344,
+//     "include": "Yes",
+//     "type": "Article"
+//   },
+//   {
+//     "id": 2,
+//     "url_pattern": "https://example.com/videos/...",
+//     "matches": 123,
+//     "include": "Yes",
+//     "type": "(Pointer to) Video"
+//   },
+//   {
+//     "id": 3,
+//     "url_pattern": "https://example.com/videos/about",
+//     "matches": 1,
+//     "include": "No",
+//     "type": "-"
+//   }
+// ]
 
 
 const filterSetExample = {
@@ -74,38 +75,9 @@ const filterSetExample = {
       ]
   };
 
-type CrawlJob = {
-  id: number,
-  start_url: string,
-  follow_links: boolean,
-  created_at: string,
-  updated_at: string,
-}
-
-type Rule = {
-  id: number,
-  rule: string,
-  count: number,
-  include: boolean,
-  page_type: string,
-}
-
-type FilterSet = {
-  id: number,
-  crawl_job: CrawlJob,
-  name: string,
-  created_at: string,
-  updated_at: string,
-  url: string,
-  rules: Rule[],
-}
-
-
-
-
 function App() {
   let [filterSet, setFilterSet] = useState<FilterSet|null>(null);
-  let [rules, setRules] = useState(initialRules);
+  let [rules, setRules] = useState<Rule[]>([]);
   // fetch data from http://127.0.0.1:8000/filter_sets/1/
   useEffect(() => {
     async function fetchData() {
@@ -184,6 +156,18 @@ function App() {
     //setRules(newRules);
   }
 
+  async function updateRow(id: number, newRuleString: string) {
+    // set the string without calling the API
+    console.log("update", id, newRuleString);
+    setRules(rules.map((rule) => {
+      if (rule.id === id) {
+        return {...rule, rule: newRuleString};
+      } else {
+        return rule;
+      }
+    }));
+  }
+
   return (
     <div className="page">
       <h1>Generic Crawler</h1>
@@ -192,7 +176,7 @@ function App() {
       <p>Start URL: {filterSet?.crawl_job.start_url}</p>
       <p>604 pages total, 5 not handled yet</p>
       <h3>Rules</h3>
-      <RuleTable rules={rules} onDelete={deleteRow} onAdd={addRowAfter} />
+      <RuleTable rules={rules} onDelete={deleteRow} onAdd={addRowAfter} onUpdate={(id, newRule) => {updateRow(id, newRule); console.log("onChange", id, newRule);}} />
 
       <div>
         <button className="mybutton mybutton-fancy">Suggest rules</button>
