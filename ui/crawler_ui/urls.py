@@ -46,6 +46,12 @@ class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'filter_set', 'rule', 'include', 'created_at', 'updated_at', 'page_type', 'count', 'position']
         # order rules by position, ascending
     
+    # if position is updated, call move_to on the FilterRule
+    def update(self, instance, validated_data):
+        if 'position' in validated_data:
+            instance.move_to(validated_data['position'])
+            validated_data.pop('position')
+        return super().update(instance, validated_data)
     
 
 class InlineFilterRuleSerializer(serializers.HyperlinkedModelSerializer):

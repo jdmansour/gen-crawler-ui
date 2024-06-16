@@ -79,15 +79,16 @@ function App() {
   let [filterSet, setFilterSet] = useState<FilterSet|null>(null);
   let [rules, setRules] = useState<Rule[]>([]);
   // fetch data from http://127.0.0.1:8000/filter_sets/1/
+
+  async function fetchData() {
+    const url = "http://127.0.0.1:8000/filter_sets/1/";
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    setFilterSet(data);
+    setRules(data.rules);
+  }
   useEffect(() => {
-    async function fetchData() {
-      const url = "http://127.0.0.1:8000/filter_sets/1/";
-      const response = await fetch(url);
-      const data = await response.json();
-      console.log(data);
-      setFilterSet(data);
-      setRules(data.rules);
-    }
     fetchData();
   }, []);
 
@@ -175,6 +176,29 @@ function App() {
     setRules(newRules);
   }
 
+  function moveDelta(delta: number) {
+    return async (id: number) => {
+      // construct the url
+      const url = `http://127.0.0.1:8000/filter_rules/${id}/`;
+      // call the api
+      const old_position = rules.find((rule) => rule.id === id)?.position;
+      if (old_position === undefined) {
+        console.error("Could not find position of rule with id", id);
+        return;
+      }
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({position: old_position+delta}),
+      });
+      const updatedRule = await response.json();
+      console.log(updatedRule);
+      await fetchData();
+    }
+  }
+
   return (
     <div className="page">
       <h1>Generic Crawler</h1>
@@ -183,7 +207,13 @@ function App() {
       <p>Start URL: {filterSet?.crawl_job.start_url}</p>
       <p>604 pages total, 5 not handled yet</p>
       <h3>Rules</h3>
-      <RuleTable rules={rules} onDelete={deleteRow} onAdd={addRowAfter} onUpdate={(id, newRule) => {updateRow(id, newRule); console.log("onChange", id, newRule);}} />
+      <RuleTable rules={rules}
+      onDelete={deleteRow}
+      onAdd={addRowAfter}
+      onUpdate={(id, newRule) => {updateRow(id, newRule); console.log("onChange", id, newRule);}}
+      onMoveUp={moveDelta(-1)}
+      onMoveDown={moveDelta(1)}
+      />
 
       <div>
         <button className="mybutton mybutton-fancy">Suggest rules</button>

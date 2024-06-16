@@ -121,16 +121,31 @@ h1, h2, h3, h4, h5, .table th {
 }
 
 .mybutton-table {
-  --button-color: #f71500;
-  color: #eee;
+  --button-color: #d9e2eb;
+  color: #333;
+  display: inline-block;
+  font-size: 1.4rem;
+  overflow: hidden;
+  font-weight: normal;
   border-radius: 4px;
-  margin: 0px;
-  padding: 6px 10px;
+  margin: 0px 4px;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+}
 
+.mybutton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.mybutton-delete {
+  --button-color: #f4120b;
+  color: #fff;
 }
 
 
-.mybutton:hover {
+.mybutton:hover:not(:disabled) {
   
   background: linear-gradient(
     to bottom,
@@ -142,7 +157,7 @@ h1, h2, h3, h4, h5, .table th {
   /* color-mix(in srgb, var(--button-color), white 8%); */
 }
 
-.mybutton:active {
+.mybutton:active:not(:disabled) {
   /* background-color: #f7f700; */
   box-shadow: none;
   transform: translate(1px, 1px);

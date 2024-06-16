@@ -75,6 +75,33 @@ class FilterRule(models.Model):
             # set to max + 1
             self.position = self.filter_set.rules.aggregate(models.Max('position'))['position__max'] + 1
         super(FilterRule, self).save(*args, **kwargs)
+
+    def move_to(self, new_position: int):
+        """ Move the rule to the new position. If the position is already taken, increase the position of all rules above the new position by 1. """
+        # TODO: We have to renumber the rules when one is deleted.
+        if new_position == self.position:
+            return
+        if new_position < 1:
+            new_position = 1
+        if new_position > self.filter_set.rules.count():
+            new_position = self.filter_set.rules.count()
+        log.info(f"Moving rule {self.rule} from {self.position} to {new_position}")
+        if new_position > self.position:
+            # move down
+            rules = self.filter_set.rules.filter(position__gt=self.position, position__lte=new_position)
+            log.info("Moving down rules: %s", [r.position for r in rules])
+            for r in rules:
+                r.position -= 1
+                r.save()
+        else:
+            # move up
+            rules = self.filter_set.rules.filter(position__gte=new_position, position__lt=self.position)
+            log.info("Moving up rules: %s", [r.position for r in rules])
+            for r in rules:
+                r.position += 1
+                r.save()
+        self.position = new_position
+        self.save()
     
     def __str__(self):
         return self.rule

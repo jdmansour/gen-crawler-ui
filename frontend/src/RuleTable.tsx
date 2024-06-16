@@ -29,6 +29,8 @@ type RuleTableProps = {
   onDelete: (id: number) => void,
   onAdd: (id: number) => void,
   onUpdate: (id: number, rule: string) => void,
+  onMoveUp: (id: number) => void,
+  onMoveDown: (id: number) => void,  
 }
 
 
@@ -40,7 +42,7 @@ export default function RuleTable(props: RuleTableProps) {
             <th>Matches</th>
             <th>Include</th>
             <th>Type</th>
-            <th>Position</th>
+            {/* <th>Position</th> */}
             <th></th>
           </tr>
           </thead>
@@ -51,10 +53,12 @@ export default function RuleTable(props: RuleTableProps) {
               <td>{rule.count}</td>
               <td>{rule.include ? 'Yes' : 'No'}</td>
               <td>{rule.page_type}</td>
-              <td>{rule.position}</td>
+              {/* <td>{rule.position}</td> */}
               <td>
-                <button className="mybutton mybutton-table" onClick={(e) => props.onDelete(rule.id)}>x</button>
+                <button className="mybutton mybutton-table mybutton-delete" onClick={(e) => props.onDelete(rule.id)}>×</button>
                 <button className="mybutton mybutton-table" onClick={(e) => props.onAdd(rule.id)}>+</button>
+                <button className="mybutton mybutton-table" disabled={rule.position == 1} onClick={(e) => props.onMoveUp(rule.id)}>&uarr;</button>
+                <button className="mybutton mybutton-table" disabled={rule.position == props.rules.length} onClick={(e) => props.onMoveDown(rule.id)}>&darr;</button>
               </td>
             </tr>
           })}
