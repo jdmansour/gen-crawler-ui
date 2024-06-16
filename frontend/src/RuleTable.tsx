@@ -18,7 +18,12 @@ function Editable(props: { value: string, onChange: (value: string) => void }) {
     }
   }
 
-  return <span onClick={() => { setEditing(true); setValue(props.value); }}>
+  function startEditing() {
+    setEditing(true);
+    setValue(props.value);
+  }
+
+  return <span onClick={startEditing} onFocus={startEditing} tabIndex={(!editing) ? 0 : undefined} >
     {props.value}
     {editing ? <input value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={handleKeyDown} autoFocus onBlur={() => setEditing(false)} /> : ""}
   </span>
