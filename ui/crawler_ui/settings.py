@@ -141,3 +141,27 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
 ]
+
+# Set up logging for Django. Set the log level to INFO for the dashboards app. Include the level and module in the format.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {module} {message}",
+            "style": "{",
+        },
+    },
+    "loggers": {
+        "crawls": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+    },
+}
