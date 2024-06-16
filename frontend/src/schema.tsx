@@ -3,6 +3,7 @@ export type Rule = {
   id: number;
   rule: string;
   count: number;
+  cumulative_count: number;
   include: boolean;
   page_type: string;
   position: number;
@@ -20,6 +21,7 @@ export type CrawlJob = {
 export type FilterSet = {
   id: number
   crawl_job: CrawlJob
+  remaining_urls: number
   name: string
   created_at: string
   updated_at: string

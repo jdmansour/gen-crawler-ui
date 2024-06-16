@@ -159,6 +159,10 @@ LOGGING = {
         },
     },
     "loggers": {
+        "crawler_ui": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
         "crawls": {
             "handlers": ["console"],
             "level": "INFO",

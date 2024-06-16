@@ -29,6 +29,7 @@ class CrawledURL(models.Model):
 class FilterSet(models.Model):
     id = models.AutoField(primary_key=True)
     crawl_job = models.ForeignKey(CrawlJob, on_delete=models.CASCADE, related_name="filter_sets")
+    remaining_urls = models.IntegerField(default=0)
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -45,15 +46,27 @@ class FilterSet(models.Model):
 
         # count how many URLs start with rule.rule
         # TODO: rewrite using sqlite GLOB?
-        if rule:
-            rule.count = CrawledURL.objects.filter(url__startswith=rule.rule).count()
-            rule.save()
-        else:
-            rules = self.rules.all()
-            for r in rules:
-                r.count = CrawledURL.objects.filter(url__startswith=r.rule).count()
-                r.save()
-        log.info("Done")
+        # TODO: start with the given rule and do all after
+        rules = self.rules.order_by('position')
+        q = self.crawl_job.crawled_urls
+        # total_matches = 0
+        for r in rules:
+            log.info("Evaluating rule %s", r.rule)
+            r.count = self.crawl_job.crawled_urls.filter(url__startswith=r.rule).count()
+            r.cumulative_count = q.filter(url__startswith=r.rule).count()
+            log.info("Count: %d in isolation, %d after previous rules", r.count, r.cumulative_count)
+            # total_matches += r.cumulative_count
+            r.save(update_fields=['count', 'cumulative_count'], force_update=True)
+
+            # select all that don't trigger the filter
+            q = q.exclude(url__startswith=r.rule)
+            # cumulative_count = q.count()
+            # cumulative_count += r.count
+        # self.remaining_urls = self.crawl_job.crawled_urls.count() - total_matches
+        self.remaining_urls = q.count()
+        log.info("Remaining URLs: %d", self.remaining_urls)
+        self.save(update_fields=['remaining_urls'], force_update=True)
+        # log.info("Done")
         # return rules
 
 
@@ -68,6 +81,10 @@ class FilterRule(models.Model):
     page_type = models.CharField(max_length=255, default="")
     # Filled out later by script
     count = models.IntegerField(default=0)
+    cumulative_count = models.IntegerField(default=0)
+
+    def __repr__(self):
+        return f"FilterRule({self.rule}, {self.include}, {self.position}, {self.count}, {self.cumulative_count})"
 
     # on creation, set position to the highest position in the set
     def save(self, *args, **kwargs):

@@ -45,9 +45,10 @@ export default function RuleTable(props: RuleTableProps) {
       <tr>
         <th>URL Pattern</th>
         <th>Matches</th>
+        <th>New Matches</th>
         <th>Include</th>
         <th>Type</th>
-        {/* <th>Position</th> */}
+        <th>Position</th>
         <th></th>
       </tr>
     </thead>
@@ -56,9 +57,10 @@ export default function RuleTable(props: RuleTableProps) {
         return <tr key={rule.id}>
           <td className="editable-cell"><Editable value={rule.rule} onChange={newValue => props.onUpdate(rule.id, newValue)} /></td>
           <td>{rule.count}</td>
+          <td>{rule.cumulative_count}</td>
           <td>{rule.include ? 'Yes' : 'No'}</td>
           <td>{rule.page_type}</td>
-          {/* <td>{rule.position}</td> */}
+          <td>{rule.position}</td>
           <td>
             <button className="mybutton mybutton-table mybutton-delete" onClick={(e) => props.onDelete(rule.id)}>×</button>
             <button className="mybutton mybutton-table" onClick={(e) => props.onAdd(rule.id)}>+</button>

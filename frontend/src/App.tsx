@@ -77,10 +77,14 @@ function App() {
     const updatedRule = await response.json();
     console.log(updatedRule);
 
-    console.log("update", id, newRuleString);
+    // console.log("update", id, newRuleString);
     // update the state
     const newRules = rules.map((rule) => (rule.id === id) ? updatedRule : rule);
     setRules(newRules);
+
+    // actually we should refresh everything to get the new match counts
+    await fetchData();
+
   }
 
   function moveDelta(delta: number) {
@@ -112,7 +116,7 @@ function App() {
       <p>Filter #{filterSet?.id} '{filterSet?.name}' from {filterSet?.created_at}</p>
       <p>Crawl #{filterSet?.crawl_job.id} from {filterSet?.crawl_job.created_at}</p>
       <p>Start URL: {filterSet?.crawl_job.start_url}</p>
-      <p>{filterSet?.crawl_job.url_count} pages total, XX not handled yet</p>
+      <p>{filterSet?.crawl_job.url_count} pages total, {filterSet?.remaining_urls} not handled yet</p>
       <h3>Rules</h3>
       <RuleTable rules={rules}
         onDelete={deleteRow}

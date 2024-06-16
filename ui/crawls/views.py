@@ -2,6 +2,8 @@ from crawls.serializers import FilterSetSerializer, FilterRuleSerializer
 from crawls.models import FilterRule, FilterSet
 from rest_framework import viewsets
 
+import logging
+log = logging.getLogger(__name__)
 
 class FilterSetViewSet(viewsets.ModelViewSet):
     queryset = FilterSet.objects.all()
@@ -23,6 +25,10 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
         rule.save()  # ?
 
     def perform_update(self, serializer: FilterRuleSerializer):
+        log.info("perform_update")
         rule = serializer.save()
         rule.filter_set.evaluate(rule)
-        rule.save()
+        log.info("Rule %r updated", rule)
+        #rule.save()
+
+    

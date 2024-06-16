@@ -6,11 +6,18 @@ from crawls.models import FilterRule, FilterSet, CrawlJob
 class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = FilterRule
-        fields = ['id', 'filter_set', 'rule', 'include', 'created_at', 'updated_at', 'page_type', 'count', 'position']
+        fields = ['id', 'filter_set', 'rule', 'include', 'created_at', 'updated_at', 'page_type', 'count', 'cumulative_count', 'position']
         # order rules by position, ascending
+
+    # serialize, but don't deserialize count
+    count = serializers.ReadOnlyField()
+    cumulative_count = serializers.ReadOnlyField()
+
 
     # if position is updated, call move_to on the FilterRule
     def update(self, instance, validated_data):
+        if 'count' in validated_data:
+            validated_data.pop('count')
         if 'position' in validated_data:
             instance.move_to(validated_data['position'])
             validated_data.pop('position')
@@ -21,7 +28,7 @@ class InlineFilterRuleSerializer(serializers.HyperlinkedModelSerializer):
     """ Serializer for FilterRule, omits the urls of the rule and the set. """
     class Meta:
         model = FilterRule
-        fields = ['id', 'rule', 'include', 'created_at', 'updated_at', 'page_type', 'count', 'position']
+        fields = ['id', 'rule', 'include', 'created_at', 'updated_at', 'page_type', 'count', 'cumulative_count', 'position']
 
 
 # Add "url_count" to crawl_job
@@ -39,7 +46,7 @@ class CrawlJobSerializer(serializers.ModelSerializer):
 class FilterSetSerializer(serializers.ModelSerializer):
     class Meta:
         model = FilterSet
-        fields = ['id', 'crawl_job', 'name', 'created_at', 'updated_at', 'url', 'rules']
+        fields = ['id', 'crawl_job', 'remaining_urls', 'name', 'created_at', 'updated_at', 'url', 'rules']
         depth = 1
 
     # order rules by position, ascending
