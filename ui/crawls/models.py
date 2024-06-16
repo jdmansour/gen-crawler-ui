@@ -63,10 +63,18 @@ class FilterRule(models.Model):
     include = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    position = models.IntegerField(default=0)
     # Later add more metadata?
     page_type = models.CharField(max_length=255, default="")
     # Filled out later by script
     count = models.IntegerField(default=0)
+
+    # on creation, set position to the highest position in the set
+    def save(self, *args, **kwargs):
+        if not self.position:
+            # set to max + 1
+            self.position = self.filter_set.rules.aggregate(models.Max('position'))['position__max'] + 1
+        super(FilterRule, self).save(*args, **kwargs)
     
     def __str__(self):
         return self.rule

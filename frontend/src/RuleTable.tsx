@@ -40,6 +40,7 @@ export default function RuleTable(props: RuleTableProps) {
             <th>Matches</th>
             <th>Include</th>
             <th>Type</th>
+            <th>Position</th>
             <th></th>
           </tr>
           </thead>
@@ -50,6 +51,7 @@ export default function RuleTable(props: RuleTableProps) {
               <td>{rule.count}</td>
               <td>{rule.include ? 'Yes' : 'No'}</td>
               <td>{rule.page_type}</td>
+              <td>{rule.position}</td>
               <td>
                 <button className="mybutton mybutton-table" onClick={(e) => props.onDelete(rule.id)}>x</button>
                 <button className="mybutton mybutton-table" onClick={(e) => props.onAdd(rule.id)}>+</button>

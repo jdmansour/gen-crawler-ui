@@ -20,6 +20,8 @@ from django.urls import include, path
 from rest_framework import routers, serializers, viewsets
 
 from crawls.models import CrawlJob, CrawledURL, FilterSet, FilterRule
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 # Serializers define the API representation.
@@ -41,8 +43,8 @@ router.register(r'users', UserViewSet)
 class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = FilterRule
-        fields = ['id', 'filter_set', 'rule', 'include', 'created_at', 'updated_at', 'page_type', 'count']
-
+        fields = ['id', 'filter_set', 'rule', 'include', 'created_at', 'updated_at', 'page_type', 'count', 'position']
+        # order rules by position, ascending
     
     
 
@@ -50,7 +52,8 @@ class InlineFilterRuleSerializer(serializers.HyperlinkedModelSerializer):
     """ Serializer for FilterRule, omits the urls of the rule and the set. """
     class Meta:
         model = FilterRule
-        fields = ['id', 'rule', 'include', 'created_at', 'updated_at', 'page_type', 'count']
+        fields = ['id', 'rule', 'include', 'created_at', 'updated_at', 'page_type', 'count', 'position']
+        
 
 
 class FilterSetSerializer(serializers.ModelSerializer):
@@ -59,14 +62,12 @@ class FilterSetSerializer(serializers.ModelSerializer):
         fields = ['id', 'crawl_job', 'name', 'created_at', 'updated_at', 'url', 'rules']
         depth = 1
 
-    rules = InlineFilterRuleSerializer(many=True, read_only=True)
+    # order rules by position, ascending
+    rules = serializers.SerializerMethodField('get_rules')
 
-    # rules = FilterRuleSerializer(source='filterrule_set', many=True, read_only=True)
-    # rules = serializers.RelatedField(
-    #     many=True,
-    #     read_only=True,
-    # )
-
+    def get_rules(self, obj):
+        rules = obj.rules.order_by('position')
+        return InlineFilterRuleSerializer(rules, many=True, context=self.context).data
 
 
 class FilterSetViewSet(viewsets.ModelViewSet):
@@ -77,6 +78,13 @@ class FilterSetViewSet(viewsets.ModelViewSet):
 class FilterRuleViewSet(viewsets.ModelViewSet):
     queryset = FilterRule.objects.all()
     serializer_class = FilterRuleSerializer
+    # filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    # ordering_fields = ['position']
+    # ordering = ['position']
+
+    def filter_queryset(self, queryset):
+        return super().filter_queryset(queryset).order_by('position')
+
 
     # run code when a new rule is created
     # set count to 34

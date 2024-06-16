@@ -5,6 +5,7 @@ export type Rule = {
   count: number;
   include: boolean;
   page_type: string;
+  position: number;
 };
 
 export type CrawlJob = {
