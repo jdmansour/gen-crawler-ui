@@ -16,7 +16,7 @@ class CrawlJob(models.Model):
     
 
 class CrawledURL(models.Model):
-    crawl_job = models.ForeignKey(CrawlJob, on_delete=models.CASCADE)
+    crawl_job = models.ForeignKey(CrawlJob, on_delete=models.CASCADE, related_name="crawled_urls")
     url = models.URLField()
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

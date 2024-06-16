@@ -10,6 +10,7 @@ export type Rule = {
 
 export type CrawlJob = {
   id: number;
+  url_count: number;
   start_url: string;
   follow_links: boolean;
   created_at: string;

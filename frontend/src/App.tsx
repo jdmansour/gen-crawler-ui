@@ -109,10 +109,10 @@ function App() {
   return (
     <div className="page">
       <h1>Generic Crawler</h1>
-      <p>Crawl #C4 from 2024-06-13</p>
-      <p>Filter #{filterSet?.id} '{filterSet?.name}' from 2024-06-14</p>
+      <p>Filter #{filterSet?.id} '{filterSet?.name}' from {filterSet?.created_at}</p>
+      <p>Crawl #{filterSet?.crawl_job.id} from {filterSet?.crawl_job.created_at}</p>
       <p>Start URL: {filterSet?.crawl_job.start_url}</p>
-      <p>604 pages total, 5 not handled yet</p>
+      <p>{filterSet?.crawl_job.url_count} pages total, XX not handled yet</p>
       <h3>Rules</h3>
       <RuleTable rules={rules}
         onDelete={deleteRow}

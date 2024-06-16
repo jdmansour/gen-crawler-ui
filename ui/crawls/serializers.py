@@ -1,6 +1,6 @@
 # Serializers define the API representation.
 from rest_framework import serializers
-from crawls.models import FilterRule, FilterSet
+from crawls.models import FilterRule, FilterSet, CrawlJob
 
 
 class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
@@ -24,6 +24,18 @@ class InlineFilterRuleSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'rule', 'include', 'created_at', 'updated_at', 'page_type', 'count', 'position']
 
 
+# Add "url_count" to crawl_job
+class CrawlJobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CrawlJob
+        fields = '__all__'
+
+    # order rules by position, ascending
+    url_count = serializers.SerializerMethodField('get_url_count')
+
+    def get_url_count(self, obj: CrawlJob):
+        return obj.crawled_urls.count()
+
 class FilterSetSerializer(serializers.ModelSerializer):
     class Meta:
         model = FilterSet
@@ -32,7 +44,10 @@ class FilterSetSerializer(serializers.ModelSerializer):
 
     # order rules by position, ascending
     rules = serializers.SerializerMethodField('get_rules')
+    crawl_job = CrawlJobSerializer(read_only=True)
+    # crawl_job = serializers.HyperlinkedRelatedField(view_name='crawl-job-detail', read_only=True)
 
     def get_rules(self, obj):
         rules = obj.rules.order_by('position')
         return InlineFilterRuleSerializer(rules, many=True, context=self.context).data
+    
