@@ -85,7 +85,12 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
         rule = serializer.save()
         rule.filter_set.evaluate()
         # TODO: in what is returned in the request, the new count is not reflected yet (?)
+        rule.save()  # ?
 
+    def perform_update(self, serializer: FilterRuleSerializer):
+        rule = serializer.save()
+        rule.filter_set.evaluate(rule)
+        rule.save()
 
 router.register(r'filter_sets', FilterSetViewSet)
 router.register(r'filter_rules', FilterRuleViewSet)

@@ -1,4 +1,7 @@
 from django.db import models
+import logging
+log = logging.getLogger(__name__)
+
 
 # Create your models here.
 class CrawlJob(models.Model):
@@ -33,17 +36,25 @@ class FilterSet(models.Model):
     def __str__(self):
         return self.name
     
-    def evaluate(self):
-        rules = self.rules.all()
-        for i, rule in enumerate(rules):
-            rule.count = 0
-            rule.save()
+    def evaluate(self, rule=None):
+        """ Evaluate the filter set. If a rule is given, evaluate this rule
+        and all dependent (later) rules. If no rule is given, evaluate all rules."""
+        
+        log.info(f"Evaluating filter set {self.name}")
+        log.info(f"Rule: {rule}")
 
         # count how many URLs start with rule.rule
-        for rule in rules:
+        # TODO: rewrite using sqlite GLOB?
+        if rule:
             rule.count = CrawledURL.objects.filter(url__startswith=rule.rule).count()
             rule.save()
-        return rules
+        else:
+            rules = self.rules.all()
+            for r in rules:
+                r.count = CrawledURL.objects.filter(url__startswith=r.rule).count()
+                r.save()
+        log.info("Done")
+        # return rules
 
 
 class FilterRule(models.Model):

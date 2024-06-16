@@ -157,15 +157,22 @@ function App() {
   }
 
   async function updateRow(id: number, newRuleString: string) {
-    // set the string without calling the API
+    // call the api
+    const url = `http://127.0.0.1:8000/filter_rules/${id}/`;
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({rule: newRuleString}),
+    });
+    const updatedRule = await response.json();
+    console.log(updatedRule);
+
     console.log("update", id, newRuleString);
-    setRules(rules.map((rule) => {
-      if (rule.id === id) {
-        return {...rule, rule: newRuleString};
-      } else {
-        return rule;
-      }
-    }));
+    // update the state
+    const newRules = rules.map((rule) => (rule.id === id) ? updatedRule : rule);
+    setRules(newRules);
   }
 
   return (
