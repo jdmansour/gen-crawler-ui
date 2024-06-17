@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import RuleTable from './RuleTable';
 import { FilterSet, Rule } from './schema';
+import { MatchesDialog } from './MatchesDialog';
 
 
 function App() {
   const [filterSet, setFilterSet] = useState<FilterSet | null>(null);
   const [rules, setRules] = useState<Rule[]>([]);
+  const [detailsVisible, setDetailsVisible] = useState(false);
+  // type is a json dict
+  const [selectedRuleDetails, setSelectedRuleDetails] = useState({});
   // fetch data from http://127.0.0.1:8000/filter_sets/1/
 
   async function fetchData() {
@@ -110,6 +114,28 @@ function App() {
     }
   }
 
+  async function showDetails(id: number) {
+    console.log("show details", id);
+    setSelectedRuleDetails({});
+    setDetailsVisible(true);
+    // fetch the details
+    const url = `http://127.0.0.1:8000/filter_rules/${id}/matches`;
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    setSelectedRuleDetails(data);
+
+  }
+
+  let detailUrls: string[];
+  // selectedRuleDetails['new_matches'];
+  if (selectedRuleDetails['new_matches'] !== undefined) {
+    detailUrls = selectedRuleDetails['new_matches'];
+  } else {
+    detailUrls = [];
+  }
+
+
   return (
     <div className="page">
       <h1>Generic Crawler</h1>
@@ -124,11 +150,16 @@ function App() {
         onUpdate={(id, newRule) => { updateRow(id, newRule); console.log("onChange", id, newRule); }}
         onMoveUp={moveDelta(-1)}
         onMoveDown={moveDelta(1)}
+        onShowDetails={showDetails}
       />
 
       <div>
         <button className="mybutton mybutton-fancy">Suggest rules</button>
       </div>
+
+      {(detailsVisible && 
+      <MatchesDialog onClose={() => setDetailsVisible(false)}
+        detailUrls={detailUrls}/>)}
     </div>
   );
 }

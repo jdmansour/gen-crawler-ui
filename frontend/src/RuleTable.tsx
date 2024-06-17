@@ -36,6 +36,7 @@ type RuleTableProps = {
   onUpdate: (id: number, rule: string) => void,
   onMoveUp: (id: number) => void,
   onMoveDown: (id: number) => void,
+  onShowDetails: (id: number) => void,
 }
 
 
@@ -57,7 +58,12 @@ export default function RuleTable(props: RuleTableProps) {
         return <tr key={rule.id}>
           <td className="editable-cell"><Editable value={rule.rule} onChange={newValue => props.onUpdate(rule.id, newValue)} /></td>
           <td>{rule.count}</td>
-          <td>{rule.cumulative_count}</td>
+          <td>
+            <div style={{display: "flex", alignItems: "center"}}>
+              <div style={{flex: 1}}>{rule.cumulative_count}</div>
+              <button className="mybutton mybutton-table" onClick={() => props.onShowDetails(rule.id)}>🔍</button>
+            </div>
+          </td>
           <td>{rule.include ? 'Yes' : 'No'}</td>
           <td>{rule.page_type}</td>
           <td>{rule.position}</td>

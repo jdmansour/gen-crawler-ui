@@ -86,6 +86,11 @@ h1, h2, h3, h4, h5, .table th {
   font-family: 'Montserrat', sans-serif;
 }
 
+/* alternating row colors */
+.table tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
 /* @property --button-color {
   syntax: '<color>';
   initial-value: magenta;
@@ -94,12 +99,12 @@ h1, h2, h3, h4, h5, .table th {
 
 .mybutton {
   padding: 8px 12px;
-  margin: 8px;
+  /* margin: 8px; */
   /* font: inherit; */
   font-family: 'Montserrat', sans-serif;
   font-size: 0.8em;
   font-weight: bold;;
-  --button-color: #f700a9;
+  --button-color: #ccc;
   background-color: var(--button-color);
   /* background: linear-gradient(to bottom, #d4e702, #dff309); */
   background: linear-gradient(
@@ -109,7 +114,7 @@ h1, h2, h3, h4, h5, .table th {
   );
   border: 1px solid var(--button-color);
   /* border: 0; */
-  border-radius: 60px;
+  border-radius: 4px;
   box-shadow: 1px 1px 2px color-mix(in srgb, var(--button-color), black 40%);
   transition: all ease-out 0.2s;
   cursor: pointer;
@@ -118,6 +123,7 @@ h1, h2, h3, h4, h5, .table th {
 .mybutton-fancy {
   --button-color: #e4f700;
   margin: 16px 8px;
+  border-radius: 60px;
 }
 
 .mybutton-table {
@@ -193,6 +199,71 @@ h1, h2, h3, h4, h5, .table th {
   font-family: 'Montserrat', sans-serif; */
   font: inherit;
 }
+
+
+.mydialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  /* background-color: rgba(255, 255, 255, 0.3); */
+  /* background-image: url(assets/light-honeycomb.png); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* backdrop-filter: blur(4px); */
+  /* backdrop-filter: saturate(50%); */
+  /* acrylic */
+  backdrop-filter: saturate(50%);
+}
+
+.mydialog-window {
+  background-color: #fff;
+  /* padding: 16px; */
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  min-width: 60%;
+  min-height: 60%;
+  max-height: calc(100% - 10px);
+  max-width: calc(100% - 10px);
+  box-sizing: border-box;
+  z-index: 100;
+
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.mydialog-titlebar {
+  /* background-color: red; */
+  padding: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.mydialog-titlebar h2 {
+  margin: 0;
+  flex: 1;
+  /* font-size: 1.2em;
+  font-weight: bold; */
+  /* color: #fff; */
+}
+
+
+.mydialog-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: scroll;
+  margin-bottom: 8px;
+}
+/* 
+thead {
+  position: sticky;
+  top: 20px;
+} */
+
 
 /* .App {
   text-align: center;
