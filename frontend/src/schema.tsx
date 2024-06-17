@@ -29,3 +29,10 @@ export type FilterSet = {
   rules: Rule[]
 }
 
+// API Responses
+
+export type UnmatchedResponse = {
+  is_complete: boolean;
+  total_count: number;
+  unmatched_urls: string[];
+}

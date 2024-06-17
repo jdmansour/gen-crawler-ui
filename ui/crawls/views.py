@@ -11,6 +11,21 @@ class FilterSetViewSet(viewsets.ModelViewSet):
     queryset = FilterSet.objects.all()
     serializer_class = FilterSetSerializer
 
+    # Get a list of URLs that don't match any rule
+    @action(detail=True, methods=['get'])
+    def unmatched(self, request, pk=None):
+        qs = self.get_object().crawl_job.crawled_urls
+        for rule in self.get_object().rules.all():
+            qs = qs.exclude(url__startswith=rule.rule)
+        urls = qs[:30].values_list('url', flat=True)
+        is_complete = urls.count() == qs.count()
+        
+        result = {
+            "is_complete": is_complete,
+            "total_count": qs.count(),
+            "unmatched_urls": urls,
+        }
+        return Response(result)
 
 class FilterRuleViewSet(viewsets.ModelViewSet):
     queryset = FilterRule.objects.all()

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import RuleTable from './RuleTable';
-import { FilterSet, Rule } from './schema';
+import { FilterSet, Rule, UnmatchedResponse } from './schema';
 import { MatchesDialog } from './MatchesDialog';
 
 
@@ -11,6 +11,7 @@ function App() {
   const [detailsVisible, setDetailsVisible] = useState(false);
   // type is a json dict
   const [selectedRuleDetails, setSelectedRuleDetails] = useState({});
+  const [unmatchedUrls, setUnmatchedUrls] = useState<UnmatchedResponse | null>(null);
   // fetch data from http://127.0.0.1:8000/filter_sets/1/
 
   async function fetchData() {
@@ -23,8 +24,16 @@ function App() {
   }
   useEffect(() => {
     fetchData();
+    fetchUnmatchedUrls();
   }, []);
 
+  async function fetchUnmatchedUrls() {
+    const url = "http://127.0.0.1:8000/filter_sets/1/unmatched";
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    setUnmatchedUrls(data);
+  }
 
   async function deleteRow(id: number) {
     console.log("delete", id);
@@ -88,6 +97,7 @@ function App() {
 
     // actually we should refresh everything to get the new match counts
     await fetchData();
+    await fetchUnmatchedUrls();
 
   }
 
@@ -160,6 +170,26 @@ function App() {
       {(detailsVisible && 
       <MatchesDialog onClose={() => setDetailsVisible(false)}
         detailUrls={detailUrls}/>)}
+
+      <h3>Unmatched URLs</h3>
+      {(unmatchedUrls &&
+      <table className="table">
+        <thead>
+          <tr>
+            <th>URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {unmatchedUrls.unmatched_urls.map((url) =>
+          <tr key={url}>
+            <td>{url}</td>
+          </tr>)}
+          {!unmatchedUrls.is_complete && <tr>
+            <td><i>+ {unmatchedUrls.total_count - unmatchedUrls.unmatched_urls.length} URLs remaining</i></td>
+          </tr>}
+        </tbody>
+      </table>
+      )}
     </div>
   );
 }
