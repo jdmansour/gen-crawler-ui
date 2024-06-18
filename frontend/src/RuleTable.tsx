@@ -37,6 +37,7 @@ type RuleTableProps = {
   onMoveUp: (id: number) => void,
   onMoveDown: (id: number) => void,
   onShowDetails: (id: number) => void,
+  onUpdateFields: (id: number, fields: { include?: boolean }) => void,
 }
 
 
@@ -64,7 +65,10 @@ export default function RuleTable(props: RuleTableProps) {
               <button className="mybutton mybutton-table" onClick={() => props.onShowDetails(rule.id)}>🔍</button>
             </div>
           </td>
-          <td>{rule.include ? 'Yes' : 'No'}</td>
+          <td>
+            <input type="checkbox" checked={rule.include} onChange={(e) => props.onUpdateFields(rule.id, {include: e.target.checked})} id={"include"+rule.id}/>&nbsp;
+            <label htmlFor={"include"+rule.id}>{rule.include ? 'Yes' : 'No'}</label>
+          </td>
           <td>{rule.page_type}</td>
           <td>{rule.position}</td>
           <td>
