@@ -77,7 +77,7 @@ function App() {
     //setRules(newRules);
   }
 
-  async function updateFields(id: number, fields: { rule?: string, include?: boolean }) {
+  async function updateFields(id: number, fields: { rule?: string, include?: boolean, page_type?: string}) {
     // Update the fields in the row right away
     const newRules1 = rules.map((rule) => (rule.id === id) ? { ...rule, ...fields } : rule);
     setRules(newRules1);

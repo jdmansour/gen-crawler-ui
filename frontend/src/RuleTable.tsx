@@ -36,7 +36,7 @@ type RuleTableProps = {
   onMoveUp: (id: number) => void,
   onMoveDown: (id: number) => void,
   onShowDetails: (id: number) => void,
-  onUpdateFields: (id: number, fields: { rule?: string, include?: boolean }) => void,
+  onUpdateFields: (id: number, fields: { rule?: string, include?: boolean, page_type?: string }) => void,
 }
 
 
@@ -56,7 +56,7 @@ export default function RuleTable(props: RuleTableProps) {
     <tbody>
       {props.rules.map((rule: Rule) => {
         return <tr key={rule.id}>
-          <td className="editable-cell"><Editable value={rule.rule} onChange={newValue => props.onUpdateFields(rule.id, {rule: newValue})} /></td>
+          <EditableTD value={rule.rule} onChange={newValue => props.onUpdateFields(rule.id, {rule: newValue})} />
           <td>{rule.count}</td>
           <td>
             <div style={{display: "flex", alignItems: "center"}}>
@@ -68,7 +68,7 @@ export default function RuleTable(props: RuleTableProps) {
             <input type="checkbox" checked={rule.include} onChange={(e) => props.onUpdateFields(rule.id, {include: e.target.checked})} id={"include"+rule.id}/>&nbsp;
             <label htmlFor={"include"+rule.id}>{rule.include ? 'Yes' : 'No'}</label>
           </td>
-          <td>{rule.page_type}</td>
+          <EditableTD value={rule.page_type} onChange={newValue => props.onUpdateFields(rule.id, {page_type: newValue})} />
           <td>{rule.position}</td>
           <td>
             <button className="mybutton mybutton-table mybutton-delete" onClick={(e) => props.onDelete(rule.id)}>×</button>
@@ -80,4 +80,8 @@ export default function RuleTable(props: RuleTableProps) {
       })}
     </tbody>
   </table>
+}
+
+function EditableTD(props: { value: string, onChange: (value: string) => void }) {
+  return <td className="editable-cell"><Editable value={props.value} onChange={props.onChange} /></td>
 }
