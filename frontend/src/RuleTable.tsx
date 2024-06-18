@@ -33,11 +33,10 @@ type RuleTableProps = {
   rules: Rule[],
   onDelete: (id: number) => void,
   onAdd: (id: number) => void,
-  onUpdate: (id: number, rule: string) => void,
   onMoveUp: (id: number) => void,
   onMoveDown: (id: number) => void,
   onShowDetails: (id: number) => void,
-  onUpdateFields: (id: number, fields: { include?: boolean }) => void,
+  onUpdateFields: (id: number, fields: { rule?: string, include?: boolean }) => void,
 }
 
 
@@ -57,7 +56,7 @@ export default function RuleTable(props: RuleTableProps) {
     <tbody>
       {props.rules.map((rule: Rule) => {
         return <tr key={rule.id}>
-          <td className="editable-cell"><Editable value={rule.rule} onChange={newValue => props.onUpdate(rule.id, newValue)} /></td>
+          <td className="editable-cell"><Editable value={rule.rule} onChange={newValue => props.onUpdateFields(rule.id, {rule: newValue})} /></td>
           <td>{rule.count}</td>
           <td>
             <div style={{display: "flex", alignItems: "center"}}>

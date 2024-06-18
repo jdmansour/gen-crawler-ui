@@ -77,31 +77,7 @@ function App() {
     //setRules(newRules);
   }
 
-  async function updateRow(id: number, newRuleString: string) {
-    // call the api
-    const url = `http://127.0.0.1:8000/filter_rules/${id}/`;
-    const response = await fetch(url, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ rule: newRuleString }),
-    });
-    const updatedRule = await response.json();
-    console.log(updatedRule);
-
-    // console.log("update", id, newRuleString);
-    // update the state
-    const newRules = rules.map((rule) => (rule.id === id) ? updatedRule : rule);
-    setRules(newRules);
-
-    // actually we should refresh everything to get the new match counts
-    await fetchData();
-    await fetchUnmatchedUrls();
-
-  }
-
-  async function updateFields(id: number, fields: { include?: boolean }) {
+  async function updateFields(id: number, fields: { rule?: string, include?: boolean }) {
     // Update the fields in the row right away
     const newRules1 = rules.map((rule) => (rule.id === id) ? { ...rule, ...fields } : rule);
     setRules(newRules1);
@@ -192,7 +168,6 @@ function App() {
       <RuleTable rules={rules}
         onDelete={deleteRow}
         onAdd={addRowAfter}
-        onUpdate={(id, newRule) => { updateRow(id, newRule); console.log("onChange", id, newRule); }}
         onUpdateFields={(id, fields) => { updateFields(id, fields); }}
         onMoveUp={moveDelta(-1)}
         onMoveDown={moveDelta(1)}
