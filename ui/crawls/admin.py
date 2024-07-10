@@ -32,10 +32,14 @@ class CrawlJobAdmin(admin.ModelAdmin):
     # link to the admin page for the related crawled urls
     @mark_safe
     def crawled_urls(self, obj: CrawlJob) -> str:
-        count = obj.crawledurl_set.count()
-        if count == 0:
-            return 'No crawled URLs'
-        return f'<a href="/admin/crawls/crawledurl/?crawl_job__id__exact={obj.id}">{count} Crawled URLs</a>'
+        try:
+            count = obj.crawled_urls.count()
+            if count == 0:
+                return 'No crawled URLs'
+            return f'<a href="/admin/crawls/crawledurl/?crawl_job__id__exact={obj.id}">{count} Crawled URLs</a>'
+        except Exception as e:
+            print("Error in crawled_urls", e)
+            return 'Error'
 
     # make this model read only
     def has_change_permission(self, request: HttpRequest, obj: CrawlJob=None) -> bool:
