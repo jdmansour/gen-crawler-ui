@@ -1,12 +1,15 @@
-[build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+[tool.poetry]
+name = "ui"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+license = "LICENSE"
+readme = "README.md"
 
-[project]
-name = "gen-crawler-sitemap"
-authors = [{name = "Jason Mansour", email = "jason.mansour@gwdg.de"}]
-license = {file = "LICENSE"}
-classifiers = ["License :: OSI Approved :: MIT License"]
-dynamic = ["version", "description"]
-version = "2024.0.0"
-requires-python = ">= 3.10"
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
