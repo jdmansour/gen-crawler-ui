@@ -3,7 +3,7 @@ name = "gensitemap"
 version = "0.1.0"
 description = ""
 authors = [{name = "Jason Mansour", email = "jason.mansour@gwdg.de"}]
-license = {file = "LICENSE"}
+license = "LICENSE"
 classifiers = ["License :: OSI Approved :: MIT License"]
 readme = "README.md"
 
