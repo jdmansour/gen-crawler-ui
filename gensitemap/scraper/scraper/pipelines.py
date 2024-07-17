@@ -10,7 +10,8 @@ from itemadapter import ItemAdapter
 from scrapy.spiders import Spider
 from scrapy.item import Item
 
-from crawls.models import CrawledURL, CrawlJob
+# from crawls.models import CrawledURL, CrawlJob
+from gensitemap.ui.crawls.models import  CrawledURL, CrawlJob
 
 from asgiref.sync import sync_to_async
 
