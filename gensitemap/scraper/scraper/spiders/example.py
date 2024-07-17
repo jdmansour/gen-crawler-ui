@@ -4,7 +4,8 @@ from scrapy.spiders import Rule
 from urllib.parse import urlparse
 import re
 
-from crawls.models import CrawlJob, CrawledURL
+# from crawls.models import CrawlJob, CrawledURL
+from gensitemap.ui.crawls.models import CrawlJob, CrawledURL
 
 class CustomItem(scrapy.Item):
     job_id = scrapy.Field()

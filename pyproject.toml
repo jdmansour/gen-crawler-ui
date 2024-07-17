@@ -1,9 +1,10 @@
 [tool.poetry]
-name = "ui"
+name = "gensitemap"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
-license = "LICENSE"
+authors = [{name = "Jason Mansour", email = "jason.mansour@gwdg.de"}]
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: MIT License"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
