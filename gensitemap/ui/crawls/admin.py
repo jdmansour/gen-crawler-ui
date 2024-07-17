@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 from django.contrib import admin
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 
 from .models import CrawlJob, CrawledURL
+
 
 # Register your models here.
 

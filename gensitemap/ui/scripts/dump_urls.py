@@ -1,8 +1,9 @@
 import os
-import random
 import sys
 from pathlib import Path
+
 import django
+
 django_root = Path(__file__).resolve().parents[1]
 sys.path.append(str(django_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crawler_ui.settings")
@@ -10,7 +11,7 @@ django.setup()
 
 
 from crawls.models import CrawlJob, CrawledURL
-from scripts.radix import RadixTree
+
 
 def main():
     # job = CrawlJob.objects.get(pk=9)

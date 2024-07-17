@@ -2,7 +2,7 @@
 
 Experimental frontend for the WLO generic crawler
 
-![Screenshot of the UI](./docs/images/frontend.png)
+![Screenshot of the UI](gensitemap/docs/images/frontend.png)
 
 This consists of three parts:
 - A (dummy) crawler written with Scrapy which writes urls to a database
@@ -48,11 +48,11 @@ python manage.py runserver
 
 The app gives an API to retrieve and edit filter sets:
 
-![Screenshot of Django REST framework](./docs/images/django-rest-framework.png)
+![Screenshot of Django REST framework](gensitemap/docs/images/django-rest-framework.png)
 
 It also provides an admin interface to view the crawl jobs:
 
-![Screenshot of Django admin interface](./docs/images/django-admin.png)
+![Screenshot of Django admin interface](gensitemap/docs/images/django-admin.png)
 
 ### Running the React app
 

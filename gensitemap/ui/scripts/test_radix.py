@@ -1,5 +1,7 @@
-from .radix import RadixTree
 from textwrap import dedent
+
+from .radix import RadixTree
+
 
 def test_radix_tree():
     tree = RadixTree()

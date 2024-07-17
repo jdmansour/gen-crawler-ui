@@ -1,6 +1,6 @@
 # Serializers define the API representation.
-from rest_framework import serializers
 from crawls.models import FilterRule, FilterSet, CrawlJob
+from rest_framework import serializers
 
 
 class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):

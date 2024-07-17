@@ -1,10 +1,11 @@
+import math
 import os
 import re
-import math
 import sys
 from pathlib import Path
-from urllib.parse import urlparse
+
 import django
+
 django_root = Path(__file__).resolve().parents[1]
 sys.path.append(str(django_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crawler_ui.settings")

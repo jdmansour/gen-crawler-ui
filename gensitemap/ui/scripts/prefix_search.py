@@ -1,7 +1,9 @@
 import os
 import sys
 from pathlib import Path
+
 import django
+
 django_root = Path(__file__).resolve().parents[1]
 sys.path.append(str(django_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crawler_ui.settings")
