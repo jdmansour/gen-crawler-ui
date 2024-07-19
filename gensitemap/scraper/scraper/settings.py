@@ -16,9 +16,9 @@ import django
 # project_root = Path(__file__).resolve().parents[2]
 # sys.path.append(str(project_root))
 # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ui.crawler_ui.settings")
-django_root = Path(__file__).resolve().parents[2] / "ui"
+django_root = Path(__file__).resolve().parents[2] / "gensitemap.ui"
 sys.path.append(str(django_root))
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crawler_ui.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gensitemap.ui.crawler_ui.settings")
 django.setup()
 
 
@@ -28,6 +28,8 @@ BOT_NAME = "scraper"
 SPIDER_MODULES = ["scraper.spiders"]
 NEWSPIDER_MODULE = "scraper.spiders"
 
+
+LOG_LEVEL = 'WARNING'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "scraper (+http://www.yourdomain.com)"
@@ -104,6 +106,6 @@ HTTPCACHE_IGNORE_HTTP_CODES = []
 HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
 
 # Set settings whose default value is deprecated to a future-proof value
-REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
-TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+# REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
+# TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"

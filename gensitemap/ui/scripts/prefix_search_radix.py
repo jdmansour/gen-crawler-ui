@@ -12,8 +12,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crawler_ui.settings")
 django.setup()
 
 
-from crawls.models import CrawlJob, CrawledURL
-from scripts.radix import RadixTree
+from gensitemap.ui.crawls.models import CrawlJob, CrawledURL
+from gensitemap.ui.scripts.radix import RadixTree
 
 def main():
     job = CrawlJob.objects.get(pk=9)

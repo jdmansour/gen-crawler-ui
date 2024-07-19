@@ -6,7 +6,6 @@ from django.utils.safestring import mark_safe
 
 from .models import CrawlJob, CrawledURL
 
-
 # Register your models here.
 
 # class CrawledURLInline(admin.TabularInline):

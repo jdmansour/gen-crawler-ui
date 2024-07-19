@@ -3,8 +3,8 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import Rule
 from urllib.parse import urlparse
 import re
+import logging
 
-# from crawls.models import CrawlJob, CrawledURL
 from gensitemap.ui.crawls.models import CrawlJob, CrawledURL
 
 class CustomItem(scrapy.Item):
@@ -59,6 +59,9 @@ class ExampleSpider(scrapy.Spider):
             if self.follow_links:
                 yield scrapy.Request(link.url, callback=self.parse, cb_kwargs={'from_url': response.url})
                 #yield response.follow(link, self.parse)
+            logging.warning("New crawl result:-----------------------------")
+            logging.warning(item)
+            logging.warning("----------------------------------------------")
 
         # # find all links on the page that are to the same origin
         # origin = get_origin(response.url)

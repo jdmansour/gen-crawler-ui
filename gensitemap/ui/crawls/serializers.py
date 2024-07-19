@@ -1,5 +1,4 @@
 # Serializers define the API representation.
-# from crawls.models import FilterRule, FilterSet, CrawlJob
 from gensitemap.ui.crawls.models import FilterRule, FilterSet, CrawlJob
 from rest_framework import serializers
 

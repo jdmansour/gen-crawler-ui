@@ -1,7 +1,5 @@
 import logging
 
-# from crawls.models import FilterRule, FilterSet
-# from crawls.serializers import FilterSetSerializer, FilterRuleSerializer
 from gensitemap.ui.crawls.models import FilterRule, FilterSet
 from gensitemap.ui.crawls.serializers import FilterSetSerializer, FilterRuleSerializer
 from rest_framework import viewsets

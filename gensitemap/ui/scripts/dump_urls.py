@@ -10,7 +10,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crawler_ui.settings")
 django.setup()
 
 
-from crawls.models import CrawlJob, CrawledURL
+from gensitemap.ui.crawls.models import CrawlJob, CrawledURL
 
 
 def main():

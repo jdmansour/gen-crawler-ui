@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crawls',
+#     'gensitemap.ui.crawls.apps.CrawlsConfig',
+    'gensitemap.ui.crawls',
     'rest_framework',
     'corsheaders',
 ]
