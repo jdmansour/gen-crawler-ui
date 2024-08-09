@@ -65,3 +65,23 @@ npm run dev
 ```
 
 This starts the dev server, the URL will be printed in the terminal.
+
+## Production
+
+To run in production, you can use gunicorn:
+
+```bash
+source .venv/bin/activate
+cd ui
+python manage.py collectstatic
+DJANGO_VITE_DEV_MODE=False gunicorn crawler_ui.wsgi
+```
+
+In this mode, if you make changes to the frontend, you have to rebuild it manually:
+
+```bash
+cd frontend
+npm run build
+cd ../ui
+python manage.py collectstatic
+```

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -181,7 +182,7 @@ DJANGO_VITE = {
     # In that case, you must run the vite server in the frontend directory (npm run dev).
     # If you set this to false, you must build and bundle the frontend with npm run build,
     # and then manage.py collectstatic.
-    "dev_mode": True,
+    "dev_mode": config("DJANGO_VITE_DEV_MODE", default=True, cast=bool),
   }
 }
 
