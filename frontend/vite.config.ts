@@ -6,6 +6,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: "/static/",
+  server: {
+    origin: 'http://localhost:5173'
+  },
   build: {
     manifest: 'manifest.json',
     outDir: './assets_output',
