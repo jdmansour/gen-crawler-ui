@@ -28,6 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     '127.0.0.1:8000',
+    'localhost',
+    'localhost:8000',
 ]
 
 
@@ -40,9 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crawler_ui',
     'crawls',
     'rest_framework',
     'corsheaders',
+    'django_vite',
 ]
 
 MIDDLEWARE = [
@@ -169,3 +173,31 @@ LOGGING = {
         },
     },
 }
+
+DJANGO_VITE = {
+  "default": {
+    # If dev mode is active, hot reloading is supported for the react components.
+    # In that case, you must run the vite server in the frontend directory (npm run dev).
+    # If you set this to false, you must build and bundle the frontend with npm run build,
+    # and then manage.py collectstatic.
+    "dev_mode": True,
+  }
+}
+
+# Where to get static files from
+STATICFILES_DIRS = [
+  BASE_DIR / "../frontend/assets_output"
+]
+
+# Where to put static files to serve them
+STATIC_ROOT = "/Users/jason/src/gen-crawler-ui/ui/static"
+
+
+# STATIC_URL = '/static/'
+# STATICFILES_BASE = BASE_DIR / "staticfiles"
+# REACT_JS_BUILD_DIR = STATICFILES_BASE / "frontend" / "prod" 
+# if DEBUG:
+#     REACT_JS_BUILD_DIR = STATICFILES_BASE / "frontend" / "dev"
+# STATICFILES_DIRS = [
+#     STATICFILES_BASE,
+# ]

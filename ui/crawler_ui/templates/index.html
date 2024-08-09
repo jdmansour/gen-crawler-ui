@@ -1,0 +1,27 @@
+{% load django_vite %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+      function scripterror() {
+        const root = document.getElementById('root');
+        root.innerText = "Error, could not load the script. If you are running in development mode, make sure the vite server is running (npm run dev).";
+      }
+    </script>
+
+    {% vite_hmr_client %}
+    {% vite_react_refresh %}
+    {% vite_asset 'src/main.tsx' onerror="scripterror()" %}
+
+    <title>Django Vite Example</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

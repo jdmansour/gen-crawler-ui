@@ -1,3 +1,6 @@
+// Add this at the beginning of your app entry.
+import 'vite/modulepreload-polyfill';
+
 import { useEffect, useState } from 'react';
 import './App.css';
 import RuleTable from './RuleTable';
@@ -12,10 +15,10 @@ function App() {
   // type is a json dict
   const [selectedRuleDetails, setSelectedRuleDetails] = useState({});
   const [unmatchedUrls, setUnmatchedUrls] = useState<UnmatchedResponse | null>(null);
-  // fetch data from http://127.0.0.1:8000/filter_sets/1/
+  const apiBase = window.location.origin + "/api";
 
   async function fetchData() {
-    const url = "http://127.0.0.1:8000/filter_sets/1/";
+    const url = apiBase + "/filter_sets/1/";
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
@@ -28,7 +31,7 @@ function App() {
   }, []);
 
   async function fetchUnmatchedUrls() {
-    const url = "http://127.0.0.1:8000/filter_sets/1/unmatched";
+    const url = apiBase + "/filter_sets/1/unmatched";
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
@@ -38,7 +41,7 @@ function App() {
   async function deleteRow(id: number) {
     console.log("delete", id);
 
-    const response = await fetch(`http://127.0.0.1:8000/filter_rules/${id}/`, {
+    const response = await fetch(`${apiBase}/filter_rules/${id}/`, {
       method: 'DELETE',
     });
     const data = await response.json();
@@ -51,7 +54,7 @@ function App() {
     console.log("add after", id);
     const newRule = {
       // TODO: how to make it so we can use an ID and not a URL?
-      "filter_set": "http://127.0.0.1:8000/filter_sets/1/",
+      "filter_set": apiBase + "/filter_sets/1/",
       //"filter_set": "1",
       "rule": "https://www.weltderphysik.de/wir",
       "count": 123,
@@ -60,7 +63,7 @@ function App() {
     }
     //setRules([...rules, newRule]);
     // insert after rule with the id
-    const post_url = "http://127.0.0.1:8000/filter_rules/";
+    const post_url = apiBase + "/filter_rules/";
     const response = await fetch(post_url, {
       method: 'POST',
       headers: {
@@ -88,7 +91,7 @@ function App() {
     // await new Promise(r => setTimeout(r, 2000));
 
     // call the api
-    const url = `http://127.0.0.1:8000/filter_rules/${id}/`;
+    const url = `${apiBase}/filter_rules/${id}/`;
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
@@ -115,7 +118,7 @@ function App() {
   function moveDelta(delta: number) {
     return async (id: number) => {
       // construct the url
-      const url = `http://127.0.0.1:8000/filter_rules/${id}/`;
+      const url = `${apiBase}/filter_rules/${id}/`;
       // call the api
       const old_position = rules.find((rule) => rule.id === id)?.position;
       if (old_position === undefined) {
@@ -140,7 +143,7 @@ function App() {
     setSelectedRuleDetails({});
     setDetailsVisible(true);
     // fetch the details
-    const url = `http://127.0.0.1:8000/filter_rules/${id}/matches`;
+    const url = `${apiBase}/filter_rules/${id}/matches`;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
