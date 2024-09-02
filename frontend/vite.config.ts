@@ -15,6 +15,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: '/src/main.tsx',
+        css: '/src/index.css'
       }
     }
   }
