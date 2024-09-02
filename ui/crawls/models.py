@@ -12,7 +12,7 @@ class CrawlJob(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.start_url} at {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+        return f"#{self.id} {self.start_url} at {self.created_at.strftime('%Y-%m-%d %H:%M')}"
     
 
 class CrawledURL(models.Model):

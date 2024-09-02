@@ -3,11 +3,12 @@ import logging
 from crawls.models import FilterRule, FilterSet
 from crawls.serializers import FilterRuleSerializer, FilterSetSerializer
 from django.shortcuts import render
-from django.views.generic import ListView
-from django.views.generic import DetailView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from typing import Any
 
 from .models import CrawlJob
 
@@ -107,3 +108,28 @@ class FilterSetDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+    
+class FilterSetCreateView(CreateView):
+    model = FilterSet
+    fields = ['name', 'crawl_job']
+    template_name = 'filterset_create.html'
+    #success_url = '/crawls/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+    
+    def get_success_url(self) -> str:
+        # return the new filter set's detail page
+        return reverse_lazy('filter_details', kwargs={'pk': self.object.pk})
+    
+    # get crawl job id from URL
+    def get_initial(self) -> dict[str, Any]:
+        initial = super().get_initial().copy()
+        # get crawl_job_id from GET parameters
+        crawl_job_id = self.request.GET.get('crawl_job_id')
+        # Raise error if crawl_job_id is not provided
+        if crawl_job_id is None:
+            raise ValueError("crawl_job_id is required")
+        initial['crawl_job'] = crawl_job_id
+        return initial

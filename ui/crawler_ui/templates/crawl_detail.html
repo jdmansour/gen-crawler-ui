@@ -30,6 +30,8 @@
         </tr>
     {% endfor %}
 </table>
+<!-- button to add a new filter set for this crawl -->
+<p><a href="{% url 'filterset_create' %}?crawl_job_id={{ crawl.id }}">Add new filter set</a></p>
 </div>
 {% endblock %}
 {% comment %} {% block footer %}
