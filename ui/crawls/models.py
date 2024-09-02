@@ -90,7 +90,10 @@ class FilterRule(models.Model):
     def save(self, *args, **kwargs):
         if not self.position:
             # set to max + 1
-            self.position = self.filter_set.rules.aggregate(models.Max('position'))['position__max'] + 1
+            current_max = self.filter_set.rules.aggregate(models.Max('position'))['position__max']
+            if current_max is None:
+                current_max = 0
+            self.position = current_max + 1
         super(FilterRule, self).save(*args, **kwargs)
 
     def move_to(self, new_position: int):
