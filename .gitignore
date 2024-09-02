@@ -2,3 +2,5 @@
 __pycache__/
 .scrapy/
 /*.bak
+# collected by manage.py collectstatic:
+/ui/static/

@@ -1,3 +1,6 @@
+// Add this at the beginning of your app entry.
+import 'vite/modulepreload-polyfill';
+
 import { useEffect, useState } from 'react';
 import './App.css';
 import RuleTable from './RuleTable';
@@ -5,17 +8,19 @@ import { FilterSet, Rule, UnmatchedResponse } from './schema';
 import { MatchesDialog } from './MatchesDialog';
 
 
-function App() {
+function App(props: { filterSetId: number, csrfToken: string }) {
   const [filterSet, setFilterSet] = useState<FilterSet | null>(null);
   const [rules, setRules] = useState<Rule[]>([]);
   const [detailsVisible, setDetailsVisible] = useState(false);
   // type is a json dict
   const [selectedRuleDetails, setSelectedRuleDetails] = useState({});
   const [unmatchedUrls, setUnmatchedUrls] = useState<UnmatchedResponse | null>(null);
-  // fetch data from http://127.0.0.1:8000/filter_sets/1/
+  const apiBase = window.location.origin + "/api";
+  const filterSetId = props.filterSetId;
+  console.log("filterSetId", filterSetId);
 
   async function fetchData() {
-    const url = "http://127.0.0.1:8000/filter_sets/1/";
+    const url = apiBase + `/filter_sets/${filterSetId}/`;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
@@ -28,7 +33,7 @@ function App() {
   }, []);
 
   async function fetchUnmatchedUrls() {
-    const url = "http://127.0.0.1:8000/filter_sets/1/unmatched";
+    const url = apiBase + `/filter_sets/${filterSetId}/unmatched`;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
@@ -38,8 +43,11 @@ function App() {
   async function deleteRow(id: number) {
     console.log("delete", id);
 
-    const response = await fetch(`http://127.0.0.1:8000/filter_rules/${id}/`, {
+    const response = await fetch(`${apiBase}/filter_rules/${id}/`, {
       method: 'DELETE',
+      headers: {
+        'X-CSRFToken': props.csrfToken,
+      },
     });
     const data = await response.json();
     console.log(data);
@@ -49,9 +57,11 @@ function App() {
 
   async function addRowAfter(id: number) {
     console.log("add after", id);
+    const filterSetUrl = apiBase + `/filter_sets/${filterSetId}/`;
+    console.log("filterSetUrl", filterSetUrl);
     const newRule = {
       // TODO: how to make it so we can use an ID and not a URL?
-      "filter_set": "http://127.0.0.1:8000/filter_sets/1/",
+      "filter_set": filterSetUrl,
       //"filter_set": "1",
       "rule": "https://www.weltderphysik.de/wir",
       "count": 123,
@@ -60,11 +70,12 @@ function App() {
     }
     //setRules([...rules, newRule]);
     // insert after rule with the id
-    const post_url = "http://127.0.0.1:8000/filter_rules/";
+    const post_url = apiBase + "/filter_rules/";
     const response = await fetch(post_url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': props.csrfToken,
       },
       body: JSON.stringify(newRule),
     });
@@ -88,11 +99,12 @@ function App() {
     // await new Promise(r => setTimeout(r, 2000));
 
     // call the api
-    const url = `http://127.0.0.1:8000/filter_rules/${id}/`;
+    const url = `${apiBase}/filter_rules/${id}/`;
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': props.csrfToken,
       },
       // The field names are the same as in the JSON schema,
       // so we can just pass this object here.
@@ -115,7 +127,7 @@ function App() {
   function moveDelta(delta: number) {
     return async (id: number) => {
       // construct the url
-      const url = `http://127.0.0.1:8000/filter_rules/${id}/`;
+      const url = `${apiBase}/filter_rules/${id}/`;
       // call the api
       const old_position = rules.find((rule) => rule.id === id)?.position;
       if (old_position === undefined) {
@@ -126,6 +138,7 @@ function App() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRFToken': props.csrfToken,
         },
         body: JSON.stringify({ position: old_position + delta }),
       });
@@ -140,7 +153,7 @@ function App() {
     setSelectedRuleDetails({});
     setDetailsVisible(true);
     // fetch the details
-    const url = `http://127.0.0.1:8000/filter_rules/${id}/matches`;
+    const url = `${apiBase}/filter_rules/${id}/matches`;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
@@ -156,13 +169,16 @@ function App() {
     detailUrls = [];
   }
 
+  // iterate over all rules and pick the one with the last id
+  let lastId = 0;
+  for (let i = 0; i < rules.length; i++) {
+    if (rules[i].id > lastId) {
+      lastId = rules[i].id;
+    }
+  }
 
   return (
-    <div className="page">
-      <h1>Generic Crawler</h1>
-      <p>Filter #{filterSet?.id} '{filterSet?.name}' from {filterSet?.created_at}</p>
-      <p>Crawl #{filterSet?.crawl_job.id} from {filterSet?.crawl_job.created_at}</p>
-      <p>Start URL: {filterSet?.crawl_job.start_url}</p>
+    <div>
       <p>{filterSet?.crawl_job.url_count} pages total, {filterSet?.remaining_urls} not handled yet</p>
       <h3>Rules</h3>
       <RuleTable rules={rules}
@@ -175,6 +191,7 @@ function App() {
       />
 
       <div>
+        <button className="mybutton" onClick={() => addRowAfter(lastId)}>Add rule</button>
         <button className="mybutton mybutton-fancy">Suggest rules</button>
       </div>
 
@@ -201,7 +218,7 @@ function App() {
         </tbody>
       </table>
       )}
-    </div>
+      </div>
   );
 }
 
