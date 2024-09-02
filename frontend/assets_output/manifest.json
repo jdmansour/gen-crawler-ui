@@ -11,13 +11,19 @@
     "file": "assets/montserrat-v26-latin-regular-BfmCfwfZ.woff2",
     "src": "src/fonts/montserrat-v26-latin-regular.woff2"
   },
+  "src/index.css": {
+    "file": "assets/css-DKoq5nd6.css",
+    "src": "src/index.css",
+    "isEntry": true
+  },
   "src/main.tsx": {
-    "file": "assets/main-CcdtcX9u.js",
+    "file": "assets/main-CXbO6Y4L.js",
     "name": "main",
     "src": "src/main.tsx",
     "isEntry": true,
     "css": [
-      "assets/main-BU8GGDjk.css"
+      "assets/main-D9fjUwis.css",
+      "assets/css-DKoq5nd6.css"
     ],
     "assets": [
       "assets/montserrat-v26-latin-regular-BfmCfwfZ.woff2",
