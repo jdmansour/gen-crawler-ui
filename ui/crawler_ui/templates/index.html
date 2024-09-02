@@ -1,12 +1,6 @@
+{% extends "base.html" %}
 {% load django_vite %}
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+{% block head %}
     <script>
       function scripterror() {
         const root = document.getElementById('root');
@@ -19,27 +13,9 @@
     {% vite_asset 'src/main.tsx' onerror="scripterror()" %}
 
     <title>Django Vite Example</title>
-  </head>
+{% endblock %}
 
-  <body>
-    <div class="page">
-      {% comment %} <div class="sidebar">
-        Sidebar
-      </div> {% endcomment %}
-      <div class="main">
-        <div class="header">
-          <div class="menubutton">
-            Menu
-          </div>
-          <div class="header-content">
-            Generic Crawler
-          </div>
-        </div>
-        <div class="content">
-          <!-- react content goes here: -->
-          <div id="root"></div>
-        </div>
-      </div>
-    </div>
-  </body>
-</html>
+{% block content %}
+<!-- react content goes here: -->
+<div id="root"></div>
+{% endblock %}

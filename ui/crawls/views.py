@@ -1,10 +1,15 @@
-from crawls.serializers import FilterSetSerializer, FilterRuleSerializer
+import logging
+
 from crawls.models import FilterRule, FilterSet
+from crawls.serializers import FilterRuleSerializer, FilterSetSerializer
+from django.shortcuts import render
+from django.views.generic.list import ListView
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-import logging
+from .models import CrawlJob
+
 log = logging.getLogger(__name__)
 
 class FilterSetViewSet(viewsets.ModelViewSet):
@@ -71,3 +76,16 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
         # }
         return Response(result)
     
+
+class CrawlsListView(ListView):
+    model = CrawlJob
+    template_name = 'crawls_list.html'
+    context_object_name = 'crawls'
+
+    def get_queryset(self):
+        return CrawlJob.objects.all().order_by('-created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active'] = 'crawls'
+        return context
