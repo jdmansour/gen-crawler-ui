@@ -36,7 +36,7 @@ class FilterSetInline(admin.TabularInline):
 
 
 class CrawlJobAdmin(admin.ModelAdmin):
-    list_display = ['start_url', 'follow_links', 'created_at', 'updated_at']
+    list_display = ['start_url', 'follow_links', 'created_at', 'updated_at', 'crawled_urls_count']
     fields = ['start_url', 'follow_links', 'created_at', 'updated_at', 'crawled_urls']
     inlines = [
         FilterSetInline,
@@ -62,6 +62,9 @@ class CrawlJobAdmin(admin.ModelAdmin):
         except Exception as e:
             print("Error in crawled_urls", e)
             return 'Error'
+        
+    def crawled_urls_count(self, obj: CrawlJob) -> int:
+        return obj.crawled_urls.count()
 
     # make this model read only
     def has_change_permission(self, request: HttpRequest, obj: CrawlJob=None) -> bool:
