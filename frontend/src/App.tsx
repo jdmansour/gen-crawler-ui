@@ -178,11 +178,7 @@ function App(props: { filterSetId: number, csrfToken: string }) {
   }
 
   return (
-    <div className="inner-page">
-      {/* <h1>Generic Crawler</h1> */}
-      <p>Filter #{filterSet?.id} '{filterSet?.name}' from {filterSet?.created_at}</p>
-      <p>Crawl #{filterSet?.crawl_job.id} from {filterSet?.crawl_job.created_at}</p>
-      <p>Start URL: {filterSet?.crawl_job.start_url}</p>
+    <div>
       <p>{filterSet?.crawl_job.url_count} pages total, {filterSet?.remaining_urls} not handled yet</p>
       <h3>Rules</h3>
       <RuleTable rules={rules}
@@ -222,7 +218,7 @@ function App(props: { filterSetId: number, csrfToken: string }) {
         </tbody>
       </table>
       )}
-    </div>
+      </div>
   );
 }
 
