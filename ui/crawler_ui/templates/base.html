@@ -30,6 +30,15 @@
           </div>
         </div>
         <div class="content">
+          <!-- show django messages -->
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          
           {% block content %}
           <!-- react content goes here: -->
           <div id="root"></div>

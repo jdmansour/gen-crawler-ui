@@ -3,12 +3,14 @@ from typing import Any
 
 from crawls.models import FilterRule, FilterSet
 from crawls.serializers import FilterRuleSerializer, FilterSetSerializer
+from django.contrib import messages
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView, FormView, ListView
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from .forms import StartCrawlForm
 from .models import CrawlJob
 
 log = logging.getLogger(__name__)
@@ -133,3 +135,16 @@ class FilterSetCreateView(CreateView):
             raise ValueError("crawl_job_id is required")
         initial['crawl_job'] = crawl_job_id
         return initial
+    
+
+class StartCrawlFormView(FormView):
+    template_name = 'start_crawl.html'
+    form_class = StartCrawlForm
+    success_url = '/crawls/'
+
+    def form_valid(self, form):
+        # Actually start the job here:
+        print("Hello world")
+        # show a django message that the crawl would have been started:
+        messages.info(self.request, 'Crawl started')
+        return super().form_valid(form)

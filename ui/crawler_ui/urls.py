@@ -14,7 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from crawls.views import FilterRuleViewSet, FilterSetViewSet, CrawlsListView, CrawlDetailView, FilterSetDetailView, FilterSetCreateView
+from crawls.views import FilterRuleViewSet, FilterSetViewSet, CrawlsListView, CrawlDetailView, FilterSetDetailView, FilterSetCreateView, StartCrawlFormView
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
@@ -30,6 +30,7 @@ router.register(r'filter_rules', FilterRuleViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', index, name='index'),
+    path('crawls/add/', StartCrawlFormView.as_view(), name='crawl_create'),
     path('crawls/<int:pk>/', CrawlDetailView.as_view(), name='crawl_details'),
     path('crawls/', CrawlsListView.as_view(), name='crawls_list'),
     # filters/1/
