@@ -136,6 +136,12 @@ class FilterSetCreateView(CreateView):
         initial['crawl_job'] = crawl_job_id
         return initial
     
+    # run code on successful form submission
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.info(self.request, 'Filter set created')
+        return response
+    
 
 class StartCrawlFormView(FormView):
     template_name = 'start_crawl.html'
