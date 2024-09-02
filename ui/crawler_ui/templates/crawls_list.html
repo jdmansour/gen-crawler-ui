@@ -14,6 +14,7 @@
                 <th>Created</th>
                 <th>Updated</th>
                 <th># Filters</th>
+                <th># Pages crawled</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +27,7 @@
                 <td>{{ crawl.created_at }}</td>
                 <td>{{ crawl.updated_at }}</td>
                 <td>{{ crawl.filter_sets.count }}</td>
+                <td>{{ crawl.crawled_urls.count }}</td>
             </tr>
         {% endfor %}
     </table>
