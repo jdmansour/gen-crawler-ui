@@ -3,7 +3,8 @@ import logging
 from crawls.models import FilterRule, FilterSet
 from crawls.serializers import FilterRuleSerializer, FilterSetSerializer
 from django.shortcuts import render
-from django.views.generic.list import ListView
+from django.views.generic import ListView
+from django.views.generic import DetailView
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -85,7 +86,24 @@ class CrawlsListView(ListView):
     def get_queryset(self):
         return CrawlJob.objects.all().order_by('-created_at')
 
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     return context
+    
+class CrawlDetailView(DetailView):
+    model = CrawlJob
+    template_name = 'crawl_detail.html'
+    context_object_name = 'crawl'
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     return context
+    
+class FilterSetDetailView(DetailView):
+    model = FilterSet
+    template_name = 'filterset_detail.html'
+    context_object_name = 'filterset'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['active'] = 'crawls'
         return context

@@ -8,7 +8,7 @@ import { FilterSet, Rule, UnmatchedResponse } from './schema';
 import { MatchesDialog } from './MatchesDialog';
 
 
-function App() {
+function App(props: { filterSetId: number }) {
   const [filterSet, setFilterSet] = useState<FilterSet | null>(null);
   const [rules, setRules] = useState<Rule[]>([]);
   const [detailsVisible, setDetailsVisible] = useState(false);
@@ -16,9 +16,11 @@ function App() {
   const [selectedRuleDetails, setSelectedRuleDetails] = useState({});
   const [unmatchedUrls, setUnmatchedUrls] = useState<UnmatchedResponse | null>(null);
   const apiBase = window.location.origin + "/api";
+  const filterSetId = props.filterSetId;
+  console.log("filterSetId", filterSetId);
 
   async function fetchData() {
-    const url = apiBase + "/filter_sets/1/";
+    const url = apiBase + `/filter_sets/${filterSetId}/`;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);

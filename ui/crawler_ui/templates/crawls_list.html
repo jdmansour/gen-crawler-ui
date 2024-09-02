@@ -11,15 +11,21 @@
         <thead>
             <tr>
                 <th>Start URL</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th># Filters</th>
             </tr>
         </thead>
         <tbody>
         {% for crawl in crawls %}
             <tr>
                 <td>
-                {% comment %} <a href="{% url 'crawl_detail' crawl.id %}">{{ crawl.name }}</a> {% endcomment %}
-                <a href="#">{{ crawl.start_url }}</a>
+                <a href="{% url 'crawl_details' crawl.id %}">{{ crawl.start_url }}</a>
+                {% comment %} <a href="#">{{ crawl.start_url }}</a> {% endcomment %}
                 </td>
+                <td>{{ crawl.created_at }}</td>
+                <td>{{ crawl.updated_at }}</td>
+                <td>{{ crawl.filter_sets.count }}</td>
             </tr>
         {% endfor %}
     </table>
