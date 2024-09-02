@@ -1,21 +1,8 @@
 {% extends "base.html" %}
-{% load django_vite %}
 {% block head %}
-    <script>
-      function scripterror() {
-        const root = document.getElementById('root');
-        root.innerText = "Error, could not load the script. If you are running in development mode, make sure the vite server is running (npm run dev).";
-      }
-    </script>
-
-    {% vite_hmr_client %}
-    {% vite_react_refresh %}
-    {% vite_asset 'src/main.tsx' onerror="scripterror()" %}
-
-    <title>Django Vite Example</title>
+<title>Hello World!</title>
 {% endblock %}
 
 {% block content %}
-<!-- react content goes here: -->
-<div id="root" data-filter-set-id="1"></div>
+Hello World!
 {% endblock %}
