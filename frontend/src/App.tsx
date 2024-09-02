@@ -161,6 +161,13 @@ function App(props: { filterSetId: number }) {
     detailUrls = [];
   }
 
+  // iterate over all rules and pick the one with the last id
+  let lastId = 0;
+  for (let i = 0; i < rules.length; i++) {
+    if (rules[i].id > lastId) {
+      lastId = rules[i].id;
+    }
+  }
 
   return (
     <div className="inner-page">
@@ -180,6 +187,7 @@ function App(props: { filterSetId: number }) {
       />
 
       <div>
+        <button className="mybutton" onClick={() => addRowAfter(lastId)}>Add rule</button>
         <button className="mybutton mybutton-fancy">Suggest rules</button>
       </div>
 
