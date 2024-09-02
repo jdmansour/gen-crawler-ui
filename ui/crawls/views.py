@@ -1,14 +1,13 @@
 import logging
+from typing import Any
 
 from crawls.models import FilterRule, FilterSet
 from crawls.serializers import FilterRuleSerializer, FilterSetSerializer
-from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import CreateView, DetailView, ListView
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from typing import Any
 
 from .models import CrawlJob
 
@@ -24,6 +23,7 @@ class FilterSetViewSet(viewsets.ModelViewSet):
         qs = self.get_object().crawl_job.crawled_urls
         for rule in self.get_object().rules.all():
             qs = qs.exclude(url__startswith=rule.rule)
+        qs = qs.all()
         urls = qs[:30].values_list('url', flat=True)
         is_complete = urls.count() == qs.count()
         
