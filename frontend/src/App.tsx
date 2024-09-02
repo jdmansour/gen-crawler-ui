@@ -8,7 +8,7 @@ import { FilterSet, Rule, UnmatchedResponse } from './schema';
 import { MatchesDialog } from './MatchesDialog';
 
 
-function App(props: { filterSetId: number }) {
+function App(props: { filterSetId: number, csrfToken: string }) {
   const [filterSet, setFilterSet] = useState<FilterSet | null>(null);
   const [rules, setRules] = useState<Rule[]>([]);
   const [detailsVisible, setDetailsVisible] = useState(false);
@@ -33,7 +33,7 @@ function App(props: { filterSetId: number }) {
   }, []);
 
   async function fetchUnmatchedUrls() {
-    const url = apiBase + "/filter_sets/1/unmatched";
+    const url = apiBase + `/filter_sets/${filterSetId}/unmatched`;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
@@ -45,6 +45,9 @@ function App(props: { filterSetId: number }) {
 
     const response = await fetch(`${apiBase}/filter_rules/${id}/`, {
       method: 'DELETE',
+      headers: {
+        'X-CSRFToken': props.csrfToken,
+      },
     });
     const data = await response.json();
     console.log(data);
@@ -54,9 +57,11 @@ function App(props: { filterSetId: number }) {
 
   async function addRowAfter(id: number) {
     console.log("add after", id);
+    const filterSetUrl = apiBase + `/filter_sets/${filterSetId}/`;
+    console.log("filterSetUrl", filterSetUrl);
     const newRule = {
       // TODO: how to make it so we can use an ID and not a URL?
-      "filter_set": apiBase + "/filter_sets/1/",
+      "filter_set": filterSetUrl,
       //"filter_set": "1",
       "rule": "https://www.weltderphysik.de/wir",
       "count": 123,
@@ -70,6 +75,7 @@ function App(props: { filterSetId: number }) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': props.csrfToken,
       },
       body: JSON.stringify(newRule),
     });
@@ -98,6 +104,7 @@ function App(props: { filterSetId: number }) {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': props.csrfToken,
       },
       // The field names are the same as in the JSON schema,
       // so we can just pass this object here.
@@ -131,6 +138,7 @@ function App(props: { filterSetId: number }) {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRFToken': props.csrfToken,
         },
         body: JSON.stringify({ position: old_position + delta }),
       });
