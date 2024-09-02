@@ -161,8 +161,8 @@ function App() {
 
 
   return (
-    <div className="page">
-      <h1>Generic Crawler</h1>
+    <div className="inner-page">
+      {/* <h1>Generic Crawler</h1> */}
       <p>Filter #{filterSet?.id} '{filterSet?.name}' from {filterSet?.created_at}</p>
       <p>Crawl #{filterSet?.crawl_job.id} from {filterSet?.crawl_job.created_at}</p>
       <p>Start URL: {filterSet?.crawl_job.start_url}</p>

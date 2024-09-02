@@ -73,3 +73,45 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+
+/* body {
+  margin: 0;
+  padding: 0;
+} */
+
+.page {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background-color: #1a3c62;
+  color: white;
+  /* left sidebar, fixed width */
+  width: 240px;
+  padding: 16px 24px;
+}
+
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  background-color: #002750;
+  color: white;
+}
+
+.menubutton {
+  background-color: #1a3c62;
+  color: white;
+  padding: 16px 24px;
+}
+
+.header-content {
+  padding: 16px 24px;
+}
