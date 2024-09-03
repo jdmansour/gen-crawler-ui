@@ -1,10 +1,12 @@
 from __future__ import annotations
+
 from django.contrib import admin
 from django.contrib.admin import display
+from django.db.models import Count, OuterRef, QuerySet, Subquery, Value
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 
-from .models import CrawlJob, CrawledURL, FilterSet, FilterRule
+from .models import CrawledURL, CrawlJob, FilterSet
 
 # Register your models here.
 
@@ -36,7 +38,7 @@ class FilterSetInline(admin.TabularInline):
 
 
 class CrawlJobAdmin(admin.ModelAdmin):
-    list_display = ['start_url', 'follow_links', 'created_at', 'updated_at', 'crawled_urls_count']
+    list_display = ['start_url', 'follow_links', 'created_at', 'updated_at', 'crawled_urls_count', 'filter_sets_count']
     fields = ['start_url', 'follow_links', 'created_at', 'updated_at', 'crawled_urls']
     inlines = [
         FilterSetInline,
@@ -47,24 +49,67 @@ class CrawlJobAdmin(admin.ModelAdmin):
     # ]
     date_hierarchy = 'created_at'
 
-    # admin list title
-
-    
-
     # link to the admin page for the related crawled urls
     @mark_safe
     def crawled_urls(self, obj: CrawlJob) -> str:
         try:
-            count = obj.crawled_urls.count()
+            count = obj.crawled_urls_count
             if count == 0:
                 return 'No crawled URLs'
             return f'<a href="/admin/crawls/crawledurl/?crawl_job__id__exact={obj.id}">{count} Crawled URLs</a>'
         except Exception as e:
             print("Error in crawled_urls", e)
             return 'Error'
-        
+    
+    @display(description='# Crawled URLs')
     def crawled_urls_count(self, obj: CrawlJob) -> int:
-        return obj.crawled_urls.count()
+        return obj.crawled_urls_count
+    
+    @display(description='# Filter Sets')
+    def filter_sets_count(self, obj: CrawlJob) -> int:
+        return obj.filter_sets_count
+    
+    def get_queryset(self, request: HttpRequest) -> QuerySet:
+        queryset = super().get_queryset(request)
+
+        # We are constructing a query like this:
+        #
+        # SELECT id, start_url,
+        # (
+        #     SELECT COUNT(*)
+        #     FROM crawls_crawledurl
+        #     WHERE crawls_crawljob.id = crawls_crawledurl.crawl_job_id
+        # ) AS url_count
+        # FROM crawls_crawljob
+
+        crawled_urls_count_subquery = (
+            CrawledURL.objects.filter(crawl_job=OuterRef('pk'))
+            .annotate(d=Value(1)).values('d')  # dummy to get rid of the GROUP BY
+            .annotate(c=Count('*')).values('c')
+        )
+        filter_sets_count_subquery = (
+            FilterSet.objects.filter(crawl_job=OuterRef('pk'))
+            .annotate(d=Value(1)).values('d')  # dummy to get rid of the GROUP BY
+            .annotate(c=Count('*')).values('c')
+        )
+        queryset = queryset.annotate(
+            crawled_urls_count=Subquery(crawled_urls_count_subquery),
+            filter_sets_count=Subquery(filter_sets_count_subquery),
+        )
+
+        # This would also work, but the above is much faster 
+        # (2 ms vs 3000 ms).  The reason is that django uses this
+        # queryset to display the date hierarchy widget.  When
+        # using subqueries, it drops the unneeded 'count' columns,
+        # but when using JOIN, it keeps the join and fetches
+        # unneccessarily many rows.
+
+        # queryset = queryset.select_related().annotate(
+        #     crawled_urls_count=Count('crawled_urls__pk', distinct=True),
+        #     # filter_sets_count=Count('filter_sets', distinct=True),
+        # )
+
+        return queryset
 
     # make this model read only
     def has_change_permission(self, request: HttpRequest, obj: CrawlJob=None) -> bool:
