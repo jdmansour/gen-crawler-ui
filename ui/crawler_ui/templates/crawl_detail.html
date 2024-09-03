@@ -7,15 +7,14 @@
 {% endblock %}
 {% block content %}
 <div class="inner-page">
-<h1>Crawl</h1>
-<p>Id: #{{ crawl.id }}</p>
-<p>Start url: {{ crawl.start_url }}</p>
+<h1>Crawl #{{ crawl.id }}</h1>
+<p>Start url: <a href="{{ crawl.start_url }}">{{ crawl.start_url }}</a></p>
 <p>Created: {{ crawl.created_at }}</p>
 <p>Updated: {{ crawl.updated_at }}</p>
 <p>Django admin link: <a href="{% url 'admin:crawls_crawljob_change' crawl.id %}">Crawl admin</a></p>
 
 <div style="position: absolute; top: 0; right: 0; width: 600px;">
-<div id="timeline" data-completed="1" data-current-index="0" data-clickable="2"></div>
+<div id="timeline" data-completed="1" data-current-index="0" data-clickable="2" data-step2-link="{% url 'filterset_create' %}?crawl_job_id={{ crawl.id }}"></div>
 {% vite_asset 'src/demo.tsx' %}
 </div>
 

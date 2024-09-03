@@ -19,10 +19,11 @@ const props = Object.fromEntries(
     .filter(attr => attr.name.startsWith('data-'))
     .map(attr => [camelize(attr.name.slice(5)), attr.value])
 )
+
 console.log("props:", props);
 const steps = [
   { number: 1, text: 'Start tree crawl', link: '/crawls/add' },
-  { number: 2, text: 'Build filter' },
+  { number: 2, text: 'Build filter', link: props.step2Link },
   { number: 3, text: 'Start content crawl' },
 ];
 
