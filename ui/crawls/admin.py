@@ -1,32 +1,59 @@
 from __future__ import annotations
 
+from typing import Any
+
 from django.contrib import admin
 from django.contrib.admin import display
+from django.db import models
 from django.db.models import Count, OuterRef, QuerySet, Subquery, Value
+from django.forms import TextInput
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 
-from .models import CrawledURL, CrawlJob, FilterSet
+from .models import CrawledURL, CrawlJob, FilterRule, FilterSet
 
-# Register your models here.
 
-# class CrawledURLInline(admin.TabularInline):
-#     model = CrawledURL
-#     extra = 0
-#     fields = ['content', 'created_at', 'updated_at']
-    
-#     readonly_fields = ['url', 'content', 'created_at', 'updated_at']
-#     can_delete = False
+class FilterRuleInline(admin.TabularInline):
+    model = FilterRule
+    extra = 0
+    fields = ['pk', 'id', 'rule', 'created_at', 'updated_at', 'position', 'count', 'cumulative_count']
+    readonly_fields = ['pk', 'id', 'created_at', 'updated_at', 'position', 'count', 'cumulative_count']
+    # make rule a single line input field
+    formfield_overrides = {
+        models.TextField: {'widget': TextInput(attrs={'size':'40'})},
+    }
+    can_delete = False
+    show_change_link = True
+    ordering = ['position']
+
 
 class FilterSetAdmin(admin.ModelAdmin):
     model = FilterSet
-    list_display = ['name', 'crawl_lob_link', 'created_at', 'updated_at']
+    list_display = ['name', 'crawl_lob_link', 'created_at', 'updated_at', 'rules_count']
     readonly_fields = ['remaining_urls', 'created_at', 'updated_at']
-    # link fields in list
+    inlines = [FilterRuleInline]
+    
     @mark_safe
     @display(description='Crawl Job')
     def crawl_lob_link(self, obj: FilterSet) -> str:
         return f'<a href="/admin/crawls/crawljob/{obj.crawl_job.id}/">{obj.crawl_job}</a>'
+    
+    @display(description='# Rules')
+    def rules_count(self, obj: FilterSet) -> int:
+        return obj.rules.count()
+    
+    def save_related(self, request: Any, form: Any, formsets: Any, change: Any) -> None:
+        # recompute the filter set after saving the rules
+
+        super().save_related(request, form, formsets, change)
+        for formset in formsets:
+            # check if this formset is for FilterRule
+            if formset.model == FilterRule:
+                instances = formset.save(commit=False)
+                for instance in instances:
+                    instance.filter_set.evaluate()
+                    break
+
 
 class FilterSetInline(admin.TabularInline):
     model = FilterSet
