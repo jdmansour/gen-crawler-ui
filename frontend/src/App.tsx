@@ -190,9 +190,11 @@ function App(props: { filterSetId: number, csrfToken: string }) {
         onShowDetails={showDetails}
       />
 
-      <div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         <button className="mybutton" onClick={() => addRowAfter(lastId)}>Add rule</button>
-        <button className="mybutton mybutton-fancy">Suggest rules</button>
+        <button className="mybutton mybutton-fancy"><strike>Suggest rules</strike></button>
+        <div style={{ flex: 1 }}></div>
+        <button className="mybutton"><strike>Start content crawl!</strike></button>
       </div>
 
       {(detailsVisible && 
