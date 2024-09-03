@@ -1,6 +1,9 @@
 {% extends "base.html" %}
-{% block header %}
+{% load django_vite %}
+{% block head %}
 <title>Crawls</title>
+{% vite_hmr_client %}
+{% vite_react_refresh %}
 {% endblock %}
 {% block content %}
 <div class="inner-page">
@@ -10,6 +13,12 @@
 <p>Created: {{ crawl.created_at }}</p>
 <p>Updated: {{ crawl.updated_at }}</p>
 <p>Django admin link: <a href="{% url 'admin:crawls_crawljob_change' crawl.id %}">Crawl admin</a></p>
+
+<div style="position: absolute; top: 0; right: 0; width: 600px;">
+<div id="timeline" data-completed="1" data-current-index="0" data-clickable="2"></div>
+{% vite_asset 'src/demo.tsx' %}
+</div>
+
 <h2>Filter Sets:</h2>
 <table class="table">
     <thead>
