@@ -1,6 +1,7 @@
 import logging
 from typing import Any
 
+import requests
 from crawls.models import FilterRule, FilterSet
 from crawls.serializers import FilterRuleSerializer, FilterSetSerializer
 from django.contrib import messages
@@ -144,13 +145,27 @@ class FilterSetCreateView(CreateView):
     
 
 class StartCrawlFormView(FormView):
+    """ Start a new crawl job. """
+
     template_name = 'start_crawl.html'
     form_class = StartCrawlForm
     success_url = '/crawls/'
 
-    def form_valid(self, form):
-        # Actually start the job here:
-        print("Hello world")
-        # show a django message that the crawl would have been started:
-        messages.info(self.request, 'Crawl started')
+    def form_valid(self, form: StartCrawlForm):
+        start_url = form.cleaned_data['start_url']
+        follow_links = form.cleaned_data['follow_links']
+        parameters = {
+            'project': 'scraper',
+            'spider': 'example',
+            'start_url': start_url,
+            'follow_links': follow_links,
+        }
+        url = "http://127.0.0.1:6800/schedule.json"
+        response = requests.post(url, data=parameters, timeout=2)
+
+        if response.status_code != 200:
+            messages.error(self.request, f"Error starting crawl: {response.text}")
+            return super().form_invalid(form)
+
+        messages.info(self.request, f"Crawl of '{start_url}' started")
         return super().form_valid(form)
