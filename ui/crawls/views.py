@@ -5,6 +5,8 @@ import requests
 from crawls.models import FilterRule, FilterSet
 from crawls.serializers import FilterRuleSerializer, FilterSetSerializer
 from django.contrib import messages
+from django.shortcuts import redirect
+from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, FormView, ListView
 from rest_framework import viewsets
@@ -169,3 +171,37 @@ class StartCrawlFormView(FormView):
 
         messages.info(self.request, f"Crawl of '{start_url}' started")
         return super().form_valid(form)
+
+
+@require_POST
+def start_content_crawl(request, pk):
+    """ Starts a content crawl for a certain filter set. """
+    filter_set = FilterSet.objects.get(pk=pk)
+    start_url = filter_set.crawl_job.start_url
+    # follow_links = filter_set.crawl_job.follow_links
+    # TODO: a filter set is always linked to a crawl job. Maybe we want to make it so
+    # that we can reuse a filter set for multiple jobs?
+    parameters = {
+        'project': 'scraper',
+        'spider': 'generic_spider',
+        'filter_set_id': str(pk),
+    }
+
+    url = "http://127.0.0.1:6800/schedule.json"
+    response = requests.post(url, data=parameters, timeout=2)
+    print(response.status_code)
+    print(response.text)
+
+    if response.status_code != 200:
+        messages.error(request, f"Error starting content crawl: {response.text}")
+    else:
+        obj = response.json()
+        # response can be something like:
+        # {"status": "error", "message": "spider 'generic_spider' not found"}
+        if obj.get('status') == 'error':
+            messages.error(request, f"Error starting content crawl: {obj.get('message')}")
+        else:
+            messages.info(request, f"Content crawl of '{start_url}' started")
+    
+    # redirect back to the filter set detail page
+    return redirect('filter_details', pk=pk)

@@ -16,7 +16,7 @@ Including another URLconf
 """
 from crawls.views import (CrawlDetailView, CrawlsListView, FilterRuleViewSet,
                           FilterSetCreateView, FilterSetDetailView,
-                          FilterSetViewSet, StartCrawlFormView)
+                          FilterSetViewSet, StartCrawlFormView, start_content_crawl)
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
 from django.urls import include, path
@@ -40,6 +40,7 @@ urlpatterns = [
     #path('filters/<int:pk>/', index, name='filter_detail'),
     path('filters/add/', FilterSetCreateView.as_view(), name='filterset_create'),
     path('filters/<int:pk>/', FilterSetDetailView.as_view(), name='filter_details'),
+    path('filters/<int:pk>/crawl/', start_content_crawl, name='filterset_start_crawl'),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
