@@ -188,7 +188,11 @@ def start_content_crawl(request, pk):
     }
 
     url = "http://127.0.0.1:6800/schedule.json"
-    response = requests.post(url, data=parameters, timeout=2)
+    try:
+        response = requests.post(url, data=parameters, timeout=2)
+    except requests.exceptions.RequestException as e:
+        messages.error(request, f"Error starting content crawl: {e}")
+        return redirect('filter_details', pk=pk)
     print(response.status_code)
     print(response.text)
 
