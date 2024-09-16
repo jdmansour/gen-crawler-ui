@@ -1,37 +1,44 @@
+""" Views for the crawls app. """
+# pylint: disable=too-many-ancestors
+
 import logging
-from typing import Any
+from typing import Any, Optional
 
 import requests
-from crawls.models import FilterRule, FilterSet
-from crawls.serializers import FilterRuleSerializer, FilterSetSerializer
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DetailView, FormView, ListView
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .forms import StartCrawlForm
-from .models import CrawlJob
+from crawls.forms import StartCrawlForm
+from crawls.models import CrawlJob, FilterRule, FilterSet
+from crawls.serializers import FilterRuleSerializer, FilterSetSerializer
 
 log = logging.getLogger(__name__)
 
+
 class FilterSetViewSet(viewsets.ModelViewSet):
+    """ Provides the API under /api/filter_sets/ """
     queryset = FilterSet.objects.all()
     serializer_class = FilterSetSerializer
 
-    # Get a list of URLs that don't match any rule
     @action(detail=True, methods=['get'])
     def unmatched(self, request, pk=None):
+        """ Returns a list of unmatched URLs. Lives at
+            http://127.0.0.1:8000/api/filter_sets/1/unmatched/ """
+
+        # pylint: disable=unused-argument
         qs = self.get_object().crawl_job.crawled_urls
         for rule in self.get_object().rules.all():
             qs = qs.exclude(url__startswith=rule.rule)
         qs = qs.all()
         urls = qs[:30].values_list('url', flat=True)
         is_complete = urls.count() == qs.count()
-        
+
         result = {
             "is_complete": is_complete,
             "total_count": qs.count(),
@@ -39,7 +46,9 @@ class FilterSetViewSet(viewsets.ModelViewSet):
         }
         return Response(result)
 
+
 class FilterRuleViewSet(viewsets.ModelViewSet):
+    """ Provides the API under /api/filter_rules/ """
     queryset = FilterRule.objects.all()
     serializer_class = FilterRuleSerializer
 
@@ -47,31 +56,41 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
         return super().filter_queryset(queryset).order_by('position')
 
     # run code when a new rule is created
-    def perform_create(self, serializer: FilterRuleSerializer):
+    def perform_create(self, serializer: FilterRuleSerializer):  # type: ignore[override]
+        """ Run when a new rule is created. """
         rule = serializer.save()
         rule.filter_set.evaluate()
         # TODO: in what is returned in the request, the new count is not reflected yet (?)
         rule.save()  # ?
 
-    def perform_update(self, serializer: FilterRuleSerializer):
+    def perform_update(self, serializer: FilterRuleSerializer):  # type: ignore[override]
+        """ Run when a rule is updated. """
         log.info("perform_update")
         rule = serializer.save()
         rule.filter_set.evaluate(rule)
         log.info("Rule %r updated", rule)
-        #rule.save()
+        # rule.save()
 
     # add endpoint under filter_rules/<id>/matches to get all matching URLs
     @action(detail=True, methods=['get'])
     def matches(self, request, pk=None):
+        """ Returns a list of URLs that match this rule. Lives at
+            http://127.0.0.1:8000/api/filter_rules/1/matches/ """
+
+        # pylint: disable=unused-argument
         rule = self.get_object()
+
         # get previous rules, when sorted by position
-        previous_rules = rule.filter_set.rules.filter(position__lt=rule.position)
+        previous_rules = rule.filter_set.rules.filter(
+            position__lt=rule.position)
+
         # get all URLs that match this rule and any of the previous rules
         qs = rule.filter_set.crawl_job.crawled_urls
         for r in previous_rules:
             qs = qs.exclude(url__startswith=r.rule)
         new_matches = qs.filter(url__startswith=rule.rule)
-        other_matches = rule.filter_set.crawl_job.crawled_urls.filter(url__startswith=rule.rule).exclude(pk__in=new_matches)
+        other_matches = rule.filter_set.crawl_job.crawled_urls.filter(
+            url__startswith=rule.rule).exclude(pk__in=new_matches)
         result = {
             'new_matches': [url.url for url in new_matches],
             'other_matches': [url.url for url in other_matches],
@@ -82,7 +101,7 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
         #     'matches': [url.url for url in matches],
         # }
         return Response(result)
-    
+
 
 class CrawlsListView(ListView):
     model = CrawlJob
@@ -92,19 +111,13 @@ class CrawlsListView(ListView):
     def get_queryset(self):
         return CrawlJob.objects.all().order_by('-created_at')
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     return context
-    
+
 class CrawlDetailView(DetailView):
     model = CrawlJob
     template_name = 'crawl_detail.html'
     context_object_name = 'crawl'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     return context
-    
+
 class FilterSetDetailView(DetailView):
     model = FilterSet
     template_name = 'filterset_detail.html'
@@ -113,21 +126,20 @@ class FilterSetDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
-    
+
+
 class FilterSetCreateView(CreateView):
     model = FilterSet
     fields = ['name', 'crawl_job']
     template_name = 'filterset_create.html'
-    #success_url = '/crawls/'
+    # success_url = '/crawls/'
+    object: Optional[FilterSet]
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-    
     def get_success_url(self) -> str:
         # return the new filter set's detail page
+        assert self.object is not None
         return reverse_lazy('filter_details', kwargs={'pk': self.object.pk})
-    
+
     # get crawl job id from URL
     def get_initial(self) -> dict[str, Any]:
         initial = super().get_initial().copy()
@@ -138,13 +150,13 @@ class FilterSetCreateView(CreateView):
             raise ValueError("crawl_job_id is required")
         initial['crawl_job'] = crawl_job_id
         return initial
-    
+
     # run code on successful form submission
     def form_valid(self, form):
         response = super().form_valid(form)
         messages.info(self.request, 'Filter set created')
         return response
-    
+
 
 class StartCrawlFormView(FormView):
     """ Start a new crawl job. """
@@ -166,7 +178,8 @@ class StartCrawlFormView(FormView):
         response = requests.post(url, data=parameters, timeout=2)
 
         if response.status_code != 200:
-            messages.error(self.request, f"Error starting crawl: {response.text}")
+            messages.error(self.request, f"Error starting crawl: {
+                           response.text}")
             return super().form_invalid(form)
 
         messages.info(self.request, f"Crawl of '{start_url}' started")
@@ -197,15 +210,17 @@ def start_content_crawl(request, pk):
     print(response.text)
 
     if response.status_code != 200:
-        messages.error(request, f"Error starting content crawl: {response.text}")
+        messages.error(request, f"Error starting content crawl: {
+                       response.text}")
     else:
         obj = response.json()
         # response can be something like:
         # {"status": "error", "message": "spider 'generic_spider' not found"}
         if obj.get('status') == 'error':
-            messages.error(request, f"Error starting content crawl: {obj.get('message')}")
+            messages.error(request, f"Error starting content crawl: {
+                           obj.get('message')}")
         else:
             messages.info(request, f"Content crawl of '{start_url}' started")
-    
+
     # redirect back to the filter set detail page
     return redirect('filter_details', pk=pk)
