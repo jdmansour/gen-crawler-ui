@@ -5,6 +5,7 @@ import logging
 from typing import Any, Optional
 
 import requests
+from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -174,15 +175,26 @@ class StartCrawlFormView(FormView):
             'start_url': start_url,
             'follow_links': follow_links,
         }
-        url = "http://127.0.0.1:6800/schedule.json"
+        # get SCRAPYD_URL from settings
+        url = settings.SCRAPYD_URL + "/schedule.json"
         response = requests.post(url, data=parameters, timeout=2)
+        log.info("Response: %s", response.text)
+        log.info("Status code: %s", response.status_code)
 
         if response.status_code != 200:
             messages.error(self.request, f"Error starting crawl: {
                            response.text}")
             return super().form_invalid(form)
 
-        messages.info(self.request, f"Crawl of '{start_url}' started")
+        obj = response.json()
+        # response can be something like:
+        # {"status": "error", "message": "spider 'generic_spider' not found"}
+        if obj.get('status') == 'error':
+            messages.error(self.request, f"Error starting crawl: {
+                        obj.get('message')}")
+        else:
+            messages.info(self.request, f"Crawl of '{start_url}' started")
+
         return super().form_valid(form)
 
 
@@ -200,7 +212,7 @@ def start_content_crawl(request, pk):
         'filter_set_id': str(pk),
     }
 
-    url = "http://127.0.0.1:6800/schedule.json"
+    url = settings.SCRAPYD_URL + "/schedule.json"
     try:
         response = requests.post(url, data=parameters, timeout=2)
     except requests.exceptions.RequestException as e:

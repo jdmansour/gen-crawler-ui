@@ -1,0 +1,18 @@
+services:
+  web:
+    build: ui
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./database:/app/database"
+    environment:
+      - SCRAPYD_URL=http://scrapyd:6800
+      - DB_PATH=/app/database/db.sqlite3
+  scrapyd:
+    build: scraper
+    ports:
+      - "6800:6800"
+    volumes:
+      - "./database:/app/database"
+    environment:
+      - DB_PATH=/app/database/db.sqlite3

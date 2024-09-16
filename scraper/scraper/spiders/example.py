@@ -1,10 +1,11 @@
+import sqlite3
+from urllib.parse import urlparse
+import logging
+import os
 import scrapy
 from scrapy.linkextractors import LinkExtractor
-from scrapy.spiders import Rule
-from urllib.parse import urlparse
-import re
 
-from crawls.models import CrawlJob, CrawledURL
+log = logging.getLogger(__name__)
 
 class CustomItem(scrapy.Item):
     job_id = scrapy.Field()
@@ -31,9 +32,46 @@ class ExampleSpider(scrapy.Spider):
         self.follow_links = to_bool(follow_links)
         self.link_extractor = LinkExtractor()
 
-        crawl_job = CrawlJob.objects.create(start_url=start_url, follow_links=self.follow_links)
-        self.crawl_job = crawl_job
-        crawl_job.save()
+        # connection = sqlite3.connect(self.settings.get('DB_PATH'))
+        # cursor = connection.cursor()
+        # # create CrawlJob with SQL, return the id
+        # cursor.execute(f"INSERT INTO crawls_crawljob (start_url, follow_links) VALUES ('{start_url}', {self.follow_links})")
+        # connection.commit()
+        # crawl_job_id = cursor.lastrowid
+        # connection.close()
+        # self.crawl_job_id = crawl_job_id
+        # # crawl_job = CrawlJob.objects.create(start_url=start_url, follow_links=self.follow_links)
+        # # self.crawl_job = crawl_job
+        # # self.crawl_job_id = ...
+        self.crawl_job_id = None
+        # # crawl_job.save()
+        #dispatcher.connect(self.spider_opened, signals.spider_opened)
+        
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super(ExampleSpider, cls).from_crawler(crawler, *args, **kwargs)
+        crawler.signals.connect(spider.spider_opened, signal=scrapy.signals.spider_opened)
+        return spider
+    
+    def spider_opened(self, spider):
+        log.info("Opened spider %s", spider.name)
+        db_path = self.settings.get('DB_PATH')
+        log.info("Using database at %s", db_path)
+        log.info("File exists? %s", os.path.exists(db_path))
+
+        connection = sqlite3.connect(db_path)
+        cursor = connection.cursor()
+        # create CrawlJob with SQL, return the id
+        start_url = self.start_urls[0]
+        #cursor.execute(f"INSERT INTO crawls_crawljob (start_url, follow_links) VALUES ('{start_url}', {self.follow_links})")
+        # do it safely with ???
+        cursor.execute("INSERT INTO crawls_crawljob (start_url, follow_links, created_at, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", (start_url, self.follow_links))
+        connection.commit()
+        crawl_job_id = cursor.lastrowid
+        connection.close()
+        self.crawl_job_id = crawl_job_id
+        log.info("Created crawl job with id %d", crawl_job_id)
 
 
     def parse(self, response: scrapy.http.Response, from_url=None):
@@ -46,14 +84,17 @@ class ExampleSpider(scrapy.Spider):
         # base url (https://weltderphysik.de)
         for link in self.link_extractor.extract_links(response):
             if get_origin(link.url) != request_origin:
-                print(f"Skipping {link.url}")
+                # print(f"Skipping {link.url}")
+                log.info("Skipping %s", link.url)
+                # print(f"Origin is {get_origin(link.url)}, request origin is {request_origin}")
                 continue
             item = CustomItem()
-            item['job_id'] = self.crawl_job.id
+            item['job_id'] = self.crawl_job_id
             item['request_url'] = response.request.url
             item['url'] = link.url
             if from_url:
                 item['from_url'] = from_url
+            log.info(f"Found link {link.url}")
             yield item
             if self.follow_links:
                 yield scrapy.Request(link.url, callback=self.parse, cb_kwargs={'from_url': response.url})

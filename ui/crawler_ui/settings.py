@@ -88,10 +88,12 @@ WSGI_APPLICATION = 'crawler_ui.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+default_db_path = BASE_DIR / "db.sqlite3"
+DB_PATH = config("DB_PATH", default_db_path)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DB_PATH,
     }
 }
 
@@ -194,7 +196,8 @@ STATICFILES_DIRS = [
 ]
 
 # Where to put static files to serve them
-STATIC_ROOT = "/Users/jason/src/gen-crawler-ui/ui/static"
+# STATIC_ROOT = "/Users/jason/src/gen-crawler-ui/ui/static"
+STATIC_ROOT = BASE_DIR / "static"
 
 
 # STATIC_URL = '/static/'
@@ -221,3 +224,5 @@ WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+SCRAPYD_URL = config("SCRAPYD_URL", "http://127.0.0.1:6800")
