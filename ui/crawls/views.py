@@ -177,7 +177,7 @@ class StartCrawlFormView(FormView):
         }
         # get SCRAPYD_URL from settings
         url = settings.SCRAPYD_URL + "/schedule.json"
-        response = requests.post(url, data=parameters, timeout=2)
+        response = requests.post(url, data=parameters, timeout=5)
         log.info("Response: %s", response.text)
         log.info("Status code: %s", response.status_code)
 
@@ -207,14 +207,14 @@ def start_content_crawl(request, pk):
     # TODO: a filter set is always linked to a crawl job. Maybe we want to make it so
     # that we can reuse a filter set for multiple jobs?
     parameters = {
-        'project': 'scraper',
+        'project': 'converter',
         'spider': 'generic_spider',
         'filter_set_id': str(pk),
     }
 
     url = settings.SCRAPYD_URL + "/schedule.json"
     try:
-        response = requests.post(url, data=parameters, timeout=2)
+        response = requests.post(url, data=parameters, timeout=5)
     except requests.exceptions.RequestException as e:
         messages.error(request, f"Error starting content crawl: {e}")
         return redirect('filter_details', pk=pk)
