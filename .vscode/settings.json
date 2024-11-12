@@ -1,5 +1,10 @@
 {
-    "python.analysis.extraPaths": [
-        "./ui"
+    "pylint.cwd": "${fileDirname}",
+    "pylint.importStrategy": "fromEnvironment",
+    "pylint.severity": {
+        "refactor": "Information"
+    },
+    "pylint.path": [
+        "pylint"
     ]
 }
