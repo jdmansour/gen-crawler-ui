@@ -192,7 +192,7 @@ function App(props: { filterSetId: number, csrfToken: string }) {
 
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <button className="mybutton" onClick={() => addRowAfter(lastId)}>Add rule</button>
-        <button className="mybutton mybutton-fancy"><strike>Suggest rules</strike></button>
+        <button className="mybutton mybutton-fancy"><s>Suggest rules</s></button>
         <div style={{ flex: 1 }}></div>
         <form action={`/filters/${filterSetId}/crawl/`} method="POST">
           <input type="hidden" name="csrfmiddlewaretoken" value={props.csrfToken} />
