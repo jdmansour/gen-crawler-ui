@@ -1,5 +1,6 @@
 
 from __future__ import annotations
+from typing import NamedTuple
 
 class RadixNode:
     children: dict[str, RadixNode]
@@ -160,6 +161,31 @@ class RadixTree:
                     yield prefix+key
                 yield from _iter(child, prefix+key)
         return _iter(self._store)
+
+    def calculate_branchlist(self) -> list[BranchInfo]:
+        branchlist: list[BranchInfo] = []
+        count_leaves(self._store, "", branchlist)
+        return branchlist
+    
+
+class BranchInfo(NamedTuple):
+    nleaves: int
+    nchildren: int
+    prefix: str
+    is_leaf: bool
+
+
+def count_leaves(node: RadixNode, prefix: str, branchlist: list[BranchInfo]):
+    """ Counts the number of leaves for each node in the tree.
+        Records the count, number of children, prefix and if the node is a leaf. """
+    count = 0
+    if node.is_leaf:
+        count += 1
+    for key, child in node.children.items():
+        count += count_leaves(child, prefix + key, branchlist)
+    nchildren = len(node.children)
+    branchlist.append(BranchInfo(count, nchildren, prefix, node.is_leaf))
+    return count
 
 
 def main():

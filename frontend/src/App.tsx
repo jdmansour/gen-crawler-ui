@@ -190,9 +190,14 @@ function App(props: { filterSetId: number, csrfToken: string }) {
         onShowDetails={showDetails}
       />
 
-      <div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         <button className="mybutton" onClick={() => addRowAfter(lastId)}>Add rule</button>
-        <button className="mybutton mybutton-fancy">Suggest rules</button>
+        <button className="mybutton mybutton-fancy"><s>Suggest rules</s></button>
+        <div style={{ flex: 1 }}></div>
+        <form action={`/filters/${filterSetId}/crawl/`} method="POST">
+          <input type="hidden" name="csrfmiddlewaretoken" value={props.csrfToken} />
+          <button className="mybutton">Start content crawl!</button>
+        </form>
       </div>
 
       {(detailsVisible && 

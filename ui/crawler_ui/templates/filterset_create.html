@@ -1,10 +1,19 @@
 {% extends "base.html" %}
-{% block header %}
+{% load django_vite %}
+{% block head %}
 <title>Crawls</title>
+{% vite_hmr_client %}
+{% vite_react_refresh %}
 {% endblock %}
 {% block content %}
 <div class="inner-page">
 <h1>Create new Filter Set</h1>
+
+<div style="position: absolute; top: 0; right: 0; width: 600px;">
+    <div id="timeline" data-completed="1" data-current-index="2" data-clickable=""></div>
+    {% vite_asset 'src/demo.tsx' %}
+</div>
+
 <form method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Save">

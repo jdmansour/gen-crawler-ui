@@ -1,10 +1,13 @@
 {% extends "base.html" %}
-{% block header %}
+{% load django_vite %}
+{% block head %}
 <title>Crawls</title>
+{% vite_hmr_client %}
+{% vite_react_refresh %}
 {% endblock %}
 {% block content %}
 <div class="inner-page">
-<h1>Crawls</h1>
+<h1>Previous Crawls</h1>
 {% if crawls %}
     
     <table class="table">
@@ -37,6 +40,10 @@
 
 <p><a href="{% url 'crawl_create' %}">Start a new crawl</a></p>
 
+<div style="position: absolute; top: 0; right: 0; width: 600px;">
+<div id="timeline" data-completed="1" data-current-index="0" data-clickable="1"></div>
+{% vite_asset 'src/demo.tsx' %}
+</div>
 </div>
 {% endblock %}
 {% comment %} {% block footer %}

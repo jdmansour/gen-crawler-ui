@@ -1,8 +1,16 @@
 {% extends "base.html" %}
+{% load django_vite %}
 {% block head %}
 <title>Hello World!</title>
+{% vite_hmr_client %}
+{% vite_react_refresh %}
 {% endblock %}
 
 {% block content %}
-Hello World!
+<div class="inner-page">
+<div style="position: absolute; top: 0; right: 0; width: 600px;">
+    <div id="timeline" data-clickable="1"></div>
+    {% vite_asset 'src/demo.tsx' %}
+</div>
+</div>
 {% endblock %}

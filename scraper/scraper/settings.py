@@ -11,15 +11,18 @@
 import os
 import sys
 from pathlib import Path
-import django
+from decouple import config
+# import django
 
-# project_root = Path(__file__).resolve().parents[2]
-# sys.path.append(str(project_root))
-# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ui.crawler_ui.settings")
-django_root = Path(__file__).resolve().parents[2] / "ui"
-sys.path.append(str(django_root))
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crawler_ui.settings")
-django.setup()
+# # project_root = Path(__file__).resolve().parents[2]
+# # sys.path.append(str(project_root))
+# # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ui.crawler_ui.settings")
+# django_root = Path(__file__).resolve().parents[2] / "ui"
+# django_root = "/Users/jason/src/gen-crawler-ui/ui"
+# # print("django_root", django_root)
+# sys.path.append(str(django_root))
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crawler_ui.settings")
+# django.setup()
 
 
 
@@ -107,3 +110,8 @@ HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+default_db_path = Path(__file__).resolve().parents[2] / "ui" / "db.sqlite3"
+DB_PATH = config("DB_PATH", default_db_path)
+
+LOG_LEVEL = "INFO"

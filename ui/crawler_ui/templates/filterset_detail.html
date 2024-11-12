@@ -18,6 +18,12 @@
 {% block content %}
 <div class="inner-page">
 <h1>Filter Set</h1>
+
+<div style="position: absolute; top: 0; right: 0; width: 600px;">
+  <div id="timeline" data-completed="1" data-current-index="2"></div>
+  {% vite_asset 'src/demo.tsx' %}
+</div>
+
 <p>Filter #{{filterset.id}} '{{filterset.name}}' from {{filterset.created_at}}</p>
 <p><a href="{% url 'crawl_details' filterset.crawl_job.id %}">Crawl #{{filterset.crawl_job.id}}</a> from {{filterset.crawl_job.created_at}}</p>
 <p>Start URL: {{filterset.crawl_job.start_url}}</p>
