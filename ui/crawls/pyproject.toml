@@ -16,7 +16,7 @@ dynamic = ["version"]
 
 [tool.setuptools.packages.find]
 where = [".."]
-include = ["crawls"]
+include = ["crawls", "valuespace_converter"]
 namespaces = false
 
 # readme = "README.md"
