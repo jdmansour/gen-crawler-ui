@@ -1,4 +1,26 @@
 {
+  "_client-DJJ63Tcp.js": {
+    "file": "assets/client-DJJ63Tcp.js",
+    "name": "client"
+  },
+  "src/demo.tsx": {
+    "file": "assets/demo-9tqYKfTj.js",
+    "name": "demo",
+    "src": "src/demo.tsx",
+    "isEntry": true,
+    "imports": [
+      "_client-DJJ63Tcp.js"
+    ],
+    "css": [
+      "assets/demo-DEmrpTTR.css",
+      "assets/css-9ZX7evUj.css"
+    ],
+    "assets": [
+      "assets/montserrat-v26-latin-regular-BfmCfwfZ.woff2",
+      "assets/montserrat-v26-latin-500-CN3hDfLq.woff2",
+      "assets/montserrat-v26-latin-700-Dkxlx_w4.woff2"
+    ]
+  },
   "src/fonts/montserrat-v26-latin-500.woff2": {
     "file": "assets/montserrat-v26-latin-500-CN3hDfLq.woff2",
     "src": "src/fonts/montserrat-v26-latin-500.woff2"
@@ -12,18 +34,21 @@
     "src": "src/fonts/montserrat-v26-latin-regular.woff2"
   },
   "src/index.css": {
-    "file": "assets/css-DKoq5nd6.css",
+    "file": "assets/css-9ZX7evUj.css",
     "src": "src/index.css",
     "isEntry": true
   },
   "src/main.tsx": {
-    "file": "assets/main-CXbO6Y4L.js",
+    "file": "assets/main-D3DiyIuV.js",
     "name": "main",
     "src": "src/main.tsx",
     "isEntry": true,
+    "imports": [
+      "_client-DJJ63Tcp.js"
+    ],
     "css": [
       "assets/main-D9fjUwis.css",
-      "assets/css-DKoq5nd6.css"
+      "assets/css-9ZX7evUj.css"
     ],
     "assets": [
       "assets/montserrat-v26-latin-regular-BfmCfwfZ.woff2",
