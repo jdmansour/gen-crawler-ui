@@ -207,7 +207,7 @@ def start_content_crawl(request, pk):
     # TODO: a filter set is always linked to a crawl job. Maybe we want to make it so
     # that we can reuse a filter set for multiple jobs?
     parameters = {
-        'project': 'converter',
+        'project': 'scraper',
         'spider': 'generic_spider',
         'filter_set_id': str(pk),
     }

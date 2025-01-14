@@ -25,6 +25,11 @@ class ExampleSpider(scrapy.Spider):
     # rules = [
     #     Rule(LinkExtractor())
     # ]
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'scraper.pipelines.ScraperPipeline': 300,
+        }
+    }
 
     def __init__(self, start_url, follow_links=False, *args, **kwargs):
         super(ExampleSpider, self).__init__(*args, **kwargs)
