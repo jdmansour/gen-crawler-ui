@@ -25,19 +25,16 @@ services:
       - "PYPPETEER_WS_ENDPOINT=ws://headless_chrome:3000"
       - "PLAYWRIGHT_WS_ENDPOINT=ws://headless_chrome:3000"
       - "SPLASH_URL=http://splash:8050"
-      - "CRAWLER=${CRAWLER}"
       # optional keyword args, e.g. cleanrun=true
       - "ARGS=${ARGS}"
-      - "DRY_RUN=False"
       - "MODE=json"
       - "LOG_LEVEL=${LOG_LEVEL:-INFO}"
-      - "EDU_SHARING_BASE_URL=${EDU_SHARING_BASE_URL}"
-      - "EDU_SHARING_USERNAME=${EDU_SHARING_USERNAME}"
-      - "EDU_SHARING_PASSWORD=${EDU_SHARING_PASSWORD}"
-      - "API_MODE=${API_MODE}"
-      - "Z_API_KEY=${Z_API_KEY}"
+      - "EDU_SHARING_BASE_URL=${EDU_SHARING_BASE_URL?}"
+      - "EDU_SHARING_USERNAME=${EDU_SHARING_USERNAME?}"
+      - "EDU_SHARING_PASSWORD=${EDU_SHARING_PASSWORD?}"
+      - "Z_API_KEY=${Z_API_KEY?}"
       - "GENERIC_CRAWLER_LLM_API_KEY=${GENERIC_CRAWLER_LLM_API_KEY}"
-      - "GENERIC_CRAWLER_USE_LLM_API=${GENERIC_CRAWLER_USE_LLM_API}"
+      - "GENERIC_CRAWLER_USE_LLM_API=${GENERIC_CRAWLER_USE_LLM_API?}"
   headless_chrome:
     image: ghcr.io/browserless/chrome@sha256:f27f9fa0d9c2344180c0fc5af7c6ea4a1df6f2a7a3efc555de876dbea6ded7a1
     restart: always
