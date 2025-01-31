@@ -59,11 +59,11 @@ class Valuespaces:
                     return found
         return None
 
-    def findInText(self, valuespaceId: str, text: str, valuespace = None):
+    def findInText(self, valuespaceId: str, text: str, valuespace = None) -> list[str]:
         if valuespace is None:
             valuespace: list[dict] = self.data[valuespaceId]
 
-        result = []
+        result: set[str] = set()
         for v in valuespace:
             # Example:
             # {'id': 'http://w3id.org/openeduhub/vocabs/discipline/220',
@@ -80,13 +80,13 @@ class Valuespaces:
             labels = list(map(lambda x: x.casefold(), labels))
             for label in labels:
                 if re.search(r"\b" + label + r"\b", text.casefold()):
-                    result.append(v["id"])
+                    result.add(v["id"])
                     break
 
             if 'narrower' in v:
-                result = result + self.findInText(valuespaceId, text, v['narrower'])
+                result.update(self.findInText(valuespaceId, text, v['narrower']))
 
-        return result
+        return list(result)
 
     def initTree(self, tree):
         for t in tree:
