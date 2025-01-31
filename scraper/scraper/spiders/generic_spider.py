@@ -367,7 +367,7 @@ Hier folgt der Text:
         # ToDo: try to grab as many OpenGraph metadata properties as possible (for reference, see:
         # https://ogp.me)
 
-        # general_loader.add_xpath("title", '//meta[@property="og:title"]/@content')
+        general_loader.add_xpath("title", '//meta[@property="og:title"]/@content')
         general_loader.add_xpath("title", '//title/text()')
         # HTML language and locale properties haven proven to be pretty inconsistent, but they might
         # be useful as fallback values.
