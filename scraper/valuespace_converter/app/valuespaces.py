@@ -1,5 +1,9 @@
+import logging
+import re
+
 import requests
 
+log = logging.getLogger(__name__)
 
 class Valuespaces:
     idsVocabs = [
@@ -58,31 +62,32 @@ class Valuespaces:
     def findInText(self, valuespaceId: str, text: str, valuespace = None):
         if valuespace is None:
             valuespace: list[dict] = self.data[valuespaceId]
+
         result = []
         for v in valuespace:
+            # Example:
+            # {'id': 'http://w3id.org/openeduhub/vocabs/discipline/220',
+            #  'prefLabel': {'de': 'Geografie', 'en': 'Geography'},
+            #  'altLabel': {'de': ['Erdkunde', 'Geographie']}}
             labels = list(v["prefLabel"].values())
-            if "altLabel" in v:
-                # the Skohub update on 2024-04-19 generates altLabels as a list[str] per language ("de", "en)
-                # (for details, see: https://github.com/openeduhub/oeh-metadata-vocabs/pull/65)
-                alt_labels: list[list[str]] = list(v["altLabel"].values())
-                if alt_labels and isinstance(alt_labels, list):
-                    for alt_label in alt_labels:
-                        if alt_label and isinstance(alt_label, list):
-                            labels.extend(alt_label)
-                        if alt_label and isinstance(alt_label, str):
-                            labels.append(alt_label)
+            alt_labels = v.get("altLabel", {})
+            for tmp in alt_labels.values():
+                if isinstance(tmp, list):
+                    labels.extend(tmp)
+                elif isinstance(tmp, str):
+                    labels.append(tmp)
+
             labels = list(map(lambda x: x.casefold(), labels))
             for label in labels:
-                # TODO: dirty hack!
-                if (" " + label) in text.casefold():
+                if re.search(r"\b" + label + r"\b", text.casefold()):
                     result.append(v["id"])
                     break
-        for key in valuespace:
-            if key['id'] == id:
-                return key
-            if 'narrower' in key:
-                result = result + self.findInText(valuespaceId, text, key['narrower'])
+
+            if 'narrower' in v:
+                result = result + self.findInText(valuespaceId, text, v['narrower'])
+
         return result
+
     def initTree(self, tree):
         for t in tree:
             names = self.getNames(t)
