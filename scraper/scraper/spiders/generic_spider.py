@@ -85,16 +85,16 @@ description: Gebe eine Beschreibung und Zusammenfassung der Quelle in 3 Sätzen.
 keywords: Finde 3-5 Schlagworte die den Text beschreiben.
 discipline: Für welche Schul- bzw. Fachgebiete eignet sich das Material?
 educationalContext: Für welche Bildungsstufen eignet sich das Material? Berücksichtige die Sprachschwierigkeit des Textes und die Altersangemessenheit der Formulierung. (Mögliche Antworten: Elementarbereich, Schule, Primarstufe, Sekundarstufe I, Sekundarstufe II, Hochschule, Berufliche Bildung, Fortbildung, Erwachsenenbildung, Förderschule, Fernunterricht, Informelles Lernen)
-new_lrt: Welche Materialart im schulischen Kontext stellt die Quelle dar? (Text, Bild, Tool, ...)
+new_lrt: Welche Materialart im schulischen Kontext stellt die Quelle dar? (Webseite, Artikel und Einzelpublikation, Bild, Video, Anleitung, Lexikon, Quiz, Wiki, Schülerarbeit, ...)
 intendedEndUserRole: Für welche Zielgruppen eignet sich das Material? (Lerner/in, Lehrer/in, Eltern, Autor/in, ...)
 
 Antworte im JSON-Format, und gebe keinen weiteren Text aus:
 {
   "description": "Deine Beschreibung der Quelle",
-  "keywords": ["thema1", "thema2"],
+  "keywords": ["Thema1", "Thema2"],
   "discipline": ["Geographie"],
   "educationalContext" ["Primarstufe"],
-  "new_lrt": ["Text"],
+  "new_lrt": ["Artikel"],
   "intendedEndUserRole": ["Lehrer/in", "Lerner/in"]
 }
 
@@ -109,7 +109,7 @@ Hier folgt der Text:
     llm_model: str = ""
 
     def __init__(self, urltocrawl="", validated_result="", ai_enabled="True", find_sitemap="False",
-                 max_urls="1", filter_set_id="", **kwargs):
+                 max_urls="3", filter_set_id="", **kwargs):
         super().__init__(**kwargs)
 
         log.info("Initializing GenericSpider version %s", self.version)
@@ -677,7 +677,7 @@ Hier folgt der Text:
     def call_llm_inner(self, prompt: str) -> Optional[str]:
         if self.llm_client:
             chat_completion = self.llm_client.chat.completions.create(
-                messages=[{"role": "system", "content": "You are a helpful assistant"}, {
+                messages=[{"role": "system", "content": "Du bist ein hilfreicher KI-Assistent der Informationen über Bildungsmaterialien herausfinden soll."}, {
                     "role": "user", "content": prompt}],
                 model=self.llm_model
             )
