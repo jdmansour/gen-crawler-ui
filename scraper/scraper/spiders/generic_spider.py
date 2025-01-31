@@ -42,6 +42,7 @@ from ..util.generic_crawler_db import fetch_urls_passing_filterset
 from ..util.license_mapper import LicenseMapper
 from ..web_tools import WebEngine, WebTools
 from .base_classes import LrmiBase
+import scraper
 
 log = logging.getLogger(__name__)
 
@@ -78,6 +79,28 @@ class GenericSpider(Spider, LrmiBase):
         "new_lrt": "Welche Materialart im schulischen Kontext ist folgender Text: %(text)s",
         "intendedEndUserRole": "Für welche Zielgruppen eignet sich folgender Text: %(text)s",
     }
+    ALL_IN_ONE_PROMPT = """Folgender Text ist ein Bildungsmaterial von einer Webseite. Bitte extrahiere folgende Informationen:
+
+description: Gebe eine Beschreibung und Zusammenfassung der Quelle in 3 Sätzen.
+keywords: Finde 3-5 Schlagworte die den Text beschreiben.
+discipline: Für welche Schul- bzw. Fachgebiete eignet sich das Material?
+educationalContext: Für welche Bildungsstufen eignet sich das Material? Berücksichtige die Sprachschwierigkeit des Textes und die Altersangemessenheit der Formulierung. (Mögliche Antworten: Elementarbereich, Schule, Primarstufe, Sekundarstufe I, Sekundarstufe II, Hochschule, Berufliche Bildung, Fortbildung, Erwachsenenbildung, Förderschule, Fernunterricht, Informelles Lernen)
+new_lrt: Welche Materialart im schulischen Kontext stellt die Quelle dar? (Text, Bild, Tool, ...)
+intendedEndUserRole: Für welche Zielgruppen eignet sich das Material? (Lerner/in, Lehrer/in, Eltern, Autor/in, ...)
+
+Antworte im JSON-Format, und gebe keinen weiteren Text aus:
+{
+  "description": "Deine Beschreibung der Quelle",
+  "keywords": ["thema1", "thema2"],
+  "discipline": ["Geographie"],
+  "educationalContext" ["Primarstufe"],
+  "new_lrt": ["Text"],
+  "intendedEndUserRole": ["Lehrer/in", "Lerner/in"]
+}
+
+Hier folgt der Text:
+%(text)s
+"""
     valuespaces: Valuespaces
     ai_enabled: bool
     zapi_client: zapi.AuthenticatedClient
@@ -89,7 +112,7 @@ class GenericSpider(Spider, LrmiBase):
                  max_urls="1", filter_set_id="", **kwargs):
         super().__init__(**kwargs)
 
-        log.info("Initializing GenericSpider")
+        log.info("Initializing GenericSpider version %s", self.version)
         log.info("Arguments:")
         log.info("  urltocrawl: %r", urltocrawl)
         log.info("  validated_result: %r", validated_result)
@@ -97,6 +120,10 @@ class GenericSpider(Spider, LrmiBase):
         log.info("  find_sitemap: %r", find_sitemap)
         log.info("  max_urls: %r", max_urls)
         log.info("  filter_set_id: %r", filter_set_id)
+        log.info("  kwargs: %r", kwargs)
+        log.info("scraper module: %r", scraper)
+        log.info("__file__: %r", __file__)
+
 
         if urltocrawl and filter_set_id:
             raise ValueError("You must set either 'urltocrawl' or 'filter_set_id', not both.")
@@ -165,7 +192,7 @@ class GenericSpider(Spider, LrmiBase):
         """ Run when the spider is opened, before the crawl begins.
             Open the database and get the list of URLs to crawl. """
 
-        log.info("Opened spider %s", spider.name)
+        log.info("Opened spider %s version %s", spider.name, spider.version)
         db_path = self.settings.get('GENERIC_CRAWLER_DB_PATH')
         log.info("Using database at %s", db_path)
         if db_path is not None:
@@ -356,10 +383,12 @@ class GenericSpider(Spider, LrmiBase):
             "description", "about", response=response))
         general_loader.add_value(
             "keyword", self.getLRMI("keywords", response=response))
-
+        
         if self.ai_enabled:
             excerpt = text_html2text[:4000]
-            # self.query_llm(excerpt, general_loader, base_loader, valuespace_loader)
+            # todo: turn this "inside out" - don't pass the loaders,
+            # but return structured data and load it here
+            self.query_llm(excerpt, general_loader, base_loader, valuespace_loader)
 
             kidra_loader.add_value(
                 "curriculum", self.zapi_get_curriculum(excerpt))
@@ -588,59 +617,82 @@ class GenericSpider(Spider, LrmiBase):
                   base_loader: BaseItemLoader, valuespace_loader: ValuespaceItemLoader):
         """ Performs the LLM queries for the given text, and fills the
             corresponding ItemLoaders. """
+        
+        log.info("query_llm called")
 
-        general_loader.add_value(
-            "description", self.resolve_z_api(
-                "description", excerpt, base_itemloader=base_loader)
-        )
-        keyword_str = self.resolve_z_api(
-            "keyword", excerpt, base_itemloader=base_loader)
-        if keyword_str:
-            keywords = [s.strip()
-                        for s in re.split(r"[,|\n]", keyword_str)]
-            # TODO: does it work to pass a list to add_value?
-            general_loader.add_value("keyword", keywords)
+        prompt = self.ALL_IN_ONE_PROMPT % ({'text': excerpt})
+        result = self.call_llm_inner(prompt)
 
-        # ToDo: keywords will (often) be returned as a list of bullet points by the AI
-        #  -> we might have to detect & clean up the string first
-        for v in ["educationalContext", "discipline", "intendedEndUserRole", "new_lrt"]:
-            ai_response = self.resolve_z_api(
-                v, excerpt, base_itemloader=base_loader)
-            if ai_response:
-                valuespace_loader.add_value(
-                    v, self.valuespaces.findInText(v, ai_response))
-
-
-    def resolve_z_api(self, field: str, text: str,
-                      base_itemloader: BaseItemLoader) -> Optional[str]:
+        # log prompt and response
         ai_prompt_itemloader = AiPromptItemLoader()
-        ai_prompt_itemloader.add_value("field_name", field)
-        prompt = self.prompts[field] % {"text": text}
-        # ToDo: figure out a reasonable cutoff-length
-        # (prompts which are too long get thrown out by the AI services)
         ai_prompt_itemloader.add_value("ai_prompt", prompt)
+        ai_prompt_itemloader.add_value("ai_response_raw", result)
+        ai_prompt_itemloader.add_value("ai_response", result)
+        base_loader.add_value(
+            "ai_prompts", ai_prompt_itemloader.load_item())
 
-        result: str
+        log.info("AI response: %r", result)
+        if result is None:
+            log.error("Failed to get response from AI service.")
+            return
+
+        # try to parse the result
+        try:
+            # strip everything up to the first '{' character and after the last '}'
+            result = result[result.find('{'):result.rfind('}') + 1]
+            result_dict = json.loads(result)
+        except json.JSONDecodeError:
+            log.error("Failed to parse JSON response from AI service.", exc_info=True)
+            return
+        
+        log.info("Structured AI response: %s", result_dict)
+
+        description = result_dict.get("description")
+        keywords = result_dict.get("keywords")
+        disciplines = result_dict.get("discipline")
+        educational_context = result_dict.get("educationalContext")
+        intended_end_user_role = result_dict.get("intendedEndUserRole")
+        new_lrt = result_dict.get("new_lrt")
+
+        log.info("Adding description: %s", description)
+        log.info("Adding keywords: %s", keywords)
+        general_loader.add_value("description", description)
+        general_loader.add_value("keyword", keywords)
+        # general_loader.add_value("keyword", ['apfel', 'birne'])
+        # general_loader.add_value("keyword", ['kirsche'])
+
+        def process_valuespaces(valuespace_name: str, values: list[str]):
+            log.info("process_valuespaces(%r, %r)", valuespace_name, values)
+            for value in values:
+                parsed = self.valuespaces.findInText(valuespace_name, value)
+                log.info("  %r -> %r", value, parsed)
+                valuespace_loader.add_value(valuespace_name, parsed)
+
+        process_valuespaces("discipline", disciplines)
+        process_valuespaces("educationalContext", educational_context)
+        process_valuespaces("intendedEndUserRole", intended_end_user_role)
+        process_valuespaces("new_lrt", new_lrt)
+
+
+    def call_llm_inner(self, prompt: str) -> Optional[str]:
         if self.llm_client:
             chat_completion = self.llm_client.chat.completions.create(
-                messages=[{"role":"system","content":"You are a helpful assistant"},{"role":"user","content":prompt}],
+                messages=[{"role": "system", "content": "You are a helpful assistant"}, {
+                    "role": "user", "content": prompt}],
                 model=self.llm_model
             )
             log.info("LLM API response: %s", chat_completion)
-            result = chat_completion.choices[0].message.content or ""
-        else:
-            # TODO: add error checking
-            api_result = zapi.api.ai_text_prompts.prompt.sync(client=self.zapi_client, body=prompt)
-            assert isinstance(api_result, zapi.models.TextPromptEntity)
-            if not api_result.responses:
-                log.error("No valid response from AI service for prompt: %s", prompt)
-                return None
-            result = api_result.responses[0].strip()
-        ai_prompt_itemloader.add_value("ai_response_raw", result)
-        ai_prompt_itemloader.add_value("ai_response", result)
-        base_itemloader.add_value(
-            "ai_prompts", ai_prompt_itemloader.load_item())
-        return result
+            return chat_completion.choices[0].message.content or ""
+
+        # TODO: add error checking
+        api_result = zapi.api.ai_text_prompts.prompt.sync(
+            client=self.zapi_client, body=prompt)
+        assert isinstance(api_result, zapi.models.TextPromptEntity)
+        if not api_result.responses:
+            log.error(
+                "No valid response from AI service for prompt: %s", prompt)
+            return None
+        return api_result.responses[0].strip()
 
 
 def to_bool(value: str) -> bool:
