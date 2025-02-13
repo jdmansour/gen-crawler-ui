@@ -277,13 +277,6 @@ Hier folgt der Text:
             logging.info(f"Item {self.getId(response)} (uuid: {db[0]}) has not changed")
             return False
 
-    def getPermissions(self, response: TextResponse) -> PermissionItemLoader:
-        permissions = PermissionItemLoader(response=response)
-        # default all materials to public, needs to be changed depending on the spider!
-        settings = get_project_settings()
-        permissions.add_value("public", settings.get("DEFAULT_PUBLIC_STATE"))
-        return permissions
-
     async def parse(self, response: Response):
         if not self.hasChanged(response):
             return
@@ -401,7 +394,9 @@ Hier folgt der Text:
         classification_loader = LomClassificationItemLoader()
         valuespace_loader = ValuespaceItemLoader()
         license_loader = LicenseItemLoader(selector=selector_playwright)
-        permissions_loader = self.getPermissions(response)
+        permissions_loader = PermissionItemLoader(selector=response.selector)
+        # default all materials to public, needs to be changed depending on the spider!
+        permissions_loader.add_value("public", self.settings.get("DEFAULT_PUBLIC_STATE"))
         response_loader = ResponseItemLoader()
         kidra_loader = KIdraItemLoader()
 
