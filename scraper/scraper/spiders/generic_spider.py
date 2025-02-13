@@ -108,7 +108,7 @@ Hier folgt der Text:
     use_llm_api: bool = False
     llm_model: str = ""
 
-    def __init__(self, urltocrawl="", validated_result="", ai_enabled="True", find_sitemap="False",
+    def __init__(self, urltocrawl="", ai_enabled="True", find_sitemap="False",
                  max_urls="3", filter_set_id="", **kwargs):
         EduSharing.resetVersion = True
         super().__init__(**kwargs)
@@ -116,7 +116,6 @@ Hier folgt der Text:
         log.info("Initializing GenericSpider version %s", self.version)
         log.info("Arguments:")
         log.info("  urltocrawl: %r", urltocrawl)
-        log.info("  validated_result: %r", validated_result)
         log.info("  ai_enabled: %r", ai_enabled)
         log.info("  find_sitemap: %r", find_sitemap)
         log.info("  max_urls: %r", max_urls)
@@ -139,7 +138,6 @@ Hier folgt der Text:
 
         self.max_urls = int(max_urls)
 
-        self.results_dict = {}
         if urltocrawl != "":
             urls = [url.strip() for url in urltocrawl.split(",")]
             if find_sitemap == "True" and len(urls) == 1:
@@ -148,11 +146,6 @@ Hier folgt der Text:
                 self.start_urls = sitemap_urls
             else:
                 self.start_urls = urls[:self.max_urls]
-
-        if validated_result != "":
-            self.results_dict = json.loads(validated_result)
-            urltocrawl = self.results_dict["url"]
-            self.start_urls = [urltocrawl]
 
         # logging.warning("self.start_urls=" + self.start_urls[0])
         self.valuespaces = Valuespaces()
@@ -495,40 +488,6 @@ Hier folgt der Text:
         base_loader.add_value("valuespaces", valuespace_loader.load_item())
         base_loader.add_value("permissions", permissions_loader.load_item())
         base_loader.add_value("response", response_loader.load_item())
-
-        if self.results_dict:
-            title = self.results_dict['title']
-            description = self.results_dict['description']
-            if len(self.results_dict['disciplines']) != 0:
-                disciplines = self.results_dict['disciplines']
-                base_loader.load_item()['valuespaces']['discipline'] = disciplines
-            educational_context = self.results_dict['educational_context']
-            intendedEndUserRole = self.results_dict['intendedEndUserRole']
-            keywords = self.results_dict['keywords']
-            license = self.results_dict['license']
-            new_lrt = self.results_dict['new_lrt']
-            curriculum = self.results_dict['curriculum']
-            if len(self.results_dict['text_difficulty']) != 0:
-                text_difficulty = self.results_dict['text_difficulty']
-                base_loader.load_item()[
-                    'kidra_raw']['text_difficulty'] = text_difficulty
-            if len(self.results_dict['text_reading_time']) != 0:
-                text_reading_time = self.results_dict['text_reading_time']
-                base_loader.load_item()[
-                    'kidra_raw']['text_reading_time'] = text_reading_time
-
-            # TODO: this looks wrong
-            base_loader.load_item()['lom']['general']['title'] = title
-            base_loader.load_item()['lom']['general']['description'] = description
-            base_loader.load_item()['lom']['general']['keyword'] = keywords
-            base_loader.load_item()['valuespaces']['new_lrt'] = new_lrt
-            base_loader.load_item()[
-                'valuespaces']['educationalContext'] = educational_context
-            base_loader.load_item()[
-                'valuespaces']['intendedEndUserRole'] = intendedEndUserRole
-            base_loader.load_item()['license'] = license
-            # base_loader.load_item()['valuespaces']['curriculum'] = curriculum
-            base_loader.load_item()['kidra_raw']['curriculum'] = curriculum
 
         log.info("New URL processed:------------------------------------------")
         log.info(base_loader.load_item())
