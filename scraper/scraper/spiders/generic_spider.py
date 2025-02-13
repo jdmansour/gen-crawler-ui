@@ -320,15 +320,6 @@ Hier folgt der Text:
         else:
             trafilatura_meta = {}
 
-        response.meta["data"] = {
-            # legacy, do we need these fields?
-            "content": url_data["html"],
-            "parsed_html": parsed_html,
-            "text": text_html2text,
-            "trafilatura_text": trafilatura_text,
-            "trafilatura_meta": trafilatura_meta,
-        }
-
         selector_playwright = scrapy.Selector(text=playwright_text)
         robot_meta_tags: list[str] = selector_playwright.xpath(
             "//meta[@name='robots']/@content").getall()
@@ -455,7 +446,9 @@ Hier folgt der Text:
         technical_loader.add_xpath(
             "location", '//meta[@property="og:url"]/@content')
 
-        date = response.meta['data'].get('trafilatura_meta', {}).get('date')
+        date: Optional[str] = None
+        if trafilatura_meta:
+            date = trafilatura_meta.get('date')
         if not date:
             date = selector_playwright.xpath('//meta[@name="date"]/@content').get()
 
