@@ -24,6 +24,12 @@ class CrawlJob(models.Model):
         return f"#{self.id} {self.start_url} at {self.created_at.strftime('%Y-%m-%d %H:%M')}"
 
 
+class CrawledURLIndexManager(models.Manager):
+    """ Custom manager for the CrawledURL model. """
+
+    def get_queryset(self):
+        return super().get_queryset().filter(noindex=False)
+
 class CrawledURL(models.Model):
     """ A URL that has been crawled by our scraper. """
 
@@ -33,6 +39,14 @@ class CrawledURL(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    noindex = models.BooleanField(default=False)
+
+    objects = CrawledURLIndexManager()
+    all_objects = models.Manager()
+
+    # make crawl_job_id and url unique together
+    class Meta:
+        unique_together = ('crawl_job', 'url')
 
     def __str__(self):
         return self.url

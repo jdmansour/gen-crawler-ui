@@ -18,6 +18,11 @@ class CustomItem(scrapy.Item):
     title = scrapy.Field()
     content = scrapy.Field()
 
+class NoindexItem(scrapy.Item):
+    """ Used to mark a page as noindex. """
+    job_id = scrapy.Field()
+    url = scrapy.Field()
+
 class ExampleSpider(scrapy.Spider):
     name = "example"
     #allowed_domains = ["example.com"]
@@ -25,6 +30,11 @@ class ExampleSpider(scrapy.Spider):
     # rules = [
     #     Rule(LinkExtractor())
     # ]
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'scraper.pipelines.ScraperPipeline': 300,
+        }
+    }
 
     def __init__(self, start_url, follow_links=False, *args, **kwargs):
         super(ExampleSpider, self).__init__(*args, **kwargs)
@@ -80,6 +90,30 @@ class ExampleSpider(scrapy.Spider):
             respose.request.url: the url of this page
         """
         request_origin = get_origin(response.request.url)
+        # log.info("response.request.url: %s", response.request.url)
+        # log.info("from_url: %s", from_url)
+
+        # Get the value of the robots meta tag, if present
+        tags = response.xpath('//meta[@name="robots"]/@content').getall()
+        # log.info("Found robots tags: %s", tags)
+        robots = []
+        for tag in tags:
+            parts = [x.strip() for x in tag.split(',')]
+            robots.extend(parts)
+        log.info("Parsed robots tags: %s", robots)
+        if 'noindex' in robots or 'none' in robots:
+            log.info("Page is marked as noindex, skipping")
+            # Mark this page as noindex
+            item = NoindexItem()
+            item['job_id'] = self.crawl_job_id
+            item['url'] = response.request.url
+            yield item
+            return
+        if 'nofollow' in robots:
+            log.info("Page is marked as nofollow, not following links")
+            # Leave this page in, but don't follow any links
+            return
+
         # If these are base urls, scrapy *should* fill in the correct
         # base url (https://weltderphysik.de)
         for link in self.link_extractor.extract_links(response):

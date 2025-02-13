@@ -9,6 +9,7 @@ import sqlite3
 from asgiref.sync import sync_to_async
 from scrapy.item import Item
 from scrapy.spiders import Spider
+from scraper.spiders.example import NoindexItem, CustomItem
 
 log = logging.getLogger(__name__)
 
@@ -25,11 +26,19 @@ class ScraperPipeline:
     def process_item(self, item: Item, spider: Spider) -> Item:
         # request_url = item['request_url']
         url = item['url']
-
-        log.info("Saving URL %r", url)
-
         job_id = item['job_id']
-        self.cursor.execute(
-            "INSERT INTO crawls_crawledurl (crawl_job_id, url, created_at, updated_at, content) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '')", (job_id, url))
-        self.connection.commit()
+
+        if isinstance(item, CustomItem):
+            log.info("Saving URL %r", url)
+            self.cursor.execute(
+                "INSERT OR IGNORE INTO crawls_crawledurl (crawl_job_id, url, created_at, updated_at, content, noindex) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '', 0)", (job_id, url))
+            self.connection.commit()
+        elif isinstance(item, NoindexItem):
+            log.info("Marking URL %r as noindex", url)
+            # set noindex = 1, updated_at = CURRENT_TIMESTAMP
+            # for this job id and url
+            self.cursor.execute(
+                "UPDATE crawls_crawledurl SET noindex = 1, updated_at = CURRENT_TIMESTAMP WHERE crawl_job_id = ? AND url = ?", (job_id, url))
+            self.connection.commit()
+
         return item
