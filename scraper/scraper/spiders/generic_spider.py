@@ -4,7 +4,6 @@ import datetime
 import json
 import logging
 import os
-import re
 import sqlite3
 from typing import Optional
 
@@ -13,41 +12,42 @@ import openai
 import scrapy.http
 import scrapy.signals
 import trafilatura  # type: ignore
-from bs4 import BeautifulSoup
-from scrapy.http.response import Response
-from scrapy.http.response.text import TextResponse
-from scrapy.spiders import Spider
-from scrapy.spiders.crawl import Rule
-
 import zapi
 import zapi.api
 import zapi.api.ai_text_prompts
 import zapi.api.ai_text_prompts.prompt
 import zapi.errors
 import zapi.models
-from scraper.util.sitemap import find_generate_sitemap
+from bs4 import BeautifulSoup
+from scrapy.http.response import Response
+from scrapy.http.response.text import TextResponse
+from scrapy.spiders import Spider
+from scrapy.spiders.crawl import Rule
+from scrapy.utils.project import get_project_settings
 from valuespace_converter.app.valuespaces import Valuespaces
 from zapi.api.kidra import (predict_subjects_kidra_predict_subjects_post,
                             text_stats_analyze_text_post,
                             topics_flat_topics_flat_post)
+
+import scraper
+from scraper.es_connector import EduSharing
+from scraper.util.sitemap import find_generate_sitemap
 
 from .. import env
 from ..items import (AiPromptItemLoader, BaseItemLoader, KIdraItemLoader,
                      LicenseItemLoader, LomBaseItemloader,
                      LomClassificationItemLoader, LomEducationalItemLoader,
                      LomGeneralItemloader, LomLifecycleItemloader,
-                     LomTechnicalItemLoader, ResponseItemLoader,
-                     ValuespaceItemLoader)
+                     LomTechnicalItemLoader, PermissionItemLoader,
+                     ResponseItemLoader, ValuespaceItemLoader)
 from ..util.generic_crawler_db import fetch_urls_passing_filterset
 from ..util.license_mapper import LicenseMapper
 from ..web_tools import WebEngine, WebTools
-from .base_classes import LrmiBase
-import scraper
 
 log = logging.getLogger(__name__)
 
 
-class GenericSpider(Spider, LrmiBase):
+class GenericSpider(Spider):
     name = "generic_spider"
     friendlyName = "generic_spider"  # name as shown in the search ui
     version = "0.1.4"
@@ -110,6 +110,7 @@ Hier folgt der Text:
 
     def __init__(self, urltocrawl="", validated_result="", ai_enabled="True", find_sitemap="False",
                  max_urls="3", filter_set_id="", **kwargs):
+        EduSharing.resetVersion = True
         super().__init__(**kwargs)
 
         log.info("Initializing GenericSpider version %s", self.version)
@@ -256,6 +257,33 @@ Hier folgt der Text:
         """
         return f"{datetime.datetime.now().isoformat()}v{self.version}"
 
+    def hasChanged(self, response: Response) -> bool:
+        # if self.forceUpdate:
+        #     return True
+        # if self.uuid:
+        #     if self.getUUID(response) == self.uuid:
+        #         logging.info(f"matching requested id: {self.uuid}")
+        #         return True
+        #     return False
+        # if self.remoteId:
+        #     if str(self.getId(response)) == self.remoteId:
+        #         logging.info(f"matching requested id: {self.remoteId}")
+        #         return True
+        #     return False
+        db = EduSharing().find_item(self.getId(response), self)
+        if db is None or db[1] != self.getHash(response):
+            return True
+        else:
+            logging.info(f"Item {self.getId(response)} (uuid: {db[0]}) has not changed")
+            return False
+
+    def getPermissions(self, response: TextResponse) -> PermissionItemLoader:
+        permissions = PermissionItemLoader(response=response)
+        # default all materials to public, needs to be changed depending on the spider!
+        settings = get_project_settings()
+        permissions.add_value("public", settings.get("DEFAULT_PUBLIC_STATE"))
+        return permissions
+
     async def parse(self, response: Response):
         if not self.hasChanged(response):
             return
@@ -340,15 +368,30 @@ Hier folgt der Text:
                 )
                 return
 
+        # extract LRMI objects from the response
+        lrmi_path = '//script[@type="application/ld+json"]//text()'
+        lrmi_objects = []
+        for l in response.xpath(lrmi_path).getall():
+            try:
+                obj = json.loads(l)
+                lrmi_objects.append(obj)
+            except json.JSONDecodeError:
+                log.warning("Failed to parse JSON-LD object: %s", l)
+
+        def getLRMI(field):
+            for obj in lrmi_objects:
+                value = obj.get(field)
+                if value:
+                    log.info("JSON-LD found: %s:%s", field, value)
+                    return value
+            log.info("JSON-LD not found: %s", field)
+
         base_loader = BaseItemLoader(selector=selector_playwright)
         base_loader.add_value("sourceId", self.getId(response))
         base_loader.add_value("hash", self.getHash(response))
-        base_loader.add_value("thumbnail", self.getLRMI(
-            "thumbnailUrl", response=response))
-        base_loader.add_xpath(
-            "thumbnail", '//meta[@property="og:image"]/@content')
-        base_loader.add_xpath(
-            "lastModified", '//meta[@name="last-modified"]/@content')
+        base_loader.add_value("thumbnail", getLRMI("thumbnailUrl"))
+        base_loader.add_xpath("thumbnail", '//meta[@property="og:image"]/@content')
+        base_loader.add_xpath("lastModified", '//meta[@name="last-modified"]/@content')
 
         # Creating the nested ItemLoaders according to our items.py data model
         lom_loader = LomBaseItemloader()
@@ -374,15 +417,12 @@ Hier folgt der Text:
         # ToDo: websites might return languagecodes as 4-char values (e.g. "de-DE") instead of the
         # 2-char value "de"
         # -> we will have to detect/clean up languageCodes to edu-sharing's expected 2-char format
-        general_loader.add_value("language", self.getLRMI(
-            "inLanguage", response=response))
+        general_loader.add_value("language", getLRMI("inLanguage"))
         general_loader.add_xpath("language", "//html/@lang")
-        general_loader.add_xpath(
-            "language", '//meta[@property="og:locale"]/@content')
-        general_loader.add_value("description", self.getLRMI(
-            "description", "about", response=response))
-        general_loader.add_value(
-            "keyword", self.getLRMI("keywords", response=response))
+        general_loader.add_xpath("language", '//meta[@property="og:locale"]/@content')
+        general_loader.add_value("description", getLRMI("description"))
+        general_loader.add_value("description", getLRMI("about"))
+        general_loader.add_value("keyword", getLRMI("keywords"))
         
         if self.ai_enabled:
             excerpt = text_html2text[:4000]
@@ -408,14 +448,11 @@ Hier folgt der Text:
 
         lom_loader.add_value("general", general_loader.load_item())
 
-        technical_loader.add_value(
-            "format", self.getLRMI("fileFormat", response=response))
+        technical_loader.add_value("format", getLRMI("fileFormat"))
         # ToDo: do we really want to hard-code this?
         technical_loader.replace_value("format", "text/html")
-        technical_loader.add_value("size", self.getLRMI(
-            "ContentSize", response=response))
-        technical_loader.add_value(
-            "location", self.getLRMI("url", response=response))
+        technical_loader.add_value("size", getLRMI("ContentSize"))
+        technical_loader.add_value("location", getLRMI("url"))
         technical_loader.add_value("location", response.url)
         technical_loader.replace_value("size", len(response.body))
         # ToDo: 'size' should probably use the length of our playwright response, not scrapy's
@@ -452,15 +489,14 @@ Hier folgt der Text:
             #  will be necessary! (this is a metadata field that needs to be confirmed by a human!)
             license_loader.add_value("url", license_url_mapped)
 
-        # lrmi_intended_end_user_role = self.getLRMI("audience.educationalRole", response=response)
+        # lrmi_intended_end_user_role = getLRMI("audience.educationalRole")
         # if lrmi_intended_end_user_role:
         #     valuespace_loader.add_value("intendedEndUserRole", lrmi_intended_end_user_role)
         # ToDo: rework
         # # attention: serlo URLs will break the getLRMI() Method because JSONBase cannot extract
         # the JSON-LD properly
         # # ToDo: maybe use the 'jmespath' Python package to retrieve this value more reliably
-        valuespace_loader.add_value("learningResourceType", self.getLRMI(
-            "learningResourceType", response=response))
+        valuespace_loader.add_value("learningResourceType", getLRMI("learningResourceType"))
 
         # loading all nested ItemLoaders into our BaseItemLoader:
         base_loader.add_value("license", license_loader.load_item())
