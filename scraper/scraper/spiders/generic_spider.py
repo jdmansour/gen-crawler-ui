@@ -517,7 +517,7 @@ Hier folgt der Text:
             lifecycle_publisher_loader.add_value("role", "publisher")
             lifecycle_publisher_loader.add_value(
                 "organization", meta_publisher)
-            if date_trafilatura := response.meta['data'].get('trafilatura_meta', ''):
+            if date_trafilatura := response.meta['data'].get('trafilatura_meta', '').get('date'):
                 lifecycle_publisher_loader.add_value("date", date_trafilatura)
             elif date := selector.xpath('//meta[@name="date"]/@content').get():
                 lifecycle_publisher_loader.add_value("date", date)
@@ -539,7 +539,7 @@ Hier folgt der Text:
             # ToDo: shoving the whole string into 'firstName' is a hacky approach that will cause
             # organizations to appear as persons within the "lifecycle"-metadata. fine-tune this
             # approach later.
-            if date_trafilatura := response.meta['data'].get('trafilatura_meta', ''):
+            if date_trafilatura := response.meta['data'].get('trafilatura_meta', {}).get('date'):
                 lifecycle_author_loader.add_value("date", date_trafilatura)
             elif date := selector.xpath('//meta[@name="date"]/@content').get():
                 lifecycle_author_loader.add_value("date", date)
