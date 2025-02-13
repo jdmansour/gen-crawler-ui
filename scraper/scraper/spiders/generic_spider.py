@@ -518,11 +518,9 @@ Hier folgt der Text:
             lifecycle_publisher_loader.add_value(
                 "organization", meta_publisher)
             if date_trafilatura := response.meta['data'].get('trafilatura_meta', ''):
-                date = selector.xpath('//meta[@name="date"]/@content').get()
-                if date_trafilatura:
-                    lifecycle_publisher_loader.add_value("date", date_trafilatura)
-                elif date:
-                    lifecycle_publisher_loader.add_value("date", date)
+                lifecycle_publisher_loader.add_value("date", date_trafilatura)
+            elif date := selector.xpath('//meta[@name="date"]/@content').get():
+                lifecycle_publisher_loader.add_value("date", date)
 
             lom_loader.add_value(
                 "lifecycle", lifecycle_publisher_loader.load_item())
@@ -542,11 +540,9 @@ Hier folgt der Text:
             # organizations to appear as persons within the "lifecycle"-metadata. fine-tune this
             # approach later.
             if date_trafilatura := response.meta['data'].get('trafilatura_meta', ''):
-                date = selector.xpath('//meta[@name="date"]/@content').get()
-                if date_trafilatura:
-                    lifecycle_author_loader.add_value("date", date_trafilatura)
-                elif date:
-                    lifecycle_author_loader.add_value("date", date)
+                lifecycle_author_loader.add_value("date", date_trafilatura)
+            elif date := selector.xpath('//meta[@name="date"]/@content').get():
+                lifecycle_author_loader.add_value("date", date)
 
             lom_loader.add_value(
                 "lifecycle", lifecycle_author_loader.load_item())
