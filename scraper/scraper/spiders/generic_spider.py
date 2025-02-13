@@ -517,8 +517,12 @@ Hier folgt der Text:
             lifecycle_publisher_loader.add_value("role", "publisher")
             lifecycle_publisher_loader.add_value(
                 "organization", meta_publisher)
-            self.get_lifecycle_date(
-                lifecycle_loader=lifecycle_publisher_loader, selector=selector, response=response)
+            if date_trafilatura := response.meta['data'].get('trafilatura_meta', ''):
+                date = selector.xpath('//meta[@name="date"]/@content').get()
+                if date_trafilatura:
+                    lifecycle_publisher_loader.add_value("date", date_trafilatura)
+                elif date:
+                    lifecycle_publisher_loader.add_value("date", date)
 
             lom_loader.add_value(
                 "lifecycle", lifecycle_publisher_loader.load_item())
@@ -537,24 +541,15 @@ Hier folgt der Text:
             # ToDo: shoving the whole string into 'firstName' is a hacky approach that will cause
             # organizations to appear as persons within the "lifecycle"-metadata. fine-tune this
             # approach later.
-            self.get_lifecycle_date(
-                lifecycle_loader=lifecycle_author_loader, selector=selector, response=response)
+            if date_trafilatura := response.meta['data'].get('trafilatura_meta', ''):
+                date = selector.xpath('//meta[@name="date"]/@content').get()
+                if date_trafilatura:
+                    lifecycle_author_loader.add_value("date", date_trafilatura)
+                elif date:
+                    lifecycle_author_loader.add_value("date", date)
 
             lom_loader.add_value(
                 "lifecycle", lifecycle_author_loader.load_item())
-
-    @staticmethod
-    def get_lifecycle_date(lifecycle_loader: LomLifecycleItemloader, selector: scrapy.Selector,
-                           response: Response):
-        if "date" in response.meta["data"]["trafilatura_meta"]:
-            # trafilatura's metadata extraction scans for dates within
-            # <meta name="date" content"..."> Elements
-            date = selector.xpath('//meta[@name="date"]/@content').get()
-            date_trafilatura: str = response.meta["data"]["trafilatura_meta"]["date"]
-            if date_trafilatura:
-                lifecycle_loader.add_value("date", date_trafilatura)
-            elif date:
-                lifecycle_loader.add_value("date", date)
 
     def zapi_get_curriculum(self, text: str) -> list[str]:
         """ Determines the curriculum topic (Lehrplanthema) using the z-API. """
