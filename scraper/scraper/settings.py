@@ -20,11 +20,11 @@ BOT_NAME = "scraper"
 SPIDER_MODULES = ["scraper.spiders"]
 NEWSPIDER_MODULE = "scraper.spiders"
 
-LOG_FILE = env.get("LOG_FILE", allow_null=True)
-LOG_LEVEL = env.get("LOG_LEVEL", default="INFO")
-LOG_FORMATTER = "scraper.custom_log_formatter.CustomLogFormatter"
+# LOG_FILE = env.get("LOG_FILE", allow_null=True)
+# LOG_LEVEL = env.get("LOG_LEVEL", default="INFO")
+# LOG_FORMATTER = "scraper.custom_log_formatter.CustomLogFormatter"
 
-configure_logging(settings={"LOG_FILE": LOG_FILE, "LOG_LEVEL": LOG_LEVEL, "LOG_FORMATTER": LOG_FORMATTER})
+# configure_logging(settings={"LOG_FILE": LOG_FILE, "LOG_LEVEL": LOG_LEVEL, "LOG_FORMATTER": LOG_FORMATTER})
 
 # fixes Scrapy DeprecationWarning on startup (Scrapy v2.10+)
 # (see: https://docs.scrapy.org/en/latest/topics/request-response.html#request-fingerprinter-implementation):
