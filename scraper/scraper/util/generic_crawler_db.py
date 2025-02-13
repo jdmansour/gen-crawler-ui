@@ -115,7 +115,8 @@ def fetch_urls_passing_filterset(connection: sqlite3.Connection, filter_set_id: 
     JOIN 
         crawls_filterrule fr ON fs.id = fr.filter_set_id
     WHERE 
-        ({filter_expression}) AND 
+        ({filter_expression}) AND
+        cu.noindex = 0 AND
         fr.include = 1 AND
         fs.id = ? AND
         fr.position = (

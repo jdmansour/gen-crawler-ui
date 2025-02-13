@@ -193,7 +193,7 @@ class CrawlJobFilter(admin.SimpleListFilter):
 
 class CrawledURLAdmin(admin.ModelAdmin):
     model = CrawledURL
-    list_display = ['url', 'crawl_job', 'created_at', 'updated_at']
+    list_display = ['url','index', 'crawl_job', 'created_at', 'updated_at']
     # fields = ['url', 'crawl_job', 'content', 'created_at', 'updated_at']
     # readonly_fields = ['url', 'crawl_job', 'content', 'created_at', 'updated_at']
     # date_hierarchy = 'created_at'
@@ -201,6 +201,10 @@ class CrawledURLAdmin(admin.ModelAdmin):
     # allow to filter by crawl job
     # list_filter = [(CrawlJobFilter)]
     list_filter = ['crawl_job']
+
+    @display(description='do index', boolean=True)
+    def index(self, obj: CrawledURL) -> bool:
+        return not obj.noindex
 
 
 admin.site.register(CrawlJob, CrawlJobAdmin)
