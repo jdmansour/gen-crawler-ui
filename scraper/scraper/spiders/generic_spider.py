@@ -388,7 +388,7 @@ Hier folgt der Text:
 
         # Creating the nested ItemLoaders according to our items.py data model
         lom_loader = LomBaseItemloader()
-        general_loader = LomGeneralItemloader(response=response)
+        general_loader = LomGeneralItemloader(selector=response.selector)
         technical_loader = LomTechnicalItemLoader(selector=selector_playwright)
         educational_loader = LomEducationalItemLoader()
         classification_loader = LomClassificationItemLoader()
@@ -455,11 +455,15 @@ Hier folgt der Text:
         technical_loader.add_xpath(
             "location", '//meta[@property="og:url"]/@content')
 
+        date = response.meta['data'].get('trafilatura_meta', {}).get('date')
+        if not date:
+            date = selector_playwright.xpath('//meta[@name="date"]/@content').get()
+
         self.get_lifecycle_author(
-            lom_loader=lom_loader, selector=selector_playwright, response=response)
+            lom_loader=lom_loader, selector=selector_playwright, date=date)
 
         self.get_lifecycle_publisher(
-            lom_loader=lom_loader, selector=selector_playwright, response=response)
+            lom_loader=lom_loader, selector=selector_playwright, date=date)
 
         # we might be able to extract author/publisher information from typical <meta> or <head>
         # fields in the DOM
@@ -540,7 +544,7 @@ Hier folgt der Text:
         yield base_loader.load_item()
 
     def get_lifecycle_publisher(self, lom_loader: LomBaseItemloader, selector: scrapy.Selector,
-                                response: Response):
+                                date: Optional[str]):
         meta_publisher = selector.xpath(
             '//meta[@name="publisher"]/@content').get()
         if meta_publisher:
@@ -548,16 +552,13 @@ Hier folgt der Text:
             lifecycle_publisher_loader.add_value("role", "publisher")
             lifecycle_publisher_loader.add_value(
                 "organization", meta_publisher)
-            if date_trafilatura := response.meta['data'].get('trafilatura_meta', '').get('date'):
-                lifecycle_publisher_loader.add_value("date", date_trafilatura)
-            elif date := selector.xpath('//meta[@name="date"]/@content').get():
-                lifecycle_publisher_loader.add_value("date", date)
+            lifecycle_publisher_loader.add_value("date", date)
 
             lom_loader.add_value(
                 "lifecycle", lifecycle_publisher_loader.load_item())
 
     def get_lifecycle_author(self, lom_loader: LomBaseItemloader, selector: scrapy.Selector,
-                             response: Response):
+                             date: Optional[str]):
         meta_author = selector.xpath('//meta[@name="author"]/@content').get()
         if meta_author:
             lifecycle_author_loader = LomLifecycleItemloader()
@@ -570,11 +571,7 @@ Hier folgt der Text:
             # ToDo: shoving the whole string into 'firstName' is a hacky approach that will cause
             # organizations to appear as persons within the "lifecycle"-metadata. fine-tune this
             # approach later.
-            if date_trafilatura := response.meta['data'].get('trafilatura_meta', {}).get('date'):
-                lifecycle_author_loader.add_value("date", date_trafilatura)
-            elif date := selector.xpath('//meta[@name="date"]/@content').get():
-                lifecycle_author_loader.add_value("date", date)
-
+            lifecycle_author_loader.add_value("date", date)
             lom_loader.add_value(
                 "lifecycle", lifecycle_author_loader.load_item())
 
