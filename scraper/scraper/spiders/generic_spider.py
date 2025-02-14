@@ -203,9 +203,7 @@ class GenericSpider(Spider):
                 )
                 return
 
-        item = await self.enricher.parse_page(
-            response_url=response.url,
-            response_selector=response.selector)
+        item = await self.enricher.parse_page(response_url=response.url)
 
         log.info("New URL processed:------------------------------------------")
         log.info(item)

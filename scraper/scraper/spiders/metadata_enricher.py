@@ -121,50 +121,38 @@ Hier folgt der Text:
         log.info("GENERIC_CRAWLER_LLM_MODEL: %r", self.llm_model)
         self.llm_client = openai.OpenAI(api_key=api_key, base_url=base_url)
 
-    async def parse_page(self, response_url: str, response_selector):
+    async def parse_page(self, response_url: str):
         url_data = await WebTools.getUrlData(response_url, engine=WebEngine.Playwright)
         if not url_data:
             log.warning("Playwright failed to fetch data for %s", response_url)
             return
+        log.info("Response from WebTools.getUrlData:")
+        for key, val in url_data.items():
+            log.info("%s: %r", key, str(val)[:100])
 
         # ToDo: validate "trafilatura"-fulltext-extraction from playwright
         # (compared to the html2text approach)
-        playwright_text: str = url_data["html"] or ""
-        playwright_bytes: bytes = playwright_text.encode()
-        trafilatura_text = url_data["text"]
-        log.info("trafilatura_text: %s", trafilatura_text)
-        # ToDo: implement text extraction .env toggle: default / advanced / basic?
-        #  - default: use trafilatura by default?
-        #  - advanced: which trafilatura parameters could be used to improve text extraction for
-        #    "weird" results?
-        #  - basic: fallback to html2text extraction (explicit .env setting)
-        # trafilatura_meta_scrapy = trafilatura.extract_metadata(response.body).as_dict()
-        trafilatura_meta_playwright = trafilatura.extract_metadata(
-            playwright_bytes)
-        parsed_html = BeautifulSoup(url_data["html"] or "", features="lxml")
-        for tag in self.clean_tags:
-            tags = parsed_html.find_all(
-                tag) if parsed_html.find_all(tag) else []
-            for t in tags:
-                t.clear()
-        crawler_ignore = parsed_html.find_all(
-            name=None, attrs={"data-crawler": "ignore"})
-        for t in crawler_ignore:
-            t.clear()
-        html = parsed_html.prettify()
-        text_html2text = WebTools.html2Text(html)
-        if trafilatura_meta_playwright:
+        # HTML extracted from the browser view
+        playwright_html: str = url_data["html"] or ""
+        # Main text extracted from browser view
+        trafilatura_text: str = url_data["text"] or ""
+        log.info("trafilatura_text: %s", str(trafilatura_text)[:100])
+
+        text_html2text = self.manual_cleanup_text(playwright_html)
+        log.info("Cleaned up text via html2text: %s", text_html2text[:100])
+
+        if trafilatura_meta_playwright := trafilatura.extract_metadata(playwright_html.encode()):
             trafilatura_meta = trafilatura_meta_playwright.as_dict()
         else:
             trafilatura_meta = {}
+        log.info("trafilatura_meta: %s", trafilatura_meta)
 
-        selector_main = response_selector
-        selector_playwright = scrapy.Selector(text=playwright_text)
+        selector_playwright = scrapy.Selector(text=playwright_html)
 
         # extract LRMI objects from the response
         lrmi_path = '//script[@type="application/ld+json"]//text()'
         lrmi_objects = []
-        for l in selector_main.xpath(lrmi_path).getall():
+        for l in selector_playwright.xpath(lrmi_path).getall():
             try:
                 obj = json.loads(l)
                 lrmi_objects.append(obj)
@@ -190,13 +178,13 @@ Hier folgt der Text:
 
         # Creating the nested ItemLoaders according to our items.py data model
         lom_loader = LomBaseItemloader()
-        general_loader = LomGeneralItemloader(selector=selector_main)
+        general_loader = LomGeneralItemloader(selector=selector_playwright)
         technical_loader = LomTechnicalItemLoader(selector=selector_playwright)
         educational_loader = LomEducationalItemLoader()
         classification_loader = LomClassificationItemLoader()
         valuespace_loader = ValuespaceItemLoader()
         license_loader = LicenseItemLoader(selector=selector_playwright)
-        permissions_loader = PermissionItemLoader(selector=selector_main)
+        permissions_loader = PermissionItemLoader(selector=selector_playwright)
         # default all materials to public, needs to be changed depending on the spider!
         permissions_loader.add_value("public", self.settings.get("DEFAULT_PUBLIC_STATE"))
         response_loader = ResponseItemLoader()
@@ -251,7 +239,7 @@ Hier folgt der Text:
         technical_loader.add_value("size", getLRMI("ContentSize"))
         technical_loader.add_value("location", getLRMI("url"))
         technical_loader.add_value("location", response_url)
-        technical_loader.replace_value("size", len(playwright_bytes))
+        technical_loader.replace_value("size", len(playwright_html))
         technical_loader.add_xpath(
             "location", '//meta[@property="og:url"]/@content')
 
@@ -307,6 +295,20 @@ Hier folgt der Text:
 
         return base_loader.load_item()
     
+    def manual_cleanup_text(self, html_source: str) -> str:
+        parsed_html = BeautifulSoup(html_source, features="lxml")
+        for tag in self.clean_tags:
+            tags = parsed_html.find_all(
+                tag) if parsed_html.find_all(tag) else []
+            for t in tags:
+                t.clear()
+        crawler_ignore = parsed_html.find_all(
+            name=None, attrs={"data-crawler": "ignore"})
+        for t in crawler_ignore:
+            t.clear()
+        html = parsed_html.prettify()
+        return WebTools.html2Text(html)
+
     def get_id(self, response_url: str) -> str:
         """ Return a stable identifier (URI) of the crawled item """
         # TODO: use something more clever
