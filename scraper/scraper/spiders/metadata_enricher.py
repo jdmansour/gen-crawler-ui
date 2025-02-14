@@ -364,15 +364,20 @@ Hier folgt der Text:
             return []
 
         assert isinstance(result, zapi.models.TopicAssistantKeywordsResult)
-        log.info("zapi_get_curriculum result: %s", result)
+        log.info("zapi_get_curriculum result:")
+        filtered = [t for t in result.topics or [] if t.label]
+        topics = sorted(filtered, key=lambda t: t.weight, reverse=True)
+        # TODO: sort by weight
+        max_print = 10
+        for topic in topics[:max_print]:
+            log.info("Topic: %r", topic)
+            # log.info("Topic: weight=%f label=%r match=%r", topic.weight, topic.label, topic.match)
+        if len(topics) > max_print:
+            log.info("... %d more topics", len(topics) - max_print)
 
         n_topics = 3
-        if result.topics:
-            topics = result.topics[:n_topics]
-            topic_names = [topic.uri for topic in topics]
-            return topic_names
-        
-        return []
+        topic_uris = [topic.uri for topic in topics[:n_topics]]
+        return topic_uris
 
     def zapi_get_statistics(self, text: str) -> tuple[str, float]:
         """ Queries the z-API to get the text difficulty and reading time. """
