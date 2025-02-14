@@ -422,12 +422,12 @@ Hier folgt der Text:
         # log prompt and response
         ai_prompt_itemloader = AiPromptItemLoader()
         ai_prompt_itemloader.add_value("ai_prompt", prompt)
-        ai_prompt_itemloader.add_value("ai_response_raw", result)
+        # ai_prompt_itemloader.add_value("ai_response_raw", result)
         ai_prompt_itemloader.add_value("ai_response", result)
         base_loader.add_value(
             "ai_prompts", ai_prompt_itemloader.load_item())
 
-        log.info("AI response: %r", result)
+        # log.info("AI response: %r", result)
         if result is None:
             log.error("Failed to get response from AI service.")
             return
@@ -439,6 +439,7 @@ Hier folgt der Text:
             result_dict = json.loads(result)
         except json.JSONDecodeError:
             log.error("Failed to parse JSON response from AI service.", exc_info=True)
+            log.info("AI response: %r", result)
             return
         
         log.info("Structured AI response: %s", result_dict)
@@ -477,7 +478,7 @@ Hier folgt der Text:
                     "role": "user", "content": prompt}],
                 model=self.llm_model
             )
-            log.info("LLM API response: %s", chat_completion)
+            # log.info("LLM API response: %s", chat_completion)
             return chat_completion.choices[0].message.content or ""
 
         # TODO: add error checking
