@@ -6,8 +6,7 @@ from typing import Optional
 
 import httpx
 import openai
-import scrapy.http
-import scrapy.signals
+import scrapy
 import trafilatura  # type: ignore
 import zapi
 import zapi.api
