@@ -42,7 +42,7 @@ from scraper.items import BaseItem
 from scraper.util.edu_sharing_source_template_helper import EduSharingSourceTemplateHelper
 from scraper.util.language_mapper import LanguageMapper
 from scraper.web_tools import WebTools, WebEngine
-from valuespace_converter.app.valuespaces import Valuespaces
+from valuespace_converter.valuespaces import Valuespaces
 
 log = logging.getLogger(__name__)
 

@@ -3,8 +3,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from scraper import env
-from scraper.spiders.metadata_enricher import MetadataEnricher
+from metadataenricher import env
+from metadataenricher.metadata_enricher import MetadataEnricher
 
 
 @asynccontextmanager

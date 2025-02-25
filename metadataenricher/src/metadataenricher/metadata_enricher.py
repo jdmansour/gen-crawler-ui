@@ -8,27 +8,27 @@ import httpx
 import openai
 import scrapy
 import trafilatura  # type: ignore
-import zapi
-import zapi.api
-import zapi.api.ai_text_prompts
-import zapi.api.ai_text_prompts.prompt
-import zapi.errors
-import zapi.models
+from . import zapi
+from .zapi import api
+from .zapi.api import ai_text_prompts
+from .zapi.api.ai_text_prompts import prompt
+from .zapi import errors
+from .zapi import models
 from bs4 import BeautifulSoup
-from valuespace_converter.app.valuespaces import Valuespaces
-from zapi.api.kidra import (predict_subjects_kidra_predict_subjects_post,
+from valuespace_converter.valuespaces import Valuespaces
+from .zapi.api.kidra import (predict_subjects_kidra_predict_subjects_post,
                             text_stats_analyze_text_post,
                             topics_flat_topics_flat_post)
 
-from .. import env
-from ..items import (AiPromptItemLoader, BaseItemLoader, KIdraItemLoader,
+from . import env
+from .items import (AiPromptItemLoader, BaseItemLoader, KIdraItemLoader,
                      LicenseItemLoader, LomBaseItemloader,
                      LomClassificationItemLoader, LomEducationalItemLoader,
                      LomGeneralItemloader, LomLifecycleItemloader,
                      LomTechnicalItemLoader, PermissionItemLoader,
                      ResponseItemLoader, ValuespaceItemLoader)
-from ..util.license_mapper import LicenseMapper
-from ..web_tools import WebEngine, WebTools
+from .util.license_mapper import LicenseMapper
+from .web_tools import WebEngine, WebTools
 
 log = logging.getLogger(__name__)
 
@@ -477,11 +477,15 @@ Hier folgt der Text:
 
     def call_llm_inner(self, prompt: str) -> Optional[str]:
         if self.llm_client:
-            chat_completion = self.llm_client.chat.completions.create(
-                messages=[{"role": "system", "content": "Du bist ein hilfreicher KI-Assistent der Informationen über Bildungsmaterialien herausfinden soll."}, {
-                    "role": "user", "content": prompt}],
-                model=self.llm_model
-            )
+            try:
+                chat_completion = self.llm_client.chat.completions.create(
+                    messages=[{"role": "system", "content": "Du bist ein hilfreicher KI-Assistent der Informationen über Bildungsmaterialien herausfinden soll."}, {
+                        "role": "user", "content": prompt}],
+                    model=self.llm_model
+                )
+            except openai.APITimeoutError:
+                log.error("LLM API request timed out.")
+                return None
             # log.info("LLM API response: %s", chat_completion)
             return chat_completion.choices[0].message.content or ""
 

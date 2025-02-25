@@ -9,7 +9,9 @@ services:
       - SCRAPYD_URL=http://scrapyd:6800
       - DB_PATH=/app/database/db.sqlite3
   scrapyd:
-    build: scraper
+    build:
+      context: .
+      dockerfile: scraper.Dockerfile
     # # needed so we can install the playwright python package in the container
     # platform: linux/amd64
     ports:

@@ -781,9 +781,9 @@ dependencies = [
     { name = "beautifulsoup4" },
     { name = "fastapi", extra = ["standard"] },
     { name = "html2text" },
+    { name = "metadataenricher" },
     { name = "openai" },
     { name = "playwright" },
-    { name = "project" },
     { name = "requests" },
     { name = "scrapy" },
     { name = "trafilatura" },
@@ -795,13 +795,18 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.13.3" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.8" },
     { name = "html2text", specifier = ">=2024.2.26" },
+    { name = "metadataenricher", editable = "../metadataenricher" },
     { name = "openai", specifier = ">=1.64.0" },
     { name = "playwright", specifier = ">=1.50.0" },
-    { name = "project", editable = "../scraper" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "scrapy", specifier = ">=2.12.0" },
     { name = "trafilatura", specifier = ">=2.0.0" },
 ]
+
+[[package]]
+name = "metadataenricher"
+version = "0.1.0"
+source = { editable = "../metadataenricher" }
 
 [[package]]
 name = "openai"
@@ -864,11 +869,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/2b/4a/047cbb2ffe1249bd7a56441fc3366fb4a8a1f44bc36a9061d10edfda2c86/playwright-1.50.0-py3-none-win32.whl", hash = "sha256:3b906f4d351260016a8c5cc1e003bb341651ae682f62213b50168ed581c7558a", size = 34784543 },
     { url = "https://files.pythonhosted.org/packages/bc/2b/e944e10c9b18e77e43d3bb4d6faa323f6cc27597db37b75bc3fd796adfd5/playwright-1.50.0-py3-none-win_amd64.whl", hash = "sha256:1859423da82de631704d5e3d88602d755462b0906824c1debe140979397d2e8d", size = 34784546 },
 ]
-
-[[package]]
-name = "project"
-version = "1.0"
-source = { editable = "../scraper" }
 
 [[package]]
 name = "protego"

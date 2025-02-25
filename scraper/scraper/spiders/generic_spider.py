@@ -19,8 +19,7 @@ from scraper.util.sitemap import find_generate_sitemap
 
 from .. import env
 from ..util.generic_crawler_db import fetch_urls_passing_filterset
-from ..web_tools import WebEngine
-from .metadata_enricher import MetadataEnricher
+from metadataenricher.metadata_enricher import MetadataEnricher
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +31,7 @@ class GenericSpider(Spider):
     start_urls = []
     rules = [Rule(callback="parse")]
     custom_settings = {
-        "WEB_TOOLS": WebEngine.Playwright,
+        "WEB_TOOLS": "playwright",
         "ROBOTSTXT_OBEY": False,
         "ITEM_PIPELINES": {
             "scraper.pipelines_edusharing.EduSharingCheckPipeline": 0,

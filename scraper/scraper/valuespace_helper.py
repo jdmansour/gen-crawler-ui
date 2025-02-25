@@ -1,6 +1,3 @@
-from scraper.pipelines_edusharing import ProcessValuespacePipeline
-from valuespace_converter.app.valuespaces import Valuespaces
-
 
 class ValuespaceHelper:
     @staticmethod
