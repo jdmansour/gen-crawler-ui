@@ -1,7 +1,22 @@
+import logging
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
-from scraper.spiders.metadata_enricher import MetadataEnricher
+
 from scraper import env
-app = FastAPI()
+from scraper.spiders.metadata_enricher import MetadataEnricher
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """ Set up logging """
+    logging.basicConfig(level=logging.INFO)
+    logging.getLogger("uvicorn.error").propagate = False
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+
 
 @app.get("/metadata")
 async def get_metadata(url: str):

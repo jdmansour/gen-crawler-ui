@@ -5,7 +5,6 @@ import requests
 
 from scraper import env
 
-logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 

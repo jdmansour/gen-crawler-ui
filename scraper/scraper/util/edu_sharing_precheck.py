@@ -43,8 +43,6 @@ class EduSharingPreCheck:
 
     payload = ""
 
-    logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
-
     replication_source_id_list: list[str] = list()
 
     def __init__(self):

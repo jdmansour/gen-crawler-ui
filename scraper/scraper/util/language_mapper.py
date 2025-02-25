@@ -11,11 +11,6 @@ class LanguageMapper:
     def __init__(self, languages: list[str] = None):
         self.languages = languages
 
-    logging.basicConfig(
-        format="%(asctime)s\t%(levelname)s: %(message)s",
-        level=logging.DEBUG,
-    )
-
     @staticmethod
     def _normalize_string_to_language_code(raw_string: str) -> str | None:
         """
