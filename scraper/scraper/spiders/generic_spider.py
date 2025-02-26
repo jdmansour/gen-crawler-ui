@@ -15,7 +15,6 @@ from scrapy.spiders.crawl import Rule
 
 import scraper
 from scraper.es_connector import EduSharing
-from scraper.util.sitemap import find_generate_sitemap
 
 from .. import env
 from ..util.generic_crawler_db import fetch_urls_passing_filterset
@@ -47,7 +46,7 @@ class GenericSpider(Spider):
         }
     }
 
-    def __init__(self, urltocrawl="", ai_enabled="True", find_sitemap="False",
+    def __init__(self, urltocrawl="", ai_enabled="True",
                  max_urls="3", filter_set_id="", **kwargs):
         EduSharing.resetVersion = True
         super().__init__(**kwargs)
@@ -56,7 +55,6 @@ class GenericSpider(Spider):
         log.info("Arguments:")
         log.info("  urltocrawl: %r", urltocrawl)
         log.info("  ai_enabled: %r", ai_enabled)
-        log.info("  find_sitemap: %r", find_sitemap)
         log.info("  max_urls: %r", max_urls)
         log.info("  filter_set_id: %r", filter_set_id)
         log.info("  kwargs: %r", kwargs)
@@ -79,12 +77,7 @@ class GenericSpider(Spider):
 
         if urltocrawl != "":
             urls = [url.strip() for url in urltocrawl.split(",")]
-            if find_sitemap == "True" and len(urls) == 1:
-                sitemap_urls = find_generate_sitemap(
-                    urls[0], max_entries=self.max_urls)
-                self.start_urls = sitemap_urls
-            else:
-                self.start_urls = urls[:self.max_urls]
+            self.start_urls = urls[:self.max_urls]
 
         # logging.warning("self.start_urls=" + self.start_urls[0])
 
