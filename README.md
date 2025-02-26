@@ -4,19 +4,51 @@ Experimental frontend for the WLO generic crawler
 
 ![Screenshot of the UI](./docs/images/frontend.png)
 
-This consists of three parts:
-- A (dummy) crawler written with Scrapy which writes urls to a database
-- A Django app that provides an admin view of the DB and a REST API
-- A React app that provides a UI for the crawler
+This consists of several parts:
+- 📁 frontend: Part of the frontend written in React / Typescript
+- 📁 metaddataapi: A tiny server providing an API for the browser plugin
+- 📁 metadataenricher: A library containing the logic to extract metadata
+- 📁 scraper: Two scrapy crawlers, one to get a sitemap, and one to extract metadata
+- 📁 ui: An application to control the generic crawler, based on Django
+
 
 ```mermaid
-graph LR
-    A(Scrapy Crawler) --- B((Database))
-    B --- C(Django API)
-    C --- D(React App)
+---
+config:
+  markdownAutoWrap: false
+---
+%%{init: {"flowchart": {"defaultRenderer": "elk"}} }%%
+flowchart TB
+
+subgraph "User-facing services"
+    ui
+    metadataapi
+end
+ui --> scrapyd
+ui --> database
+ui --> frontend["frontend<br>(React)"]
+metadataapi --> metadataenricher
+scrapyd --> scraper
+scraper[scraper] --> metadataenricher
+scraper --> database[(Database)]
+
 ```
 
 ## Usage
+
+You can use docker compose to run the application:
+
+    docker compose up --build
+
+You can also just run the metadata API:
+
+    docker compose up metadataapi --build
+
+For development, you can run in a special mode that mounts the source into the container, and watches for changes (for now only the metadataapi app):
+
+    docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build metadataapi
+
+### Manual setup
 
 First, set up a virtualenv:
 
