@@ -1,0 +1,7 @@
+build/
+cache/
+database/
+logs/
+*.egg-info/
+.scrapy/
+.venv/
