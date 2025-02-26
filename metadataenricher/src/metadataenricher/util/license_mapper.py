@@ -1,7 +1,7 @@
 import logging
 import re
 
-from scraper.constants import Constants
+from .constants import Constants
 
 logger = logging.getLogger(__name__)
 

@@ -9,7 +9,7 @@ import trafilatura
 from playwright.async_api import async_playwright
 from scrapy.utils.project import get_project_settings
 
-from scraper import env
+from . import env
 
 log = logging.getLogger(__name__)
 logging.getLogger("trafilatura").setLevel(logging.INFO)  # trafilatura is quite spammy
