@@ -807,6 +807,12 @@ requires-dist = [
 name = "metadataenricher"
 version = "0.1.0"
 source = { editable = "../metadataenricher" }
+dependencies = [
+    { name = "valuespace-converter" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "valuespace-converter", editable = "../valuespace-converter" }]
 
 [[package]]
 name = "openai"
@@ -1491,6 +1497,17 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/47/57/66f061ee118f413cd22a656de622925097170b9380b30091b78ea0c6ea75/uvloop-0.21.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:bd53ecc9a0f3d87ab847503c2e1552b690362e005ab54e8a48ba97da3924c0dc", size = 4454428 },
     { url = "https://files.pythonhosted.org/packages/63/9a/0962b05b308494e3202d3f794a6e85abe471fe3cafdbcf95c2e8c713aabd/uvloop-0.21.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:a5c39f217ab3c663dc699c04cbd50c13813e31d917642d459fdcec07555cc553", size = 4660018 },
 ]
+
+[[package]]
+name = "valuespace-converter"
+version = "0.1.0"
+source = { editable = "../valuespace-converter" }
+dependencies = [
+    { name = "requests" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "requests", specifier = ">=2.32.3" }]
 
 [[package]]
 name = "w3lib"
