@@ -5,6 +5,8 @@ services:
       - "8000:8000"
     volumes:
       - "./database:/app/database"
+    depends_on:
+      - scrapyd
     environment:
       - SCRAPYD_URL=http://scrapyd:6800
       - DB_PATH=/app/database/db.sqlite3
@@ -14,6 +16,8 @@ services:
       dockerfile: metadataapi.Dockerfile
     ports:
       - "8081:8081"
+    depends_on:
+      - headless_chrome
     environment:
       - "PLAYWRIGHT_WS_ENDPOINT=ws://headless_chrome:3000"
       - "SPLASH_URL=http://splash:8050"

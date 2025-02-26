@@ -12,6 +12,10 @@ COPY valuespace-converter /app/valuespace-converter
 
 # Install the application dependencies.
 WORKDIR /app/metadataapi
+# Place the .venv outside of the application directory,
+# so if we mount it (in dev mode) we don't affect the
+# .venv on the host.
+ENV UV_PROJECT_ENVIRONMENT=/app/.venv
 RUN uv sync --frozen --no-cache
 
 # Run the application.
