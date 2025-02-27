@@ -182,16 +182,14 @@ class StartCrawlFormView(FormView):
         log.info("Status code: %s", response.status_code)
 
         if response.status_code != 200:
-            messages.error(self.request, f"Error starting crawl: {
-                           response.text}")
+            messages.error(self.request, f"Error starting crawl: {response.text}")
             return super().form_invalid(form)
 
         obj = response.json()
         # response can be something like:
         # {"status": "error", "message": "spider 'generic_spider' not found"}
         if obj.get('status') == 'error':
-            messages.error(self.request, f"Error starting crawl: {
-                        obj.get('message')}")
+            messages.error(self.request, f"Error starting crawl: {obj.get('message')}")
         else:
             messages.info(self.request, f"Crawl of '{start_url}' started")
 
@@ -222,15 +220,13 @@ def start_content_crawl(request, pk):
     print(response.text)
 
     if response.status_code != 200:
-        messages.error(request, f"Error starting content crawl: {
-                       response.text}")
+        messages.error(request, f"Error starting content crawl: {response.text}")
     else:
         obj = response.json()
         # response can be something like:
         # {"status": "error", "message": "spider 'generic_spider' not found"}
         if obj.get('status') == 'error':
-            messages.error(request, f"Error starting content crawl: {
-                           obj.get('message')}")
+            messages.error(request, f"Error starting content crawl: {obj.get('message')}")
         else:
             messages.info(request, f"Content crawl of '{start_url}' started")
 
