@@ -47,7 +47,8 @@ jobs:
       - name: Docker Compose Build & Push
         uses: 0x4r45h/docker-compose-ci@v0.1.1
         with:
-          services: "web metadataapi scrapyd"
+          services: "metadataapi"
+          # services: "web metadataapi scrapyd"
 
       # - name: Build and push Docker image
       #   id: push
