@@ -11,6 +11,9 @@ services:
     environment:
       - SCRAPYD_URL=http://scrapyd:6800
       - DB_PATH=/app/database/db.sqlite3
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn crawler_ui.wsgi --bind 0.0.0.0:8000"
   metadataapi:
     image: jdmansour/generic-crawler-metadataapi:${DC_IMAGE_VERSION:-main}
     build:

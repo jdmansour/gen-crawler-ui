@@ -26,7 +26,9 @@ spec:
           volumeMounts:
             - mountPath: /app/database
               name: sharedStorage
-
+          command: >
+            sh -c "python manage.py migrate &&
+                   gunicorn crawler_ui.wsgi --bind 0.0.0.0:8000"
         - name: scrapyd
           image: jdmansour/generic-crawler-scrapyd:main
           env:
