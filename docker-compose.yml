@@ -1,5 +1,6 @@
 services:
   web:
+    image: "docker.io/jdmansour/generic-crawler/web:${IMAGE_VERSION:-main}"
     build: ui
     ports:
       - "8000:8000"
@@ -11,6 +12,7 @@ services:
       - SCRAPYD_URL=http://scrapyd:6800
       - DB_PATH=/app/database/db.sqlite3
   metadataapi:
+    image: "docker.io/jdmansour/generic-crawler/metadataapi:${IMAGE_VERSION:-main}"
     build:
       context: .
       dockerfile: metadataapi.Dockerfile
@@ -25,6 +27,7 @@ services:
       - "GENERIC_CRAWLER_LLM_API_KEY=${GENERIC_CRAWLER_LLM_API_KEY}"
       - "GENERIC_CRAWLER_USE_LLM_API=${GENERIC_CRAWLER_USE_LLM_API?}"
   scrapyd:
+    image: "docker.io/jdmansour/generic-crawler/scrapyd:${IMAGE_VERSION:-main}"
     build:
       context: .
       dockerfile: scraper.Dockerfile
