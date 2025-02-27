@@ -6,9 +6,6 @@ on:
   # release:
   #   types: [published]
 
-env:
-  IMAGE_VERSION: ${{ env.GITHUB_REF_SLUG }}
-
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
@@ -19,6 +16,10 @@ jobs:
       attestations: write
       id-token: write
     steps:
+      - name: "Set environmental variables"
+        run: |
+          echo "DC_IMAGE_VERSION='$GITHUB_REF_SLUG'" >> $GITHUB_ENV
+
       - name: Check out the repo
         uses: actions/checkout@v4
 
