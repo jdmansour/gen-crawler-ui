@@ -1,7 +1,7 @@
 
 # First stage: build the egg file
 
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS build-stage
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS build-stage
 
 # Copy deps
 COPY scraper /workdir/scraper
@@ -15,7 +15,7 @@ RUN uv run scrapyd-deploy --build-egg=1738306332.egg
 
 # Main stage: build the scrapyd container
 
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim
 
 WORKDIR /workdir/app
 
