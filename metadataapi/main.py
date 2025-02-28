@@ -6,7 +6,7 @@ from fastapi import Depends, FastAPI, HTTPException, Security
 from fastapi.security.api_key import APIKeyHeader
 from metadataenricher import env
 from metadataenricher.metadata_enricher import MetadataEnricher
-from pydantic import ValidationError, BaseModel
+from pydantic import ValidationError
 from pydantic_settings import BaseSettings
 
 
