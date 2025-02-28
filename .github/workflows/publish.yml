@@ -13,6 +13,7 @@ env:
   Z_API_KEY: ""
   GENERIC_CRAWLER_LLM_API_KEY: ""
   GENERIC_CRAWLER_USE_LLM_API: "True"
+  METADATAAPI_API_KEY: ""
 
 jobs:
   push_to_registry:
