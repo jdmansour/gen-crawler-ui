@@ -1,4 +1,20 @@
 services:
+  web:
+    volumes:
+      - ./ui:/app/ui
+      - ./database:/app/database
+      - ./frontend:/app/frontend
+    environment:
+      DJANGO_VITE_DEV_MODE: ${DJANGO_VITE_DEV_MODE:-false}
+      # DJANGO_VITE_DEV_SERVER_HOST: localhost
+      # (uv not used at the moment)
+      # UV_LINK_MODE: copy
+      # # place it outside of /app so we don't clash with the
+      # # venv on the host
+      # UV_PROJECT_ENVIRONMENT: /app/.venv
+    command: "python manage.py runserver 0.0.0.0:8000"
+  # vite-dev:
+  # ...
   metadataapi:
     volumes:
       - ./metadataapi:/app/metadataapi

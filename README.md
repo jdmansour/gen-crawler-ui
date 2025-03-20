@@ -44,9 +44,15 @@ You can also just run the metadata API:
 
     docker compose up metadataapi --build
 
-For development, you can run in a special mode that mounts the source into the container, and watches for changes (for now only the metadataapi app):
+For development, you can run in a special mode that mounts the source into the container, and watches for changes (works for the metadataapi and web apps):
 
     docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build metadataapi
+
+If you want to change the React code and have live reloading, you can do the following:
+
+    DJANGO_VITE_DEV_MODE=true docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build web
+
+and in a separate window start the Vite server (`cd frontend; npm run dev`, see below).
 
 ### Manual setup
 
