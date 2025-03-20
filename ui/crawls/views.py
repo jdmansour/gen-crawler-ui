@@ -159,6 +159,13 @@ class FilterSetCreateView(CreateView):
         return response
 
 
+class HealthViewSet(viewsets.ViewSet):
+    """ Provides the API under /api/health/ """
+    def list(self, request):
+        """ Return health status. """
+        return Response({'status': 'ok'})
+
+
 class StartCrawlFormView(FormView):
     """ Start a new crawl job. """
 

@@ -16,7 +16,8 @@ Including another URLconf
 """
 from crawls.views import (CrawlDetailView, CrawlsListView, FilterRuleViewSet,
                           FilterSetCreateView, FilterSetDetailView,
-                          FilterSetViewSet, StartCrawlFormView, start_content_crawl)
+                          FilterSetViewSet, HealthViewSet, StartCrawlFormView,
+                          start_content_crawl)
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
 from django.urls import include, path
@@ -28,6 +29,7 @@ from .views import index
 router = routers.DefaultRouter()
 router.register(r'filter_sets', FilterSetViewSet)
 router.register(r'filter_rules', FilterRuleViewSet)
+router.register(r'health', HealthViewSet, basename='health')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
