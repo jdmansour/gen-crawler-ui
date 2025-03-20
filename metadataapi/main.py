@@ -42,6 +42,13 @@ async def lifespan(app: FastAPI):
 ## Main app
 app = FastAPI(lifespan=lifespan)
 
+
+@app.get("/health")
+async def health():
+    """ Returns HTTP 200 if the service is running. """
+    return {"status": "ok"}
+
+
 @app.get("/metadata")
 async def get_metadata(url: str, dependencies=Depends(validate_api_key)):
     enricher = MetadataEnricher(ai_enabled=True)
