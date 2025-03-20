@@ -47,7 +47,6 @@ services:
       - DB_PATH=/app/database/db.sqlite3
       - GENERIC_CRAWLER_DB_PATH=/app/database/db.sqlite3
       # For the generic crawler
-      - "PYPPETEER_WS_ENDPOINT=ws://headless_chrome:3000"
       - "PLAYWRIGHT_WS_ENDPOINT=ws://headless_chrome:3000"
       - "SPLASH_URL=http://splash:8050"
       # optional keyword args, e.g. cleanrun=true
