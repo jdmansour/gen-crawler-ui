@@ -36,6 +36,7 @@ async def lifespan(app: FastAPI):
     """ Set up logging """
     logging.basicConfig(level=logging.INFO)
     logging.getLogger("uvicorn.error").propagate = False
+    logging.getLogger("metadataenricher.web_tools").setLevel(logging.DEBUG)
     yield
 
 
