@@ -45,5 +45,6 @@ urlpatterns = [
     path('filters/<int:pk>/crawl/', start_content_crawl, name='filterset_start_crawl'),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path("accounts/", include("django.contrib.auth.urls")),
 ] + debug_toolbar_urls()

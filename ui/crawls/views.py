@@ -11,7 +11,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DetailView, FormView, ListView
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -26,6 +26,7 @@ class FilterSetViewSet(viewsets.ModelViewSet):
     """ Provides the API under /api/filter_sets/ """
     queryset = FilterSet.objects.all()
     serializer_class = FilterSetSerializer
+    # permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=True, methods=['get'])
     def unmatched(self, request, pk=None):
@@ -52,6 +53,7 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
     """ Provides the API under /api/filter_rules/ """
     queryset = FilterRule.objects.all()
     serializer_class = FilterRuleSerializer
+    # permission_classes = [permissions.IsAuthenticated]
 
     def filter_queryset(self, queryset):
         return super().filter_queryset(queryset).order_by('position')
