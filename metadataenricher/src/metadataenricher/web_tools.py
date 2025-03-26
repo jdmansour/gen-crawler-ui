@@ -205,7 +205,8 @@ class WebTools:
         # https://playwright.dev/python/docs/api/class-browsertype#browser-type-connect-over-cdp
         async with async_playwright() as p:
             log.debug("Fetching data with Playwright")
-            browser = await p.chromium.connect_over_cdp(endpoint_url=env.get("PLAYWRIGHT_WS_ENDPOINT"))
+            ws_endpoint = env.get("PLAYWRIGHT_WS_ENDPOINT") + "/chrome/playwright"
+            browser = await p.chromium.connect(ws_endpoint)
             browser = await browser.new_context(java_script_enabled=True)
             log.debug("  browser.new_page()")
             page = await browser.new_page()
