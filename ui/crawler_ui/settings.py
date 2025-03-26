@@ -34,6 +34,9 @@ ALLOWED_HOSTS = [
     'generic-crawler-ui-web.staging.openeduhub.net',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://generic-crawler-ui-web.staging.openeduhub.net",
+]
 
 # Application definition
 
