@@ -163,6 +163,9 @@ class FilterSetCreateView(CreateView):
 
 class HealthViewSet(viewsets.ViewSet):
     """ Provides the API under /api/health/ """
+
+    permission_classes = [permissions.AllowAny]
+
     def list(self, request):
         """ Return health status. """
         return Response({'status': 'ok'})
