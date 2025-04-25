@@ -10,6 +10,8 @@ __pycache__/
 /scraper/database
 /scraper/logs
 
+/metadataapi/cache
+
 /attic/
 .mypy_cache/
 .pytest_cache/

@@ -10,6 +10,8 @@ from pydantic import ValidationError
 from pydantic_settings import BaseSettings
 
 
+log = logging.getLogger(__name__)
+
 ## Settings
 class Settings(BaseSettings):
     api_key: str
@@ -37,6 +39,7 @@ async def lifespan(app: FastAPI):
     logging.basicConfig(level=logging.INFO)
     logging.getLogger("uvicorn.error").propagate = False
     logging.getLogger("metadataenricher.web_tools").setLevel(logging.DEBUG)
+    logging.getLogger("valuespace_converter.valuespaces").setLevel(logging.INFO)
     yield
 
 
@@ -52,6 +55,8 @@ async def health():
 
 @app.get("/metadata")
 async def get_metadata(url: str, dependencies=Depends(validate_api_key)):
+    log.info("Received request for URL: %s", url)
+    log.debug("Creating MetadataEnricher instance")
     enricher = MetadataEnricher(ai_enabled=True)
     settings = {
         'GENERIC_CRAWLER_DB_PATH': env.get("GENERIC_CRAWLER_DB_PATH", allow_null=True),
@@ -62,6 +67,8 @@ async def get_metadata(url: str, dependencies=Depends(validate_api_key)):
         'GENERIC_CRAWLER_LLM_MODEL': env.get("GENERIC_CRAWLER_LLM_MODEL",
                                              default="meta-llama-3.1-8b-instruct"),
     }
+    log.debug("Setting up MetadataEnricher")
     enricher.setup(settings)
+    log.debug("Analyzing page")
     result = await enricher.parse_page(url)
     return result
