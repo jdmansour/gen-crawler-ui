@@ -154,11 +154,22 @@ Hier folgt der Text:
         for l in selector_playwright.xpath(lrmi_path).getall():
             try:
                 obj = json.loads(l)
-                lrmi_objects.append(obj)
             except json.JSONDecodeError:
                 log.warning("Failed to parse JSON-LD object: %s", l)
+                continue
 
-        def getLRMI(field):
+            log.debug("JSON-LD object: %s", type(obj))
+            if isinstance(obj, list):
+                for o in obj:
+                    if isinstance(o, dict):
+                        lrmi_objects.append(o)
+            elif isinstance(obj, dict):
+                lrmi_objects.append(obj)
+            else:
+                log.warning("Unexpected JSON-LD object: %s", l)
+                continue
+
+        def getLRMI(field: str):
             for obj in lrmi_objects:
                 value = obj.get(field)
                 if value:
