@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
     'localhost',
     'localhost:8000',
     'generic-crawler-ui-web.staging.openeduhub.net',
+    'generic-crawler-ui-web.openeduhub.net',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
