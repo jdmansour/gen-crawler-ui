@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load django_vite %}
+{% block head %}
+    <script>
+      function scripterror() {
+        const root = document.getElementById('root');
+        root.innerText = "Error, could not load the script. If you are running in development mode, make sure the vite server is running (npm run dev).";
+      }
+    </script>
+
+    {% vite_hmr_client %}
+    {% vite_react_refresh %}
+    {% vite_asset 'src/wlo_spa.tsx' onerror="scripterror()" %}
+
+    <title>Django Vite Example</title>
+{% endblock %}
+
+{% block content %}
+<div class="inner-page">
+
+<div id="spa_root" data-completed="1" data-current-index="2"></div>
+<div id="root"></div>
+{% endblock %}

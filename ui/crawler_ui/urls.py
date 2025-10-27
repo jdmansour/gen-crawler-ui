@@ -23,7 +23,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import index
+from .views import index, wlo_spa
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
@@ -35,6 +35,7 @@ router.register(r'health', HealthViewSet, basename='health')
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', index, name='index'),
+    path('wlo_spa/', wlo_spa, name='wlo_spa'),
     path('crawls/add/', StartCrawlFormView.as_view(), name='crawl_create'),
     path('crawls/<int:pk>/', CrawlDetailView.as_view(), name='crawl_details'),
     path('crawls/', CrawlsListView.as_view(), name='crawls_list'),

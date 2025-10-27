@@ -1,11 +1,16 @@
 import { defineConfig } from 'vite'
-// import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
+import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), svgr()],
   base: "/static/",
+  resolve: {
+    alias: {
+      'assets': '/src/assets'
+    }
+  },
   server: {
     origin: 'http://localhost:5173'
   },
@@ -15,6 +20,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         demo: '/src/demo.tsx',
+        wlo_spa: '/src/wlo_spa.tsx',
         main: '/src/main.tsx',
         css: '/src/index.css'
       }
