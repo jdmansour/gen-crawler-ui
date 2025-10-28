@@ -8,10 +8,6 @@ import './index.css'
 import { Button, MetadataInheritancePage, FilterTabs, TabInfo } from 'wlo-components';
 import 'wlo-components/styles'; // CSS-Datei importieren
 import { MemoryRouter } from 'react-router-dom';
-import ErrorIcon from 'assets/icons/error.svg?react';
-import EditIcon from 'assets/icons/mode_edit.svg?react';
-import PendingIcon from 'assets/icons/pending.svg?react';
-import StopIcon from 'assets/icons/stop.svg?react';
 
 document.writeln("WOLLOLO");
 
@@ -36,11 +32,11 @@ console.log("props:", props);
 
 const dashboardTabs: TabInfo[] = [
   { tag: "all", label: "Alle" },
-  { tag: "draft", label: "Entwurf", icon: EditIcon },
-  { tag: "pending", label: "Gecrawlt", icon: PendingIcon },
-  { tag: "stopped", label: "Gestoppt", icon: StopIcon },
-  { tag: "error", label: "Fehler", icon: ErrorIcon },
-  { tag: "published", label: "Im Prüfbuffet", icon: ErrorIcon },
+  { tag: "draft", label: "Entwurf", icon: 'edit' },
+  { tag: "pending", label: "Gecrawlt", icon: 'pending' },
+  { tag: "stopped", label: "Gestoppt", icon: 'stop' },
+  { tag: "error", label: "Fehler", icon: 'error' },
+  { tag: "published", label: "Im Prüfbuffet", icon: 'error' },
 ];
 
 function App() {
