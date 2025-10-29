@@ -10,13 +10,10 @@ export default function GenCrawlerSidebar(props: {
   step: CrawlerDashboardStep;
 }) {
   const sidebarTabs = [
-    { tag: "dashboard", label: "1. Crawler hinzuf.", icon: RobotIcon },
-    { tag: "select-source", label: "2. Quelle Wählen", icon: SelectSourceIcon },
-    {
-      tag: "metadata-inheritance",
-      label: "3. Datenvererbung",
-      icon: MetadataInheritanceIcon,
-    },
+    // { tag: "dashboard", label: "1. Dashboard.", icon: RobotIcon },
+    { tag: "select-source", label: "1. Quelle Wählen", icon: SelectSourceIcon },
+    { tag: "crawler-details", label: "2. Crawler Details", icon: RobotIcon },
+    { tag: "metadata-inheritance", label: "3. Datenvererbung", icon: MetadataInheritanceIcon },
     { tag: "filter-crawls", label: "4. Filtern", icon: FilterCrawlsIcon },
   ] as TabInfo[];
 

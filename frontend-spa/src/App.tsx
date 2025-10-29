@@ -13,12 +13,14 @@ import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerResponse, SourceItem } from "./apitypes";
 import { CrawlerDashboardStep, CrawlerInfo } from "./types";
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
+import CrawlerDetailsPage from "./CrawlerDetailsPage";
 
 export default function App() {
   const location = useLocation();
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [crawlerList, setCrawlerList] = useState<CrawlerInfo[]>([]);
   const [sourceItems, setSourceItems] = useState<SourceItem[]>([]);
+  const [selectedSourceItem, setSelectedSourceItem] = useState<SourceItem | null>(null);
   const [fields, setFields] = useState<WloFieldInfo[]>([]);
   const [fieldGroups, setFieldGroups] = useState<GroupInfo[]>([]);
   const [sourceFieldsLoading, setSourceFieldsLoading] = useState(false);
@@ -107,14 +109,31 @@ export default function App() {
           <>
           <DashboardPage crawlerList={crawlerList}
             onNewCrawlerClick={()=>{
-              setHistoryState({ step: "select-source", newCrawlerName: "xx" });
+              setHistoryState({ step: "select-source" });
             }}/>
             </>
         )}
         {step == "select-source" && (
-          <SelectSourcePage sourceItems={sourceItems} onSourceSelected={(sourceItem) => fetchSourceFields(sourceItem.guid)} />
+          <SelectSourcePage
+            sourceItems={sourceItems}
+            onSourceSelected={(sourceItem) => {
+              setSelectedSourceItem(sourceItem);
+              setHistoryState({ step: "crawler-details", newCrawlerName: "abcd" });
+            }}
+            onCancelClick={() => navigate(-1)}
+            />
         )}
-
+        {step == "crawler-details" && (
+          selectedSourceItem && (
+          <CrawlerDetailsPage
+            sourceItem={selectedSourceItem}
+            onCreateClick={(sourceItem, crawlerURL) => {
+              fetchSourceFields(sourceItem.guid);
+              console.log("Creating crawler for source:", sourceItem, "with URL:", crawlerURL);
+              setHistoryState({ step: "metadata-inheritance", newCrawlerName: "abcd" });
+            }}
+          />)
+        )}
         {step == "metadata-inheritance" && (
           (sourceFieldsLoading === true) ? (
             <p>Lade Quelle</p>

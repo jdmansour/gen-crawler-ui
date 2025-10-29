@@ -13,6 +13,7 @@ export type SourceItem = {
     title: string;
     created_at: string;
     updated_at: string;
+    data: any;
 
     preview_url: string;
 };

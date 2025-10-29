@@ -1,52 +1,72 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { TextField } from "@mui/material";
+import { use, useEffect, useState } from "react";
 import Button from "./Button";
-import ListView from "./ListView";
 import { SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
-import { CrawlerDashboardStep } from "./types";
 
-export default function SelectSourcePage(props: {
-  sourceItems: SourceItem[];
+export default function CrawlerDetailsPage(props: {
+  sourceItem: SourceItem;
   onCancelClick?: () => void;
-  onSourceSelected?: (source: SourceItem) => void;
+  onCreateClick?: (source: SourceItem, crawlerURL: string) => void;
 }) {
   
-  const { sourceItems, onCancelClick, onSourceSelected } = props;
+  const { sourceItem, onCreateClick, onCancelClick } = props;
+  const [ crawlerURL, setCrawlerURL ] = useState<string>("");
+  const [ crawlerName, setCrawlerName ] = useState<string>("");
 
-  const [selectedSourceId, setSelectedSourceId] = useState<number | null>(null);
+  // default start URL
+  const defaultURL = sourceItem.data?.properties['ccm:wwwurl'] || "";
+  const defaultName = sourceItem.title || "";
+
+  useEffect(() => {
+    setCrawlerURL(defaultURL);
+  }, [defaultURL]);
+
+  useEffect(() => {
+    setCrawlerName(defaultName);
+  }, [defaultName]);
 
   return (
     <div className="main-content">
       <div>
         <h2>Neuen Crawler erstellen</h2>
-        <p>Für welches Quellobjekt soll ein Crawler erstellt werden?</p>
+        <p>Ausgewählte Quelle:</p>
 
-        <ListView>
-          {sourceItems.map((item) => (
-            <InheritanceTableRow
-              key={item.id}
-              item={item}
-              selected={selectedSourceId == item.id}
-              onSelect={() => setSelectedSourceId(item.id)}
-            />
-          ))}
-        </ListView>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+          <img
+            src={sourceItem.preview_url || sourcePreviewPic}
+            alt="Vorschau"
+            className="source-preview"
+            style={{
+              maxWidth: 80,
+              maxHeight: 60,
+            }} />
+          {sourceItem.title}
+        </div>
+
+        <TextField
+          value={crawlerURL}
+          onChange={(event) => setCrawlerURL(event.target.value)}
+          fullWidth
+          label="Start-URL"
+        />
+
+        <TextField
+          value={crawlerName}
+          onChange={(event) => setCrawlerName(event.target.value)}
+          fullWidth
+          label="Name des Crawlers"
+          style={{ marginTop: "20px" }}
+        />
 
         <div className="wlo-button-group">
-          <Button leftAlign onClick={onCancelClick}>
-            Abbrechen
-          </Button>
-          <Button>Quelldaten neu anlegen</Button>
+          <Button leftAlign onClick={onCancelClick}>Zurück</Button>
           <Button default onClick={() => {
-            if (onSourceSelected && selectedSourceId !== null) {
-              const selectedSource = sourceItems.find(item => item.id === selectedSourceId);
-              if (selectedSource) {
-                onSourceSelected(selectedSource);
-              }
+            if (onCreateClick) {
+              onCreateClick(sourceItem, crawlerURL);
             }
           }}>
-            Weiter mit Vererbung
+            Crawler anlegen
           </Button>
         </div>
       </div>
