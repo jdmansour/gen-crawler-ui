@@ -24,6 +24,7 @@ export default function App() {
   const [fields, setFields] = useState<WloFieldInfo[]>([]);
   const [fieldGroups, setFieldGroups] = useState<GroupInfo[]>([]);
   const [crawlerName, setCrawlerName] = useState<string|null>(null);
+  const [crawlerId, setCrawlerId] = useState<number|null>(null);
   const [sourceFieldsLoading, setSourceFieldsLoading] = useState(false);
   const step = location.state?.step || "dashboard";
 
@@ -143,6 +144,7 @@ export default function App() {
               console.log("Created new crawler:", newCrawler);
 
               setCrawlerName(crawlerName);
+              setCrawlerId(newCrawler.id);
               setHistoryState({ step: "metadata-inheritance", newCrawlerName: crawlerName });
             }}
           />)
@@ -151,7 +153,35 @@ export default function App() {
           (sourceFieldsLoading === true) ? (
             <p>Lade Quelle</p>
           ) : (
-          <MetadataInheritancePage fields={fields} groups={fieldGroups} />
+          <MetadataInheritancePage
+            fields={fields}
+            groups={fieldGroups}
+            onSave={async (selectedFields: Record<string, boolean>) => {
+              console.log("Selected fields to inherit:", selectedFields);
+              if (crawlerId === null) {
+                  console.error("No crawler ID found!");
+                  return;
+              }
+              const inheritedFields = Object.keys(selectedFields).filter(fieldId => selectedFields[fieldId]);
+              console.log("Updating crawler", crawlerId, "with inherited fields:", inheritedFields);
+              const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
+                  method: "PATCH",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                      inherited_fields: inheritedFields
+                  })
+              });
+              if (!response.ok) {
+                  console.error("Failed to update crawler:", response.status, response.statusText);
+                  return;
+              }
+              console.log("Crawler updated successfully.");
+              //setHistoryState({ step: "filter-crawls", newCrawlerName: crawlerName || undefined });
+
+            }}
+            />
           )
         )}
         {step == "filter-crawls" && (

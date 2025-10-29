@@ -40,6 +40,9 @@ class Crawler(models.Model):
     start_url = models.URLField()
     # The source item in edu-sharing as a GUID
     source_item = models.CharField(max_length=255)
+    # TODO: add validation
+    # List of field IDs that are inherited from the source item
+    inherited_fields = models.JSONField(default=list)
 
     def __str__(self):
         return self.name

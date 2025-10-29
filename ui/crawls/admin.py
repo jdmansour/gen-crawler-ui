@@ -24,7 +24,7 @@ class SourceItemAdmin(admin.ModelAdmin):
 class CrawlerAdmin(admin.ModelAdmin):
     model = Crawler
     list_display = ['name', 'start_url', 'source_item',
-                    'created_at', 'updated_at']
+                    'created_at', 'updated_at', 'inherited_fields']
     readonly_fields = ['created_at', 'updated_at']
 
 

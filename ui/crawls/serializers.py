@@ -14,7 +14,7 @@ class CrawlerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crawler
         fields = ['id', 'name', 'start_url', 'source_item',
-                  'created_at', 'updated_at']
+                  'created_at', 'updated_at', 'inherited_fields']
         read_only_fields = ['id', 'created_at', 'updated_at']
         
 

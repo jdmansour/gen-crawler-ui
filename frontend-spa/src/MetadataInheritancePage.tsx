@@ -11,9 +11,10 @@ export default function MetadataInheritancePage(
     props: {
         fields: WloFieldInfo[];
         groups: GroupInfo[];
+        onSave?: (selectedFields: Record<string, boolean>) => void;
     }
 ) {
-    const { fields, groups } = props;
+    const { fields, groups, onSave } = props;
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -69,7 +70,8 @@ export default function MetadataInheritancePage(
                 <Button
                     default
                     onClick={() => {
-                        console.log("Selected fields:", selectedFields);
+                        // console.log("Selected fields:", selectedFields);
+                        onSave?.(selectedFields);
                     }
                         // setHistoryState({
                         //     step: "filter-crawls",
