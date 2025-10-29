@@ -1,23 +1,24 @@
 """ Views for the crawls app. """
 # pylint: disable=too-many-ancestors
 
+import json
 import logging
 from typing import Any, Optional
 
 import requests
+from crawls.forms import StartCrawlForm
+from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
+from crawls.serializers import (CrawlerSerializer, FilterRuleSerializer,
+                                FilterSetSerializer, SourceItemSerializer)
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DetailView, FormView, ListView
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
-from crawls.forms import StartCrawlForm
-from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
-from crawls.serializers import CrawlerSerializer, FilterRuleSerializer, FilterSetSerializer, SourceItemSerializer
 
 log = logging.getLogger(__name__)
 
@@ -26,6 +27,17 @@ class SourceItemViewSet(viewsets.ModelViewSet):
     queryset = SourceItem.objects.all()
     serializer_class = SourceItemSerializer
     permission_classes = [permissions.AllowAny]
+    lookup_field = 'guid'
+
+    @action(detail=True, methods=['get'])
+    def inheritable_fields(self, request, guid=None):
+        """ Returns a list of inheritable fields for this source item. Lives at
+            http://127.0.0.1:8000/api/source_items/<guid>/inheritable_fields/ """
+        
+        # for now, return contents of data/inheritable_fields.json
+        with open('data/inheritable_fields.json', 'r', encoding='utf-8') as f:
+            fields = json.load(f)
+        return Response(fields)
 
 
 class CrawlerViewSet(viewsets.ModelViewSet):
