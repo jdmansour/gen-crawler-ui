@@ -17,6 +17,8 @@ export default function MetadataInheritancePage(
     const location = useLocation();
     const newCrawlerName = location.state?.newCrawlerName || "";
 
+    const selectedFields: string[] = ["ccm:oeh_profession_group"];
+
     function setHistoryState(state: {
         step: CrawlerDashboardStep;
         newCrawlerName?: string;
@@ -30,7 +32,7 @@ export default function MetadataInheritancePage(
             <h2>Metadatenvererbung</h2>
             <p>Dein neuer Crawler wurde erstellt! Während im Hintergrund die Quelle analysiert wird, kannst du jetzt schon mal die Felder auswählen, die von dem Quelldatensatz übernommen werden sollen.</p>
 
-            <WloFieldGroupSet groups={groups} fields={fields} />
+            <WloFieldGroupSet groups={groups} fields={fields} selectedFields={selectedFields} />
 
             <div className="wlo-button-group">
                 <Button leftAlign onClick={() => navigate(-1)}>
