@@ -47,6 +47,8 @@ class CrawlerViewSet(viewsets.ModelViewSet):
     # TODO: restrict to authenticated users!
     permission_classes = [permissions.AllowAny]
 
+    
+
 class FilterSetViewSet(viewsets.ModelViewSet):
     """ Provides the API under /api/filter_sets/ """
     queryset = FilterSet.objects.all()

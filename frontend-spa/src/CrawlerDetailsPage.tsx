@@ -7,7 +7,7 @@ import sourcePreviewPic from "./assets/source-preview.jpg";
 export default function CrawlerDetailsPage(props: {
   sourceItem: SourceItem;
   onCancelClick?: () => void;
-  onCreateClick?: (source: SourceItem, crawlerURL: string) => void;
+  onCreateClick?: (source: SourceItem, crawlerURL: string, crawlerName: string) => void;
 }) {
   
   const { sourceItem, onCreateClick, onCancelClick } = props;
@@ -15,7 +15,7 @@ export default function CrawlerDetailsPage(props: {
   const [ crawlerName, setCrawlerName ] = useState<string>("");
 
   // default start URL
-  const defaultURL = sourceItem.data?.properties['ccm:wwwurl'] || "";
+  const defaultURL = sourceItem.data?.properties['ccm:wwwurl'][0] || "";
   const defaultName = sourceItem.title || "";
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function CrawlerDetailsPage(props: {
           <Button leftAlign onClick={onCancelClick}>Zurück</Button>
           <Button default onClick={() => {
             if (onCreateClick) {
-              onCreateClick(sourceItem, crawlerURL);
+              onCreateClick(sourceItem, crawlerURL, crawlerName);
             }
           }}>
             Crawler anlegen

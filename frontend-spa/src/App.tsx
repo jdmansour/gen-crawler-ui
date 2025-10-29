@@ -10,7 +10,7 @@ import MetadataInheritancePage from "./MetadataInheritancePage";
 import SelectSourcePage from "./SelectSourcePage";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 
-import { CrawlerResponse, SourceItem } from "./apitypes";
+import { CrawlerResponse, createCrawler, SourceItem } from "./apitypes";
 import { CrawlerDashboardStep, CrawlerInfo } from "./types";
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
 import CrawlerDetailsPage from "./CrawlerDetailsPage";
@@ -127,9 +127,15 @@ export default function App() {
           selectedSourceItem && (
           <CrawlerDetailsPage
             sourceItem={selectedSourceItem}
-            onCreateClick={(sourceItem, crawlerURL) => {
+            onCreateClick={async (sourceItem, crawlerURL, crawlerName) => {
               fetchSourceFields(sourceItem.guid);
               console.log("Creating crawler for source:", sourceItem, "with URL:", crawlerURL);
+
+              // create a crawler, and launch an initial analysis-crawl
+              const newCrawler = await createCrawler(sourceItem.guid, crawlerURL, crawlerName);
+
+              console.log("Created new crawler:", newCrawler);
+
               setHistoryState({ step: "metadata-inheritance", newCrawlerName: "abcd" });
             }}
           />)
