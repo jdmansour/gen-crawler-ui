@@ -12,7 +12,14 @@ from django.forms import TextInput
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 
-from .models import CrawledURL, CrawlJob, FilterRule, FilterSet
+from .models import Crawler, CrawledURL, CrawlJob, FilterRule, FilterSet
+
+
+class CrawlerAdmin(admin.ModelAdmin):
+    model = Crawler
+    list_display = ['name', 'start_url', 'source_item',
+                    'created_at', 'updated_at']
+    readonly_fields = ['created_at', 'updated_at']
 
 
 class FilterRuleInline(admin.TabularInline):
@@ -207,6 +214,7 @@ class CrawledURLAdmin(admin.ModelAdmin):
         return not obj.noindex
 
 
+admin.site.register(Crawler, CrawlerAdmin)
 admin.site.register(CrawlJob, CrawlJobAdmin)
 admin.site.register(CrawledURL, CrawledURLAdmin)
 admin.site.register(FilterSet, FilterSetAdmin)

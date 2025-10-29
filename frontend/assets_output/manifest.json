@@ -57,7 +57,7 @@
     ]
   },
   "src/wlo_spa.tsx": {
-    "file": "assets/wlo_spa-BdijYqjM.js",
+    "file": "assets/wlo_spa-B80QnU3L.js",
     "name": "wlo_spa",
     "src": "src/wlo_spa.tsx",
     "isEntry": true,
@@ -65,6 +65,7 @@
       "_client-DFgYQUdv.js"
     ],
     "css": [
+      "assets/wlo_spa-Dg-vj2yH.css",
       "assets/css-DOrf2AlJ.css"
     ],
     "assets": [

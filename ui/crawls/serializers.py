@@ -1,7 +1,14 @@
 """ Serializers define the API representation. """
 from rest_framework import serializers
-from crawls.models import FilterRule, FilterSet, CrawlJob
+from crawls.models import Crawler, FilterRule, FilterSet, CrawlJob
 
+
+class CrawlerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Crawler
+        fields = ['id', 'name', 'start_url', 'source_item',
+                  'created_at', 'updated_at']
+        
 
 class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

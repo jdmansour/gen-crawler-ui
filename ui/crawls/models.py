@@ -9,6 +9,21 @@ from django.db import models
 log = logging.getLogger(__name__)
 
 
+class Crawler(models.Model):
+    """ A definition of a generic web crawler. """
+    
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    # This could be multiple URLs in the future
+    start_url = models.URLField()
+    # The source item in edu-sharing as a GUID
+    source_item = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
 class CrawlJob(models.Model):
     """ A crawl job contains a start URL and references to all crawled URLs. """
 

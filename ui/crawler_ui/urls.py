@@ -14,7 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from crawls.views import (CrawlDetailView, CrawlsListView, FilterRuleViewSet,
+from crawls.views import (CrawlerViewSet, CrawlDetailView, CrawlsListView, FilterRuleViewSet,
                           FilterSetCreateView, FilterSetDetailView,
                           FilterSetViewSet, HealthViewSet, StartCrawlFormView,
                           start_content_crawl)
@@ -27,6 +27,7 @@ from .views import index, wlo_spa
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
+router.register(r'crawlers', CrawlerViewSet)
 router.register(r'filter_sets', FilterSetViewSet)
 router.register(r'filter_rules', FilterRuleViewSet)
 router.register(r'health', HealthViewSet, basename='health')

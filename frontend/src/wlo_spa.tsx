@@ -67,6 +67,7 @@ export default function App() {
 
   return (
     <>
+     <p>Step: {step}</p>
       <SiteLayout
         sidebar={<GenCrawlerSidebar step={step} />}
         sidebarVisible={sidebarVisible}
