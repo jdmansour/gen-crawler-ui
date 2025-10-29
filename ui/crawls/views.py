@@ -10,6 +10,7 @@ from crawls.forms import StartCrawlForm
 from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
 from crawls.serializers import (CrawlerSerializer, FilterRuleSerializer,
                                 FilterSetSerializer, SourceItemSerializer)
+from crawls.fields_processor import FieldsProcessor
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -30,15 +31,14 @@ class SourceItemViewSet(viewsets.ModelViewSet):
     lookup_field = 'guid'
 
     @action(detail=True, methods=['get'])
-    def inheritable_fields(self, request, guid=None):
+    def inheritable_fields(self, request, guid: str):
         """ Returns a list of inheritable fields for this source item. Lives at
             http://127.0.0.1:8000/api/source_items/<guid>/inheritable_fields/ """
         
-        # for now, return contents of data/inheritable_fields.json
-        with open('data/inheritable_fields.json', 'r', encoding='utf-8') as f:
-            fields = json.load(f)
-        return Response(fields)
-
+        fp = FieldsProcessor()
+        result = fp.process(guid)
+        return Response(result)
+    
 
 class CrawlerViewSet(viewsets.ModelViewSet):
     """ Provides the API under /api/crawlers/ """
