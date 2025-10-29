@@ -23,6 +23,7 @@ export default function App() {
   const [selectedSourceItem, setSelectedSourceItem] = useState<SourceItem | null>(null);
   const [fields, setFields] = useState<WloFieldInfo[]>([]);
   const [fieldGroups, setFieldGroups] = useState<GroupInfo[]>([]);
+  const [crawlerName, setCrawlerName] = useState<string|null>(null);
   const [sourceFieldsLoading, setSourceFieldsLoading] = useState(false);
   const step = location.state?.step || "dashboard";
 
@@ -33,7 +34,11 @@ export default function App() {
   ];
   if (step != "dashboard") {
     // Add breadcrumb for current crawler
-    breadcrumbs.push({ label: "Neuer Crawler", temporary: true });
+    if (crawlerName !== null) {
+      breadcrumbs.push({ label: crawlerName, url: "/" });
+    } else {
+      breadcrumbs.push({ label: "Neuer Crawler", temporary: true });
+    }
   }
 
   useEffect(() => {
@@ -109,6 +114,7 @@ export default function App() {
           <>
           <DashboardPage crawlerList={crawlerList}
             onNewCrawlerClick={()=>{
+              setCrawlerName(null);
               setHistoryState({ step: "select-source" });
             }}/>
             </>
@@ -136,7 +142,8 @@ export default function App() {
 
               console.log("Created new crawler:", newCrawler);
 
-              setHistoryState({ step: "metadata-inheritance", newCrawlerName: "abcd" });
+              setCrawlerName(crawlerName);
+              setHistoryState({ step: "metadata-inheritance", newCrawlerName: crawlerName });
             }}
           />)
         )}

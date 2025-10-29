@@ -28,7 +28,7 @@ export default function MetadataInheritancePage(
     return <div className="main-content">
         <div>
             <h2>Metadatenvererbung</h2>
-            <p>Wähle die Felder aus, die von dem Quelldatensatz übernommen werden sollen.</p>
+            <p>Dein neuer Crawler wurde erstellt! Während im Hintergrund die Quelle analysiert wird, kannst du jetzt schon mal die Felder auswählen, die von dem Quelldatensatz übernommen werden sollen.</p>
 
             <WloFieldGroupSet groups={groups} fields={fields} />
 
