@@ -31,8 +31,8 @@ export default function SelectSourcePage(props: {
   return (
     <div className="main-content">
       <div>
-        <h2>Vererbungsquelle wählen xx</h2>
-        <p>New dashboard source '{newCrawlerName}'</p>
+        <h2>Neuen Crawler erstellen</h2>
+        <p>Für welches Quellobjekt soll ein Crawler erstellt werden?</p>
 
         <ListView>
           {sourceItems.map((item) => (
