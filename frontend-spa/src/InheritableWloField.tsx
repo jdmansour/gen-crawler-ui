@@ -16,7 +16,6 @@ function MyCheckbox(props: React.ComponentProps<typeof Checkbox>) {
 export default function InheritableWloField(props: { field: WloFieldInfo, selected?: boolean, onSelectedChange?: (selected: boolean) => void }) {
     const { field } = props;
 
-    console.log("inheritable", field.inheritable);
     const inheritable = (field.inheritable === undefined) ? true : field.inheritable;
     const recommended = (field.recommended === undefined) ? false : field.recommended;
     const missing = fieldMissing(field);
