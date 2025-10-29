@@ -28,7 +28,7 @@ export default function WloFieldGroup(props: {
 
 
 // TODO NEXT:
-// - Add button: go through everything and select all recommended fields
+// x Add button: go through everything and select all recommended fields
 // - make onSelectedFieldsChange return name AND new state... propagate that up
 // - dump new selection to console
 // - save to DB
