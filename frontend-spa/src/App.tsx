@@ -34,7 +34,7 @@ export default function App() {
   ];
   if (step != "dashboard") {
     // Add breadcrumb for current crawler
-    breadcrumbs.push({ label: "Neuer Crawler" });
+    breadcrumbs.push({ label: "Neuer Crawler", temporary: true });
   }
 
   useEffect(() => {

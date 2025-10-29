@@ -35,6 +35,10 @@
   padding: 0px 12px;
 }
 
+.wlo-breadcrumbs-temporary {
+  color: color-mix(in srgb, #163e76 50%, white 50%);
+}
+
 .wlo-breadcrumbs a:link,
 .wlo-breadcrumbs a:visited {
   text-decoration: none;

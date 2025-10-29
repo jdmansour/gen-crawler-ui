@@ -5,6 +5,7 @@ import "./Breadcrumbs.css";
 export type Breadcrumb = {
   label: string;
   url?: string;
+  temporary?: boolean;
 };
 
 export default function Breadcrumbs(props: { breadcrumbs: Array<Breadcrumb> }) {
@@ -12,7 +13,8 @@ export default function Breadcrumbs(props: { breadcrumbs: Array<Breadcrumb> }) {
     <nav>
       <ol className="wlo-breadcrumbs">
         {props.breadcrumbs.map((breadcrumb, index) => (
-          <li key={index}>
+          <li key={index} className={breadcrumb.temporary ? "wlo-breadcrumbs-temporary" : ""}>
+            {index > 0 && <PathSeparator />}
             <AOrSpan href={breadcrumb.url}>
               {index == 0 && (
                 <HomeIcon
@@ -23,7 +25,6 @@ export default function Breadcrumbs(props: { breadcrumbs: Array<Breadcrumb> }) {
               )}
               <span>{breadcrumb.label}</span>
             </AOrSpan>
-            {index < props.breadcrumbs.length - 1 && <PathSeparator />}
           </li>
         ))}
       </ol>
