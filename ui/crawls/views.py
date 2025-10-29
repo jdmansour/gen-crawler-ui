@@ -16,10 +16,16 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from crawls.forms import StartCrawlForm
-from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet
-from crawls.serializers import CrawlerSerializer, FilterRuleSerializer, FilterSetSerializer
+from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
+from crawls.serializers import CrawlerSerializer, FilterRuleSerializer, FilterSetSerializer, SourceItemSerializer
 
 log = logging.getLogger(__name__)
+
+class SourceItemViewSet(viewsets.ModelViewSet):
+    """ Provides the API under /api/source_items/ """
+    queryset = SourceItem.objects.all()
+    serializer_class = SourceItemSerializer
+    permission_classes = [permissions.AllowAny]
 
 
 class CrawlerViewSet(viewsets.ModelViewSet):

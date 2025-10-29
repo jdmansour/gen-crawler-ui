@@ -8,6 +8,26 @@ from django.db import models
 
 log = logging.getLogger(__name__)
 
+## WLO Sources
+
+class SourceItem(models.Model):
+    """ An edu-sharing source item that can be crawled. """
+
+    id = models.AutoField(primary_key=True)
+    guid = models.CharField(max_length=255, unique=True)
+    title = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    data = models.JSONField()
+
+    def __str__(self):
+        return f"{self.title} ({self.guid})"
+
+    def preview_url(self) -> str:
+        """ Returns the preview URL for this source item. """
+        return self.data.get('preview', {}).get('url', None)
+
+## Crawlers
 
 class Crawler(models.Model):
     """ A definition of a generic web crawler. """

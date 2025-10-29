@@ -12,7 +12,13 @@ from django.forms import TextInput
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 
-from .models import Crawler, CrawledURL, CrawlJob, FilterRule, FilterSet
+from .models import Crawler, CrawledURL, CrawlJob, FilterRule, FilterSet, SourceItem
+
+
+class SourceItemAdmin(admin.ModelAdmin):
+    model = SourceItem
+    list_display = ['title', 'guid', 'created_at', 'updated_at']
+    readonly_fields = ['created_at', 'updated_at']
 
 
 class CrawlerAdmin(admin.ModelAdmin):
@@ -214,6 +220,7 @@ class CrawledURLAdmin(admin.ModelAdmin):
         return not obj.noindex
 
 
+admin.site.register(SourceItem, SourceItemAdmin)
 admin.site.register(Crawler, CrawlerAdmin)
 admin.site.register(CrawlJob, CrawlJobAdmin)
 admin.site.register(CrawledURL, CrawledURLAdmin)
