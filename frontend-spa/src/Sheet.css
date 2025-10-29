@@ -1,0 +1,66 @@
+.wlo-sheet-backdrop {
+  position: fixed;
+  background-color: #ffffff88;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wlo-sheet-content {
+  background-color: #e2f2fc;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 16px;
+  min-width: 60%;
+  min-height: 40%;
+  position: relative;
+}
+
+.wlo-sheet-close-button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 48px;
+  height: 48px;
+  background-color: transparent;
+  border: none;
+  border-radius: 0px 10px 0px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* cursor: pointer;
+    color: #163E76;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: normal; */
+  transition: background-color 0.2s linear;
+}
+
+.wlo-sheet-close-button:hover {
+  background-color: #f7f8fa;
+  transition: background-color 0s linear;
+}
+
+.wlo-sheet-title {
+  font-size: 32px;
+  font-weight: 500;
+  text-align: center;
+
+  margin-bottom: 16px;
+  margin-top: 64px;
+}
+
+.wlo-sheet-subtitle {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  /* color: #545454; */
+
+  margin-bottom: 32px;
+}

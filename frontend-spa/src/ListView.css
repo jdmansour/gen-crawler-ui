@@ -1,0 +1,195 @@
+/* .wlo-listview, .wlo-listview * {
+    outline: 1px solid orange;
+} */
+
+.wlo-listview {
+  width: 100%;
+  margin-bottom: 20px;
+
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--Gray-Dark, #545454);
+}
+
+.wlo-listview .main-column {
+  font-size: 18px;
+  color: var(--Primary-Color-Dark, #032850);
+  font-weight: 600;
+}
+
+.wlo-listview .action-cell {
+  padding: 0;
+}
+
+.wlo-listview .action-cell button {
+  padding: 25px 40px;
+  border: 0;
+  background: transparent;
+  display: block;
+  width: 100%;
+  text-align: left;
+
+  border-radius: 12px;
+  border: 2px dashed var(--Primary-Color-Default, #003b7c);
+
+  color: var(--Primary-Color-Dark, #032850);
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.wlo-listview .action-cell button:hover {
+  background-color: #eff7ff;
+}
+
+.wlo-listview .main-column a:link,
+.wlo-listview .main-column a:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+.wlo-listview .inline-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--Gray-Dark, #545454);
+}
+
+.wlo-listview {
+  border-collapse: separate;
+  border-spacing: 0px 1px;
+}
+
+.wlo-listview tr {
+  position: relative;
+  z-index: 10;
+}
+
+.wlo-listview tr::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  z-index: -1;
+}
+
+.wlo-listview td {
+  text-align: left;
+  padding: 20px 20px;
+}
+
+.wlo-listview td.main-column:first-child {
+  padding-left: 40px;
+}
+
+.wlo-listview td.menu-column {
+  padding: 20px 30px;
+  width: 1%;
+}
+
+.wlo-listview td.menu-column img {
+  cursor: pointer;
+}
+
+/* Special listview with checkboxes */
+
+.wlo-listview tr.with-checkbox::after {
+  left: 40px;
+  right: 0;
+}
+
+.wlo-listview tr.with-checkbox:hover::after {
+  background-color: #f7f8fa;
+}
+
+.wlo-listview td.checkbox-column {
+  padding: 0;
+  width: 40px;
+  text-align: left;
+  /* outline: 1px solid orange; */
+}
+
+/* tr where there is a input:focus-visible in the row */
+/* .wlo-listview tr:has(input:focus-visible)::after {
+    outline: 1px solid blue;
+} */
+
+/* .wlo-listview tr:focus-within:after */
+.wlo-listview tr:has(input:focus-visible)::after {
+  outline: 2px solid AccentColor;
+  outline-offset: -2px;
+}
+
+.wlo-listview tr.selected::after {
+  background-color: #dfe9fd;
+}
+
+.wlo-listview tr.selected:hover::after {
+  background-color: #e5ecf9;
+}
+
+/* mobile: */
+@media screen and (max-width: 768px) {
+  /* .wlo-listview {
+    outline: 1px solid orange;
+}
+.wlo-listview tr {
+    outline: 1px solid red;
+}
+.wlo-listview td {
+    outline: 1px solid blue;
+} */
+
+  .wlo-listview {
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  .wlo-listview tr {
+    display: flex;
+    flex-wrap: wrap;
+    /* margin-bottom: 20px; */
+    margin-bottom: 1px;
+  }
+
+  .wlo-listview td {
+    display: block;
+    padding: 14px 20px;
+    /* padding: 20px 0; */
+    /* width: 100%; */
+    min-width: 100px;
+  }
+
+  .wlo-listview td.main-column {
+    width: 100%;
+    padding-bottom: 0;
+  }
+
+  .wlo-listview td.menu-column {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    min-width: 0;
+  }
+
+  .wlo-listview .action-cell {
+    width: 100%;
+  }
+
+  body .wlo-sitelayout {
+    margin: 0;
+    padding: 0;
+  }
+  body .wlo-sitelayout .main-content {
+    margin: 0;
+    padding: 0;
+  }
+  .wlo-sidebar {
+    display: none;
+  }
+}
