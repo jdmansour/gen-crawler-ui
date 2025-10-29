@@ -20,7 +20,7 @@ export default function MetadataInheritancePage(
     const newCrawlerName = location.state?.newCrawlerName || "";
 
     //const selectedFields: string[] = ["ccm:oeh_profession_group"];
-    const [selectedFields, setSelectedFields] = useState<string[]>([]);
+    const [selectedFields, setSelectedFields] = useState<Record<string, boolean>>({});
 
     function setHistoryState(state: {
         step: CrawlerDashboardStep;
@@ -31,13 +31,14 @@ export default function MetadataInheritancePage(
     }
 
     function selectAllRecommendedFields() {
-        const tmp = [...selectedFields];
+        const tmp = {...selectedFields};
         for (const field of fields) {
+            console.log("Checking field:", field.id);
             const missing = fieldMissing(field);
             
             if (field.recommended && !missing) {
-                if (!tmp.includes(field.id)) {
-                    tmp.push(field.id);
+                if (!tmp[field.id]) {
+                    tmp[field.id] = true;
                 }
             }
         }
@@ -52,7 +53,14 @@ export default function MetadataInheritancePage(
                 <MUIButton onClick={selectAllRecommendedFields}>Alle empfohlenen Felder auswählen</MUIButton>
             </FormGroup>
 
-            <WloFieldGroupSet groups={groups} fields={fields} selectedFields={selectedFields} />
+            <WloFieldGroupSet groups={groups} fields={fields} selectedFields={selectedFields} onSelectedFieldsChange={
+                (update) => {
+                    console.log("Field selection update:", update);
+                    setSelectedFields(prev => {
+                        return { ...prev, ...update };
+                    });
+                }}
+            />
 
             <div className="wlo-button-group">
                 <Button leftAlign onClick={() => navigate(-1)}>
@@ -60,11 +68,13 @@ export default function MetadataInheritancePage(
                 </Button>
                 <Button
                     default
-                    onClick={() =>
-                        setHistoryState({
-                            step: "filter-crawls",
-                            newCrawlerName: newCrawlerName,
-                        })
+                    onClick={() => {
+                        console.log("Selected fields:", selectedFields);
+                    }
+                        // setHistoryState({
+                        //     step: "filter-crawls",
+                        //     newCrawlerName: newCrawlerName,
+                        // })
                     }
                 >
                     Weiter

@@ -7,8 +7,8 @@ import { CustomIcon } from "./CustomIcon";
 
 export default function WloFieldGroup(props: {
     title: string, icon: string, fields: WloFieldInfo[],
-    selectedFields?: string[],
-    onSelectedFieldsChange?: (selectedFields: string[]) => void
+    selectedFields: Record<string, boolean>,
+    onSelectedFieldsChange?: (update: Record<string, boolean>) => void
 }) {
     // const fieldNotMissing = (field: WloFieldInfo) => !fieldMissing(field);    
     const {title, icon, fields, selectedFields, onSelectedFieldsChange} = props;
@@ -19,8 +19,13 @@ export default function WloFieldGroup(props: {
             {fields.map(field => {
                 return <InheritableWloField
                             key={field.id} field={field}
-                            selected={selectedFields?.includes(field.id) || false}
-                            onSelectedChange={() => onSelectedFieldsChange?.([field.id])} />
+                            selected={selectedFields[field.id] || false}
+                            onSelectedChange={
+                                (newSelected) => {
+                                    // console.log(`Field ${field.id} selected changed to ${newSelected}`);
+                                    onSelectedFieldsChange?.({[field.id]: newSelected});
+                                }
+                            } />;
             })}
         </FormGroup>
     </MdsEditor>
@@ -29,7 +34,7 @@ export default function WloFieldGroup(props: {
 
 // TODO NEXT:
 // x Add button: go through everything and select all recommended fields
-// - make onSelectedFieldsChange return name AND new state... propagate that up
-// - dump new selection to console
+// x make onSelectedFieldsChange return name AND new state... propagate that up
+// x dump new selection to console
 // - save to DB
 // - PROFIT!

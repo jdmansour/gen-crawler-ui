@@ -5,8 +5,8 @@ import { GroupInfo, WloFieldInfo } from "./wloTypes";
 export default function WloFieldGroupSet(props: {
     groups: GroupInfo[],
     fields: WloFieldInfo[],
-    selectedFields: string[],
-    onSelectedFieldsChange?: (selectedFields: string[]) => void
+    selectedFields: Record<string, boolean>,
+    onSelectedFieldsChange?: (update: Record<string, boolean>) => void
 }) {
     return (
         <Grid container spacing={2}>

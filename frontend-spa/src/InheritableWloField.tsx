@@ -5,7 +5,7 @@ import { Star } from "@mui/icons-material";
 
 function MyFormControlLabel(props: React.ComponentProps<typeof FormControlLabel>) {
     return <FormControlLabel {...props} disableTypography style={{ marginRight: 0, marginLeft: 0, alignItems: 'center', width: '100%' }} />;
-    return <FormControlLabel {...props} disableTypography style={{ marginRight: 0, marginLeft: 0, alignItems: 'baseline', width: '100%' }} />;
+    // return <FormControlLabel {...props} disableTypography style={{ marginRight: 0, marginLeft: 0, alignItems: 'baseline', width: '100%' }} />;
 }
 
 function MyCheckbox(props: React.ComponentProps<typeof Checkbox>) {
