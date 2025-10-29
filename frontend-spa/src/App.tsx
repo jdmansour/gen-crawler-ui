@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
 import "./Button.css";
@@ -11,12 +11,15 @@ import SelectSourcePage from "./SelectSourcePage";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 
 import { CrawlerResponse, SourceItem } from "./apitypes";
-import { CrawlerInfo } from "./types";
+import InputWithButton from "./InputWithButton";
+import Sheet from "./Sheet";
+import { CrawlerDashboardStep, CrawlerInfo } from "./types";
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
 export default function App() {
   const location = useLocation();
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [addCrawlerSheetVisible, setAddCrawlerSheetVisible] = useState(false);
   const [crawlerList, setCrawlerList] = useState<CrawlerInfo[]>([]);
   const [sourceItems, setSourceItems] = useState<SourceItem[]>([]);
   const [fields, setFields] = useState<WloFieldInfo[]>([]);
@@ -82,6 +85,15 @@ export default function App() {
     fetchSourceItems();
   }, []);
 
+  const navigate = useNavigate();
+    function setHistoryState(state: {
+    step: CrawlerDashboardStep;
+    newCrawlerName?: string;
+  }) {
+    const loc = "#" + state.step;
+    navigate(loc, { state: state, replace: false });
+  }
+
   return (
     <>
     <p>This is the main app</p>
@@ -95,7 +107,27 @@ export default function App() {
         )}
         <Breadcrumbs breadcrumbs={breadcrumbs} />
         {step == "dashboard" && (
-          <DashboardPage crawlerList={crawlerList}/>
+          <>
+          <DashboardPage crawlerList={crawlerList}
+            onNewCrawlerClick={()=>setAddCrawlerSheetVisible(true)}/>
+            <Sheet
+              visible={addCrawlerSheetVisible}
+              onClose={() => setAddCrawlerSheetVisible(false)}
+            >
+              <h1 className="wlo-sheet-title">Neuen Crawler anlegen</h1>
+              <p className="wlo-sheet-subtitle">
+                Gib die URL deiner gewünschten Quelle ein:
+              </p>
+              <InputWithButton
+                placeholder="https://www.example.com"
+                defaultValue="xx"
+                onAccept={(value) => {
+                  setHistoryState({ step: "select-source", newCrawlerName: value });
+                  setAddCrawlerSheetVisible(false);
+                }}
+              />
+            </Sheet>
+            </>
         )}
         {step == "select-source" && (
           <SelectSourcePage sourceItems={sourceItems} onSourceSelected={(sourceItem) => fetchSourceFields(sourceItem.guid)} />

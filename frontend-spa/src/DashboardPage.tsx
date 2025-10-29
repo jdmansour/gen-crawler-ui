@@ -1,16 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./App.css";
 import FilterTabs, { TabInfo } from "./FilterTabs";
-import InputWithButton from "./InputWithButton";
 import ListView from "./ListView";
-import Sheet from "./Sheet";
 import DreipunktmenuIcon from "./assets/icons/dreipunktmenu.svg?react";
 import ErrorIcon from "./assets/icons/error.svg?react";
 import EditIcon from "./assets/icons/mode_edit.svg?react";
 import PendingIcon from "./assets/icons/pending.svg?react";
 import StopIcon from "./assets/icons/stop.svg?react";
-import { CrawlerDashboardStep, CrawlerInfo, CrawlerStatus } from "./types";
+import { CrawlerInfo, CrawlerStatus } from "./types";
 
 const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
   draft: "Entwurf",
@@ -22,20 +19,10 @@ const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
 
 export default function DashboardPage(props: {
   crawlerList?: CrawlerInfo[];
+  onNewCrawlerClick?: () => void;
 }) {
   const [activeTab, setActiveTab] = useState(0);
-  const [addCrawlerSheetVisible, setAddCrawlerSheetVisible] = useState(false);
-
-  const navigate = useNavigate();
-  const { crawlerList = [] } = props;
-
-  function setHistoryState(state: {
-    step: CrawlerDashboardStep;
-    newCrawlerName?: string;
-  }) {
-    const loc = "#" + state.step;
-    navigate(loc, { state: state, replace: false });
-  }
+  const { crawlerList = [], onNewCrawlerClick } = props;
 
   const tabs = [
     { tag: "all", label: "Alle" },
@@ -67,7 +54,7 @@ export default function DashboardPage(props: {
         <ListView>
           <tr key="add">
             <td colSpan={4} className="action-cell">
-              <button className="wlo-button" onClick={()=>setAddCrawlerSheetVisible(true)}>
+              <button className="wlo-button" onClick={onNewCrawlerClick}>
                 + &nbsp;&nbsp; Crawler hinzufügen
               </button>
             </td>
@@ -77,23 +64,6 @@ export default function DashboardPage(props: {
           ))}
         </ListView>
       </div>
-      <Sheet
-        visible={addCrawlerSheetVisible}
-        onClose={() => setAddCrawlerSheetVisible(false)}
-      >
-        <h1 className="wlo-sheet-title">Neuen Crawler anlegen</h1>
-        <p className="wlo-sheet-subtitle">
-          Gib die URL deiner gewünschten Quelle ein:
-        </p>
-        <InputWithButton
-          placeholder="https://www.example.com"
-          defaultValue="xx"
-          onAccept={(value) => {
-            setHistoryState({ step: "select-source", newCrawlerName: value });
-            setAddCrawlerSheetVisible(false);
-          }}
-        />
-      </Sheet>
     </>
   );
 }
