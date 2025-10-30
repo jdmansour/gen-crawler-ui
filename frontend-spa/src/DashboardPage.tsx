@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import FilterTabs, { TabInfo } from "./FilterTabs";
 import ListView from "./ListView";
@@ -7,7 +7,9 @@ import ErrorIcon from "./assets/icons/error.svg?react";
 import EditIcon from "./assets/icons/mode_edit.svg?react";
 import PendingIcon from "./assets/icons/pending.svg?react";
 import StopIcon from "./assets/icons/stop.svg?react";
-import { CrawlerInfo, CrawlerStatus } from "./types";
+import { CrawlerInfo, CrawlerStatus, useStep } from "./types";
+import { DashboardPageContext } from "./RootContext";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 
 const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
   draft: "Entwurf",
@@ -17,13 +19,12 @@ const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
   published: "Im Prüfbuffet",
 };
 
-export default function DashboardPage(props: {
-  crawlerList?: CrawlerInfo[];
-  onCrawlerClick?: (crawlerId: number) => void;
-  onNewCrawlerClick?: () => void;
-}) {
+export default function DashboardPage() {
+  const { crawlerList = [], setCrawlerName } = useOutletContext<DashboardPageContext>();
   const [activeTab, setActiveTab] = useState(0);
-  const { crawlerList = [], onNewCrawlerClick, onCrawlerClick } = props;
+  const navigate = useNavigate();
+
+  useStep("dashboard");
 
   const tabs = [
     { tag: "all", label: "Alle" },
@@ -55,13 +56,16 @@ export default function DashboardPage(props: {
         <ListView>
           <tr key="add">
             <td colSpan={4} className="action-cell">
-              <button className="wlo-button" onClick={onNewCrawlerClick}>
+              <button className="wlo-button" onClick={() => {
+                setCrawlerName(null);
+                navigate("/select-source");
+              }}>
                 + &nbsp;&nbsp; Crawler hinzufügen
               </button>
             </td>
           </tr>
           {filteredCrawlerList.map((info) => (
-            <CrawlerTableRow key={info.id} info={info} onClick={onCrawlerClick} />
+            <CrawlerTableRow key={info.id} info={info} />
           ))}
         </ListView>
       </div>
@@ -73,7 +77,7 @@ function CrawlerTableRow(props: { info: CrawlerInfo, onClick?: (crawlerId: numbe
   return (
     <tr>
       <td className="main-column">
-        <a href="#" onClick={() => props.onClick?.(props.info.id)}>{props.info.name}</a>
+        <Link to={"crawlers/" + props.info.id + ""}>{props.info.name}</Link>
       </td>
       <td>
         <div className="inline-title">Status</div>

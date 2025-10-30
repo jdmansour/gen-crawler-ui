@@ -1,22 +1,28 @@
 import { TextField } from "@mui/material";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate, useOutletContext } from "react-router";
 import Button from "./Button";
+import { AddCrawlerPageContext } from "./RootContext";
 import { SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
+import { useStep } from "./types";
 
-export default function AddCrawlerPage(props: {
-  sourceItem: SourceItem;
-  onCancelClick?: () => void;
-  onCreateClick?: (source: SourceItem, crawlerURL: string, crawlerName: string) => void;
-}) {
-  
-  const { sourceItem, onCreateClick, onCancelClick } = props;
+
+export default function AddCrawlerPage() {
+
+  const { sourceItem, onCreateClick } = useOutletContext<AddCrawlerPageContext>();
+
+  // const { sourceItem, onCreateClick, onCancelClick } = props;
   const [ crawlerURL, setCrawlerURL ] = useState<string>("");
   const [ crawlerName, setCrawlerName ] = useState<string>("");
 
+  useStep("add-crawler");
+
+  const navigate = useNavigate();
+
   // default start URL
-  const defaultURL = sourceItem.data?.properties['ccm:wwwurl'][0] || "";
-  const defaultName = sourceItem.title || "";
+  const defaultURL = sourceItem?.data?.properties['ccm:wwwurl'][0] || "";
+  const defaultName = sourceItem?.title || "";
 
   useEffect(() => {
     setCrawlerURL(defaultURL);
@@ -25,6 +31,12 @@ export default function AddCrawlerPage(props: {
   useEffect(() => {
     setCrawlerName(defaultName);
   }, [defaultName]);
+
+
+  if (!sourceItem) {
+    return <div>Kein Quellobjekt ausgewählt</div>;
+  }
+
 
   return (
     <div className="main-content">
@@ -60,7 +72,7 @@ export default function AddCrawlerPage(props: {
         />
 
         <div className="wlo-button-group">
-          <Button leftAlign onClick={onCancelClick}>Zurück</Button>
+          <Button leftAlign onClick={() => navigate(-1)}>Zurück</Button>
           <Button default onClick={() => {
             if (onCreateClick) {
               onCreateClick(sourceItem, crawlerURL, crawlerName);

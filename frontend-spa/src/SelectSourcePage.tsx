@@ -1,18 +1,20 @@
 import { useState } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Button from "./Button";
 import ListView from "./ListView";
+import { SelectSourcePageContext } from "./RootContext";
 import { SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
+import { useStep } from "./types";
 
-export default function SelectSourcePage(props: {
-  sourceItems: SourceItem[];
-  onCancelClick?: () => void;
-  onSourceSelected?: (source: SourceItem) => void;
-}) {
-  
-  const { sourceItems, onCancelClick, onSourceSelected } = props;
+export default function SelectSourcePage() {
+
+  const { sourceItems, onSourceSelected } = useOutletContext<SelectSourcePageContext>();
 
   const [selectedSourceId, setSelectedSourceId] = useState<number | null>(null);
+  const navigate = useNavigate();
+  
+  useStep("select-source");
 
   return (
     <div className="main-content">
@@ -32,9 +34,7 @@ export default function SelectSourcePage(props: {
         </ListView>
 
         <div className="wlo-button-group">
-          <Button leftAlign onClick={onCancelClick}>
-            Abbrechen
-          </Button>
+          <Button leftAlign onClick={() => navigate(-1)}>Abbrechen</Button>
           <Button>Quelldaten neu anlegen</Button>
           <Button default onClick={() => {
             if (onSourceSelected && selectedSourceId !== null) {

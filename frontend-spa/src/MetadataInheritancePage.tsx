@@ -1,25 +1,22 @@
 
-import { useLocation, useNavigate } from "react-router-dom";
-import Button from "./Button";
-import WloFieldGroupSet from "./WloFieldGroupSet";
-import { CrawlerDashboardStep } from "./types";
-import { fieldMissing, GroupInfo, WloFieldInfo } from "./wloTypes";
-import { Button as MUIButton, FormGroup } from "@mui/material";
+import { FormGroup, Button as MUIButton } from "@mui/material";
 import { useState } from "react";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import Button from "./Button";
+import { MetadataInheritancePageContext } from "./RootContext";
+import WloFieldGroupSet from "./WloFieldGroupSet";
+import { useStep } from "./types";
+import { fieldMissing } from "./wloTypes";
 
-export default function MetadataInheritancePage(
-    props: {
-        fields: WloFieldInfo[];
-        groups: GroupInfo[];
-        onSave?: (selectedFields: Record<string, boolean>) => void;
-    }
-) {
-    const { fields, groups, onSave } = props;
-
+export default function MetadataInheritancePage() {
+    const { fields, groups, onSave } = useOutletContext<MetadataInheritancePageContext>();
+    const { crawlerId } = useParams();
     const navigate = useNavigate();
 
     //const selectedFields: string[] = ["ccm:oeh_profession_group"];
     const [selectedFields, setSelectedFields] = useState<Record<string, boolean>>({});
+
+    useStep("metadata-inheritance");
 
     function selectAllRecommendedFields() {
         const tmp = {...selectedFields};

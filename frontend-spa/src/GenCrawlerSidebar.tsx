@@ -12,7 +12,7 @@ export default function GenCrawlerSidebar(props: {
   const sidebarTabs = [
     // { tag: "dashboard", label: "1. Dashboard.", icon: RobotIcon },
     { tag: "select-source", label: "1. Quelle Wählen", icon: SelectSourceIcon },
-    { tag: "crawler-details", label: "2. Crawler Details", icon: RobotIcon },
+    { tag: "add-crawler", label: "2. Crawler Details", icon: RobotIcon },
     { tag: "metadata-inheritance", label: "3. Datenvererbung", icon: MetadataInheritanceIcon },
     { tag: "filter-crawls", label: "4. Filtern", icon: FilterCrawlsIcon },
   ] as TabInfo[];
@@ -22,6 +22,7 @@ export default function GenCrawlerSidebar(props: {
   const location = useLocation();
   const navigate = useNavigate();
   const historyState = location.state;
+  console.log("Rendering sidebar for step:", step);
 
   return (
     <FilterTabs

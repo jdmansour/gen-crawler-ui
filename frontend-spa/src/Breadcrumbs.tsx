@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import HomeIcon from "./assets/icons/home.svg?react";
 import PathSeparator from "./assets/icons/pathseparator.svg?react";
 import "./Breadcrumbs.css";
@@ -15,7 +16,7 @@ export default function Breadcrumbs(props: { breadcrumbs: Array<Breadcrumb> }) {
         {props.breadcrumbs.map((breadcrumb, index) => (
           <li key={index} className={breadcrumb.temporary ? "wlo-breadcrumbs-temporary" : ""}>
             {index > 0 && <PathSeparator />}
-            <AOrSpan href={breadcrumb.url}>
+            <LinkOrSpan href={breadcrumb.url}>
               {index == 0 && (
                 <HomeIcon
                   className="wlo-breadcrumbs-home-icon"
@@ -24,7 +25,7 @@ export default function Breadcrumbs(props: { breadcrumbs: Array<Breadcrumb> }) {
                 />
               )}
               <span>{breadcrumb.label}</span>
-            </AOrSpan>
+            </LinkOrSpan>
           </li>
         ))}
       </ol>
@@ -32,9 +33,9 @@ export default function Breadcrumbs(props: { breadcrumbs: Array<Breadcrumb> }) {
   );
 }
 
-function AOrSpan(props: { href?: string; children: React.ReactNode }) {
+function LinkOrSpan(props: { href?: string; children: React.ReactNode }) {
   if (props.href !== undefined) {
-    return <a href={props.href}>{props.children}</a>;
+    return <Link to={props.href}>{props.children}</Link>;
   } else {
     return <>{props.children}</>;
   }

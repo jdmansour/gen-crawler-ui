@@ -19,15 +19,23 @@ import CrawlerDetailsPage from "./CrawlerDetailsPage";
 
 export default function App() {
   const location = useLocation();
+  // layout relevant
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  // dashboard
   const [crawlerList, setCrawlerList] = useState<CrawlerInfo[]>([]);
+  // select source
   const [sourceItems, setSourceItems] = useState<SourceItem[]>([]);
   const [selectedSourceItem, setSelectedSourceItem] = useState<SourceItem | null>(null);
+  // metadata inheritance
   const [fields, setFields] = useState<WloFieldInfo[]>([]);
   const [fieldGroups, setFieldGroups] = useState<GroupInfo[]>([]);
-  const [crawlerName, setCrawlerName] = useState<string|null>(null);
-  const [crawlerId, setCrawlerId] = useState<number|null>(null);
+  // used while loading source fields
   const [sourceFieldsLoading, setSourceFieldsLoading] = useState(false);
+  // used for breadcrumb only
+  const [crawlerName, setCrawlerName] = useState<string|null>(null);
+  // used for updating the inherited fields of the created crawler
+  const [crawlerId, setCrawlerId] = useState<number|null>(null);
+
   const step = location.state?.step || "dashboard";
 
   const breadcrumbs: Breadcrumb[] = [
@@ -147,7 +155,15 @@ export default function App() {
               // create a crawler, and launch an initial analysis-crawl
               const newCrawler = await createCrawler(sourceItem.guid, crawlerURL, crawlerName);
 
+              console.log("Known crawlers before adding new one:", crawlerList);
               console.log("Created new crawler:", newCrawler);
+              const newCrawlerInfo = new CrawlerInfo(
+                newCrawler.id,
+                newCrawler.name,
+                "pending",
+                new Date(newCrawler.updated_at)
+              );
+              setCrawlerList([...crawlerList, newCrawlerInfo]);
 
               setCrawlerName(crawlerName);
               setCrawlerId(newCrawler.id);
