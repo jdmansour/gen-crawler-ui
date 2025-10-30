@@ -4,7 +4,7 @@ import Button from "./Button";
 import { SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 
-export default function CrawlerDetailsPage(props: {
+export default function AddCrawlerPage(props: {
   sourceItem: SourceItem;
   onCancelClick?: () => void;
   onCreateClick?: (source: SourceItem, crawlerURL: string, crawlerName: string) => void;

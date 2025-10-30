@@ -13,7 +13,7 @@ import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerResponse, createCrawler, SourceItem } from "./apitypes";
 import { CrawlerDashboardStep, CrawlerInfo } from "./types";
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
-import CrawlerDetailsPage from "./CrawlerDetailsPage";
+import AddCrawlerPage from "./AddCrawlerPage";
 
 export default function App() {
   const location = useLocation();
@@ -132,7 +132,7 @@ export default function App() {
         )}
         {step == "crawler-details" && (
           selectedSourceItem && (
-          <CrawlerDetailsPage
+          <AddCrawlerPage
             sourceItem={selectedSourceItem}
             onCreateClick={async (sourceItem, crawlerURL, crawlerName) => {
               fetchSourceFields(sourceItem.guid);
