@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import Button from "./Button";
 import ListView from "./ListView";
 import { SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
-import { CrawlerDashboardStep } from "./types";
 
 export default function SelectSourcePage(props: {
   sourceItems: SourceItem[];
