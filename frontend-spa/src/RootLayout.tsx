@@ -55,7 +55,15 @@ export default function RootLayout() {
       // create a crawler, and launch an initial analysis-crawl
       const newCrawler = await createCrawler(sourceItem.guid, crawlerURL, crawlerName);
 
+      console.log("Known crawlers before adding new one:", crawlerList);
       console.log("Created new crawler:", newCrawler);
+      const newCrawlerInfo = new CrawlerInfo(
+        newCrawler.id,
+        newCrawler.name,
+        "pending",
+        new Date(newCrawler.updated_at)
+      );
+      setCrawlerList([...crawlerList, newCrawlerInfo]);
 
       //setHistoryState({ step: `crawlers/${newCrawler.id}/metadata-inheritance`, newCrawlerName: crawlerName });
       navigate(`/crawlers/${newCrawler.id}/metadata-inheritance`);
