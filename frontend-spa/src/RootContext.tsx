@@ -4,7 +4,6 @@ import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
 export type DashboardPageContext = {
   crawlerList: CrawlerInfo[];
-  setCrawlerName: (name: string|null) => void;
 };
 
 export type SelectSourcePageContext = {

@@ -20,7 +20,7 @@ const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
 };
 
 export default function DashboardPage() {
-  const { crawlerList = [], setCrawlerName } = useOutletContext<DashboardPageContext>();
+  const { crawlerList = [] } = useOutletContext<DashboardPageContext>();
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
 
@@ -57,7 +57,6 @@ export default function DashboardPage() {
           <tr key="add">
             <td colSpan={4} className="action-cell">
               <button className="wlo-button" onClick={() => {
-                setCrawlerName(null);
                 navigate("/select-source");
               }}>
                 + &nbsp;&nbsp; Crawler hinzufügen

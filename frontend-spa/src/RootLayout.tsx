@@ -1,13 +1,13 @@
 // RootLayout.tsx
-import { Outlet, useLocation, useMatches, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { CrawlerResponse, createCrawler, SourceItem } from "./apitypes";
-import { CrawlerDashboardStep, CrawlerInfo } from "./types";
-import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
-import { GroupInfo, WloFieldInfo } from "./wloTypes";
 import GenCrawlerSidebar from "./GenCrawlerSidebar";
 import { RootContext } from "./RootContext";
+import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
+import { CrawlerDashboardStep, CrawlerInfo } from "./types";
+import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
 export default function RootLayout() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -16,10 +16,6 @@ export default function RootLayout() {
   // select source
   const [sourceItems, setSourceItems] = useState<SourceItem[]>([]);
   const [selectedSourceItem, setSelectedSourceItem] = useState<SourceItem | null>(null);
-  // for this component:
-  const [crawlerName, setCrawlerName] = useState<string|null>(null);
-  // used for updating the inherited fields of the created crawler
-  const [crawlerId, setCrawlerId] = useState<number|null>(null);
 
   // metadata inheritance
   const [fields, setFields] = useState<WloFieldInfo[]>([]);
@@ -29,6 +25,7 @@ export default function RootLayout() {
 
   const [step, setStep] = useState<CrawlerDashboardStep>("dashboard");
   const params = useParams();
+  const crawlerId = params.crawlerId;
   console.log("RootLayout params:", params)
 
 
@@ -44,7 +41,6 @@ export default function RootLayout() {
   const outletContext: RootContext = {
     sourceItems: sourceItems,
     setStep: setStep,
-    setCrawlerName: setCrawlerName,
     onSourceSelected: (source: SourceItem) => {
       setSelectedSourceItem(source);
       setHistoryState({ step: "add-crawler", newCrawlerName: "abcd" });
@@ -61,8 +57,6 @@ export default function RootLayout() {
 
       console.log("Created new crawler:", newCrawler);
 
-      setCrawlerName(crawlerName);
-      setCrawlerId(newCrawler.id);
       //setHistoryState({ step: `crawlers/${newCrawler.id}/metadata-inheritance`, newCrawlerName: crawlerName });
       navigate(`/crawlers/${newCrawler.id}/metadata-inheritance`);
     },
@@ -105,7 +99,9 @@ export default function RootLayout() {
   } else if (step == "add-crawler") {
     breadcrumbs.push({ label: "Crawler Details", temporary: true });
   } else if (step == "metadata-inheritance" || step == "filter-crawls" || step == "crawler-details") {
-    const crawlerId = params.crawlerId;
+    // is the id in the list?
+    const crawlerFound = crawlerId && crawlerList.find(c => c.id == crawlerId);
+    console.log("Displaying breadcrumbs for crawlerId:", crawlerId, "found:", crawlerFound);
     const crawlerName = crawlerList.find(c => c.id == crawlerId)?.name;
     breadcrumbs.push({ label: crawlerName || "-", url: `/crawlers/${crawlerId}` });
   }
