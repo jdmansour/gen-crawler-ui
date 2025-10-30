@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./App.css";
+import AddCrawlerPage from "./AddCrawlerPage";
+import { CrawlerResponse, createCrawler, SourceItem } from "./apitypes";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
-import "./Button.css";
 import DashboardPage from "./DashboardPage";
 import FilterCrawlsPage from "./FilterCrawlsPage";
 import GenCrawlerSidebar from "./GenCrawlerSidebar";
 import MetadataInheritancePage from "./MetadataInheritancePage";
 import SelectSourcePage from "./SelectSourcePage";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
-
-import { CrawlerResponse, createCrawler, SourceItem } from "./apitypes";
 import { CrawlerDashboardStep, CrawlerInfo } from "./types";
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
-import AddCrawlerPage from "./AddCrawlerPage";
+
+import "./App.css";
+import "./Button.css";
+import CrawlerDetailsPage from "./CrawlerDetailsPage";
+
 
 export default function App() {
   const location = useLocation();
@@ -91,11 +93,11 @@ export default function App() {
   }, []);
 
   const navigate = useNavigate();
-    function setHistoryState(state: {
+  function setHistoryState(state: {
     step: CrawlerDashboardStep;
     newCrawlerName?: string;
   }) {
-    const loc = "#" + state.step;
+    const loc = "/" + state.step;
     navigate(loc, { state: state, replace: false });
   }
 
@@ -114,6 +116,10 @@ export default function App() {
         {step == "dashboard" && (
           <>
           <DashboardPage crawlerList={crawlerList}
+            onCrawlerClick={ (crawlerId) => {
+              console.log("Clicked crawler:", crawlerId);
+              setHistoryState({ step: "crawler-details", newCrawlerName: "abcd" });
+            }}
             onNewCrawlerClick={()=>{
               setCrawlerName(null);
               setHistoryState({ step: "select-source" });
@@ -125,12 +131,12 @@ export default function App() {
             sourceItems={sourceItems}
             onSourceSelected={(sourceItem) => {
               setSelectedSourceItem(sourceItem);
-              setHistoryState({ step: "crawler-details", newCrawlerName: "abcd" });
+              setHistoryState({ step: "add-crawler", newCrawlerName: "abcd" });
             }}
             onCancelClick={() => navigate(-1)}
             />
         )}
-        {step == "crawler-details" && (
+        {step == "add-crawler" && (
           selectedSourceItem && (
           <AddCrawlerPage
             sourceItem={selectedSourceItem}
@@ -183,6 +189,9 @@ export default function App() {
             }}
             />
           )
+        )}
+        {step == "crawler-details" && (
+          <CrawlerDetailsPage />
         )}
         {step == "filter-crawls" && (
           <FilterCrawlsPage />

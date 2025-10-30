@@ -19,10 +19,11 @@ const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
 
 export default function DashboardPage(props: {
   crawlerList?: CrawlerInfo[];
+  onCrawlerClick?: (crawlerId: number) => void;
   onNewCrawlerClick?: () => void;
 }) {
   const [activeTab, setActiveTab] = useState(0);
-  const { crawlerList = [], onNewCrawlerClick } = props;
+  const { crawlerList = [], onNewCrawlerClick, onCrawlerClick } = props;
 
   const tabs = [
     { tag: "all", label: "Alle" },
@@ -60,7 +61,7 @@ export default function DashboardPage(props: {
             </td>
           </tr>
           {filteredCrawlerList.map((info) => (
-            <CrawlerTableRow key={info.id} info={info} />
+            <CrawlerTableRow key={info.id} info={info} onClick={onCrawlerClick} />
           ))}
         </ListView>
       </div>
@@ -68,11 +69,11 @@ export default function DashboardPage(props: {
   );
 }
 
-function CrawlerTableRow(props: { info: CrawlerInfo }) {
+function CrawlerTableRow(props: { info: CrawlerInfo, onClick?: (crawlerId: number) => void }) {
   return (
     <tr>
       <td className="main-column">
-        <a href="#">{props.info.name}</a>
+        <a href="#" onClick={() => props.onClick?.(props.info.id)}>{props.info.name}</a>
       </td>
       <td>
         <div className="inline-title">Status</div>

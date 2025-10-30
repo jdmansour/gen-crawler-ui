@@ -17,19 +17,9 @@ export default function MetadataInheritancePage(
     const { fields, groups, onSave } = props;
 
     const navigate = useNavigate();
-    const location = useLocation();
-    const newCrawlerName = location.state?.newCrawlerName || "";
 
     //const selectedFields: string[] = ["ccm:oeh_profession_group"];
     const [selectedFields, setSelectedFields] = useState<Record<string, boolean>>({});
-
-    function setHistoryState(state: {
-        step: CrawlerDashboardStep;
-        newCrawlerName?: string;
-    }) {
-        const loc = "#" + state.step;
-        navigate(loc, { state: state, replace: false });
-    }
 
     function selectAllRecommendedFields() {
         const tmp = {...selectedFields};

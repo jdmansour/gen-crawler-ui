@@ -2,9 +2,10 @@
 export type CrawlerDashboardStep =
   | "dashboard"
   | "select-source"
-  | "crawler-details"
+  | "add-crawler"
   | "metadata-inheritance"
-  | "filter-crawls";
+  | "filter-crawls"
+  | "crawler-details";
 export class CrawlerInfo {
   id: number;
   name: string;
