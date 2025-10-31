@@ -1,10 +1,10 @@
+import { useNavigate, useParams } from "react-router-dom";
 import FilterCrawlsIcon from "./assets/icons/filter-crawls.svg?react";
 import MetadataInheritanceIcon from "./assets/icons/metadata-inheritance.svg?react";
 import RobotIcon from "./assets/icons/robot.svg?react";
 import SelectSourceIcon from "./assets/icons/select-source.svg?react";
-import { CrawlerDashboardStep } from "./types";
 import FilterTabs, { TabInfo } from "./FilterTabs";
-import { useLocation, useNavigate } from "react-router-dom";
+import { CrawlerDashboardStep } from "./types";
 
 export default function GenCrawlerSidebar(props: {
   step: CrawlerDashboardStep;
@@ -19,9 +19,8 @@ export default function GenCrawlerSidebar(props: {
 
   const { step } = props;
   const activeSidebarTab = sidebarTabs.findIndex((tab) => tab.tag == step);
-  const location = useLocation();
   const navigate = useNavigate();
-  const historyState = location.state;
+  const params = useParams();
   console.log("Rendering sidebar for step:", step);
 
   return (
@@ -31,8 +30,24 @@ export default function GenCrawlerSidebar(props: {
       selectedTab={activeSidebarTab}
       tabsClickable="complete"
       onTabClick={(index) => {
-        const newState = { ...historyState, step: sidebarTabs[index].tag };
-        navigate("/", { state: newState });
+        const tag = sidebarTabs[index].tag;
+        const crawlerId = params.crawlerId;
+
+        // TODO: when we go back to add-crawler, we don't want to create a new crawler!
+        // we should add something like add-crawler?existing=123
+        switch (tag) {
+          case "select-source":
+          case "add-crawler":
+            navigate(`/${tag}`);
+            break;
+          case "metadata-inheritance":
+          case "filter-crawls":
+            navigate(`/crawlers/${crawlerId}/${tag}`);
+            break;
+          default:
+            console.error("Unhandled sidebar tab click for tag:", tag);
+            return;
+        }
       }}
     />
   );
