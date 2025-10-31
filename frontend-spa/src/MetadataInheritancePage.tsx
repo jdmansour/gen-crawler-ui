@@ -10,7 +10,6 @@ import { fieldMissing } from "./wloTypes";
 
 export default function MetadataInheritancePage() {
     const { fields, groups, onSave } = useOutletContext<MetadataInheritancePageContext>();
-    const { crawlerId } = useParams();
     const navigate = useNavigate();
 
     //const selectedFields: string[] = ["ccm:oeh_profession_group"];

@@ -25,7 +25,7 @@ export default function RootLayout() {
 
   const [step, setStep] = useState<CrawlerDashboardStep>("dashboard");
   const params = useParams();
-  const crawlerId = params.crawlerId;
+  const crawlerId : number | undefined = params.crawlerId ? parseInt(params.crawlerId) : undefined;
   console.log("RootLayout params:", params)
 
 

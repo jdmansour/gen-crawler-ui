@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import "./App.css";
 import FilterTabs, { TabInfo } from "./FilterTabs";
 import ListView from "./ListView";
+import { DashboardPageContext } from "./RootContext";
 import DreipunktmenuIcon from "./assets/icons/dreipunktmenu.svg?react";
 import ErrorIcon from "./assets/icons/error.svg?react";
 import EditIcon from "./assets/icons/mode_edit.svg?react";
 import PendingIcon from "./assets/icons/pending.svg?react";
 import StopIcon from "./assets/icons/stop.svg?react";
 import { CrawlerInfo, CrawlerStatus, useStep } from "./types";
-import { DashboardPageContext } from "./RootContext";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
 
 const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
   draft: "Entwurf",
