@@ -57,7 +57,8 @@ export default function CrawlerDetailsPage() {
             fullWidth
             label="Start-URL"
         />
-        {/* Add more crawler details here */}
+
+        <p><a href={`http://localhost:8000/admin/crawls/crawler/${crawler.id}/change/`}>Im Admin-Bereich anzeigen</a></p>
     </div>;
 
 }
