@@ -1,6 +1,5 @@
 import { SourceItem } from "./apitypes";
 import { CrawlerDashboardStep, CrawlerInfo } from "./types";
-import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
 export type DashboardPageContext = {
   crawlerList: CrawlerInfo[];
@@ -25,6 +24,7 @@ export type MetadataInheritancePageContext = {
 };
 
 export type CrawlerDetailsPageContext = {
+  sourceItems: SourceItem[];
   crawlerList: CrawlerInfo[];
 };
 

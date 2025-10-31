@@ -163,7 +163,8 @@ export default function App() {
                 newCrawler.name,
                 "pending",
                 new Date(newCrawler.updated_at),
-                sourceItem.guid
+                sourceItem.guid,
+                newCrawler.start_url
               );
               setCrawlerList([...crawlerList, newCrawlerInfo]);
 

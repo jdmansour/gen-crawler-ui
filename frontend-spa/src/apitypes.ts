@@ -5,6 +5,7 @@ export type CrawlerResponse = {
     created_at: string;
     updated_at: string;
     source_item: string;
+    start_url: string;
 };
 
 export type SourceItem = {

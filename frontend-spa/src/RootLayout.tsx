@@ -1,13 +1,12 @@
 // RootLayout.tsx
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import { CrawlerResponse, createCrawler, SourceItem } from "./apitypes";
+import { CrawlerResponse, SourceItem } from "./apitypes";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
 import GenCrawlerSidebar from "./GenCrawlerSidebar";
 import { RootContext } from "./RootContext";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerDashboardStep, CrawlerInfo } from "./types";
-import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
 export default function RootLayout() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -100,7 +99,8 @@ export default function RootLayout() {
       item.name,
       "pending",
       new Date(item.updated_at),
-      item.source_item
+      item.source_item,
+      item.start_url
     ));
     setCrawlerList(crawlers);
   }

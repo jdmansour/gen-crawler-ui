@@ -24,18 +24,21 @@ export class CrawlerInfo {
   status: CrawlerStatus;
   updatedAt: Date;
   sourceItemGuid?: string;
+  start_url?: string;
   constructor(
     id: number,
     name: string,
     status: CrawlerStatus,
     updatedAt: Date,
-    sourceItemGuid?: string
+    sourceItemGuid?: string,
+    start_url?: string
   ) {
     this.id = id;
     this.name = name;
     this.status = status;
     this.updatedAt = updatedAt;
     this.sourceItemGuid = sourceItemGuid;
+    this.start_url = start_url;
   }
 }
 

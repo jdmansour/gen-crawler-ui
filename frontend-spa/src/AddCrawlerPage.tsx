@@ -62,7 +62,8 @@ export default function AddCrawlerPage() {
       newCrawler.name,
       "pending",
       new Date(newCrawler.updated_at),
-      sourceItem.guid
+      sourceItem.guid,
+      newCrawler.start_url
     );
     setCrawlerList([...crawlerList, newCrawlerInfo]);
 
@@ -97,19 +98,19 @@ export default function AddCrawlerPage() {
         </div>
 
         <TextField
+          value={crawlerName}
+          onChange={(event) => setCrawlerName(event.target.value)}
+          fullWidth
+          label="Name des Crawlers"
+          style={{ marginBottom: "20px" }}
+        />
+
+        <TextField
           value={crawlerURL}
           onChange={(event) => setCrawlerURL(event.target.value)}
           fullWidth
           label="Start-URL"
           disabled={!!existingCrawlerId}
-        />
-
-        <TextField
-          value={crawlerName}
-          onChange={(event) => setCrawlerName(event.target.value)}
-          fullWidth
-          label="Name des Crawlers"
-          style={{ marginTop: "20px" }}
         />
 
         <div className="wlo-button-group">
