@@ -13,12 +13,14 @@ export type SelectSourcePageContext = {
 
 export type AddCrawlerPageContext = {
   sourceItem?: SourceItem;
-  onCreateClick: (source: SourceItem, crawlerURL: string, crawlerName: string) => void;
+  // onCreateClick: (source: SourceItem, crawlerURL: string, crawlerName: string) => void;
+  setCrawlerList: (crawlers: CrawlerInfo[]) => void;
 };
 
 export type MetadataInheritancePageContext = {
-  fields: WloFieldInfo[];
-  groups: GroupInfo[];
+  crawlerList: CrawlerInfo[];
+  // fields: WloFieldInfo[];
+  // groups: GroupInfo[];
   onSave: (selectedFields: Record<string, boolean>) => void;
 };
 

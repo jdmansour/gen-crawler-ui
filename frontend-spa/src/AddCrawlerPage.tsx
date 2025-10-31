@@ -1,20 +1,22 @@
 import { TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext, useParams, useSearchParams } from "react-router";
+import { useNavigate, useOutletContext, useSearchParams } from "react-router";
 import Button from "./Button";
 import { AddCrawlerPageContext } from "./RootContext";
-import { SourceItem } from "./apitypes";
+import { createCrawler, SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
-import { useStep } from "./types";
+import { crawlerList } from "./data";
+import { CrawlerInfo, useStep } from "./types";
 
 
 export default function AddCrawlerPage() {
 
-  const { sourceItem, onCreateClick } = useOutletContext<AddCrawlerPageContext>();
+  const { sourceItem, setCrawlerList } = useOutletContext<AddCrawlerPageContext>();
 
   // const { sourceItem, onCreateClick, onCancelClick } = props;
-  const [ crawlerURL, setCrawlerURL ] = useState<string>("");
-  const [ crawlerName, setCrawlerName ] = useState<string>("");
+  const [crawlerURL, setCrawlerURL] = useState<string>("");
+  const [crawlerName, setCrawlerName] = useState<string>("");
+
 
   useStep("add-crawler");
 
@@ -43,6 +45,30 @@ export default function AddCrawlerPage() {
   useEffect(() => {
     setCrawlerName(defaultName);
   }, [defaultName]);
+
+
+  async function onCreateClick(sourceItem: SourceItem, crawlerURL: string, crawlerName: string) {
+    console.log("Creating crawler for source item:", sourceItem);
+    // todo: add crawler
+    console.log("Creating crawler for source:", sourceItem, "with URL:", crawlerURL);
+
+    // create a crawler, and launch an initial analysis-crawl
+    const newCrawler = await createCrawler(sourceItem.guid, crawlerURL, crawlerName);
+
+    console.log("Known crawlers before adding new one:", crawlerList);
+    console.log("Created new crawler:", newCrawler);
+    const newCrawlerInfo = new CrawlerInfo(
+      newCrawler.id,
+      newCrawler.name,
+      "pending",
+      new Date(newCrawler.updated_at),
+      sourceItem.guid
+    );
+    setCrawlerList([...crawlerList, newCrawlerInfo]);
+
+    //setHistoryState({ step: `crawlers/${newCrawler.id}/metadata-inheritance`, newCrawlerName: crawlerName });
+    navigate(`/crawlers/${newCrawler.id}/metadata-inheritance`);
+  }
 
 
   if (!sourceItem) {

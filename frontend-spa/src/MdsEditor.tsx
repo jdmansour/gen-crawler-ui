@@ -4,7 +4,7 @@ import { Card, CardContent, Divider } from '@mui/material';
 import RobotIcon from "./assets/icons/robot.svg?react";
 
 export default function MdsEditor(props: {
-    title: string;
+    title: string | React.ReactNode;
     icon?: React.ReactNode;
     children?: React.ReactNode;
 }) {
@@ -16,7 +16,7 @@ export default function MdsEditor(props: {
         <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#f7f7f7', color: '#585858', 
             padding: '12px 16px', gap: 12, fontWeight: 500, textTransform: 'uppercase' }}>
           {icon}
-          <span>{props.title}</span>
+          {typeof props.title === 'string' ? <span>{props.title}</span> : props.title}
         </div>
         <Divider />
         <CardContent>

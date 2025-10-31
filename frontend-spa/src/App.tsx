@@ -68,7 +68,8 @@ export default function App() {
       item.id,
       item.name,
       "pending",
-      new Date(item.updated_at)
+      new Date(item.updated_at),
+      item.source_item
     ));
     setCrawlerList(crawlers);
   }
@@ -161,7 +162,8 @@ export default function App() {
                 newCrawler.id,
                 newCrawler.name,
                 "pending",
-                new Date(newCrawler.updated_at)
+                new Date(newCrawler.updated_at),
+                sourceItem.guid
               );
               setCrawlerList([...crawlerList, newCrawlerInfo]);
 

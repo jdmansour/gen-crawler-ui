@@ -17,11 +17,7 @@ export default function RootLayout() {
   const [sourceItems, setSourceItems] = useState<SourceItem[]>([]);
   const [selectedSourceItem, setSelectedSourceItem] = useState<SourceItem | null>(null);
 
-  // metadata inheritance
-  const [fields, setFields] = useState<WloFieldInfo[]>([]);
-  const [fieldGroups, setFieldGroups] = useState<GroupInfo[]>([]);
-  // used while loading source fields
-  const [sourceFieldsLoading, setSourceFieldsLoading] = useState(false);
+
 
   const [step, setStep] = useState<CrawlerDashboardStep>("dashboard");
   const params = useParams();
@@ -46,30 +42,8 @@ export default function RootLayout() {
       setHistoryState({ step: "add-crawler", newCrawlerName: "abcd" });
     },
     crawlerList: crawlerList,
+    setCrawlerList: setCrawlerList,
     sourceItem: selectedSourceItem || undefined,
-    onCreateClick: async (sourceItem: SourceItem, crawlerURL: string, crawlerName: string) => {
-      fetchSourceFields(sourceItem.guid);
-      // todo: add crawler
-      console.log("Creating crawler for source:", sourceItem, "with URL:", crawlerURL);
-
-      // create a crawler, and launch an initial analysis-crawl
-      const newCrawler = await createCrawler(sourceItem.guid, crawlerURL, crawlerName);
-
-      console.log("Known crawlers before adding new one:", crawlerList);
-      console.log("Created new crawler:", newCrawler);
-      const newCrawlerInfo = new CrawlerInfo(
-        newCrawler.id,
-        newCrawler.name,
-        "pending",
-        new Date(newCrawler.updated_at)
-      );
-      setCrawlerList([...crawlerList, newCrawlerInfo]);
-
-      //setHistoryState({ step: `crawlers/${newCrawler.id}/metadata-inheritance`, newCrawlerName: crawlerName });
-      navigate(`/crawlers/${newCrawler.id}/metadata-inheritance`);
-    },
-    fields: fields,
-    groups: fieldGroups,
     onSave: async (selectedFields: Record<string, boolean>) => {
       console.log("Selected fields to inherit:", selectedFields);
       if (crawlerId === null) {
@@ -125,7 +99,8 @@ export default function RootLayout() {
       item.id,
       item.name,
       "pending",
-      new Date(item.updated_at)
+      new Date(item.updated_at),
+      item.source_item
     ));
     setCrawlerList(crawlers);
   }
@@ -139,18 +114,7 @@ export default function RootLayout() {
     setSourceItems(data);
   }
 
-  async function fetchSourceFields(sourceItemGuid: string) {
-    setSourceFieldsLoading(true);
-    const response = await fetch(`http://localhost:8000/api/source_items/${sourceItemGuid}/inheritable_fields`);
-    const data = await response.json();
 
-    console.log("Fetched source fields:", data);
-    setFields(data.fields as WloFieldInfo[]);
-    setFieldGroups(data.groups as GroupInfo[]);
-    setSourceFieldsLoading(false);
-
-    return data;
-  }
 
   useEffect(() => {
     fetchCrawlers();
