@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router";
+import { useNavigate, useOutletContext, useParams, useSearchParams } from "react-router";
 import Button from "./Button";
 import { AddCrawlerPageContext } from "./RootContext";
 import { SourceItem } from "./apitypes";
@@ -19,10 +19,22 @@ export default function AddCrawlerPage() {
   useStep("add-crawler");
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  // if we go back to add-crawler from a later step, we might have an existing crawlerId
+  const crawlerIdString = searchParams.get("crawlerId");
+  const existingCrawlerId = crawlerIdString ? parseInt(crawlerIdString) : undefined;
 
   // default start URL
   const defaultURL = sourceItem?.data?.properties['ccm:wwwurl'][0] || "";
   const defaultName = sourceItem?.title || "";
+
+  useEffect(() => {
+    if (existingCrawlerId) {
+      // If we have an existing crawlerId, we should load the existing crawler data
+      // TODO: Implement loading existing crawler data
+      console.log("Would load existing crawler data for ID:", existingCrawlerId);
+    }
+  }, [existingCrawlerId]);
 
   useEffect(() => {
     setCrawlerURL(defaultURL);
@@ -42,7 +54,9 @@ export default function AddCrawlerPage() {
     <div className="main-content">
       <div>
         <h2>Neuen Crawler erstellen</h2>
-        <p>Ausgewählte Quelle:</p>
+        {existingCrawlerId && (
+          <p>Dieser crawler wurde bereits angelegt, du kannst hier den Namen noch ändern.</p>
+        )}
 
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
           <img
@@ -61,6 +75,7 @@ export default function AddCrawlerPage() {
           onChange={(event) => setCrawlerURL(event.target.value)}
           fullWidth
           label="Start-URL"
+          disabled={!!existingCrawlerId}
         />
 
         <TextField

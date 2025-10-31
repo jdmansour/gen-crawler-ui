@@ -33,13 +33,19 @@ export default function GenCrawlerSidebar(props: {
         const tag = sidebarTabs[index].tag;
         const crawlerId = params.crawlerId;
 
-        // TODO: when we go back to add-crawler, we don't want to create a new crawler!
-        // we should add something like add-crawler?existing=123
         switch (tag) {
           case "select-source":
-          case "add-crawler":
             navigate(`/${tag}`);
             break;
+          case "add-crawler":
+            {
+              let url = `/${tag}`;
+              if (crawlerId) {
+                url += `?crawlerId=${crawlerId}`;
+              }
+              navigate(url);
+              break;
+            }
           case "metadata-inheritance":
           case "filter-crawls":
             navigate(`/crawlers/${crawlerId}/${tag}`);
