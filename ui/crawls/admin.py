@@ -21,11 +21,21 @@ class SourceItemAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at', 'updated_at']
 
 
+class CrawlJobInline(admin.TabularInline):
+    model = CrawlJob
+    extra = 0
+    fields = ['pk', 'start_url', 'follow_links', 'created_at', 'updated_at']
+    readonly_fields = ['pk', 'start_url', 'follow_links', 'created_at', 'updated_at']
+    can_delete = False
+    show_change_link = True
+
+
 class CrawlerAdmin(admin.ModelAdmin):
     model = Crawler
     list_display = ['name', 'start_url', 'source_item',
                     'created_at', 'updated_at', 'inherited_fields']
     readonly_fields = ['created_at', 'updated_at']
+    inlines = [CrawlJobInline]
 
 
 class FilterRuleInline(admin.TabularInline):

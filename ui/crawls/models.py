@@ -57,6 +57,8 @@ class CrawlJob(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     crawled_urls: models.QuerySet[CrawledURL]
     filter_sets: models.QuerySet[FilterSet]
+    crawler = models.ForeignKey(
+        Crawler, on_delete=models.CASCADE, related_name="crawl_jobs")
 
     def __str__(self):
         return f"#{self.id} {self.start_url} at {self.created_at.strftime('%Y-%m-%d %H:%M')}"
