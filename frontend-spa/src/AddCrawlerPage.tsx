@@ -65,6 +65,7 @@ export default function AddCrawlerPage() {
       sourceItem.guid,
       newCrawler.start_url
     );
+    newCrawlerInfo.crawl_jobs = newCrawler.crawl_jobs;
     setCrawlerList([...crawlerList, newCrawlerInfo]);
 
     //setHistoryState({ step: `crawlers/${newCrawler.id}/metadata-inheritance`, newCrawlerName: crawlerName });

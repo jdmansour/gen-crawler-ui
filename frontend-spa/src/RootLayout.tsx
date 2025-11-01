@@ -100,7 +100,8 @@ export default function RootLayout() {
       "pending",
       new Date(item.updated_at),
       item.source_item,
-      item.start_url
+      item.start_url,
+      item.crawl_jobs
     ));
     setCrawlerList(crawlers);
   }

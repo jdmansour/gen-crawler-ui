@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
 import { useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import sourcePreviewPic from "./assets/source-preview.jpg";
@@ -24,7 +24,7 @@ export default function CrawlerDetailsPage() {
     }
 
     return <div className="main-content">
-        <h1>Crawler Details Page</h1>
+        <h1>Crawler-Details</h1>
         <p>Crawler ID: {crawler.id}</p>
 
         {sourceItem ? <>
@@ -59,6 +59,33 @@ export default function CrawlerDetailsPage() {
         />
 
         <p><a href={`http://localhost:8000/admin/crawls/crawler/${crawler.id}/change/`}>Im Admin-Bereich anzeigen</a></p>
+
+        <h2>Läufe des Crawlers</h2>
+
+        <TableContainer component={Paper}>
+        <Table>
+            <TableHead>
+                <TableRow>
+                    <TableCell>Start URL</TableCell>
+                    <TableCell>Erstellt am</TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {crawler.crawl_jobs.map(job => (
+                    <TableRow key={job.id}>
+                        <TableCell>{job.start_url}</TableCell>
+                        <TableCell>{new Date(job.created_at).toLocaleString("de-DE")}</TableCell>
+                    </TableRow>
+                ))}
+                {(crawler.crawl_jobs.length === 0) && (
+                    <TableRow>
+                        <TableCell colSpan={2}>No crawl jobs found.</TableCell>
+                    </TableRow>
+                )}
+            </TableBody>
+        </Table>
+        </TableContainer>
+
     </div>;
 
 }

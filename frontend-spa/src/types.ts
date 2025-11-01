@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { UseStepContext } from "./RootContext";
+import { CrawlJob } from "./apitypes";
 
 export type CrawlerDashboardStep =
   | "dashboard"
@@ -25,13 +26,15 @@ export class CrawlerInfo {
   updatedAt: Date;
   sourceItemGuid?: string;
   start_url?: string;
+  crawl_jobs: CrawlJob[];
   constructor(
     id: number,
     name: string,
     status: CrawlerStatus,
     updatedAt: Date,
     sourceItemGuid?: string,
-    start_url?: string
+    start_url?: string,
+    crawl_jobs: CrawlJob[] = []
   ) {
     this.id = id;
     this.name = name;
@@ -39,6 +42,7 @@ export class CrawlerInfo {
     this.updatedAt = updatedAt;
     this.sourceItemGuid = sourceItemGuid;
     this.start_url = start_url;
+    this.crawl_jobs = crawl_jobs;
   }
 }
 

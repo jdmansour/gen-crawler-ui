@@ -6,6 +6,8 @@ export type CrawlerResponse = {
     updated_at: string;
     source_item: string;
     start_url: string;
+    inherited_fields: string[];
+    crawl_jobs: CrawlJob[];
 };
 
 export type SourceItem = {
@@ -19,6 +21,14 @@ export type SourceItem = {
     preview_url: string;
 };
 
+export type CrawlJob = {
+    id: number;
+    start_url: string;
+    follow_links: boolean;
+    created_at: string;
+    updated_at: string;
+    crawler: number;
+}
 
 
 export async function createCrawler(sourceItemGuid: string, startURL: string, crawlerName: string): Promise<CrawlerResponse> {
