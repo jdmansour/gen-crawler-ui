@@ -5,7 +5,7 @@ import ListView from "./ListView";
 import { SelectSourcePageContext } from "./RootContext";
 import { SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
-import { useStep } from "./types";
+import { useStep } from "./steps";
 
 export default function SelectSourcePage() {
 

@@ -1,17 +1,17 @@
 // RootLayout.tsx
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import { CrawlerResponse, SourceItem } from "./apitypes";
+import { Crawler, SourceItem } from "./apitypes";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
 import GenCrawlerSidebar from "./GenCrawlerSidebar";
 import { RootContext } from "./RootContext";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
-import { CrawlerDashboardStep } from "./types";
+import { CrawlerDashboardStep } from "./steps";
 
 export default function RootLayout() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
-  const [crawlerList, setCrawlerList] = useState<CrawlerResponse[]>([]);
+  const [crawlerList, setCrawlerList] = useState<Crawler[]>([]);
   // select source
   const [sourceItems, setSourceItems] = useState<SourceItem[]>([]);
   const [selectedSourceItem, setSelectedSourceItem] = useState<SourceItem | null>(null);
@@ -89,7 +89,7 @@ export default function RootLayout() {
 
   async function fetchCrawlers() {
     const response = await fetch("http://localhost:8000/api/crawlers");
-    const data: CrawlerResponse[] = await response.json();
+    const data: Crawler[] = await response.json();
     // TODO: validate?
     setCrawlerList(data);
   }

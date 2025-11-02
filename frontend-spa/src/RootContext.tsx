@@ -1,8 +1,8 @@
-import { CrawlerResponse, SourceItem } from "./apitypes";
-import { CrawlerDashboardStep } from "./types";
+import { Crawler, SourceItem } from "./apitypes";
+import { CrawlerDashboardStep } from "./steps";
 
 export type DashboardPageContext = {
-  crawlerList: CrawlerResponse[];
+  crawlerList: Crawler[];
 };
 
 export type SelectSourcePageContext = {
@@ -13,11 +13,11 @@ export type SelectSourcePageContext = {
 export type AddCrawlerPageContext = {
   sourceItem?: SourceItem;
   // onCreateClick: (source: SourceItem, crawlerURL: string, crawlerName: string) => void;
-  setCrawlerList: (crawlers: CrawlerResponse[]) => void;
+  setCrawlerList: (crawlers: Crawler[]) => void;
 };
 
 export type MetadataInheritancePageContext = {
-  crawlerList: CrawlerResponse[];
+  crawlerList: Crawler[];
   // fields: WloFieldInfo[];
   // groups: GroupInfo[];
   onSave: (selectedFields: Record<string, boolean>) => void;
@@ -25,7 +25,7 @@ export type MetadataInheritancePageContext = {
 
 export type CrawlerDetailsPageContext = {
   sourceItems: SourceItem[];
-  crawlerList: CrawlerResponse[];
+  crawlerList: Crawler[];
 };
 
 export type UseStepContext = {

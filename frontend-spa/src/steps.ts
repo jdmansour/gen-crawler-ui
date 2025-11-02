@@ -18,8 +18,4 @@ export function useStep(step: CrawlerDashboardStep) {
   }, [setStep, step]);
 }
 
-export type CrawlerStatus = "draft" |
-  "pending" |
-  "stopped" |
-  "error" |
-  "published";
+

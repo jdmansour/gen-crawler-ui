@@ -1,6 +1,6 @@
-import { CrawlerResponse } from "./apitypes";
+import { Crawler } from "./apitypes";
 
-export const crawlerList: CrawlerResponse[] = [
+export const crawlerList: Crawler[] = [
   {
     id: 1,
     name: "Wikipedia",

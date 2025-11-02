@@ -7,8 +7,9 @@ import Button from "./Button";
 import MdsEditor from "./MdsEditor";
 import { MetadataInheritancePageContext } from "./RootContext";
 import WloFieldGroupSet from "./WloFieldGroupSet";
-import { useStep } from "./types";
+import { useStep } from "./steps";
 import { fieldMissing, GroupInfo, WloFieldInfo } from "./wloTypes";
+import { getInheritableFields } from "./apitypes";
 
 export default function MetadataInheritancePage() {
   const { onSave, crawlerList } = useOutletContext<MetadataInheritancePageContext>();
@@ -16,7 +17,7 @@ export default function MetadataInheritancePage() {
   const params = useParams();
   const crawlerId: number | undefined = params.crawlerId ? parseInt(params.crawlerId) : undefined;
   const crawler = crawlerList.find(c => c.id === crawlerId);
-  const sourceItemGuid = crawler?.sourceItemGuid;
+  const sourceItemGuid = crawler?.source_item;
 
   const [selectedFields, setSelectedFields] = useState<Record<string, boolean>>({});
   const [fields, setFields] = useState<WloFieldInfo[]>([]);
@@ -27,9 +28,9 @@ export default function MetadataInheritancePage() {
 
   async function fetchSourceFields(sourceItemGuid: string) {
     setSourceFieldsLoading(true);
-    const response = await fetch(`http://localhost:8000/api/source_items/${sourceItemGuid}/inheritable_fields`);
-    const data = await response.json();
 
+    const data = await getInheritableFields(sourceItemGuid);
+    
     // sleep 2 seconds to simulate loading
     await new Promise((resolve) => setTimeout(resolve, 2000));
 

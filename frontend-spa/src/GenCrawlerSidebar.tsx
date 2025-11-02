@@ -4,7 +4,7 @@ import MetadataInheritanceIcon from "./assets/icons/metadata-inheritance.svg?rea
 import RobotIcon from "./assets/icons/robot.svg?react";
 import SelectSourceIcon from "./assets/icons/select-source.svg?react";
 import FilterTabs, { TabInfo } from "./FilterTabs";
-import { CrawlerDashboardStep } from "./types";
+import { CrawlerDashboardStep } from "./steps";
 
 export default function GenCrawlerSidebar(props: {
   step: CrawlerDashboardStep;

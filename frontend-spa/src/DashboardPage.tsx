@@ -4,10 +4,11 @@ import "./App.css";
 import FilterTabs, { TabInfo } from "./FilterTabs";
 import ListView from "./ListView";
 import { DashboardPageContext } from "./RootContext";
-import { CrawlerResponse } from "./apitypes";
+import { Crawler } from "./apitypes";
 import DreipunktmenuIcon from "./assets/icons/dreipunktmenu.svg?react";
 import ErrorIcon from "./assets/icons/error.svg?react";
-import { CrawlerStatus, useStep } from "./types";
+import { useStep } from "./steps";
+import { CrawlerStatus } from "./apitypes";
 
 const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
   draft: "Entwurf",
@@ -68,7 +69,7 @@ export default function DashboardPage() {
   );
 }
 
-function CrawlerTableRow(props: { info: CrawlerResponse, onClick?: (crawlerId: number) => void }) {
+function CrawlerTableRow(props: { info: Crawler, onClick?: (crawlerId: number) => void }) {
   const updatedAt = new Date(props.info.updated_at);
   return (
     <tr>

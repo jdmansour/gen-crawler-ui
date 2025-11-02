@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import { CrawlerDetailsPageContext } from "./RootContext";
-import { useStep } from "./types";
+import { useStep } from "./steps";
 
 
 export default function CrawlerDetailsPage() {

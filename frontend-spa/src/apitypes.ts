@@ -1,6 +1,6 @@
-import { CrawlerStatus } from "./types";
+import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
-export type CrawlerResponse = {
+export type Crawler = {
     id: number;
     name: string;
     status?: CrawlerStatus;
@@ -12,6 +12,12 @@ export type CrawlerResponse = {
     crawl_jobs: CrawlJob[];
 };
 
+export type CrawlerStatus = "draft" |
+  "pending" |
+  "stopped" |
+  "error" |
+  "published";
+    
 export type SourceItem = {
     id: number;
     guid: string;
@@ -33,7 +39,7 @@ export type CrawlJob = {
 }
 
 
-export async function createCrawler(sourceItemGuid: string, startURL: string, crawlerName: string): Promise<CrawlerResponse> {
+export async function createCrawler(sourceItemGuid: string, startURL: string, crawlerName: string): Promise<Crawler> {
     const response = await fetch("http://localhost:8000/api/crawlers/", {
         method: "POST",
         headers: {
@@ -50,7 +56,12 @@ export async function createCrawler(sourceItemGuid: string, startURL: string, cr
         throw new Error(`Failed to create crawler: ${response.status} ${response.statusText}`);
     }
 
-    const data: CrawlerResponse = await response.json();
+    const data: Crawler = await response.json();
     return data;
 }
     
+export async function getInheritableFields(sourceItemGuid: string): Promise<{fields: WloFieldInfo[]; groups: GroupInfo[]}> {
+    const response = await fetch(`http://localhost:8000/api/source_items/${sourceItemGuid}/inheritable_fields`);
+    const data = await response.json();
+    return data;
+}

@@ -6,7 +6,7 @@ import { AddCrawlerPageContext } from "./RootContext";
 import { createCrawler, SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import { crawlerList } from "./data";
-import { useStep } from "./types";
+import { useStep } from "./steps";
 
 
 export default function AddCrawlerPage() {

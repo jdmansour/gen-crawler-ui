@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddCrawlerPage from "./AddCrawlerPage";
-import { CrawlerResponse, createCrawler, SourceItem } from "./apitypes";
+import { Crawler, createCrawler, SourceItem } from "./apitypes";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
 import DashboardPage from "./DashboardPage";
 import FilterCrawlsPage from "./FilterCrawlsPage";
@@ -9,7 +9,7 @@ import GenCrawlerSidebar from "./GenCrawlerSidebar";
 import MetadataInheritancePage from "./MetadataInheritancePage";
 import SelectSourcePage from "./SelectSourcePage";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
-import { CrawlerDashboardStep } from "./types";
+import { CrawlerDashboardStep } from "./steps";
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
 import "./App.css";
@@ -22,7 +22,7 @@ export default function App() {
   // layout relevant
   const [sidebarVisible, setSidebarVisible] = useState(false);
   // dashboard
-  const [crawlerList, setCrawlerList] = useState<CrawlerResponse[]>([]);
+  const [crawlerList, setCrawlerList] = useState<Crawler[]>([]);
   // select source
   const [sourceItems, setSourceItems] = useState<SourceItem[]>([]);
   const [selectedSourceItem, setSelectedSourceItem] = useState<SourceItem | null>(null);
@@ -59,7 +59,7 @@ export default function App() {
 
   async function fetchCrawlers() {
     const response = await fetch("http://localhost:8000/api/crawlers");
-    const data: CrawlerResponse[] = await response.json();
+    const data: Crawler[] = await response.json();
 
     console.log("Fetched crawlers:", data);
 
