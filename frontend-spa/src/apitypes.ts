@@ -1,5 +1,7 @@
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
+export type CrawlJobState = 'pending' | 'running' | 'completed' | 'failed';
+
 export type Crawler = {
     id: number;
     name: string;
@@ -35,6 +37,7 @@ export type CrawlJob = {
     follow_links: boolean;
     created_at: string;
     updated_at: string;
+    state: CrawlJobState;
     crawler: number;
 }
 

@@ -37,8 +37,8 @@ class ExampleSpider(scrapy.Spider):
         }
     }
 
-    def __init__(self, start_url, follow_links=False, crawler_id=None, *args, **kwargs):
-        super(ExampleSpider, self).__init__(*args, **kwargs)
+    def __init__(self, start_url: str, crawler_id: int, *args, follow_links: bool = False, **kwargs):
+        super().__init__(*args, **kwargs)
         self.start_urls = [start_url]
         self.follow_links = to_bool(follow_links)
         self.link_extractor = LinkExtractor()
@@ -80,11 +80,7 @@ class ExampleSpider(scrapy.Spider):
             #cursor.execute(f"INSERT INTO crawls_crawljob (start_url, follow_links) VALUES ('{start_url}', {self.follow_links})")
             # do it safely with ???
             log.info("Inserting crawl job with start_url=%s, follow_links=%s, crawler_id=%s", start_url, self.follow_links, self.crawler_id)
-            if self.crawler_id is not None:
-                log.info("Using crawler_id %d", self.crawler_id)
-                cursor.execute("INSERT INTO crawls_crawljob (start_url, follow_links, crawler_id, created_at, updated_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", (start_url, self.follow_links, self.crawler_id))
-            else:
-                cursor.execute("INSERT INTO crawls_crawljob (start_url, follow_links, created_at, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", (start_url, self.follow_links))
+            cursor.execute("INSERT INTO crawls_crawljob (start_url, follow_links, crawler_id, created_at, updated_at, state) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'RUNNING')", (start_url, self.follow_links, self.crawler_id))
             connection.commit()
             crawl_job_id = cursor.lastrowid
             connection.close()

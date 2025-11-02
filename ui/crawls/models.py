@@ -50,6 +50,13 @@ class Crawler(models.Model):
 class CrawlJob(models.Model):
     """ A crawl job contains a start URL and references to all crawled URLs. """
 
+    # Crawl job state: pending, running, completed, failed
+    class State(models.TextChoices):
+        PENDING = 'PENDING', 'Pending'
+        RUNNING = 'RUNNING', 'Running'
+        COMPLETED = 'COMPLETED', 'Completed'
+        FAILED = 'FAILED', 'Failed'
+
     id = models.AutoField(primary_key=True)
     start_url = models.URLField()
     follow_links = models.BooleanField(default=False)
@@ -59,6 +66,8 @@ class CrawlJob(models.Model):
     filter_sets: models.QuerySet[FilterSet]
     crawler = models.ForeignKey(
         Crawler, on_delete=models.CASCADE, related_name="crawl_jobs")
+    state = models.CharField(
+        max_length=20, choices=State.choices, default=State.PENDING)
 
     def __str__(self):
         return f"#{self.id} {self.start_url} at {self.created_at.strftime('%Y-%m-%d %H:%M')}"

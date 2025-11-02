@@ -1,4 +1,4 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
+import { Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
 import { useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import sourcePreviewPic from "./assets/source-preview.jpg";
@@ -67,6 +67,7 @@ export default function CrawlerDetailsPage() {
             <TableHead>
                 <TableRow>
                     <TableCell>Start URL</TableCell>
+                    <TableCell>Status</TableCell>
                     <TableCell>Erstellt am</TableCell>
                 </TableRow>
             </TableHead>
@@ -74,12 +75,13 @@ export default function CrawlerDetailsPage() {
                 {crawler.crawl_jobs.map(job => (
                     <TableRow key={job.id}>
                         <TableCell>{job.start_url}</TableCell>
+                        <TableCell>{job.state}</TableCell>
                         <TableCell>{new Date(job.created_at).toLocaleString("de-DE")}</TableCell>
                     </TableRow>
                 ))}
                 {(crawler.crawl_jobs.length === 0) && (
                     <TableRow>
-                        <TableCell colSpan={2}>No crawl jobs found.</TableCell>
+                        <TableCell colSpan={3}>No crawl jobs found.</TableCell>
                     </TableRow>
                 )}
             </TableBody>
