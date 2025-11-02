@@ -1,14 +1,12 @@
+import { ErrorOutlineOutlined, MoreVertOutlined } from "@mui/icons-material";
 import { useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import "./App.css";
 import FilterTabs, { TabInfo } from "./FilterTabs";
 import ListView from "./ListView";
 import { DashboardPageContext } from "./RootContext";
-import { Crawler } from "./apitypes";
-import DreipunktmenuIcon from "./assets/icons/dreipunktmenu.svg?react";
-import ErrorIcon from "./assets/icons/error.svg?react";
+import { Crawler, CrawlerStatus } from "./apitypes";
 import { useStep } from "./steps";
-import { CrawlerStatus } from "./apitypes";
 
 const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
   draft: "Entwurf",
@@ -90,7 +88,7 @@ function CrawlerTableRow(props: { info: Crawler, onClick?: (crawlerId: number) =
         , {updatedAt.toLocaleTimeString("de-DE")}
       </td>
       <td className="menu-column">
-        <DreipunktmenuIcon width="24" />
+        <MoreVertOutlined fontSize="medium" />
       </td>
     </tr>
   );
@@ -99,7 +97,7 @@ function CrawlerTableRow(props: { info: Crawler, onClick?: (crawlerId: number) =
 function CrawlerStateLabel(props: { state: CrawlerStatus }) {
   return (
     <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-      {props.state == "error" && <ErrorIcon height={16} color="#ec4a70" />}
+      {props.state == "error" && <ErrorOutlineOutlined sx={{ color: "#ec4a70", fontSize: "1.2em" }} />}
       {crawlerStateLabels[props.state]}
     </span>
   );
