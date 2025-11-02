@@ -6,12 +6,12 @@ import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
 import GenCrawlerSidebar from "./GenCrawlerSidebar";
 import { RootContext } from "./RootContext";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
-import { CrawlerDashboardStep, CrawlerInfo } from "./types";
+import { CrawlerDashboardStep } from "./types";
 
 export default function RootLayout() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
-  const [crawlerList, setCrawlerList] = useState<CrawlerInfo[]>([]);
+  const [crawlerList, setCrawlerList] = useState<CrawlerResponse[]>([]);
   // select source
   const [sourceItems, setSourceItems] = useState<SourceItem[]>([]);
   const [selectedSourceItem, setSelectedSourceItem] = useState<SourceItem | null>(null);
@@ -90,20 +90,8 @@ export default function RootLayout() {
   async function fetchCrawlers() {
     const response = await fetch("http://localhost:8000/api/crawlers");
     const data: CrawlerResponse[] = await response.json();
-
-    console.log("Fetched crawlers:", data);
-
-    // Map the API response to the CrawlerInfo type
-    const crawlers = data.map(item => new CrawlerInfo(
-      item.id,
-      item.name,
-      "pending",
-      new Date(item.updated_at),
-      item.source_item,
-      item.start_url,
-      item.crawl_jobs
-    ));
-    setCrawlerList(crawlers);
+    // TODO: validate?
+    setCrawlerList(data);
   }
 
   async function fetchSourceItems() {

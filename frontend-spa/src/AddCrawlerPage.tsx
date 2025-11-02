@@ -6,7 +6,7 @@ import { AddCrawlerPageContext } from "./RootContext";
 import { createCrawler, SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import { crawlerList } from "./data";
-import { CrawlerInfo, useStep } from "./types";
+import { useStep } from "./types";
 
 
 export default function AddCrawlerPage() {
@@ -57,16 +57,7 @@ export default function AddCrawlerPage() {
 
     console.log("Known crawlers before adding new one:", crawlerList);
     console.log("Created new crawler:", newCrawler);
-    const newCrawlerInfo = new CrawlerInfo(
-      newCrawler.id,
-      newCrawler.name,
-      "pending",
-      new Date(newCrawler.updated_at),
-      sourceItem.guid,
-      newCrawler.start_url
-    );
-    newCrawlerInfo.crawl_jobs = newCrawler.crawl_jobs;
-    setCrawlerList([...crawlerList, newCrawlerInfo]);
+    setCrawlerList([...crawlerList, newCrawler]);
 
     //setHistoryState({ step: `crawlers/${newCrawler.id}/metadata-inheritance`, newCrawlerName: crawlerName });
     navigate(`/crawlers/${newCrawler.id}/metadata-inheritance`);

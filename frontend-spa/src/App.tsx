@@ -9,7 +9,7 @@ import GenCrawlerSidebar from "./GenCrawlerSidebar";
 import MetadataInheritancePage from "./MetadataInheritancePage";
 import SelectSourcePage from "./SelectSourcePage";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
-import { CrawlerDashboardStep, CrawlerInfo } from "./types";
+import { CrawlerDashboardStep } from "./types";
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
 import "./App.css";
@@ -22,7 +22,7 @@ export default function App() {
   // layout relevant
   const [sidebarVisible, setSidebarVisible] = useState(false);
   // dashboard
-  const [crawlerList, setCrawlerList] = useState<CrawlerInfo[]>([]);
+  const [crawlerList, setCrawlerList] = useState<CrawlerResponse[]>([]);
   // select source
   const [sourceItems, setSourceItems] = useState<SourceItem[]>([]);
   const [selectedSourceItem, setSelectedSourceItem] = useState<SourceItem | null>(null);
@@ -64,14 +64,16 @@ export default function App() {
     console.log("Fetched crawlers:", data);
 
     // Map the API response to the CrawlerInfo type
-    const crawlers = data.map(item => new CrawlerInfo(
-      item.id,
-      item.name,
-      "pending",
-      new Date(item.updated_at),
-      item.source_item
-    ));
-    setCrawlerList(crawlers);
+  //   const crawlers = data.map(item => new CrawlerInfo(
+  //     item.id,
+  //     item.name,
+  //     "pending",
+  //     new Date(item.updated_at),
+  //     item.source_item
+  //   ));
+  //   setCrawlerList(crawlers);
+  // }
+    setCrawlerList(data);
   }
 
   async function fetchSourceItems() {
@@ -158,15 +160,8 @@ export default function App() {
 
               console.log("Known crawlers before adding new one:", crawlerList);
               console.log("Created new crawler:", newCrawler);
-              const newCrawlerInfo = new CrawlerInfo(
-                newCrawler.id,
-                newCrawler.name,
-                "pending",
-                new Date(newCrawler.updated_at),
-                sourceItem.guid,
-                newCrawler.start_url
-              );
-              setCrawlerList([...crawlerList, newCrawlerInfo]);
+
+              setCrawlerList([...crawlerList, newCrawler]);
 
               setCrawlerName(crawlerName);
               setCrawlerId(newCrawler.id);

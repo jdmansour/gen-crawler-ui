@@ -1,8 +1,8 @@
-import { SourceItem } from "./apitypes";
-import { CrawlerDashboardStep, CrawlerInfo } from "./types";
+import { CrawlerResponse, SourceItem } from "./apitypes";
+import { CrawlerDashboardStep } from "./types";
 
 export type DashboardPageContext = {
-  crawlerList: CrawlerInfo[];
+  crawlerList: CrawlerResponse[];
 };
 
 export type SelectSourcePageContext = {
@@ -13,11 +13,11 @@ export type SelectSourcePageContext = {
 export type AddCrawlerPageContext = {
   sourceItem?: SourceItem;
   // onCreateClick: (source: SourceItem, crawlerURL: string, crawlerName: string) => void;
-  setCrawlerList: (crawlers: CrawlerInfo[]) => void;
+  setCrawlerList: (crawlers: CrawlerResponse[]) => void;
 };
 
 export type MetadataInheritancePageContext = {
-  crawlerList: CrawlerInfo[];
+  crawlerList: CrawlerResponse[];
   // fields: WloFieldInfo[];
   // groups: GroupInfo[];
   onSave: (selectedFields: Record<string, boolean>) => void;
@@ -25,7 +25,7 @@ export type MetadataInheritancePageContext = {
 
 export type CrawlerDetailsPageContext = {
   sourceItems: SourceItem[];
-  crawlerList: CrawlerInfo[];
+  crawlerList: CrawlerResponse[];
 };
 
 export type UseStepContext = {
@@ -40,7 +40,7 @@ export type RootContext = DashboardPageContext & SelectSourcePageContext & AddCr
 //   onCancelClick?: () => void;
 //   onSourceSelected?: (source: SourceItem) => void;
 //   setStep: (step: CrawlerDashboardStep) => void;
-//   crawlerList: CrawlerInfo[];
+//   crawlerList: CrawlerResponse[];
 //   onCrawlerClick?: (crawlerId: number) => void;
 //   onNewCrawlerClick?: () => void;
 

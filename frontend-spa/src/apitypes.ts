@@ -1,7 +1,9 @@
+import { CrawlerStatus } from "./types";
+
 export type CrawlerResponse = {
     id: number;
     name: string;
-    // status: CrawlerStatus;
+    status?: CrawlerStatus;
     created_at: string;
     updated_at: string;
     source_item: string;

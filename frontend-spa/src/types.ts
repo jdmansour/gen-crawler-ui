@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { UseStepContext } from "./RootContext";
-import { CrawlJob } from "./apitypes";
 
 export type CrawlerDashboardStep =
   | "dashboard"
@@ -17,33 +16,6 @@ export function useStep(step: CrawlerDashboardStep) {
     console.log("Setting step to:", step);
     setStep(step);
   }, [setStep, step]);
-}
-
-export class CrawlerInfo {
-  id: number;
-  name: string;
-  status: CrawlerStatus;
-  updatedAt: Date;
-  sourceItemGuid?: string;
-  start_url?: string;
-  crawl_jobs: CrawlJob[];
-  constructor(
-    id: number,
-    name: string,
-    status: CrawlerStatus,
-    updatedAt: Date,
-    sourceItemGuid?: string,
-    start_url?: string,
-    crawl_jobs: CrawlJob[] = []
-  ) {
-    this.id = id;
-    this.name = name;
-    this.status = status;
-    this.updatedAt = updatedAt;
-    this.sourceItemGuid = sourceItemGuid;
-    this.start_url = start_url;
-    this.crawl_jobs = crawl_jobs;
-  }
 }
 
 export type CrawlerStatus = "draft" |

@@ -1,22 +1,59 @@
-import { CrawlerInfo } from "./types";
+import { CrawlerResponse } from "./apitypes";
 
-export const crawlerList: CrawlerInfo[] = [
-  new CrawlerInfo(1, "Wikipedia", "draft", new Date()),
-  new CrawlerInfo(2, "Leifi Physik", "pending", new Date()),
-  new CrawlerInfo(3, "Klexikon", "stopped", new Date()),
-  new CrawlerInfo(4, "Arbeitsagentur", "error", new Date()),
-  new CrawlerInfo(5, "Physik im Advent", "published", new Date()),
-  new CrawlerInfo(6, "Blah", "draft", new Date()),
-  new CrawlerInfo(7, "Blub", "pending", new Date()),
-  new CrawlerInfo(8, "Crawler 8", "stopped", new Date()),
-  new CrawlerInfo(9, "Crawler 9", "error", new Date()),
-  new CrawlerInfo(10, "Crawler 10", "published", new Date()),
-  new CrawlerInfo(11, "Crawler 11", "pending", new Date()),
-  new CrawlerInfo(12, "Crawler 12", "pending", new Date()),
-  new CrawlerInfo(13, "Crawler 13", "pending", new Date()),
-  new CrawlerInfo(14, "Crawler 14", "pending", new Date()),
-  new CrawlerInfo(15, "Crawler 15", "pending", new Date()),
-  new CrawlerInfo(16, "Crawler 16", "pending", new Date()),
-  new CrawlerInfo(17, "Crawler 17", "pending", new Date()),
-  new CrawlerInfo(18, "Crawler 18", "pending", new Date()),
+export const crawlerList: CrawlerResponse[] = [
+  {
+    id: 1,
+    name: "Wikipedia",
+    status: "draft",
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    source_item: "source-1",
+    start_url: "https://de.wikipedia.org/wiki/Wikipedia:Hauptseite",
+    inherited_fields: [],
+    crawl_jobs: [],
+  },
+  {
+    id: 2,
+    name: "Leifi Physik",
+    status: "pending",
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    source_item: "source-2",
+    start_url: "https://www.leifiphysik.de/",
+    inherited_fields: [],
+    crawl_jobs: []
+  },
+  {
+    id: 3,
+    name: "Klexikon",
+    status: "stopped",
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    source_item: "source-3",
+    start_url: "https://klexikon.zum.de/",
+    inherited_fields: [],
+    crawl_jobs: []
+  },
+  {
+    id: 4,
+    name: "Arbeitsagentur",
+    status: "error",
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    source_item: "source-4",
+    start_url: "https://www.arbeitsagentur.de/",
+    inherited_fields: [],
+    crawl_jobs: []
+  },
+  {
+    id: 5,
+    name: "Physik im Advent",
+    status: "published",
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    source_item: "source-5",
+    start_url: "https://www.physik-im-advent.de/",
+    inherited_fields: [],
+    crawl_jobs: []
+  },
 ];

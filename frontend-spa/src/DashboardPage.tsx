@@ -4,9 +4,10 @@ import "./App.css";
 import FilterTabs, { TabInfo } from "./FilterTabs";
 import ListView from "./ListView";
 import { DashboardPageContext } from "./RootContext";
+import { CrawlerResponse } from "./apitypes";
 import DreipunktmenuIcon from "./assets/icons/dreipunktmenu.svg?react";
 import ErrorIcon from "./assets/icons/error.svg?react";
-import { CrawlerInfo, CrawlerStatus, useStep } from "./types";
+import { CrawlerStatus, useStep } from "./types";
 
 const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
   draft: "Entwurf",
@@ -67,7 +68,8 @@ export default function DashboardPage() {
   );
 }
 
-function CrawlerTableRow(props: { info: CrawlerInfo, onClick?: (crawlerId: number) => void }) {
+function CrawlerTableRow(props: { info: CrawlerResponse, onClick?: (crawlerId: number) => void }) {
+  const updatedAt = new Date(props.info.updated_at);
   return (
     <tr>
       <td className="main-column">
@@ -75,16 +77,16 @@ function CrawlerTableRow(props: { info: CrawlerInfo, onClick?: (crawlerId: numbe
       </td>
       <td>
         <div className="inline-title">Status</div>
-        <CrawlerStateLabel state={props.info.status} />
+        <CrawlerStateLabel state={props.info.status || "error"} />
       </td>
       <td>
         <div className="inline-title">zuletzt aktualisiert</div>
-        {props.info.updatedAt.toLocaleDateString("de-DE", {
+        {updatedAt.toLocaleDateString("de-DE", {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
         })}
-        , {props.info.updatedAt.toLocaleTimeString("de-DE")}
+        , {updatedAt.toLocaleTimeString("de-DE")}
       </td>
       <td className="menu-column">
         <DreipunktmenuIcon width="24" />

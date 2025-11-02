@@ -10,7 +10,7 @@ export default function CrawlerDetailsPage() {
     const { crawlerId } = useParams();
     const { crawlerList, sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
     const crawler = crawlerList.find(c => c.id.toString() === crawlerId);
-    const sourceItem = sourceItems.find(s => s.guid === crawler?.sourceItemGuid);
+    const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
 
     const [crawlerURL, setCrawlerURL] = useState<string>(crawler?.start_url || "");
     const [crawlerName, setCrawlerName] = useState<string>(crawler?.name || "");
