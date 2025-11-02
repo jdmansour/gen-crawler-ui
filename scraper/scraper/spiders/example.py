@@ -4,6 +4,7 @@ import logging
 import os
 import scrapy
 from scrapy.linkextractors import LinkExtractor
+from scrapy.exceptions import CloseSpider
 
 log = logging.getLogger(__name__)
 
@@ -36,11 +37,12 @@ class ExampleSpider(scrapy.Spider):
         }
     }
 
-    def __init__(self, start_url, follow_links=False, *args, **kwargs):
+    def __init__(self, start_url, follow_links=False, crawler_id=None, *args, **kwargs):
         super(ExampleSpider, self).__init__(*args, **kwargs)
         self.start_urls = [start_url]
         self.follow_links = to_bool(follow_links)
         self.link_extractor = LinkExtractor()
+        self.crawler_id = crawler_id
 
         # connection = sqlite3.connect(self.settings.get('DB_PATH'))
         # cursor = connection.cursor()
@@ -70,16 +72,26 @@ class ExampleSpider(scrapy.Spider):
         log.info("Using database at %s", db_path)
         log.info("File exists? %s", os.path.exists(db_path))
 
-        connection = sqlite3.connect(db_path)
-        cursor = connection.cursor()
-        # create CrawlJob with SQL, return the id
-        start_url = self.start_urls[0]
-        #cursor.execute(f"INSERT INTO crawls_crawljob (start_url, follow_links) VALUES ('{start_url}', {self.follow_links})")
-        # do it safely with ???
-        cursor.execute("INSERT INTO crawls_crawljob (start_url, follow_links, created_at, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", (start_url, self.follow_links))
-        connection.commit()
-        crawl_job_id = cursor.lastrowid
-        connection.close()
+        try:
+            connection = sqlite3.connect(db_path)
+            cursor = connection.cursor()
+            # create CrawlJob with SQL, return the id
+            start_url = self.start_urls[0]
+            #cursor.execute(f"INSERT INTO crawls_crawljob (start_url, follow_links) VALUES ('{start_url}', {self.follow_links})")
+            # do it safely with ???
+            log.info("Inserting crawl job with start_url=%s, follow_links=%s, crawler_id=%s", start_url, self.follow_links, self.crawler_id)
+            if self.crawler_id is not None:
+                log.info("Using crawler_id %d", self.crawler_id)
+                cursor.execute("INSERT INTO crawls_crawljob (start_url, follow_links, crawler_id, created_at, updated_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", (start_url, self.follow_links, self.crawler_id))
+            else:
+                cursor.execute("INSERT INTO crawls_crawljob (start_url, follow_links, created_at, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", (start_url, self.follow_links))
+            connection.commit()
+            crawl_job_id = cursor.lastrowid
+            connection.close()
+        except Exception as e:
+            log.error("Error creating crawl job: %s", e)
+            # stop this spider
+            raise CloseSpider("Database error %s" % e)
         self.crawl_job_id = crawl_job_id
         log.info("Created crawl job with id %d", crawl_job_id)
 

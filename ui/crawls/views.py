@@ -47,7 +47,30 @@ class CrawlerViewSet(viewsets.ModelViewSet):
     # TODO: restrict to authenticated users!
     permission_classes = [permissions.AllowAny]
 
-    
+    @action(detail=True, methods=['post'])
+    def start_crawl(self, request, pk=None):
+        print("start_crawl called")
+        print("pk:", pk)
+        obj = self.get_object()
+        print("Crawler:", obj)
+        parameters = {
+            'project': 'scraper',
+            'spider': 'example',
+            'start_url': obj.start_url,
+            'follow_links': True,
+            'crawler_id': str(obj.id),
+        }
+        # get SCRAPYD_URL from settings
+        url = settings.SCRAPYD_URL + "/schedule.json"
+        response = requests.post(url, data=parameters, timeout=5)
+        log.info("Response: %s", response.text)
+        log.info("Status code: %s", response.status_code)
+        if response.status_code != 200:
+            return Response({'status': 'error', 'message': response.text}, status=500)
+        else:
+            obj = response.json()
+            return Response(obj)
+
 
 class FilterSetViewSet(viewsets.ModelViewSet):
     """ Provides the API under /api/filter_sets/ """
