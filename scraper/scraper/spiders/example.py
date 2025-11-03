@@ -1,10 +1,14 @@
+from __future__ import annotations
 import sqlite3
+from typing import cast
 from urllib.parse import urlparse
 import logging
 import os
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.exceptions import CloseSpider
+import scrapy.signals
+from scrapy.crawler import Crawler
 
 log = logging.getLogger(__name__)
 
@@ -43,30 +47,22 @@ class ExampleSpider(scrapy.Spider):
         self.follow_links = to_bool(follow_links)
         self.link_extractor = LinkExtractor()
         self.crawler_id = crawler_id
-
-        # connection = sqlite3.connect(self.settings.get('DB_PATH'))
-        # cursor = connection.cursor()
-        # # create CrawlJob with SQL, return the id
-        # cursor.execute(f"INSERT INTO crawls_crawljob (start_url, follow_links) VALUES ('{start_url}', {self.follow_links})")
-        # connection.commit()
-        # crawl_job_id = cursor.lastrowid
-        # connection.close()
-        # self.crawl_job_id = crawl_job_id
-        # # crawl_job = CrawlJob.objects.create(start_url=start_url, follow_links=self.follow_links)
-        # # self.crawl_job = crawl_job
-        # # self.crawl_job_id = ...
         self.crawl_job_id = None
-        # # crawl_job.save()
-        #dispatcher.connect(self.spider_opened, signals.spider_opened)
-        
+
 
     @classmethod
-    def from_crawler(cls, crawler, *args, **kwargs):
+    def from_crawler(cls, crawler: Crawler, *args, **kwargs):
+        # pylint: disable=E1101
         spider = super(ExampleSpider, cls).from_crawler(crawler, *args, **kwargs)
         crawler.signals.connect(spider.spider_opened, signal=scrapy.signals.spider_opened)
+        crawler.signals.connect(spider.spider_closed, signal=scrapy.signals.spider_closed)
+        crawler.signals.connect(spider.spider_error, signal=scrapy.signals.spider_error)
         return spider
     
+
     def spider_opened(self, spider):
+        """ Called when the spider is opened. """
+
         log.info("Opened spider %s", spider.name)
         db_path = self.settings.get('DB_PATH')
         log.info("Using database at %s", db_path)
@@ -75,10 +71,7 @@ class ExampleSpider(scrapy.Spider):
         try:
             connection = sqlite3.connect(db_path)
             cursor = connection.cursor()
-            # create CrawlJob with SQL, return the id
             start_url = self.start_urls[0]
-            #cursor.execute(f"INSERT INTO crawls_crawljob (start_url, follow_links) VALUES ('{start_url}', {self.follow_links})")
-            # do it safely with ???
             log.info("Inserting crawl job with start_url=%s, follow_links=%s, crawler_id=%s", start_url, self.follow_links, self.crawler_id)
             cursor.execute("INSERT INTO crawls_crawljob (start_url, follow_links, crawler_id, created_at, updated_at, state) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'RUNNING')", (start_url, self.follow_links, self.crawler_id))
             connection.commit()
@@ -86,10 +79,37 @@ class ExampleSpider(scrapy.Spider):
             connection.close()
         except Exception as e:
             log.error("Error creating crawl job: %s", e)
-            # stop this spider
-            raise CloseSpider("Database error %s" % e)
+            raise CloseSpider(f"Database error: {e}") from e
+
         self.crawl_job_id = crawl_job_id
         log.info("Created crawl job with id %d", crawl_job_id)
+
+
+    def update_spider_state(self, spider: ExampleSpider, state: str):
+        """ Updates the CrawlJob instance in the database. """
+
+        log.info("Updating spider %s state to %s", spider.name, state)
+        try:
+            connection = sqlite3.connect(self.settings.get('DB_PATH'))
+            cursor = connection.cursor()
+            cursor.execute("UPDATE crawls_crawljob SET state=?, updated_at=CURRENT_TIMESTAMP WHERE id=?", (state, self.crawl_job_id))
+            connection.commit()
+            connection.close()
+            log.info("Updated crawl job %d state to %s", self.crawl_job_id, state)
+        except Exception as e:
+            log.error("Error updating crawl job state: %s", e)
+
+
+    def spider_closed(self, spider: ExampleSpider):
+        """ Called when the spider is closed. """
+        log.info("Closed spider %s", spider.name)
+        self.update_spider_state(spider, 'COMPLETED')
+
+
+    def spider_error(self, failure, response, spider: ExampleSpider):
+        """ Called when the spider encounters an error. """
+        log.error("Spider %s encountered an error: %s", spider.name, failure)
+        self.update_spider_state(spider, 'FAILED')
 
 
     def parse(self, response: scrapy.http.Response, from_url=None):
