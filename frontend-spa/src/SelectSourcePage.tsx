@@ -72,7 +72,7 @@ export function InheritanceTableRow(props: {
           type="radio"
           id={"checkbox-" + props.item.id}
           checked={props.selected}
-          onClick={props.onSelect} />
+          onChange={props.onSelect} />
       </td>
       <td className="main-column">
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>

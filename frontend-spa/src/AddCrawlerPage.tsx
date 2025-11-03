@@ -48,26 +48,15 @@ export default function AddCrawlerPage() {
 
 
   async function onCreateClick(sourceItem: SourceItem, crawlerURL: string, crawlerName: string) {
-    console.log("Creating crawler for source item:", sourceItem);
-    // todo: add crawler
-    console.log("Creating crawler for source:", sourceItem, "with URL:", crawlerURL);
-
     // create a crawler, and launch an initial analysis-crawl
     const newCrawler = await createCrawler(sourceItem.guid, crawlerURL, crawlerName);
-
-    console.log("Known crawlers before adding new one:", crawlerList);
-    console.log("Created new crawler:", newCrawler);
     setCrawlerList([...crawlerList, newCrawler]);
-
-    //setHistoryState({ step: `crawlers/${newCrawler.id}/metadata-inheritance`, newCrawlerName: crawlerName });
     navigate(`/crawlers/${newCrawler.id}/metadata-inheritance`);
   }
-
 
   if (!sourceItem) {
     return <div>Kein Quellobjekt ausgewählt</div>;
   }
-
 
   return (
     <div className="main-content">

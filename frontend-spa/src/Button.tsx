@@ -18,8 +18,11 @@ export default function Button(
   if (props.leftAlign) {
     className += " wlo-button-left-align";
   }
+  // remove leftAlign and default from props to avoid React warnings
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { leftAlign, default: isDefault, ...buttonProps } = props;
   return (
-    <button {...props} className={className}>
+    <button {...buttonProps} className={className}>
       {props.children}
     </button>
   );

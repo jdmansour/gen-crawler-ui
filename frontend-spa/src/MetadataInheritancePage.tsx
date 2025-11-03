@@ -34,7 +34,6 @@ export default function MetadataInheritancePage() {
     // sleep 2 seconds to simulate loading
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    console.log("Fetched source fields:", data);
     setFields(data.fields as WloFieldInfo[]);
     setGroups(data.groups as GroupInfo[]);
     setSourceFieldsLoading(false);
@@ -51,7 +50,6 @@ export default function MetadataInheritancePage() {
   function selectAllRecommendedFields() {
     const tmp = { ...selectedFields };
     for (const field of fields) {
-      console.log("Checking field:", field.id);
       const missing = fieldMissing(field);
 
       if (field.recommended && !missing) {
@@ -103,7 +101,6 @@ export default function MetadataInheritancePage() {
         :
         <WloFieldGroupSet groups={groups} fields={fields} selectedFields={selectedFields} onSelectedFieldsChange={
           (update) => {
-            console.log("Field selection update:", update);
             setSelectedFields(prev => {
               return { ...prev, ...update };
             });
