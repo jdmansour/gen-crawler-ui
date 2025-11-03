@@ -1,4 +1,5 @@
 import { Box, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
+import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import { Crawler, CrawlJob } from "./apitypes";
@@ -6,7 +7,6 @@ import sourcePreviewPic from "./assets/source-preview.jpg";
 import { SSEData, useCrawlerSSE } from "./hooks/useSSE";
 import { CrawlerDetailsPageContext } from "./RootContext";
 import { useStep } from "./steps";
-
 
 function mergeCrawlJob(job: CrawlJob, update: Partial<CrawlJob>): CrawlJob {
     if (job.id !== update.id) return job;
@@ -116,7 +116,7 @@ export default function CrawlerDetailsPage() {
                     <TableCell>Start URL</TableCell>
                     <TableCell>Gecrawlte URLs</TableCell>
                     <TableCell>Status</TableCell>
-                    <TableCell>Erstellt am</TableCell>
+                    <TableCell>Erstellt</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -136,7 +136,7 @@ export default function CrawlerDetailsPage() {
                                 size="small"
                             />
                         </TableCell>
-                        <TableCell>{job.created_at ? new Date(job.created_at).toLocaleString("de-DE") : '-'}</TableCell>
+                        <TableCell>{toRelativeDate(job.created_at)}</TableCell>
                     </TableRow>
                 ))}
                 {(crawler.crawl_jobs.length === 0) && (
@@ -150,4 +150,12 @@ export default function CrawlerDetailsPage() {
 
     </div>;
 
+}
+
+function toRelativeDate(isoTimestamp: string) {
+    if (!isoTimestamp) return '-';
+    const result = DateTime.fromISO(isoTimestamp).toRelative();
+    if (result === 'vor 1 Tag') return 'Vor einem Tag';
+    if (result === 'vor 1 Stunde') return 'Vor einer Stunde';
+    return result || '-';
 }
