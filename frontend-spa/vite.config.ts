@@ -93,6 +93,15 @@ export default defineConfig(({ mode }) => {
   // Default development configuration (für Storybook und Dev-Server)
   return {
     ...baseConfig,
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:8000',
+          changeOrigin: true,
+          secure: false,
+        },
+      },
+    },
     build: {
       rollupOptions: {
         input: {

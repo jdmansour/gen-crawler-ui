@@ -16,7 +16,7 @@ Including another URLconf
 """
 from crawls.views import (CrawlerViewSet, CrawlDetailView, CrawlsListView, FilterRuleViewSet,
                           FilterSetCreateView, FilterSetDetailView,
-                          FilterSetViewSet, HealthViewSet, StartCrawlFormView,
+                          FilterSetViewSet, HealthViewSet, StartCrawlFormView, crawler_status_stream,
                           start_content_crawl, SourceItemViewSet)
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
@@ -47,6 +47,7 @@ urlpatterns = [
     path('filters/<int:pk>/', FilterSetDetailView.as_view(), name='filter_details'),
     path('filters/<int:pk>/crawl/', start_content_crawl, name='filterset_start_crawl'),
     path('admin/', admin.site.urls),
+    path('api/crawlers/<int:crawler_id>/status_stream/', crawler_status_stream, name='crawler_status_stream'),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path("accounts/", include("django.contrib.auth.urls")),

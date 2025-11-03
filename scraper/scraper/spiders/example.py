@@ -4,7 +4,10 @@ from typing import cast
 from urllib.parse import urlparse
 import logging
 import os
+import json
+import time
 import scrapy
+import redis
 from scrapy.linkextractors import LinkExtractor
 from scrapy.exceptions import CloseSpider
 import scrapy.signals
@@ -48,6 +51,16 @@ class ExampleSpider(scrapy.Spider):
         self.link_extractor = LinkExtractor()
         self.crawler_id = crawler_id
         self.crawl_job_id = None
+        self.items_processed = 0
+        
+        # Redis setup for status updates
+        redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+        try:
+            self.redis_client = redis.from_url(redis_url)
+            log.info("Redis client initialized with URL: %s", redis_url)
+        except Exception as e:
+            log.warning("Could not connect to Redis: %s", e)
+            self.redis_client = None
 
 
     @classmethod
@@ -86,19 +99,54 @@ class ExampleSpider(scrapy.Spider):
 
 
     def update_spider_state(self, spider: ExampleSpider, state: str):
-        """ Updates the CrawlJob instance in the database. """
+        """ Updates the CrawlJob instance in the database and publishes to Redis. """
 
         log.info("Updating spider %s state to %s", spider.name, state)
         try:
+            # Update database
             connection = sqlite3.connect(self.settings.get('DB_PATH'))
             cursor = connection.cursor()
             cursor.execute("UPDATE crawls_crawljob SET state=?, updated_at=CURRENT_TIMESTAMP WHERE id=?", (state, self.crawl_job_id))
             connection.commit()
             connection.close()
             log.info("Updated crawl job %d state to %s", self.crawl_job_id, state)
+            
+            # Publish to Redis for real-time updates
+            if self.redis_client:
+                try:
+                    status_data = {
+                        'type': 'status_update',
+                        'crawler_id': self.crawler_id,
+                        'crawl_job_id': self.crawl_job_id,
+                        'state': state,
+                        'timestamp': time.time()
+                    }
+                    channel = f'crawler_status_{self.crawler_id}'
+                    self.redis_client.publish(channel, json.dumps(status_data))
+                    log.info("Published status update to Redis channel: %s", channel)
+                except Exception as redis_error:
+                    log.warning("Failed to publish to Redis: %s", redis_error)
+            
         except Exception as e:
             log.error("Error updating crawl job state: %s", e)
 
+    def _publish_progress_update(self, current_url: str):
+        """ Publishes progress update to Redis. """
+        if self.redis_client:
+            try:
+                progress_data = {
+                    'type': 'progress_update',
+                    'crawler_id': self.crawler_id,
+                    'crawl_job_id': self.crawl_job_id,
+                    'items_processed': self.items_processed,
+                    'current_url': current_url,
+                    'timestamp': time.time()
+                }
+                channel = f'crawler_status_{self.crawler_id}'
+                self.redis_client.publish(channel, json.dumps(progress_data))
+                log.debug("Published progress update: %d items processed", self.items_processed)
+            except Exception as e:
+                log.warning("Failed to publish progress update: %s", e)
 
     def spider_closed(self, spider: ExampleSpider):
         """ Called when the spider is closed. """
@@ -156,7 +204,15 @@ class ExampleSpider(scrapy.Spider):
             item['url'] = link.url
             if from_url:
                 item['from_url'] = from_url
-            log.info(f"Found link {link.url}")
+            log.info("Found link %s", link.url)
+            
+            # Track processed items for progress updates
+            self.items_processed += 1
+            
+            # Send progress update every 10 items
+            if self.items_processed % 10 == 0:
+                self._publish_progress_update(link.url)
+            
             yield item
             if self.follow_links:
                 yield scrapy.Request(link.url, callback=self.parse, cb_kwargs={'from_url': response.url})

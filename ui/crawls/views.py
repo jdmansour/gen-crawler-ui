@@ -3,8 +3,11 @@
 
 import json
 import logging
+import os
+import time
 from typing import Any, Optional
 
+import redis
 import requests
 from crawls.forms import StartCrawlForm
 from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
@@ -13,9 +16,11 @@ from crawls.serializers import (CrawlerSerializer, FilterRuleSerializer,
 from crawls.fields_processor import FieldsProcessor
 from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.http import StreamingHttpResponse
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, DetailView, FormView, ListView
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
@@ -70,6 +75,73 @@ class CrawlerViewSet(viewsets.ModelViewSet):
         else:
             obj = response.json()
             return Response(obj)
+
+
+@csrf_exempt
+def crawler_status_stream(request, crawler_id):
+    """
+    Server-Sent Events endpoint for real-time crawler status updates.
+    Listens to Redis pub/sub for crawler status changes.
+    """
+    log.info("crawler_status_stream called")
+    log.info("Request: %s", request)
+    log.info("crawler_id: %s", crawler_id)
+    crawler = get_object_or_404(Crawler, pk=crawler_id)
+    
+    # Get Redis connection from environment
+    redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+    redis_client = redis.from_url(redis_url)
+    pubsub = redis_client.pubsub()
+    channel_name = f'crawler_status_{crawler_id}'
+    pubsub.subscribe(channel_name)
+    
+    def event_stream():
+        try:
+            # Send initial status
+            initial_status = {
+                'type': 'initial',
+                'crawler_id': crawler.id,
+                'name': crawler.name,
+                'start_url': crawler.start_url,
+                'crawl_jobs': [
+                    {
+                        'id': job.id,
+                        'state': job.state,
+                        'start_url': job.start_url,
+                        'created_at': job.created_at.isoformat() if job.created_at else None,
+                        'updated_at': job.updated_at.isoformat() if job.updated_at else None,
+                    }
+                    for job in crawler.crawl_jobs.all()
+                ],
+                'timestamp': time.time()
+            }
+            yield f"data: {json.dumps(initial_status)}\n\n".encode('utf-8')
+            
+            # Listen for updates
+            for message in pubsub.listen():
+                if message['type'] == 'message':
+                    try:
+                        data = json.loads(message['data'].decode('utf-8'))
+                        yield f"data: {json.dumps(data)}\n\n".encode('utf-8')
+                    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+                        log.error("Error processing Redis message: %s", e)
+                        continue
+        except Exception as e:
+            log.error("Error in crawler status stream: %s", e)
+            error_data = {
+                'type': 'error',
+                'message': str(e),
+                'timestamp': time.time()
+            }
+            yield f"data: {json.dumps(error_data)}\n\n".encode('utf-8')
+        finally:
+            pubsub.close()
+    
+    response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+    response['Cache-Control'] = 'no-cache'
+    response['Access-Control-Allow-Origin'] = '*'
+    response['Access-Control-Allow-Headers'] = 'Cache-Control'
+    return response
 
 
 class FilterSetViewSet(viewsets.ModelViewSet):
@@ -294,3 +366,4 @@ def start_content_crawl(request, pk):
 
     # redirect back to the filter set detail page
     return redirect('filter_details', pk=pk)
+
