@@ -23,9 +23,17 @@ export default function CrawlerDetailsPage() {
     const { crawlerList, sourceItems, setCrawlerList } = useOutletContext<CrawlerDetailsPageContext>();
     const crawler = crawlerList.find(c => c.id.toString() === crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
+    console.log("crawlerId:", crawlerId, "crawler:", crawler);
+    const [crawlerURL, setCrawlerURL] = useState<string>("");
+    const [crawlerName, setCrawlerName] = useState<string>("");
 
-    const [crawlerURL, setCrawlerURL] = useState<string>(crawler?.start_url || "");
-    const [crawlerName, setCrawlerName] = useState<string>(crawler?.name || "");
+    // Set initial form values when 'crawler' is loaded
+    useEffect(() => {
+        if (crawler) {
+            setCrawlerURL(crawler.start_url);
+            setCrawlerName(crawler.name);
+        }
+    }, [crawler]);
 
     useStep("crawler-details");
 
@@ -48,7 +56,7 @@ export default function CrawlerDetailsPage() {
         }
     }, [setCrawlerList, sseData]);
 
-    if (!crawlerId || !crawler) {
+    if (!crawler) {
         return <div className="main-content">
             <p>Crawler not found</p>
         </div>;
