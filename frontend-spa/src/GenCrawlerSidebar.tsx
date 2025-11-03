@@ -21,7 +21,7 @@ export default function GenCrawlerSidebar(props: {
   const activeSidebarTab = sidebarTabs.findIndex((tab) => tab.tag == step);
   const navigate = useNavigate();
   const params = useParams();
-  console.log("Rendering sidebar for step:", step);
+  // console.log("Rendering sidebar for step:", step);
 
   return (
     <FilterTabs

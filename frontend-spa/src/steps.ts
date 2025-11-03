@@ -13,7 +13,6 @@ export type CrawlerDashboardStep =
 export function useStep(step: CrawlerDashboardStep) {
   const { setStep } = useOutletContext<UseStepContext>();
   useEffect(() => {
-    console.log("Setting step to:", step);
     setStep(step);
   }, [setStep, step]);
 }

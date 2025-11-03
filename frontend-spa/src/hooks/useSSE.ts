@@ -37,7 +37,7 @@ export function useSSE(url: string) {
         eventSourceRef.current = eventSource;
 
         eventSource.onopen = () => {
-          console.log('SSE connection opened');
+          // console.log('SSE connection opened');
           setIsConnected(true);
           setError(null);
         };
@@ -69,7 +69,7 @@ export function useSSE(url: string) {
           // Automatically reconnect after a delay
           setTimeout(() => {
             if (eventSource.readyState === EventSource.CLOSED) {
-              console.log('Attempting to reconnect SSE...');
+              // console.log('Attempting to reconnect SSE...');
               connectSSE();
             }
           }, 3000);

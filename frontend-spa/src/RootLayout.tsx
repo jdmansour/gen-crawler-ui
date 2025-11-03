@@ -21,8 +21,6 @@ export default function RootLayout() {
   const [step, setStep] = useState<CrawlerDashboardStep>("dashboard");
   const params = useParams();
   const crawlerId : number | undefined = params.crawlerId ? parseInt(params.crawlerId) : undefined;
-  console.log("RootLayout params:", params)
-
 
   const navigate = useNavigate();
   function setHistoryState(state: {
@@ -44,13 +42,11 @@ export default function RootLayout() {
     setCrawlerList: setCrawlerList,
     sourceItem: selectedSourceItem || undefined,
     onSave: async (selectedFields: Record<string, boolean>) => {
-      console.log("Selected fields to inherit:", selectedFields);
       if (crawlerId === null) {
           console.error("No crawler ID found!");
           return;
       }
       const inheritedFields = Object.keys(selectedFields).filter(fieldId => selectedFields[fieldId]);
-      console.log("Updating crawler", crawlerId, "with inherited fields:", inheritedFields);
       const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
           method: "PATCH",
           headers: {
@@ -64,7 +60,6 @@ export default function RootLayout() {
           console.error("Failed to update crawler:", response.status, response.statusText);
           return;
       }
-      console.log("Crawler updated successfully.");
       //setHistoryState({ step: "filter-crawls", newCrawlerName: crawlerName || undefined });
 
     }
@@ -80,9 +75,6 @@ export default function RootLayout() {
   } else if (step == "add-crawler") {
     breadcrumbs.push({ label: "Crawler Details", temporary: true });
   } else if (step == "metadata-inheritance" || step == "filter-crawls" || step == "crawler-details") {
-    // is the id in the list?
-    const crawlerFound = crawlerId && crawlerList.find(c => c.id == crawlerId);
-    console.log("Displaying breadcrumbs for crawlerId:", crawlerId, "found:", crawlerFound);
     const crawlerName = crawlerList.find(c => c.id == crawlerId)?.name;
     breadcrumbs.push({ label: crawlerName || "-", url: `/crawlers/${crawlerId}` });
   }
@@ -97,13 +89,8 @@ export default function RootLayout() {
   async function fetchSourceItems() {
     const response = await fetch("http://localhost:8000/api/source_items");
     const data: SourceItem[] = await response.json();
-
-    console.log("Fetched source items:", data);
-
     setSourceItems(data);
   }
-
-
 
   useEffect(() => {
     fetchCrawlers();

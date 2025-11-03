@@ -23,7 +23,6 @@ export default function CrawlerDetailsPage() {
     const { crawlerList, sourceItems, setCrawlerList } = useOutletContext<CrawlerDetailsPageContext>();
     const crawler = crawlerList.find(c => c.id.toString() === crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
-    console.log("crawlerId:", crawlerId, "crawler:", crawler);
     const [crawlerURL, setCrawlerURL] = useState<string>("");
     const [crawlerName, setCrawlerName] = useState<string>("");
 
@@ -45,8 +44,6 @@ export default function CrawlerDetailsPage() {
         
         switch (sseData.type) {
             case 'crawl_job_update':
-                // Update the specific crawl job state
-                console.log('Crawl Job Update SSE data:', sseData);
                 setCrawlerList(crawlerList => crawlerList.map(c => mergeCrawler(c, sseData)));
                 break;
                 
