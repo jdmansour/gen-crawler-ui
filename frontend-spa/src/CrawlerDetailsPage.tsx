@@ -9,11 +9,11 @@ import { CrawlerDetailsPageContext } from "./RootContext";
 import { useStep } from "./steps";
 
 function mergeCrawlJob(job: CrawlJob, update: Partial<CrawlJob>): CrawlJob {
-    if (job.id !== update.id) return job;
+    if (job.id != update.id) return job;
     return { ...job, ...update };
 }
 function mergeCrawler(c: Crawler, sseData: SSEData): Crawler {
-    if (c.id !== sseData.crawler_id) return c;
+    if (c.id != sseData.crawler_id) return c;
     return { ...c,
             crawl_jobs: c.crawl_jobs.map(job => mergeCrawlJob(job, sseData.crawl_job)) };
 };
