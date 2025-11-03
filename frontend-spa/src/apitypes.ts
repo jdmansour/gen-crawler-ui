@@ -5,7 +5,7 @@ export type CrawlJobState = 'pending' | 'running' | 'completed' | 'failed';
 export type Crawler = {
     id: number;
     name: string;
-    status?: CrawlerStatus;
+    status: CrawlerStatus;
     created_at: string;
     updated_at: string;
     source_item: string;
@@ -38,6 +38,7 @@ export type CrawlJob = {
     created_at: string;
     updated_at: string;
     state: CrawlJobState;
+    crawled_url_count: number;
     crawler: number;
 }
 

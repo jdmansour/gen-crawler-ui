@@ -1,4 +1,5 @@
 """ Serializers define the API representation. """
+from __future__ import annotations
 from rest_framework import serializers
 from crawls.models import Crawler, FilterRule, FilterSet, CrawlJob, SourceItem
 
@@ -10,6 +11,17 @@ class SourceItemSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at', 'updated_at', 'preview_url']
 
 
+class CrawlJobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CrawlJob
+        fields = '__all__'
+
+    crawled_url_count = serializers.SerializerMethodField('get_crawled_url_count')
+
+    def get_crawled_url_count(self, obj: CrawlJob):
+        return obj.crawled_urls.count()
+
+
 class CrawlerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crawler
@@ -17,7 +29,8 @@ class CrawlerSerializer(serializers.ModelSerializer):
                   'created_at', 'updated_at', 'inherited_fields', 'crawl_jobs']
         read_only_fields = ['id', 'created_at', 'updated_at', 'crawl_jobs']
         depth = 1
-        
+
+    crawl_jobs = CrawlJobSerializer(many=True, read_only=True)
 
 class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -45,19 +58,6 @@ class InlineFilterRuleSerializer(serializers.HyperlinkedModelSerializer):
         model = FilterRule
         fields = ['id', 'rule', 'include', 'created_at', 'updated_at',
                   'page_type', 'count', 'cumulative_count', 'position']
-
-
-# Add "url_count" to crawl_job
-class CrawlJobSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CrawlJob
-        fields = '__all__'
-
-    # order rules by position, ascending
-    url_count = serializers.SerializerMethodField('get_url_count')
-
-    def get_url_count(self, obj: CrawlJob):
-        return obj.crawled_urls.count()
 
 
 class FilterSetSerializer(serializers.ModelSerializer):

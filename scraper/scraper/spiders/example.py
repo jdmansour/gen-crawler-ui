@@ -110,15 +110,33 @@ class ExampleSpider(scrapy.Spider):
             connection.commit()
             connection.close()
             log.info("Updated crawl job %d state to %s", self.crawl_job_id, state)
-            
+
             # Publish to Redis for real-time updates
             if self.redis_client:
                 try:
+                    connection = sqlite3.connect(self.settings.get('DB_PATH'))
+                    cursor = connection.cursor()
+                    # select state and count of crawled urls
+                    cursor.execute("SELECT state, (SELECT COUNT(*) FROM crawls_crawledurl WHERE crawl_job_id=?) FROM crawls_crawljob WHERE id=?", (self.crawl_job_id, self.crawl_job_id))
+                    row = cursor.fetchone()
+                    connection.close()
+                    if row:
+                        crawl_job_state = row[0]
+                        crawl_job_crawled_url_count = row[1]
+                    else:
+                        crawl_job_state = 'UNKNOWN'
+                        crawl_job_crawled_url_count = 0 
+
                     status_data = {
-                        'type': 'status_update',
+                        'type': 'crawl_job_update',
                         'crawler_id': self.crawler_id,
-                        'crawl_job_id': self.crawl_job_id,
-                        'state': state,
+                        'crawl_job': {
+                            'id': self.crawl_job_id,
+                            'state': crawl_job_state,
+                            'crawled_url_count': crawl_job_crawled_url_count,
+                        },
+                        'items_processed': self.items_processed,
+                        'current_url': None,
                         'timestamp': time.time()
                     }
                     channel = f'crawler_status_{self.crawler_id}'
@@ -134,10 +152,28 @@ class ExampleSpider(scrapy.Spider):
         """ Publishes progress update to Redis. """
         if self.redis_client:
             try:
+                # Count crawled URLs for this job
+                connection = sqlite3.connect(self.settings.get('DB_PATH'))
+                cursor = connection.cursor()
+                # select state and count of crawled urls
+                cursor.execute("SELECT state, (SELECT COUNT(*) FROM crawls_crawledurl WHERE crawl_job_id=?) FROM crawls_crawljob WHERE id=?", (self.crawl_job_id, self.crawl_job_id))
+                row = cursor.fetchone()
+                connection.close()
+                if row:
+                    crawl_job_state = row[0]
+                    crawl_job_crawled_url_count = row[1]
+                else:
+                    crawl_job_state = 'UNKNOWN'
+                    crawl_job_crawled_url_count = 0
+
                 progress_data = {
-                    'type': 'progress_update',
+                    'type': 'crawl_job_update',
                     'crawler_id': self.crawler_id,
-                    'crawl_job_id': self.crawl_job_id,
+                    'crawl_job': {
+                        'id': self.crawl_job_id,
+                        'state': crawl_job_state,
+                        'crawled_url_count': crawl_job_crawled_url_count,
+                    },
                     'items_processed': self.items_processed,
                     'current_url': current_url,
                     'timestamp': time.time()

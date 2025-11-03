@@ -179,6 +179,10 @@ LOGGING = {
             "handlers": ["console"],
             "level": "INFO",
         },
+        "aggregator": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
     },
 }
 

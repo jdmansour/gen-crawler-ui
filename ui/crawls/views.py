@@ -5,9 +5,11 @@ import json
 import logging
 import os
 import time
-from typing import Any, Optional
+import threading
+from typing import Any, Generator, Iterator, Optional
 
 import redis
+import redis.client
 import requests
 from crawls.forms import StartCrawlForm
 from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
@@ -26,7 +28,135 @@ from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from test_aggregator import HelperAggregator
+
 log = logging.getLogger(__name__)
+
+
+class EventAggregator:
+    """
+    Aggregiert Events um zu vermeiden, dass zu viele Events an das Frontend gesendet werden.
+    
+    Strategie:
+    - Sammelt Events für eine bestimmte Zeit (debounce_ms)
+    - Sendet nur das neueste Event nach der Wartezeit
+    - Sendet spätestens nach max_wait_ms ein Event, auch wenn noch neue ankommen
+    - Sendet sofort finale Events (wie "finished", "error")
+    """
+    
+    def __init__(self, send_callback, debounce_ms=200, max_wait_ms=2000):
+        self.send_callback = send_callback
+        self.debounce_ms = debounce_ms / 1000.0  # Convert to seconds
+        self.max_wait_ms = max_wait_ms / 1000.0
+        self.pending_event = None
+        self.timer = None
+        self.first_event_time = None
+        self.lock = threading.Lock()
+        self._shutdown = False
+        
+    def add_event(self, event_data):
+        """Fügt ein neues Event hinzu und verwaltet das Timing."""
+        if self._shutdown:
+            return
+            
+        with self.lock:
+            if self._shutdown:
+                return
+                
+            current_time = time.time()
+            
+            # Finale Events sofort senden
+            if self._is_final_event(event_data):
+                self._cancel_timer()
+                self._send_event(event_data)
+                return
+            
+            # Erstes Event in dieser Batch?
+            if self.pending_event is None:
+                self.first_event_time = current_time
+            
+            # Event speichern (überschreibt vorheriges)
+            self.pending_event = event_data
+            
+            # Prüfen ob max_wait_ms erreicht wurde
+            if (self.first_event_time and 
+                current_time - self.first_event_time >= self.max_wait_ms):
+                self._cancel_timer()
+                self._send_pending_event()
+                return
+            
+            # Timer zurücksetzen
+            self._cancel_timer()
+            if not self._shutdown:
+                self.timer = threading.Timer(self.debounce_ms, self._send_pending_event)
+                self.timer.start()
+    
+    def _is_final_event(self, event_data):
+        """Prüft ob es sich um ein finales Event handelt, das sofort gesendet werden soll."""
+        if event_data.get('type') == 'crawl_job_update':
+            crawl_job = event_data.get('crawl_job', {})
+            state = crawl_job.get('state', '')
+            return state in ['finished', 'error', 'cancelled', 'failed']
+        return event_data.get('type') in ['error', 'complete', 'finished']
+    
+    def _send_pending_event(self):
+        """Sendet das ausstehende Event."""
+        if self._shutdown:
+            return
+            
+        with self.lock:
+            if self._shutdown:
+                return
+                
+            if self.pending_event:
+                self._send_event(self.pending_event)
+                self._reset_state()
+    
+    def _send_event(self, event_data):
+        """Sendet ein Event über den Callback."""
+        if self._shutdown:
+            return
+            
+        try:
+            # Aktualisiere Timestamp vor dem Senden
+            event_data['timestamp'] = time.time()
+            self.send_callback(event_data)
+            log.debug("Aggregated event sent: %s", event_data.get('type', 'unknown'))
+        except Exception as e:
+            log.error("Error sending aggregated event: %s", e)
+    
+    def _cancel_timer(self):
+        """Bricht den aktuellen Timer ab."""
+        if self.timer:
+            self.timer.cancel()
+            self.timer = None
+    
+    def _reset_state(self):
+        """Setzt den internen Zustand zurück."""
+        self.pending_event = None
+        self.first_event_time = None
+    
+    def flush_pending(self):
+        """Sendet ein ausstehende Event sofort."""
+        with self.lock:
+            if self.pending_event and not self._shutdown:
+                self._cancel_timer()
+                self._send_event(self.pending_event)
+                self._reset_state()
+    
+    def cleanup(self):
+        """Räumt Ressourcen auf."""
+        self._shutdown = True
+        with self.lock:
+            self._cancel_timer()
+            # Letztes Event noch senden, falls vorhanden
+            if self.pending_event:
+                try:
+                    self._send_event(self.pending_event)
+                except Exception as e:
+                    log.error("Error sending final event during cleanup: %s", e)
+            self._reset_state()
+
 
 class SourceItemViewSet(viewsets.ModelViewSet):
     """ Provides the API under /api/source_items/ """
@@ -82,10 +212,12 @@ def crawler_status_stream(request, crawler_id):
     """
     Server-Sent Events endpoint for real-time crawler status updates.
     Listens to Redis pub/sub for crawler status changes.
+    Uses EventAggregator to reduce event frequency.
     """
     log.info("crawler_status_stream called")
     log.info("Request: %s", request)
     log.info("crawler_id: %s", crawler_id)
+    log.info("Thread ID in request handler: %s", threading.get_ident())
     crawler = get_object_or_404(Crawler, pk=crawler_id)
     
     # Get Redis connection from environment
@@ -96,38 +228,53 @@ def crawler_status_stream(request, crawler_id):
     pubsub.subscribe(channel_name)
     
     def event_stream():
+        event_queue = []
+        aggregator = None
+        log.info("Event stream started for crawler %s", crawler_id)
+        log.info("Thread ID in StreamingHttpResponse generator: %s", threading.get_ident())
+
+        def send_event(event_data):
+            event_queue.append(f"data: {json.dumps(event_data)}\n\n".encode('utf-8'))
+   
         try:
-            # Send initial status
-            initial_status = {
-                'type': 'initial',
-                'crawler_id': crawler.id,
-                'name': crawler.name,
-                'start_url': crawler.start_url,
-                'crawl_jobs': [
-                    {
-                        'id': job.id,
-                        'state': job.state,
-                        'start_url': job.start_url,
-                        'created_at': job.created_at.isoformat() if job.created_at else None,
-                        'updated_at': job.updated_at.isoformat() if job.updated_at else None,
-                    }
-                    for job in crawler.crawl_jobs.all()
-                ],
-                'timestamp': time.time()
-            }
-            yield f"data: {json.dumps(initial_status)}\n\n".encode('utf-8')
-            
-            # Listen for updates
-            for message in pubsub.listen():
-                if message['type'] == 'message':
-                    try:
-                        data = json.loads(message['data'].decode('utf-8'))
-                        yield f"data: {json.dumps(data)}\n\n".encode('utf-8')
-                    except (json.JSONDecodeError, UnicodeDecodeError) as e:
-                        log.error("Error processing Redis message: %s", e)
-                        continue
+            aggregator = HelperAggregator(
+                callback=send_event,
+                debounce_ms=200,
+                max_wait_ms=1000
+            )
+
+            while pubsub.subscribed:
+                # If there are pending events, use a short timeout so we can get to "yield event"
+                # and are not stuck waiting for new messages from Redis.
+                # If there are no events in the aggregator, then we can wait longer for new messages.
+                timeout = 0.1 if len(aggregator.events) > 0 else None
+                message = pubsub.handle_message(pubsub.parse_response(timeout=timeout, block=False))  # type: ignore
+                
+                # Sende alle gepufferten Events
+                while event_queue:
+                    event = event_queue.pop(0)
+                    log.info("Sending event from queue: %s", event)
+                    yield event
+        
+                if message is None:
+                    log.info("Timeout")
+                    continue
+                    
+                if message['type'] != 'message':
+                    log.info("Ignoring non-message type: %s", message['type'])
+                    continue
+
+                try:
+                    data = json.loads(message['data'].decode('utf-8'))
+                    log.info("Received Redis message: %s", data.get('type', 'unknown'))
+                    # Event über Aggregator verarbeiten
+                    aggregator.add_event(data)
+                except (json.JSONDecodeError, UnicodeDecodeError) as e:
+                    log.error("Error processing Redis message: %s", e)
+                    continue
+                        
         except Exception as e:
-            log.error("Error in crawler status stream: %s", e)
+            log.exception("Error in crawler status stream: '%r', %s", e, str(e))
             error_data = {
                 'type': 'error',
                 'message': str(e),
@@ -136,6 +283,7 @@ def crawler_status_stream(request, crawler_id):
             yield f"data: {json.dumps(error_data)}\n\n".encode('utf-8')
         finally:
             pubsub.close()
+            log.info("Event stream for crawler %s closed", crawler_id)
     
     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'

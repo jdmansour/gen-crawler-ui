@@ -1,25 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
+import { CrawlJobState } from '../apitypes';
 
-export interface SSEData {
-  type: 'initial' | 'status_update' | 'progress_update' | 'error';
-  crawler_id?: number;
-  crawl_job_id?: number;
-  state?: string;
-  items_processed?: number;
-  current_url?: string;
-  crawl_jobs?: Array<{
-    id: number;
-    state: string;
-    start_url: string;
-    created_at: string | null;
-    updated_at: string | null;
-  }>;
-  timestamp: number;
-  message?: string;
-}
+export type SSEData = {
+    type: 'crawl_job_update';
+    crawler_id: number;
+    crawl_job: {
+        id: number;
+        state: CrawlJobState;
+        crawled_url_count: number;
+    };
+    items_processed: number;
+    current_url: string;
+    timestamp: number;
+};
+
+export type SSEError = {
+    type: 'error';
+    message: string;
+    timestamp: number;
+};
+
+export type SSEEvent = SSEData | SSEError;
 
 export function useSSE(url: string) {
-  const [data, setData] = useState<SSEData | null>(null);
+  const [data, setData] = useState<SSEEvent | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -41,7 +45,7 @@ export function useSSE(url: string) {
         eventSource.onmessage = (event) => {
           try {
             const parsedData: SSEData = JSON.parse(event.data);
-            console.log('SSE data received:', parsedData);
+            // console.log('SSE data received:', parsedData);
             setData(parsedData);
           } catch (parseError) {
             console.error('Error parsing SSE data:', parseError);

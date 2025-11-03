@@ -26,6 +26,7 @@ export type MetadataInheritancePageContext = {
 export type CrawlerDetailsPageContext = {
   sourceItems: SourceItem[];
   crawlerList: Crawler[];
+  setCrawlerList: (crawlers: Crawler[] | ((prev: Crawler[]) => Crawler[])) => void;
 };
 
 export type UseStepContext = {

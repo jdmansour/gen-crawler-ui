@@ -1,23 +1,31 @@
-import { Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Chip, Box } from "@mui/material";
-import { useState, useEffect } from "react";
+import { Box, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
+import { Crawler, CrawlJob } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
+import { SSEData, useCrawlerSSE } from "./hooks/useSSE";
 import { CrawlerDetailsPageContext } from "./RootContext";
 import { useStep } from "./steps";
-import { useCrawlerSSE } from "./hooks/useSSE";
 
+
+function mergeCrawlJob(job: CrawlJob, update: Partial<CrawlJob>): CrawlJob {
+    if (job.id !== update.id) return job;
+    return { ...job, ...update };
+}
+function mergeCrawler(c: Crawler, sseData: SSEData): Crawler {
+    if (c.id !== sseData.crawler_id) return c;
+    return { ...c,
+            crawl_jobs: c.crawl_jobs.map(job => mergeCrawlJob(job, sseData.crawl_job)) };
+};
 
 export default function CrawlerDetailsPage() {
     const { crawlerId } = useParams();
-    const { crawlerList, sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
+    const { crawlerList, sourceItems, setCrawlerList } = useOutletContext<CrawlerDetailsPageContext>();
     const crawler = crawlerList.find(c => c.id.toString() === crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
 
     const [crawlerURL, setCrawlerURL] = useState<string>(crawler?.start_url || "");
     const [crawlerName, setCrawlerName] = useState<string>(crawler?.name || "");
-    const [realtimeJobs, setRealtimeJobs] = useState(crawler?.crawl_jobs || []);
-    const [itemsProcessed, setItemsProcessed] = useState<number>(0);
-    const [currentUrl, setCurrentUrl] = useState<string>("");
 
     useStep("crawler-details");
 
@@ -25,42 +33,20 @@ export default function CrawlerDetailsPage() {
     const { data: sseData, isConnected, error: sseError } = useCrawlerSSE(crawlerId);
 
     useEffect(() => {
-        if (sseData) {
-            console.log('Received SSE data:', sseData);
-            
-            switch (sseData.type) {
-                case 'initial':
-                    if (sseData.crawl_jobs) {
-                        setRealtimeJobs(sseData.crawl_jobs);
-                    }
-                    break;
-                    
-                case 'status_update':
-                    // Update the specific crawl job state
-                    setRealtimeJobs(prev => 
-                        prev.map(job => 
-                            job.id === sseData.crawl_job_id 
-                                ? { ...job, state: sseData.state || job.state }
-                                : job
-                        )
-                    );
-                    break;
-                    
-                case 'progress_update':
-                    if (sseData.items_processed !== undefined) {
-                        setItemsProcessed(sseData.items_processed);
-                    }
-                    if (sseData.current_url) {
-                        setCurrentUrl(sseData.current_url);
-                    }
-                    break;
-                    
-                case 'error':
-                    console.error('SSE Error:', sseData.message);
-                    break;
-            }
+        if (!sseData) return;
+        
+        switch (sseData.type) {
+            case 'crawl_job_update':
+                // Update the specific crawl job state
+                console.log('Crawl Job Update SSE data:', sseData);
+                setCrawlerList(crawlerList => crawlerList.map(c => mergeCrawler(c, sseData)));
+                break;
+                
+            case 'error':
+                console.error('SSE Error:', sseData.message);
+                break;
         }
-    }, [sseData]);
+    }, [setCrawlerList, sseData]);
 
     if (!crawlerId || !crawler) {
         return <div className="main-content">
@@ -112,13 +98,6 @@ export default function CrawlerDetailsPage() {
                 color={isConnected ? "success" : "error"}
                 sx={{ mr: 1 }}
             />
-            {itemsProcessed > 0 && (
-                <Chip 
-                    label={`${itemsProcessed} Items verarbeitet`} 
-                    color="info"
-                    sx={{ mr: 1 }}
-                />
-            )}
             {sseError && (
                 <Chip 
                     label={`Fehler: ${sseError}`} 
@@ -128,12 +107,6 @@ export default function CrawlerDetailsPage() {
             )}
         </Box>
 
-        {currentUrl && (
-            <Box sx={{ mb: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
-                <strong>Aktuelle URL:</strong> {currentUrl}
-            </Box>
-        )}
-
         <h2>Läufe des Crawlers</h2>
 
         <TableContainer component={Paper}>
@@ -141,14 +114,16 @@ export default function CrawlerDetailsPage() {
             <TableHead>
                 <TableRow>
                     <TableCell>Start URL</TableCell>
+                    <TableCell>Gecrawlte URLs</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell>Erstellt am</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
-                {realtimeJobs.map(job => (
+                {crawler.crawl_jobs.map(job => (
                     <TableRow key={job.id}>
                         <TableCell>{job.start_url}</TableCell>
+                        <TableCell>{job.crawled_url_count || '-'}</TableCell>
                         <TableCell>
                             <Chip 
                                 label={job.state} 
@@ -164,7 +139,7 @@ export default function CrawlerDetailsPage() {
                         <TableCell>{job.created_at ? new Date(job.created_at).toLocaleString("de-DE") : '-'}</TableCell>
                     </TableRow>
                 ))}
-                {(realtimeJobs.length === 0) && (
+                {(crawler.crawl_jobs.length === 0) && (
                     <TableRow>
                         <TableCell colSpan={3}>No crawl jobs found.</TableCell>
                     </TableRow>
