@@ -1,4 +1,4 @@
-import { Box, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
+import { Box, Button, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -114,6 +114,27 @@ export default function CrawlerDetailsPage() {
 
         <h2>Läufe des Crawlers</h2>
 
+        <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={async () => {
+            // Trigger a new crawl job
+            const response = await fetch(`http://localhost:8000/api/crawlers/${crawler.id}/start_crawl/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                console.error("Failed to start crawl job:", response.status, response.statusText);
+                return;
+            }
+            const newJob: CrawlJob = await response.json();
+            // Optimistically add the new job to the list
+            setCrawlerList(crawlerList => crawlerList.map(c => 
+                c.id === crawler.id ? { ...c, crawl_jobs: [newJob, ...c.crawl_jobs] } : c
+            ));
+        }}>
+            Neuen Crawl starten
+        </Button>
+
         <TableContainer component={Paper}>
         <Table>
             <TableHead>
@@ -125,7 +146,7 @@ export default function CrawlerDetailsPage() {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {crawler.crawl_jobs.map(job => (
+                {crawler.crawl_jobs.sort((a,b) => compareISODateDesc(a.created_at, b.created_at)).map(job => (
                     <TableRow key={job.id}>
                         <TableCell>{job.start_url}</TableCell>
                         <TableCell>{job.crawled_url_count || '-'}</TableCell>
@@ -154,7 +175,13 @@ export default function CrawlerDetailsPage() {
         </TableContainer>
 
     </div>;
+}
 
+// comparer for two iso date strings
+function compareISODateDesc(a: string, b: string) {
+    const dateA = new Date(a);
+    const dateB = new Date(b);
+    return dateB.getTime() - dateA.getTime();
 }
 
 function toRelativeDate(isoTimestamp: string) {
