@@ -5,17 +5,17 @@ import Button from "./Button";
 import { AddCrawlerPageContext } from "./RootContext";
 import { createCrawler, SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
-import { crawlerList } from "./data";
 import { useStep } from "./steps";
 
 
 export default function AddCrawlerPage() {
 
-  const { sourceItem, setCrawlerList } = useOutletContext<AddCrawlerPageContext>();
+  const { sourceItem, setSourceItem, crawlerList, sourceItems, setCrawlerList } = useOutletContext<AddCrawlerPageContext>();
 
   // const { sourceItem, onCreateClick, onCancelClick } = props;
   const [crawlerURL, setCrawlerURL] = useState<string>("");
   const [crawlerName, setCrawlerName] = useState<string>("");
+
 
 
   useStep("add-crawler");
@@ -32,11 +32,18 @@ export default function AddCrawlerPage() {
 
   useEffect(() => {
     if (existingCrawlerId) {
-      // If we have an existing crawlerId, we should load the existing crawler data
-      // TODO: Implement loading existing crawler data
-      console.log("Would load existing crawler data for ID:", existingCrawlerId);
+      const existingCrawler = crawlerList.find(c => c.id === existingCrawlerId);
+      if (existingCrawler) {
+        // override defaultURL with existing crawler's start_url
+        setCrawlerURL(existingCrawler.start_url);
+        setCrawlerName(existingCrawler.name);
+        const sourceItemForCrawler = sourceItems.find(s => s.guid === existingCrawler.source_item);
+        if (sourceItemForCrawler) {
+          setSourceItem(sourceItemForCrawler);
+        }
+      }
     }
-  }, [existingCrawlerId]);
+  }, [crawlerList, existingCrawlerId, setSourceItem, sourceItems]);
 
   useEffect(() => {
     setCrawlerURL(defaultURL);
@@ -47,7 +54,8 @@ export default function AddCrawlerPage() {
   }, [defaultName]);
 
 
-  async function onCreateClick(sourceItem: SourceItem, crawlerURL: string, crawlerName: string) {
+  async function onCreateClick() {
+    if (!sourceItem) return;
     // create a crawler, and launch an initial analysis-crawl
     const newCrawler = await createCrawler(sourceItem.guid, crawlerURL, crawlerName);
     setCrawlerList([...crawlerList, newCrawler]);
@@ -96,13 +104,10 @@ export default function AddCrawlerPage() {
 
         <div className="wlo-button-group">
           <Button leftAlign onClick={() => navigate(-1)}>Zurück</Button>
-          <Button default onClick={() => {
-            if (onCreateClick) {
-              onCreateClick(sourceItem, crawlerURL, crawlerName);
-            }
-          }}>
-            Crawler anlegen
-          </Button>
+          {existingCrawlerId
+            ? <Button onClick={() => navigate(`/crawlers/${existingCrawlerId}/metadata-inheritance`)}>Weiter zur Metadatenvererbung</Button>
+            : <Button default onClick={onCreateClick}>Crawler anlegen</Button>
+          }
         </div>
       </div>
     </div>

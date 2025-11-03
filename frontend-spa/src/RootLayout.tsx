@@ -41,6 +41,7 @@ export default function RootLayout() {
     crawlerList: crawlerList,
     setCrawlerList: setCrawlerList,
     sourceItem: selectedSourceItem || undefined,
+    setSourceItem: setSelectedSourceItem,
     onSave: async (selectedFields: Record<string, boolean>) => {
       if (crawlerId === null) {
           console.error("No crawler ID found!");

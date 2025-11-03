@@ -12,6 +12,9 @@ export type SelectSourcePageContext = {
 
 export type AddCrawlerPageContext = {
   sourceItem?: SourceItem;
+  setSourceItem: (source: SourceItem) => void;
+  crawlerList: Crawler[];
+  sourceItems: SourceItem[];
   // onCreateClick: (source: SourceItem, crawlerURL: string, crawlerName: string) => void;
   setCrawlerList: (crawlers: Crawler[]) => void;
 };
