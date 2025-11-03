@@ -24,6 +24,7 @@ from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, DetailView, FormView, ListView
+from django.contrib.auth.decorators import login_not_required
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -208,6 +209,7 @@ class CrawlerViewSet(viewsets.ModelViewSet):
 
 
 @csrf_exempt
+@login_not_required
 def crawler_status_stream(request, crawler_id):
     """
     Server-Sent Events endpoint for real-time crawler status updates.
@@ -232,6 +234,14 @@ def crawler_status_stream(request, crawler_id):
         aggregator = None
         log.info("Event stream started for crawler %s", crawler_id)
         log.info("Thread ID in StreamingHttpResponse generator: %s", threading.get_ident())
+
+        # Send initial hello event, so it doesn't show as disconnected in the client
+        hello_data = {
+            'type': 'hello',
+            'message': 'Hello from server',
+            'timestamp': time.time()
+        }
+        yield f"data: {json.dumps(hello_data)}\n\n".encode('utf-8')
 
         def send_event(event_data):
             event_queue.append(f"data: {json.dumps(event_data)}\n\n".encode('utf-8'))

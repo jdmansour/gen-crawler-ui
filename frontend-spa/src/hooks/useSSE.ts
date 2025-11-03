@@ -112,6 +112,6 @@ export function useSSE(url: string) {
 
 export function useCrawlerSSE(crawlerId: number | string | undefined) {
   // Use relative URL to avoid CORS issues during development
-  const url = crawlerId ? `/api/crawlers/${crawlerId}/status_stream/` : '';
+  const url = crawlerId ? `http://localhost:8000/api/crawlers/${crawlerId}/status_stream/` : '';
   return useSSE(url);
 }
