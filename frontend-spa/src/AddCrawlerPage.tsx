@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useSearchParams } from "react-router";
 import Button from "./Button";
 import { AddCrawlerPageContext } from "./RootContext";
-import { createCrawler, SourceItem } from "./apitypes";
+import { createCrawler } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import { useStep } from "./steps";
 
@@ -112,62 +112,4 @@ export default function AddCrawlerPage() {
       </div>
     </div>
   );
-}
-
-export function InheritanceTableRow(props: {
-  item: SourceItem;
-  selected: boolean;
-  onSelect: () => void;
-}) {
-  return (
-    <tr
-      className={"with-checkbox" + (props.selected ? " selected" : "")}
-      onClick={(event) => {
-        if (shouldCancelClick(event)) {
-          return;
-        }
-        props.onSelect();
-      }}
-    >
-      <td className="checkbox-column">
-        <input
-          type="radio"
-          id={"checkbox-" + props.item.id}
-          checked={props.selected}
-          onClick={props.onSelect} />
-      </td>
-      <td className="main-column">
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <img
-            src={props.item.preview_url || sourcePreviewPic}
-            alt="Vorschau"
-            className="source-preview"
-            style={{
-              maxWidth: 80,
-              maxHeight: 60,
-            }} />
-          {props.item.title}
-        </div>
-      </td>
-      <td>
-        <div className="inline-title">Fachgebiet</div>Deutsch
-      </td>
-      <td>
-        <div className="inline-title">Redaktion</div>WLO-OER
-      </td>
-    </tr>
-  );
-}
-
-function shouldCancelClick(event: React.MouseEvent) {
-  const target = event.target as HTMLElement;
-  const selection = window.getSelection();
-  const text_selected = selection && selection.toString();
-  if (target.tagName === "INPUT") {
-    return true;
-  }
-  if (target.tagName === "A" || text_selected) {
-    return true;
-  }
-  return false;
 }
