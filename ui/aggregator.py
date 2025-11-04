@@ -6,10 +6,7 @@
 # - If the total wait time exceeds Y ms, send the aggregated event anyway and reset the timers
 # - Never swallow an event at the end
 
-import time
 import threading
-import math
-import random
 import logging
 log = logging.getLogger(__name__)
 
@@ -97,5 +94,19 @@ class BaseAggregator:
 
     def coalesce_events(self, events):
         raise NotImplementedError("coalesce_events must be implemented by subclasses")
-    
 
+
+class CallbackAggregator(BaseAggregator):
+    def __init__(self, debounce_ms=200, max_wait_ms=1000, callback=None):
+        super().__init__(debounce_ms, max_wait_ms)
+        self.callback = callback
+
+    def send_event(self, event):
+        print("Sending event:", event)
+        if self.callback:
+            self.callback(event)
+
+    def coalesce_events(self, events):
+        print("Coalescing events:", len(events))
+        # just return the last one
+        return events[-1] if events else None
