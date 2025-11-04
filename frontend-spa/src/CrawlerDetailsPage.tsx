@@ -1,4 +1,6 @@
-import { Box, Button, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
+import { Cancel, Delete } from "@mui/icons-material";
+import MoreVertOutlined from "@mui/icons-material/MoreVertOutlined";
+import { Box, Button, Chip, IconButton, ListItemIcon, Menu, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -25,6 +27,21 @@ export default function CrawlerDetailsPage() {
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
     const [crawlerURL, setCrawlerURL] = useState<string>("");
     const [crawlerName, setCrawlerName] = useState<string>("");
+
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    // const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+    const [selectedJob, setSelectedJob] = useState<CrawlJob | null>(null);
+    const menuOpen = Boolean(anchorEl);
+
+    const handleMenuClick = (event: React.MouseEvent<HTMLElement>, jobId: number) => {
+        setAnchorEl(event.currentTarget);
+        const job = crawler?.crawl_jobs.find(j => j.id == jobId) || null;
+        setSelectedJob(job);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
 
     // Set initial form values when 'crawler' is loaded
     useEffect(() => {
@@ -143,6 +160,7 @@ export default function CrawlerDetailsPage() {
                     <TableCell>Gecrawlte URLs</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell>Erstellt</TableCell>
+                    <TableCell></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -163,6 +181,16 @@ export default function CrawlerDetailsPage() {
                             />
                         </TableCell>
                         <TableCell>{toRelativeDate(job.created_at)}</TableCell>
+                        <TableCell>
+                            <IconButton
+                                aria-controls={menuOpen ? 'crawler-job-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={menuOpen ? 'true' : undefined}
+                                onClick={(e) => handleMenuClick(e, job.id)}
+                            >
+                            <MoreVertOutlined />
+                            </IconButton>
+                        </TableCell>
                     </TableRow>
                 ))}
                 {(crawler.crawl_jobs.length === 0) && (
@@ -173,6 +201,28 @@ export default function CrawlerDetailsPage() {
             </TableBody>
         </Table>
         </TableContainer>
+        <Menu id="crawler-job-menu"
+            anchorEl={anchorEl}
+            open={menuOpen}
+            onClose={handleMenuClose}
+            slotProps={{
+                list: {'aria-labelledby': 'crawler-job-button'},
+            }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        >
+            <MenuItem>
+                <ListItemIcon><Delete fontSize="small" /></ListItemIcon>
+                Crawl löschen
+            </MenuItem>
+            {/* <MenuItem>Crawl erneut starten</MenuItem> */}
+            {selectedJob && (selectedJob.state == 'RUNNING' || selectedJob.state == 'PENDING') && (
+                <MenuItem>
+                    <ListItemIcon><Cancel fontSize="small" /></ListItemIcon>
+                    Crawl abbrechen
+                </MenuItem>
+            )}
+        </Menu>
 
     </div>;
 }
