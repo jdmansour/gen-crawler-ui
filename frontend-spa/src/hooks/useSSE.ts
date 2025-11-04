@@ -22,7 +22,7 @@ export type SSEError = {
 
 export type SSEEvent = SSEData | SSEError;
 
-export function useSSE(url: string) {
+export function useSSE(url: string | null) {
   const [data, setData] = useState<SSEEvent | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
@@ -75,8 +75,6 @@ export function useSSE(url: string) {
           }, 3000);
         };
 
-
-
       } catch (err) {
         console.error('Error creating EventSource:', err);
         setError('Failed to connect to server');
@@ -112,6 +110,6 @@ export function useSSE(url: string) {
 
 export function useCrawlerSSE(crawlerId: number | string | undefined) {
   // Use relative URL to avoid CORS issues during development
-  const url = crawlerId ? `http://localhost:8000/api/crawlers/${crawlerId}/status_stream/` : '';
+  const url = crawlerId ? `http://localhost:8000/api/crawlers/${crawlerId}/status_stream/` : null;
   return useSSE(url);
 }

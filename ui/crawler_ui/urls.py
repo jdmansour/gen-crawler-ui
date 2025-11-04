@@ -17,7 +17,7 @@ Including another URLconf
 from crawls.views import (CrawlerViewSet, CrawlDetailView, CrawlsListView, FilterRuleViewSet,
                           FilterSetCreateView, FilterSetDetailView,
                           FilterSetViewSet, HealthViewSet, StartCrawlFormView, crawler_status_stream,
-                          start_content_crawl, SourceItemViewSet)
+                          start_content_crawl, SourceItemViewSet, CrawlJobViewSet)
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
 from django.urls import include, path
@@ -28,6 +28,7 @@ from .views import index, wlo_spa
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'crawlers', CrawlerViewSet)
+router.register(r'crawl_jobs', CrawlJobViewSet)
 router.register(r'source_items', SourceItemViewSet)
 router.register(r'filter_sets', FilterSetViewSet)
 router.register(r'filter_rules', FilterRuleViewSet)

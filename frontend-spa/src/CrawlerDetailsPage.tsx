@@ -211,8 +211,24 @@ export default function CrawlerDetailsPage() {
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         >
-            <MenuItem>
-                <ListItemIcon><Delete fontSize="small" /></ListItemIcon>
+            {/* red color */}
+            <MenuItem sx={{ color: 'error.main' }} onClick={async () => {
+                // Delete the selected crawl job
+                if (!selectedJob) return;
+                const response = await fetch(`http://localhost:8000/api/crawl_jobs/${selectedJob.id}/`, {
+                    method: "DELETE",
+                });
+                if (!response.ok) {
+                    console.error("Failed to delete crawl job:", response.status, response.statusText);
+                    return;
+                }
+                // Remove the job from the crawler's job list
+                setCrawlerList(crawlerList => crawlerList.map(c => 
+                    c.id === crawler.id ? { ...c, crawl_jobs: c.crawl_jobs.filter(j => j.id !== selectedJob.id) } : c
+                ));
+                handleMenuClose();
+            }}>
+                <ListItemIcon sx={{ color: 'error.main' }}><Delete fontSize="small" /></ListItemIcon>
                 Crawl löschen
             </MenuItem>
             {/* <MenuItem>Crawl erneut starten</MenuItem> */}

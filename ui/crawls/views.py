@@ -28,7 +28,7 @@ from crawls.fields_processor import FieldsProcessor
 from crawls.forms import StartCrawlForm
 from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
 from crawls.serializers import (CrawlerSerializer, FilterRuleSerializer,
-                                FilterSetSerializer, SourceItemSerializer)
+                                FilterSetSerializer, SourceItemSerializer, CrawlJobSerializer)
 
 log = logging.getLogger(__name__)
 
@@ -174,6 +174,14 @@ def crawler_status_stream(request, crawler_id):
     response['Access-Control-Allow-Origin'] = '*'
     response['Access-Control-Allow-Headers'] = 'Cache-Control'
     return response
+
+
+class CrawlJobViewSet(viewsets.ModelViewSet):
+    """ Provides the API under /api/crawl_jobs/ """
+    queryset = CrawlJob.objects.all()
+    serializer_class = CrawlJobSerializer
+    # TODO: restrict to authenticated users!
+    permission_classes = [permissions.AllowAny]
 
 
 class FilterSetViewSet(viewsets.ModelViewSet):
