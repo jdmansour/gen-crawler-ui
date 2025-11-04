@@ -6,16 +6,11 @@ import logging
 import os
 import threading
 import time
-from typing import Any, Generator, Iterator, Optional
+from typing import Any, Optional
 
 import redis
-import redis.client
 import requests
-from crawls.fields_processor import FieldsProcessor
-from crawls.forms import StartCrawlForm
-from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
-from crawls.serializers import (CrawlerSerializer, FilterRuleSerializer,
-                                FilterSetSerializer, SourceItemSerializer)
+from aggregator import CallbackAggregator
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
@@ -29,7 +24,11 @@ from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from aggregator import CallbackAggregator
+from crawls.fields_processor import FieldsProcessor
+from crawls.forms import StartCrawlForm
+from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
+from crawls.serializers import (CrawlerSerializer, FilterRuleSerializer,
+                                FilterSetSerializer, SourceItemSerializer)
 
 log = logging.getLogger(__name__)
 
