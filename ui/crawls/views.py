@@ -188,6 +188,7 @@ class FilterSetViewSet(viewsets.ModelViewSet):
     """ Provides the API under /api/filter_sets/ """
     queryset = FilterSet.objects.all()
     serializer_class = FilterSetSerializer
+    permission_classes = [permissions.AllowAny]
     # permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=True, methods=['get'])
@@ -216,6 +217,7 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
     queryset = FilterRule.objects.all()
     serializer_class = FilterRuleSerializer
     # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def filter_queryset(self, queryset):
         return super().filter_queryset(queryset).order_by('position')

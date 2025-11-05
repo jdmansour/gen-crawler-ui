@@ -28,18 +28,19 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": ">=5.0.0",
-    "@mui/material": ">=5.0.0",
+    "@mui/icons-material": "^7.3.5",
+    "@mui/material": "^7.3.5",
     "@mui/system": "^7.3.2",
+    "@mui/x-data-grid": "^8.16.0",
+    "@mui/x-date-pickers": "^8.16.0",
     "luxon": "^3.7.2",
+    "material-react-table": "^3.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.6.0",
     "react-router-dom": "^7.6.0"
   },
   "peerDependencies": {
-    "@mui/icons-material": ">=5.0.0",
-    "@mui/material": ">=5.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.6.0",

@@ -8,6 +8,7 @@ import AddCrawlerPage from "./AddCrawlerPage.tsx";
 import SelectSourcePage from "./SelectSourcePage.tsx";
 import MetadataInheritancePage from "./MetadataInheritancePage.tsx";
 import CrawlerDetailsPage from "./CrawlerDetailsPage.tsx";
+import FilterSetPage from "./FilterSetPage.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="select-source" element={<SelectSourcePage />} />
           <Route path="add-crawler" element={<AddCrawlerPage />} />
           <Route path="crawlers/:crawlerId/metadata-inheritance" element={<MetadataInheritancePage />} />
+          <Route path="crawlers/:crawlerId/filters" element={<FilterSetPage filterSetId={3} csrfToken={"token"} />} />
           <Route path="crawlers/:crawlerId" element={<CrawlerDetailsPage />} />
         </Route>
       </Routes>
