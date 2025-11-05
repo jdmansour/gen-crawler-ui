@@ -1,17 +1,16 @@
-import { useState, useEffect } from "react";
-import RuleTable from "./RuleTable";
-import { FilterSet, Rule, UnmatchedResponse } from "./schema";
-import { useMemo } from 'react';
-import { Checkbox, Input, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, ToggleButton } from "@mui/material";
-
+import { Delete } from "@mui/icons-material";
+import { Button, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import {
   getMRT_RowSelectionHandler,
   MaterialReactTable,
   MRT_RowSelectionState,
   useMaterialReactTable,
-  type MRT_ColumnDef,
+  type MRT_ColumnDef
 } from 'material-react-table';
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import RuleTable from "./RuleTable";
+import { FilterSet, Rule, UnmatchedResponse } from "./schema";
 
 export default function FilterSetPage(props: { filterSetId: number, csrfToken: string }) {
   const [filterSet, setFilterSet] = useState<FilterSet | null>(null);
@@ -90,9 +89,37 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     console.log(data);
     // TODO: add ordering
     setRules([...rules, data]);
+  }
 
-
-    //setRules(newRules);
+  async function addRowWithDataAfter(id: number, ruleData: { rule: string }): Promise<Rule> {
+    console.log("add after", id);
+    const filterSetUrl = apiBase + `/filter_sets/${filterSetId}/`;
+    console.log("filterSetUrl", filterSetUrl);
+    const newRule = {
+      // TODO: how to make it so we can use an ID and not a URL?
+      "filter_set": filterSetUrl,
+      //"filter_set": "1",
+      "rule": ruleData.rule,
+      "count": 666,
+      "include": true,
+      "page_type": "New row"
+    }
+    //setRules([...rules, newRule]);
+    // insert after rule with the id
+    const post_url = apiBase + "/filter_rules/";
+    const response = await fetch(post_url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': props.csrfToken,
+      },
+      body: JSON.stringify(newRule),
+    });
+    const data = await response.json();
+    console.log(data);
+    // TODO: add ordering
+    setRules([...rules, data]);
+    return data;
   }
 
   async function updateFields(id: number, fields: { rule?: string, include?: boolean, page_type?: string}) {
@@ -171,13 +198,13 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     console.log("rowSelection changed", rowSelection);
     const selectedRowId = Object.keys(rowSelection)[0];
     // get the row object (rule)
-    // const selectedRow = rules.find((rule) => rule.id === Number(selectedRowId));
-    if (selectedRowId) {
+    const selectedRow = rules.find((rule) => rule.id === Number(selectedRowId));
+    if (selectedRow) {
       showDetails(Number(selectedRowId));
     } else {
       setDetailsVisible(false);
     }
-  }, [rowSelection]);
+  }, [rowSelection, rules]);
 
   const selectedFilterRule = useMemo(() => {
     const selectedRowId = Object.keys(rowSelection)[0];
@@ -210,18 +237,52 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       header: 'URL Pattern',
       size: 300,
       enableEditing: true,
-      muiEditTextFieldProps: ({ row }) => ({
+      muiEditTextFieldProps: ({ cell, column, row, table }) => ({
         variant: "standard",
         fullWidth: true,
         slotProps: {
           input: { sx: { fontSize: 'inherit', m: -0, height: 22, marginTop: "2px", marginBottom: "-2px" } }
         },
-        onBlur: (event) => {
+        onBlur: async (event) => {
           // table.setEditingCell(null) is called automatically onBlur internally
+          console.log("onBlur called");
+          console.log('table.getState().creatingRow', table.getState().creatingRow);
+          if (table.getState().creatingRow) {
+            console.log("Submitting new row");
+            const data = await addRowWithDataAfter(lastId, { rule: event.target.value });
+            console.log("data returned from addRowWithDataAfter", data);
+
+            row._valuesCache[column.id] = event.target.value;
+            row._valuesCache['id'] = data.id;
+            row._valuesCache['count'] = data.count;
+            row._valuesCache['cumulative_count'] = data.cumulative_count;
+            table.setCreatingRow(row);
+            // const row = {...table.getState().creatingRow?.original || {}, ...data};
+            // console.log("Combined row", row);
+            //table.setCreatingRow(createRow(table, row));
+            // table.setCreatingRow(null);
+            // const r = table.getRow(""+row.id);
+            // console.log("New row object", r);
+            // table.setEditingRow(r);
+            // console.log("Row is:", row);
+            // //console.log("Attempting to set editing row to:", row);
+            // const newRow = table.getRow(String(data.id));
+            
+            // table.setEditingRow(newRow);
+          } else {
           updateFields(row.original.id, { rule: event.target.value });
+          }
         },
         // Make double click work properly: Don't select the whole text, but only the word under the cursor
-        onDoubleClick: (event) => event.stopPropagation()
+        onDoubleClick: (event) => event.stopPropagation(),
+        // onKeyDown: (event) => {
+        //   if (event.key === 'Enter' && table.getState().creatingRow) {
+        //     event.preventDefault();
+        //     const rule = (event.target as HTMLInputElement).value;
+        //     addRowWithDataAfter(lastId, {rule});
+        //     table.setCreatingRow(null);
+        //   }
+        // },
       }),
     },
     {
@@ -264,16 +325,28 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
 
 
   const table = useMaterialReactTable({
-    // enableDensityToggle: false,
+    enableDensityToggle: true,
     enableFullScreenToggle: false,
     enableColumnActions: false,
     enableColumnFilters: false,
     enableSorting: false,
     enableHiding: false,
     enableTopToolbar: false,
+    enableGlobalFilter: false,
     enableRowOrdering: true,
     enablePagination: false,
     enableEditing: true,
+    enableRowActions: true,
+    positionActionsColumn: 'last',
+    renderRowActions: ({ row, table }) => (
+      <IconButton onClick={() => console.info('Delete')}>
+        <Delete onClick={() => {
+          const id = row.original.id;
+          deleteRow(row.original.id);
+          setRules(rules.filter((rule) => rule.id !== id));
+        }} />
+      </IconButton>
+    ),
     editDisplayMode: 'cell',
     enableMultiRowSelection: false, //shows radio buttons instead of checkboxes
     enableRowSelection: true,
@@ -290,6 +363,10 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
         header: 'Pos.',
         size: 10
       },
+      'mrt-row-actions': {
+        header: 'Actions',
+        size: 10
+      }
     },
     onRowSelectionChange: setRowSelection,
     state: { rowSelection },
@@ -336,7 +413,18 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       //   });
       // },
     }),
-
+    positionToolbarAlertBanner: 'none',
+    createDisplayMode: 'row',
+    positionCreatingRow: 'bottom',
+    renderBottomToolbarCustomActions: ({table}) => (
+      <Button variant="contained" onClick={() => table.setCreatingRow(true)}>Regel hinzufügen</Button>
+    ),
+    // onCreatingRowCancel: () => setValidationErrors({}),
+    onCreatingRowSave: ({row, table, values}) => {
+      console.log("Creating row", {row, table, values});
+      addRowWithDataAfter(lastId, values);
+      table.setCreatingRow(null);
+    }
   });
 
   const sidebarOutlet = document.getElementById("sidebar-outlet");
