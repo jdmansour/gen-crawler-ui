@@ -9,13 +9,11 @@ import {
 } from 'material-react-table';
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import RuleTable from "./RuleTable";
 import { FilterSet, Rule, UnmatchedResponse } from "./schema";
 
 export default function FilterSetPage(props: { filterSetId: number, csrfToken: string }) {
   const [filterSet, setFilterSet] = useState<FilterSet | null>(null);
   const [rules, setRules] = useState<Rule[]>([]);
-  const [detailsVisible, setDetailsVisible] = useState(false);
   // type is a json dict
   const [selectedRuleDetails, setSelectedRuleDetails] = useState({});
   const [unmatchedUrls, setUnmatchedUrls] = useState<UnmatchedResponse | null>(null);
@@ -185,7 +183,6 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
   async function showDetails(id: number) {
     console.log("show details", id);
     setSelectedRuleDetails({});
-    setDetailsVisible(true);
     // fetch the details
     const url = `${apiBase}/filter_rules/${id}/matches`;
     const response = await fetch(url);
@@ -201,8 +198,6 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     const selectedRow = rules.find((rule) => rule.id === Number(selectedRowId));
     if (selectedRow) {
       showDetails(Number(selectedRowId));
-    } else {
-      setDetailsVisible(false);
     }
   }, [rowSelection, rules]);
 
@@ -436,15 +431,6 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
 
       <MaterialReactTable table={table} />
 
-      <RuleTable rules={rules}
-        onDelete={deleteRow}
-        onAdd={addRowAfter}
-        onUpdateFields={(id, fields) => { updateFields(id, fields); }}
-        onMoveUp={moveDelta(-1)}
-        onMoveDown={moveDelta(1)}
-        onShowDetails={showDetails}
-      />
-
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <button className="mybutton" onClick={() => addRowAfter(lastId)}>Add rule</button>
         <button className="mybutton mybutton-fancy"><s>Suggest rules</s></button>
@@ -454,10 +440,6 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
           <button className="mybutton">Start content crawl!</button>
         </form>
       </div>
-
-      {/* {(detailsVisible && 
-      <MatchesDialog onClose={() => setDetailsVisible(false)}
-        detailUrls={detailUrls}/>)} */}
 
       {sidebarOutlet && createPortal(
         <div>
