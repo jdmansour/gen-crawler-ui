@@ -2,14 +2,16 @@ import { useState, useEffect } from "react";
 import RuleTable from "./RuleTable";
 import { FilterSet, Rule, UnmatchedResponse } from "./schema";
 import { useMemo } from 'react';
-import { Checkbox, Input, Switch, TextField, ToggleButton } from "@mui/material";
+import { Checkbox, Input, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, ToggleButton } from "@mui/material";
 
 import {
   getMRT_RowSelectionHandler,
   MaterialReactTable,
+  MRT_RowSelectionState,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from 'material-react-table';
+import { createPortal } from "react-dom";
 
 export default function FilterSetPage(props: { filterSetId: number, csrfToken: string }) {
   const [filterSet, setFilterSet] = useState<FilterSet | null>(null);
@@ -18,6 +20,8 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
   // type is a json dict
   const [selectedRuleDetails, setSelectedRuleDetails] = useState({});
   const [unmatchedUrls, setUnmatchedUrls] = useState<UnmatchedResponse | null>(null);
+    const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
+
   const apiBase = "http://localhost:8000/api";
   const filterSetId = props.filterSetId;
   // console.log("filterSetId", filterSetId);
@@ -161,8 +165,26 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     const data = await response.json();
     console.log(data);
     setSelectedRuleDetails(data);
-
   }
+
+  useEffect(() => {
+    console.log("rowSelection changed", rowSelection);
+    const selectedRowId = Object.keys(rowSelection)[0];
+    // get the row object (rule)
+    // const selectedRow = rules.find((rule) => rule.id === Number(selectedRowId));
+    if (selectedRowId) {
+      showDetails(Number(selectedRowId));
+    } else {
+      setDetailsVisible(false);
+    }
+  }, [rowSelection]);
+
+  const selectedFilterRule = useMemo(() => {
+    const selectedRowId = Object.keys(rowSelection)[0];
+    if (selectedRowId) {
+      return rules.find((rule) => rule.id === Number(selectedRowId));
+    }
+  }, [rowSelection, rules]);
 
   let detailUrls: string[];
   // selectedRuleDetails['new_matches'];
@@ -239,6 +261,8 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     },
   ];
 
+
+
   const table = useMaterialReactTable({
     // enableDensityToggle: false,
     enableFullScreenToggle: false,
@@ -253,7 +277,12 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     editDisplayMode: 'cell',
     enableMultiRowSelection: false, //shows radio buttons instead of checkboxes
     enableRowSelection: true,
-    initialState: { density: 'comfortable' },
+    initialState: {
+      density: 'comfortable',
+      columnVisibility: {
+        'mrt-row-select': false,
+      },
+    },
     columns,
     data: rows,
     displayColumnDefOptions: {
@@ -262,6 +291,14 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
         size: 10
       },
     },
+    onRowSelectionChange: setRowSelection,
+    state: { rowSelection },
+    getRowId: (originalRow) => String(originalRow.id),
+    // onRowSelectionChange: (rowSelection) => {
+    //   console.log("rowSelection", rowSelection);
+    //   const selectedRows = table.getSelectedRowModel().rows; //or read entire rows
+    //   console.log("selectedRows", selectedRows);
+    // },
 
     muiTableBodyRowProps: ({ row, staticRowIndex, table }) => ({
       // hover: true,
@@ -302,8 +339,10 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
 
   });
 
+  const sidebarOutlet = document.getElementById("sidebar-outlet");
+
   return (
-    <div>
+    <div className="main-content">
       <p>{filterSet?.crawl_job.crawled_url_count} pages total, {filterSet?.remaining_urls} not handled yet</p>
       <h3>Rules</h3>
 
@@ -331,6 +370,40 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       {/* {(detailsVisible && 
       <MatchesDialog onClose={() => setDetailsVisible(false)}
         detailUrls={detailUrls}/>)} */}
+
+      {sidebarOutlet && createPortal(
+        <div>
+          <div style={{position: 'sticky'}}>
+          <h3>Details</h3>
+
+          <p>Ausgewählter Filter:</p>
+          <p>Regel: <code>{selectedFilterRule?.rule}</code></p>
+          <p>Treffer: <code>{selectedFilterRule?.count}</code></p>
+          <p>Davon nicht durch vorherige Regeln erfasst: <code>{selectedFilterRule?.cumulative_count}</code></p>
+          </div>
+
+          <TableContainer component={Paper} >
+              <Table stickyHeader size="small">
+                  <TableHead>
+                      <TableRow>
+                          <TableCell>URL</TableCell>
+                      </TableRow>
+                  </TableHead>
+                  <TableBody>
+                      {detailUrls.map((url) => (
+                          <TableRow key={url}>
+                              <TableCell>
+                                  {url}
+                              </TableCell>
+                          </TableRow>
+                      ))}
+                  </TableBody>
+              </Table>
+          </TableContainer>
+        </div>
+        ,
+        sidebarOutlet
+      )}
 
       <h3>Unmatched URLs</h3>
       {(unmatchedUrls &&

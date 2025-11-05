@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { BrowserRouter, Route, Router, Routes, useNavigate, useParams } from "react-router-dom";
 import FilterCrawlsIcon from "./assets/icons/filter-crawls.svg?react";
 import MetadataInheritanceIcon from "./assets/icons/metadata-inheritance.svg?react";
 import RobotIcon from "./assets/icons/robot.svg?react";
@@ -24,6 +24,7 @@ export default function GenCrawlerSidebar(props: {
   // console.log("Rendering sidebar for step:", step);
 
   return (
+    <>
     <FilterTabs
       tabs={sidebarTabs}
       style="sidebar"
@@ -56,5 +57,13 @@ export default function GenCrawlerSidebar(props: {
         }
       }}
     />
+    {/* <BrowserRouter> */}
+      {/* <Routes>
+        <Route path="/crawlers/:crawlerId/filters" element={<div>This is the sidebar!</div>} />
+      </Routes> */}
+
+      <div id="sidebar-outlet"></div>
+    {/* </BrowserRouter> */}
+    </>
   );
 }

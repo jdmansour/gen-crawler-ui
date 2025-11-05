@@ -99,9 +99,12 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <div>
-      <header>Header stuff here</header>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }} >
+      <div>
+        WLO Header here 
+        </div>
       <SiteLayout
+        style={{ }}
         sidebar={<GenCrawlerSidebar step={step} />}
         sidebarVisible={sidebarVisible}
         onSidebarClose={() => setSidebarVisible(false)} >
@@ -112,7 +115,7 @@ export default function RootLayout() {
         <Breadcrumbs breadcrumbs={breadcrumbs} />
         <Outlet context={outletContext} />
       </SiteLayout>
-      <footer>Footer stuff here</footer>
+      <footer>WLO Footer here</footer>
     </div>
   );
 }

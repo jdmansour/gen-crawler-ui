@@ -1,26 +1,45 @@
 import "./SiteLayout.css";
 import ShowSidebarIcon from "./assets/icons/show-sidebar.svg?react";
 import CloseIcon from "./assets/icons/close.svg?react";
+import { HTMLProps, useEffect, useRef, useState } from "react";
 
 export default function SiteLayout(props: {
   children: React.ReactNode;
   sidebar?: React.ReactNode;
   sidebarVisible?: boolean;
   onSidebarClose?: () => void;
-}) {
-  const { children, sidebar, onSidebarClose } = props;
+} & HTMLProps<HTMLDivElement>) {
+  const { children, sidebar, onSidebarClose, ...otherProps } = props;
+  const siteLayoutRef = useRef<HTMLDivElement>(null);
   let { sidebarVisible } = props;
   if (sidebarVisible == undefined) {
     sidebarVisible = true;
   }
+
+  //const sidebarHeight = siteLayoutRef?.current?.clientHeight ? siteLayoutRef?.current?.clientHeight / 3 : undefined;
+  // const [sidebarHeight, setSidebarHeight] = useState<number | undefined>(undefined);
+
+  // useEffect(() => {
+  //   if (siteLayoutRef.current) {
+  //     const documentHeight = document.documentElement.clientHeight;
+  //     const height = documentHeight - siteLayoutRef.current.clientTop;
+  //     console.log("Setting sidebar height to:", height);
+  //     setSidebarHeight(height);
+  //   }
+  // }, [siteLayoutRef]);
+
   return (
     <div
       className={
         "wlo-sitelayout" +
         (sidebarVisible ? " wlo-sitelayout-sidebar-visible" : "")
       }
+      {...otherProps}
+      ref={siteLayoutRef}
     >
-      <main className="wlo-main">{children}</main>
+      <main className="wlo-main">
+        {children}
+      </main>
       <Sidebar onClose={onSidebarClose} title="Generischer Crawler">
         {sidebar}
       </Sidebar>
