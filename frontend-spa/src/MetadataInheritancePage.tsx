@@ -1,10 +1,9 @@
-import MUIButton from '@mui/material/Button';
-import FormGroup from '@mui/material/FormGroup';
+import Button from '@mui/material/Button';
 import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 import Grid from "@mui/system/Grid";
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import Button from "./Button";
 import MdsEditor from "./MdsEditor";
 import { MetadataInheritancePageContext } from "./RootContext";
 import WloFieldGroupSet from "./WloFieldGroupSet";
@@ -83,10 +82,9 @@ export default function MetadataInheritancePage() {
   return <div style={{overflowY: "scroll"}}>
       <h2>Metadatenvererbung</h2>
       <p>Dein neuer Crawler wurde erstellt! Während im Hintergrund die Quelle analysiert wird, kannst du jetzt schon mal die Felder auswählen, die von dem Quelldatensatz übernommen werden sollen.</p>
-      <FormGroup style={{ marginBottom: "1em" }}>
-        {/* <MUIButton onClick={() => setSourceFieldsLoading(x => !x)}>Toggle Loading</MUIButton> */}
-        <MUIButton onClick={selectAllRecommendedFields}>Alle empfohlenen Felder auswählen</MUIButton>
-      </FormGroup>
+      <Stack direction="row" justifyContent="center" gap={1} sx={{ mb: 2}}>
+        <Button variant="outlined" onClick={selectAllRecommendedFields}>Alle empfohlenen Felder auswählen</Button>
+      </Stack>
 
       {sourceFieldsLoading ?
         <Grid container spacing={2}>
@@ -126,9 +124,14 @@ export default function MetadataInheritancePage() {
         />
       }
 
-      <div className="wlo-button-group">
+      <Stack direction="row" gap={1} sx={{ mt: 2}}>
+        <Button variant="outlined" onClick={() => navigate(-1)}>Zurück</Button>
+        <Button variant="contained" style={{ marginLeft: 'auto' }} onClick={onSave}>Weiter</Button>
+      </Stack>
+
+      {/* <div className="wlo-button-group">
         <Button leftAlign onClick={() => navigate(-1)}>Zurück</Button>
         <Button default onClick={onSave}>Weiter</Button>
-      </div>
+      </div> */}
   </div>
 }

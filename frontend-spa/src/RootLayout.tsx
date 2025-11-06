@@ -7,6 +7,8 @@ import GenCrawlerSidebar from "./GenCrawlerSidebar";
 import { RootContext } from "./RootContext";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerDashboardStep } from "./steps";
+import { createTheme, ThemeProvider } from "@mui/material";
+import { wloTheme, wloThemeData } from "./wloTheme";
 
 export default function RootLayout() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -76,7 +78,10 @@ export default function RootLayout() {
     fetchSourceItems();
   }, []);
 
+  const wloTheme = createTheme(wloThemeData);
+
   return (
+    <ThemeProvider theme={wloTheme}>
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }} >
       <div>
         WLO Header here 
@@ -95,5 +100,6 @@ export default function RootLayout() {
       </SiteLayout>
       <footer>WLO Footer here</footer>
     </div>
+    </ThemeProvider>
   );
 }

@@ -6,7 +6,9 @@ import { SelectSourcePageContext } from "./RootContext";
 import { SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import { useStep } from "./steps";
-
+import { createTheme, Button as MuiButton, ThemeProvider } from "@mui/material";
+import Stack from "@mui/material/Stack";
+import { wloThemeData } from "./wloTheme";
 export default function SelectSourcePage() {
 
   const { sourceItems, onSourceSelected } = useOutletContext<SelectSourcePageContext>();
@@ -15,7 +17,7 @@ export default function SelectSourcePage() {
   const navigate = useNavigate();
 
   useStep("select-source");
-
+  // const wloTheme = createTheme(wloThemeData);
   return (<>
         <h2>Neuen Crawler erstellen</h2>
         <p>Für welches Quellobjekt soll ein Crawler erstellt werden?</p>
@@ -32,6 +34,23 @@ export default function SelectSourcePage() {
           ))}
         </ListView>
         </div>
+
+        <ThemeProvider theme={wloTheme}>
+        <Stack direction="row" gap={1} sx={{ mt: 2}}>
+          <MuiButton variant="outlined" onClick={() => navigate(-1)}>Abbrechen</MuiButton>
+          <MuiButton variant="contained" style={{ marginLeft: 'auto' }} onClick={() => {
+            if (onSourceSelected && selectedSourceId !== null) {
+              const selectedSource = sourceItems.find(item => item.id === selectedSourceId);
+              if (selectedSource) {
+                onSourceSelected(selectedSource);
+              }
+            }
+          }}>
+            Weiter mit Vererbung
+          </MuiButton>
+        </Stack>
+        </ThemeProvider>
+
 
         <div className="wlo-button-group">
           <Button leftAlign onClick={() => navigate(-1)}>Abbrechen</Button>

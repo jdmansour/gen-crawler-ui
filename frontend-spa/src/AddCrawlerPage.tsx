@@ -1,11 +1,13 @@
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useSearchParams } from "react-router";
-import Button from "./Button";
+// import Button from "./Button";
 import { AddCrawlerPageContext } from "./RootContext";
 import { createCrawler } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import { useStep } from "./steps";
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 
 
 export default function AddCrawlerPage() {
@@ -102,13 +104,14 @@ export default function AddCrawlerPage() {
           disabled={!!existingCrawlerId}
         />
 
-        <div className="wlo-button-group">
-          <Button leftAlign onClick={() => navigate(-1)}>Zurück</Button>
+        <Stack direction="row" gap={1} sx={{ mt: 2}}>
+          <Button variant="outlined" onClick={() => navigate(-1)}>Zurück</Button>
           {existingCrawlerId
-            ? <Button onClick={() => navigate(`/crawlers/${existingCrawlerId}/metadata-inheritance`)}>Weiter zur Metadatenvererbung</Button>
-            : <Button default onClick={onCreateClick}>Crawler anlegen</Button>
+            ? <Button variant="contained" style={{ marginLeft: 'auto' }} onClick={() => navigate(`/crawlers/${existingCrawlerId}/metadata-inheritance`)}>Weiter zur Metadatenvererbung</Button>
+            : <Button variant="contained" style={{ marginLeft: 'auto' }} onClick={onCreateClick}>Crawler anlegen</Button>
           }
-        </div>
+        </Stack>
+
       </div>
     </div>
   );
