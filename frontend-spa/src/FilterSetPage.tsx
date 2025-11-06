@@ -242,7 +242,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
   const columns: MRT_ColumnDef<Rule>[] = [
     {
       accessorKey: 'rule',
-      header: 'URL Pattern',
+      header: 'URL-Muster',
       size: 300,
       enableEditing: true,
       muiEditTextFieldProps: ({ cell, column, row, table }) => ({
@@ -316,18 +316,18 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
           updateFields(row.id, { include: e.target.checked });
         }} />,
     },
-    {
-      accessorKey: 'position',
-      header: 'Position',
-      size: 10,
-      enableEditing: false,
-    },
-    {
-      accessorKey: 'id',
-      header: 'Id',
-      size: 10,
-      enableEditing: false,
-    },
+    // {
+    //   accessorKey: 'position',
+    //   header: 'Position',
+    //   size: 10,
+    //   enableEditing: false,
+    // },
+    // {
+    //   accessorKey: 'id',
+    //   header: 'Id',
+    //   size: 10,
+    //   enableEditing: false,
+    // },
   ];
 
 
@@ -366,13 +366,16 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     },
     columns,
     data: rows,
+    // layoutMode: 'grid',
     displayColumnDefOptions: {
       'mrt-row-drag': {
-        header: 'Pos.',
+        header: '',
+        grow: 0,
         size: 10
       },
       'mrt-row-actions': {
-        header: 'Actions',
+        header: '',
+        grow: 0,
         size: 10
       }
     },
@@ -415,6 +418,43 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     //   });
     // },
     // }),
+    muiTableBodyProps: {
+      sx: {
+        '--col-mrt_row_drag-size': '20px',
+        '--header-mrt_row_drag-size': '20px',
+        '--col-mrt_row_actions-size': '20px',
+        '--header-mrt_row_actions-size': '20px',
+      },
+    },
+    muiTableHeadCellProps: ({ column }) => ({
+      sx: {
+        // // fontWeight: 'bold',
+        // // fontSize: '0.9rem',
+        // // align center for position and actions columns
+        // '> div': {
+        //   justifyContent: (column.id === 'mrt-row-drag' || column.id === 'mrt-row-actions') ? 'center' : 'flex-start',
+        // },
+        // // textAlign: (column.id === 'mrt-row-drag' || column.id === 'mrt-row-actions') ? 'center' : 'left',
+        paddingLeft: column.id === 'mrt-row-drag' ? 2 : column.id === 'mrt-row-actions' ? 0 : 1,
+        paddingRight: column.id === 'mrt-row-drag' ? 0 : column.id === 'mrt-row-actions' ? 0 : 1,
+        // width: column.id === 'mrt-row-drag' ? '0' : undefined,
+        // minWidth: 'auto',
+        boxSizing: 'border-box',
+        // maxWidth: 'initial', //column.id === 'mrt-row-drag' ? 10 : 'none',
+      },
+    }),
+    muiTableBodyCellProps: ({ cell, column, table }) => ({
+      // adjust padding for cells in the position and actions columns
+      sx: {
+        // // textAlign: (column.id === 'mrt-row-drag'  ? 'center' : 'left',
+        paddingLeft: column.id === 'mrt-row-drag' ? 2 : column.id === 'mrt-row-actions' ? 0 : 1,
+        paddingRight: column.id === 'mrt-row-drag' ? 0 : column.id === 'mrt-row-actions' ? 0 : 1,
+        // width: column.id === 'mrt-row-drag' ? '0' : undefined,
+        // minWidth: 'auto',
+        boxSizing: 'border-box',
+        // maxWidth: column.id === 'mrt-row-drag' || column.id === 'mrt-row-actions' ? 10 : 'none',
+      },
+    }),
     positionToolbarAlertBanner: 'none',
     createDisplayMode: 'row',
     positionCreatingRow: 'bottom',
