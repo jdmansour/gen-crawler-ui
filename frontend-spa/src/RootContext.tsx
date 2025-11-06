@@ -23,7 +23,6 @@ export type MetadataInheritancePageContext = {
   crawlerList: Crawler[];
   // fields: WloFieldInfo[];
   // groups: GroupInfo[];
-  onSave: (selectedFields: Record<string, boolean>) => void;
 };
 
 export type CrawlerDetailsPageContext = {

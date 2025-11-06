@@ -42,28 +42,6 @@ export default function RootLayout() {
     setCrawlerList: setCrawlerList,
     sourceItem: selectedSourceItem || undefined,
     setSourceItem: setSelectedSourceItem,
-    onSave: async (selectedFields: Record<string, boolean>) => {
-      if (crawlerId === null) {
-          console.error("No crawler ID found!");
-          return;
-      }
-      const inheritedFields = Object.keys(selectedFields).filter(fieldId => selectedFields[fieldId]);
-      const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
-          method: "PATCH",
-          headers: {
-              "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-              inherited_fields: inheritedFields
-          })
-      });
-      if (!response.ok) {
-          console.error("Failed to update crawler:", response.status, response.statusText);
-          return;
-      }
-      //setHistoryState({ step: "filter-crawls", newCrawlerName: crawlerName || undefined });
-
-    }
   };
 
   const breadcrumbs: Breadcrumb[] = [

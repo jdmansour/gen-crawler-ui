@@ -13,7 +13,7 @@ import { useStep } from "./steps";
 import { fieldMissing, GroupInfo, WloFieldInfo } from "./wloTypes";
 
 export default function MetadataInheritancePage() {
-  const { onSave, crawlerList } = useOutletContext<MetadataInheritancePageContext>();
+  const { crawlerList } = useOutletContext<MetadataInheritancePageContext>();
   const navigate = useNavigate();
   const params = useParams();
   const crawlerId: number | undefined = params.crawlerId ? parseInt(params.crawlerId) : undefined;
@@ -26,6 +26,24 @@ export default function MetadataInheritancePage() {
   const [sourceFieldsLoading, setSourceFieldsLoading] = useState(false);
 
   useStep("metadata-inheritance");
+
+  async function onSave() {
+      if (crawlerId === null) {
+          console.error("No crawler ID found!");
+          return;
+      }
+      const inheritedFields = Object.keys(selectedFields).filter(fieldId => selectedFields[fieldId]);
+      const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ inherited_fields: inheritedFields })
+      });
+      if (!response.ok) {
+          console.error("Failed to update crawler:", response.status, response.statusText);
+          return;
+      }
+      //setHistoryState({ step: "filter-crawls", newCrawlerName: crawlerName || undefined });
+    }
 
   async function fetchSourceFields(sourceItemGuid: string) {
     setSourceFieldsLoading(true);
@@ -110,23 +128,8 @@ export default function MetadataInheritancePage() {
       }
 
       <div className="wlo-button-group">
-        <Button leftAlign onClick={() => navigate(-1)}>
-          Zurück
-        </Button>
-        <Button
-          default
-          onClick={() => {
-            // console.log("Selected fields:", selectedFields);
-            onSave?.(selectedFields);
-          }
-            // setHistoryState({
-            //     step: "filter-crawls",
-            //     newCrawlerName: newCrawlerName,
-            // })
-          }
-        >
-          Weiter
-        </Button>
+        <Button leftAlign onClick={() => navigate(-1)}>Zurück</Button>
+        <Button default onClick={onSave}>Weiter</Button>
       </div>
     </div>
   </div>
