@@ -16,12 +16,11 @@ export default function SelectSourcePage() {
 
   useStep("select-source");
 
-  return (
-    <div className="main-content">
-      <div>
+  return (<>
         <h2>Neuen Crawler erstellen</h2>
         <p>Für welches Quellobjekt soll ein Crawler erstellt werden?</p>
 
+        <div style={{ overflowY: "scroll" }}>
         <ListView>
           {sourceItems.map((item) => (
             <InheritanceTableRow
@@ -32,6 +31,7 @@ export default function SelectSourcePage() {
             />
           ))}
         </ListView>
+        </div>
 
         <div className="wlo-button-group">
           <Button leftAlign onClick={() => navigate(-1)}>Abbrechen</Button>
@@ -47,8 +47,7 @@ export default function SelectSourcePage() {
             Weiter mit Vererbung
           </Button>
         </div>
-      </div>
-    </div>
+    </>
   );
 }
 

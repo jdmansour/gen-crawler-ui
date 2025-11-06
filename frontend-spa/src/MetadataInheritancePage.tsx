@@ -80,8 +80,7 @@ export default function MetadataInheritancePage() {
     setSelectedFields(tmp);
   }
 
-  return <div className="main-content">
-    <div>
+  return <div style={{overflowY: "scroll"}}>
       <h2>Metadatenvererbung</h2>
       <p>Dein neuer Crawler wurde erstellt! Während im Hintergrund die Quelle analysiert wird, kannst du jetzt schon mal die Felder auswählen, die von dem Quelldatensatz übernommen werden sollen.</p>
       <FormGroup style={{ marginBottom: "1em" }}>
@@ -131,6 +130,5 @@ export default function MetadataInheritancePage() {
         <Button leftAlign onClick={() => navigate(-1)}>Zurück</Button>
         <Button default onClick={onSave}>Weiter</Button>
       </div>
-    </div>
   </div>
 }

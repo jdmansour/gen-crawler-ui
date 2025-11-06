@@ -45,9 +45,16 @@ button { outline: 1px solid green; }
   box-sizing: border-box;
   border-radius: var(--wlo-main-border-radius);
   background-color: white;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* allow shrinking */
+  min-width: 300px;
+
   /* overflow-y: hidden; */
   /* position: relative; */
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 }
 
 .wlo-sitelayout .wlo-sidebar {

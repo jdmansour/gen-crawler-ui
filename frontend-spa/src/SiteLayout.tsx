@@ -2,6 +2,7 @@ import "./SiteLayout.css";
 import ShowSidebarIcon from "./assets/icons/show-sidebar.svg?react";
 import CloseIcon from "./assets/icons/close.svg?react";
 import { HTMLProps, useEffect, useRef, useState } from "react";
+import { useMatches } from "react-router";
 
 export default function SiteLayout(props: {
   children: React.ReactNode;
@@ -28,12 +29,21 @@ export default function SiteLayout(props: {
   //   }
   // }, [siteLayoutRef]);
 
+  let className = "wlo-sitelayout";
+  if (sidebarVisible) {
+    className += " wlo-sitelayout-sidebar-visible";
+  }
+  // // if we are on the metadata-inheritance route, add a special class
+  // const matches = useMatches();
+  // const isMetadataInheritance = matches.some(match => match.id === "metadata-inheritance");
+
+  // if (isMetadataInheritance) {
+  //   className += " wlo-sitelayout-tall-content";
+  // }
+
   return (
     <div
-      className={
-        "wlo-sitelayout" +
-        (sidebarVisible ? " wlo-sitelayout-sidebar-visible" : "")
-      }
+      className={className}
       {...otherProps}
       ref={siteLayoutRef}
     >

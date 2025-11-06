@@ -426,13 +426,22 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       console.log("Creating row", { row, table, values });
       addRowWithDataAfter(lastId, values);
       table.setCreatingRow(null);
+    },
+    enableStickyHeader: true,
+    enableStickyFooter: true,
+    muiTableContainerProps: {
+      sx: {
+        maxHeight: '100%', // take all available height
+        overflowY: 'overlay', // enable vertical scroll
+        // overflowX: 'clip',
+      },
     }
   });
 
   const sidebarOutlet = document.getElementById("sidebar-outlet");
 
   return (
-    <div className="main-content">
+    <>
       <p>{filterSet?.crawl_job.crawled_url_count} pages total, {filterSet?.remaining_urls} not handled yet</p>
       <h3>Rules</h3>
 
@@ -449,7 +458,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
           detailUrls={selectedFilterRule ? detailUrls : unmatchedUrls?.unmatched_urls || []} />,
         sidebarOutlet
       )}
-    </div>
+    </>
   );
 }
 

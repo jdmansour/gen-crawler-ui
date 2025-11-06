@@ -48,8 +48,8 @@ export default function DashboardPage() {
         selectedTab={activeTab}
         onTabClick={(index) => setActiveTab(index)}
       />
-      <div className="main-content">
-        <ListView>
+      <div style={{ overflowY: "overlay", flex: 1, marginTop: "-20px", paddingTop: "20px", marginBottom: "-20px", paddingBottom: "20px", paddingLeft: "40px", paddingRight: "40px"}}>
+        <ListView style={{ width: "100%", boxSizing: "border-box" }}>
           <tr key="add">
             <td colSpan={4} className="action-cell">
               <button className="wlo-button" onClick={() => {
@@ -64,6 +64,10 @@ export default function DashboardPage() {
           ))}
         </ListView>
       </div>
+      <hr />
+      {/* <div style={{ backgroundColor: "#f9f9f9", padding: "10px", fontSize: "0.9em", color: "#666666", margin: 20 }}>
+        {filteredCrawlerList.length} Crawler angezeigt, insgesamt {crawlerList.length} Crawler.
+      </div> */}
     </>
   );
 }
