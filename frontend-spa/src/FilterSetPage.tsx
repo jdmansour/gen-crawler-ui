@@ -1,5 +1,6 @@
 import { Delete } from "@mui/icons-material";
 import { Button, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Stack } from "@mui/system";
 import {
   getMRT_RowSelectionHandler,
   MaterialReactTable,
@@ -17,7 +18,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
   // type is a json dict
   const [selectedRuleDetails, setSelectedRuleDetails] = useState({});
   const [unmatchedUrls, setUnmatchedUrls] = useState<UnmatchedResponse | null>(null);
-    const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
   const apiBase = "http://localhost:8000/api";
   const filterSetId = props.filterSetId;
@@ -120,7 +121,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     return data;
   }
 
-  async function updateFields(id: number, fields: { rule?: string, include?: boolean, page_type?: string}) {
+  async function updateFields(id: number, fields: { rule?: string, include?: boolean, page_type?: string }) {
     // Update the fields in the row right away
     const newRules1 = rules.map((rule) => (rule.id === id) ? { ...rule, ...fields } : rule);
     setRules(newRules1);
@@ -262,10 +263,10 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
             // console.log("Row is:", row);
             // //console.log("Attempting to set editing row to:", row);
             // const newRow = table.getRow(String(data.id));
-            
+
             // table.setEditingRow(newRow);
           } else {
-          updateFields(row.original.id, { rule: event.target.value });
+            updateFields(row.original.id, { rule: event.target.value });
           }
         },
         // Make double click work properly: Don't select the whole text, but only the word under the cursor
@@ -298,10 +299,10 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       size: 10,
       enableEditing: false,
       Cell: ({ cell }) => <Switch checked={Boolean(cell.getValue())} sx={{ m: -1 }}
-      onChange={(e) => {
-        const row = cell.row.original;
-        updateFields(row.id, { include: e.target.checked });
-      }} />,
+        onChange={(e) => {
+          const row = cell.row.original;
+          updateFields(row.id, { include: e.target.checked });
+        }} />,
     },
     {
       accessorKey: 'position',
@@ -366,12 +367,6 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     onRowSelectionChange: setRowSelection,
     state: { rowSelection },
     getRowId: (originalRow) => String(originalRow.id),
-    // onRowSelectionChange: (rowSelection) => {
-    //   console.log("rowSelection", rowSelection);
-    //   const selectedRows = table.getSelectedRowModel().rows; //or read entire rows
-    //   console.log("selectedRows", selectedRows);
-    // },
-
     muiTableBodyRowProps: ({ row, staticRowIndex, table }) => ({
       // hover: true,
       // sx: {
@@ -394,29 +389,29 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       onClick: (event) =>
         getMRT_RowSelectionHandler({ row, staticRowIndex, table })(event), //import this helper function from material-react-table
     }),
-    muiTableBodyCellProps: ({ cell, column, table }) => ({
-      // // Single-click to edit
-      // onClick: () => {
-      //   table.setEditingCell(cell); //set editing cell
-      //   //optionally, focus the text field
-      //   queueMicrotask(() => {
-      //     const textField = table.refs.editInputRefs.current?.[column.id];
-      //     if (textField) {
-      //       textField.focus();
-      //       textField.select?.();
-      //     }
-      //   });
-      // },
-    }),
+    // muiTableBodyCellProps: ({ cell, column, table }) => ({
+    // // Single-click to edit
+    // onClick: () => {
+    //   table.setEditingCell(cell); //set editing cell
+    //   //optionally, focus the text field
+    //   queueMicrotask(() => {
+    //     const textField = table.refs.editInputRefs.current?.[column.id];
+    //     if (textField) {
+    //       textField.focus();
+    //       textField.select?.();
+    //     }
+    //   });
+    // },
+    // }),
     positionToolbarAlertBanner: 'none',
     createDisplayMode: 'row',
     positionCreatingRow: 'bottom',
-    renderBottomToolbarCustomActions: ({table}) => (
+    renderBottomToolbarCustomActions: ({ table }) => (
       <Button variant="contained" onClick={() => table.setCreatingRow(true)}>Regel hinzufügen</Button>
     ),
     // onCreatingRowCancel: () => setValidationErrors({}),
-    onCreatingRowSave: ({row, table, values}) => {
-      console.log("Creating row", {row, table, values});
+    onCreatingRowSave: ({ row, table, values }) => {
+      console.log("Creating row", { row, table, values });
       addRowWithDataAfter(lastId, values);
       table.setCreatingRow(null);
     }
@@ -431,69 +426,50 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
 
       <MaterialReactTable table={table} />
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <button className="mybutton" onClick={() => addRowAfter(lastId)}>Add rule</button>
-        <button className="mybutton mybutton-fancy"><s>Suggest rules</s></button>
-        <div style={{ flex: 1 }}></div>
-        <form action={`/filters/${filterSetId}/crawl/`} method="POST">
-          <input type="hidden" name="csrfmiddlewaretoken" value={props.csrfToken} />
-          <button className="mybutton">Start content crawl!</button>
-        </form>
-      </div>
+      <Stack direction="row" spacing={2} sx={{ mt: 2, mb: 2 }}>
+        <Button variant="outlined" sx={{ textTransform: 'none' }}>Regel hinzufügen</Button>
+        <Button variant="contained" style={{ textTransform: 'none', marginLeft: 'auto' }}>Start content crawl</Button>
+      </Stack>
 
       {sidebarOutlet && createPortal(
-        <div>
-          <div style={{position: 'sticky'}}>
-          <h3>Details</h3>
-
-          <p>Ausgewählter Filter:</p>
-          <p>Regel: <code>{selectedFilterRule?.rule}</code></p>
-          <p>Treffer: <code>{selectedFilterRule?.count}</code></p>
-          <p>Davon nicht durch vorherige Regeln erfasst: <code>{selectedFilterRule?.cumulative_count}</code></p>
-          </div>
-
-          <TableContainer component={Paper} >
-              <Table stickyHeader size="small">
-                  <TableHead>
-                      <TableRow>
-                          <TableCell>URL</TableCell>
-                      </TableRow>
-                  </TableHead>
-                  <TableBody>
-                      {detailUrls.map((url) => (
-                          <TableRow key={url}>
-                              <TableCell>
-                                  {url}
-                              </TableCell>
-                          </TableRow>
-                      ))}
-                  </TableBody>
-              </Table>
-          </TableContainer>
-        </div>
-        ,
+        <FilterSetPageSidebar
+          selectedFilterRule={selectedFilterRule}
+          detailUrls={selectedFilterRule ? detailUrls : unmatchedUrls?.unmatched_urls || []} />,
         sidebarOutlet
       )}
-
-      <h3>Unmatched URLs</h3>
-      {(unmatchedUrls &&
-      <table className="table">
-        <thead>
-          <tr>
-            <th>URL</th>
-          </tr>
-        </thead>
-        <tbody>
-          {unmatchedUrls.unmatched_urls.map((url) =>
-          <tr key={url}>
-            <td>{url}</td>
-          </tr>)}
-          {!unmatchedUrls.is_complete && <tr>
-            <td><i>+ {unmatchedUrls.total_count - unmatchedUrls.unmatched_urls.length} URLs remaining</i></td>
-          </tr>}
-        </tbody>
-      </table>
-      )}
-      </div>
+    </div>
   );
+}
+
+function FilterSetPageSidebar(props: { selectedFilterRule?: Rule, detailUrls: string[] }) {
+  const { selectedFilterRule, detailUrls } = props;
+  return <div>
+    <div style={{ position: 'sticky' }}>
+      <h3>Details</h3>
+
+      <p>Ausgewählter Filter:</p>
+      <p>Regel: <code>{selectedFilterRule?.rule}</code></p>
+      <p>Treffer: <code>{selectedFilterRule?.count}</code></p>
+      <p>Davon nicht durch vorherige Regeln erfasst: <code>{selectedFilterRule?.cumulative_count}</code></p>
+    </div>
+
+    <TableContainer component={Paper}>
+      <Table stickyHeader size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell>URL</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {detailUrls.map((url) => (
+            <TableRow key={url}>
+              <TableCell>
+                {url}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </div>;
 }
