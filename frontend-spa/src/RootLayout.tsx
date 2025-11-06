@@ -1,4 +1,5 @@
 // RootLayout.tsx
+import { createTheme, ThemeProvider } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { Crawler, SourceItem } from "./apitypes";
@@ -7,8 +8,8 @@ import GenCrawlerSidebar from "./GenCrawlerSidebar";
 import { RootContext } from "./RootContext";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerDashboardStep } from "./steps";
-import { createTheme, ThemeProvider } from "@mui/material";
-import { wloTheme, wloThemeData } from "./wloTheme";
+import { wloThemeData } from "./wloTheme";
+import WloFakeHeader from "./WloFakeHeader";
 
 export default function RootLayout() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -83,9 +84,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider theme={wloTheme}>
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }} >
-      <div>
-        WLO Header here 
-        </div>
+      <WloFakeHeader />
       <SiteLayout
         style={{ }}
         sidebar={<GenCrawlerSidebar step={step} />}
@@ -98,7 +97,7 @@ export default function RootLayout() {
         <Breadcrumbs breadcrumbs={breadcrumbs} />
         <Outlet context={outletContext} />
       </SiteLayout>
-      <footer>WLO Footer here</footer>
+      {/* <footer>WLO Footer here</footer> */}
     </div>
     </ThemeProvider>
   );

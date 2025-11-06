@@ -1,8 +1,7 @@
+import { HTMLProps, useRef } from "react";
 import "./SiteLayout.css";
-import ShowSidebarIcon from "./assets/icons/show-sidebar.svg?react";
 import CloseIcon from "./assets/icons/close.svg?react";
-import { HTMLProps, useEffect, useRef, useState } from "react";
-import { useMatches } from "react-router";
+import ShowSidebarIcon from "./assets/icons/show-sidebar.svg?react";
 
 export default function SiteLayout(props: {
   children: React.ReactNode;

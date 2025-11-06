@@ -1,3 +1,5 @@
+import { Button as MuiButton, ThemeProvider } from "@mui/material";
+import Stack from "@mui/material/Stack";
 import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import Button from "./Button";
@@ -6,9 +8,6 @@ import { SelectSourcePageContext } from "./RootContext";
 import { SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import { useStep } from "./steps";
-import { createTheme, Button as MuiButton, ThemeProvider } from "@mui/material";
-import Stack from "@mui/material/Stack";
-import { wloThemeData } from "./wloTheme";
 export default function SelectSourcePage() {
 
   const { sourceItems, onSourceSelected } = useOutletContext<SelectSourcePageContext>();
