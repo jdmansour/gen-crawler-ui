@@ -11,6 +11,8 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { FilterSet, Rule, UnmatchedResponse } from "./schema";
+import { useStep } from "./steps";
+
 
 export default function FilterSetPage(props: { filterSetId: number, csrfToken: string }) {
   const [filterSet, setFilterSet] = useState<FilterSet | null>(null);
@@ -23,6 +25,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
   const apiBase = "http://localhost:8000/api";
   const filterSetId = props.filterSetId;
   // console.log("filterSetId", filterSetId);
+  useStep('filters')
 
   async function fetchData() {
     const url = apiBase + `/filter_sets/${filterSetId}/`;

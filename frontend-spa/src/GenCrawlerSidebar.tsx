@@ -23,9 +23,22 @@ export default function GenCrawlerSidebar(props: {
   const params = useParams();
   // console.log("Rendering sidebar for step:", step);
 
+  let showWizard = false;
+  switch (step) {
+    case "dashboard":
+    case "select-source":
+    case "add-crawler":
+    case "metadata-inheritance":
+      showWizard = true;
+      break;
+    case "filter-crawls":
+      showWizard = false
+      break;
+  }
+
   return (
     <>
-    <FilterTabs
+    {(showWizard) && <FilterTabs
       tabs={sidebarTabs}
       style="sidebar"
       selectedTab={activeSidebarTab}
@@ -56,7 +69,7 @@ export default function GenCrawlerSidebar(props: {
             return;
         }
       }}
-    />
+    />}
     {/* <BrowserRouter> */}
       {/* <Routes>
         <Route path="/crawlers/:crawlerId/filters" element={<div>This is the sidebar!</div>} />
