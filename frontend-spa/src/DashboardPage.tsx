@@ -1,4 +1,5 @@
-import { ErrorOutlineOutlined, MoreVertOutlined } from "@mui/icons-material";
+import ErrorOutlineOutlined from '@mui/icons-material/ErrorOutlineOutlined';
+import MoreVertOutlined from '@mui/icons-material/MoreVertOutlined';
 import { useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import "./App.css";

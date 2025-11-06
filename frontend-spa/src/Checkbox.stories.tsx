@@ -1,7 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-
 import Checkbox from '@mui/material/Checkbox';
-import { FormControlLabel } from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'Components/Checkbox',

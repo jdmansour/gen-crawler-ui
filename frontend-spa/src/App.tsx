@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddCrawlerPage from "./AddCrawlerPage";
 import { Crawler, createCrawler, SourceItem } from "./apitypes";
+import "./App.css";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
+import "./Button.css";
+import CrawlerDetailsPage from "./CrawlerDetailsPage";
 import DashboardPage from "./DashboardPage";
 import FilterCrawlsPage from "./FilterCrawlsPage";
 import GenCrawlerSidebar from "./GenCrawlerSidebar";
@@ -12,9 +15,6 @@ import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerDashboardStep } from "./steps";
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
-import "./App.css";
-import "./Button.css";
-import CrawlerDetailsPage from "./CrawlerDetailsPage";
 
 
 export default function App() {

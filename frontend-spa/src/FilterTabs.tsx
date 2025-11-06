@@ -1,7 +1,7 @@
+import React, { useEffect, useRef, useState } from "react";
 import { CustomIcon } from "./CustomIcon";
 import styles from "./FilterTabs.module.css";
 import FilterIcon from "./assets/icons/filter.svg?react";
-import React, { useState, useEffect, useRef } from "react";
 
 export type TabsStyle = "filter" | "sidebar";
 
@@ -181,7 +181,7 @@ function TabLabel(props: {
         }}
       >
         {typeof props.icon === "string" ? (
-          <CustomIcon iconName={props.icon} />
+          (<CustomIcon iconName={props.icon} />)
           // <img src={props.icon} className={styles.icon} height={24} />
         ) : (
           props.icon &&

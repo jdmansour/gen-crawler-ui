@@ -1,5 +1,6 @@
-
-import { FormGroup, Button as MUIButton, Skeleton } from "@mui/material";
+import MUIButton from '@mui/material/Button';
+import FormGroup from '@mui/material/FormGroup';
+import Skeleton from '@mui/material/Skeleton';
 import Grid from "@mui/system/Grid";
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
@@ -7,9 +8,9 @@ import Button from "./Button";
 import MdsEditor from "./MdsEditor";
 import { MetadataInheritancePageContext } from "./RootContext";
 import WloFieldGroupSet from "./WloFieldGroupSet";
+import { getInheritableFields } from "./apitypes";
 import { useStep } from "./steps";
 import { fieldMissing, GroupInfo, WloFieldInfo } from "./wloTypes";
-import { getInheritableFields } from "./apitypes";
 
 export default function MetadataInheritancePage() {
   const { onSave, crawlerList } = useOutletContext<MetadataInheritancePageContext>();

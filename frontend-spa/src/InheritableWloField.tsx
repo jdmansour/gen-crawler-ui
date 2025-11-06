@@ -1,7 +1,8 @@
-import { FormControlLabel, Checkbox } from "@mui/material";
+import Star from '@mui/icons-material/Star';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import WloField from "./WloField";
 import { WloFieldInfo, fieldMissing } from "./wloTypes";
-import { Star } from "@mui/icons-material";
 
 function MyFormControlLabel(props: React.ComponentProps<typeof FormControlLabel>) {
     return <FormControlLabel {...props} disableTypography style={{ marginRight: 0, marginLeft: 0, alignItems: 'center', width: '100%' }} />;

@@ -1,6 +1,21 @@
-import { Cancel, Delete } from "@mui/icons-material";
+import Cancel from '@mui/icons-material/Cancel';
+import Delete from '@mui/icons-material/Delete';
 import MoreVertOutlined from "@mui/icons-material/MoreVertOutlined";
-import { Box, Button, Chip, IconButton, ListItemIcon, Menu, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TextField from '@mui/material/TextField';
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -18,7 +33,7 @@ function mergeCrawler(c: Crawler, sseData: SSEData): Crawler {
     if (c.id != sseData.crawler_id) return c;
     return { ...c,
             crawl_jobs: c.crawl_jobs.map(job => mergeCrawlJob(job, sseData.crawl_job)) };
-};
+}
 
 export default function CrawlerDetailsPage() {
     const { crawlerId } = useParams();

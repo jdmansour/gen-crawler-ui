@@ -1,5 +1,13 @@
-import { AccessibilityNewOutlined, CopyrightOutlined, DescriptionOutlined, DoneAllOutlined, SchoolOutlined } from "@mui/icons-material";
-import { ErrorOutlineOutlined, EditOutlined, PendingOutlined, FrontHandOutlined, SmartToyOutlined } from "@mui/icons-material";
+import AccessibilityNewOutlined from '@mui/icons-material/AccessibilityNewOutlined';
+import CopyrightOutlined from '@mui/icons-material/CopyrightOutlined';
+import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
+import DoneAllOutlined from '@mui/icons-material/DoneAllOutlined';
+import EditOutlined from '@mui/icons-material/EditOutlined';
+import ErrorOutlineOutlined from '@mui/icons-material/ErrorOutlineOutlined';
+import FrontHandOutlined from '@mui/icons-material/FrontHandOutlined';
+import PendingOutlined from '@mui/icons-material/PendingOutlined';
+import SchoolOutlined from '@mui/icons-material/SchoolOutlined';
+import SmartToyOutlined from '@mui/icons-material/SmartToyOutlined';
 
 export function CustomIcon(props: { iconName: string|undefined; }) {
     switch (props.iconName) {

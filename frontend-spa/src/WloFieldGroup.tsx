@@ -1,9 +1,8 @@
-
-import { FormGroup } from "@mui/material";
+import FormGroup from '@mui/material/FormGroup';
+import { CustomIcon } from "./CustomIcon";
 import InheritableWloField from "./InheritableWloField";
 import MdsEditor from "./MdsEditor";
 import { WloFieldInfo } from "./wloTypes";
-import { CustomIcon } from "./CustomIcon";
 
 export default function WloFieldGroup(props: {
     title: string, icon: string, fields: WloFieldInfo[],

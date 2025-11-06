@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-
-import MetadataInheritancePage from './MetadataInheritancePage';
 import { MemoryRouter } from 'react-router';
+import MetadataInheritancePage from './MetadataInheritancePage';
 import SAMPLE_DATA from "./sampleData.json";
 import { GroupInfo, WloFieldInfo } from './wloTypes';
 

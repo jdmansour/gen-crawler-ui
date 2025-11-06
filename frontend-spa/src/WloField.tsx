@@ -1,5 +1,6 @@
-import { Chip, Typography } from "@mui/material";
-import { WloFieldInfo, WloSingleOptionFieldInfo, WloMultivalueFixedBadgesFieldInfo, WloMultivalueSuggestBadgesFieldInfo, WloMultivalueTreeFieldInfo, WloLicenseFieldInfo, WloFieldValueNested } from "./wloTypes";
+import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
+import { WloFieldInfo, WloFieldValueNested, WloLicenseFieldInfo, WloMultivalueFixedBadgesFieldInfo, WloMultivalueSuggestBadgesFieldInfo, WloMultivalueTreeFieldInfo, WloSingleOptionFieldInfo } from "./wloTypes";
 
 export default function WloField(props: { field: WloFieldInfo }) {
     const { field } = props;

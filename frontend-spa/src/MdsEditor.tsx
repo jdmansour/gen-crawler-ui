@@ -1,6 +1,7 @@
 
-import { Card, CardContent, Divider } from '@mui/material';
-// icon
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Divider from '@mui/material/Divider';
 import RobotIcon from "./assets/icons/robot.svg?react";
 
 export default function MdsEditor(props: {
