@@ -36,15 +36,15 @@ export default function SelectSourcePage() {
 
         <Stack direction="row" gap={1}>
           <MuiButton variant="outlined" onClick={() => navigate(-1)}>Abbrechen</MuiButton>
-          <MuiButton variant="contained" style={{ marginLeft: 'auto' }} onClick={() => {
-            if (onSourceSelected && selectedSourceId !== null) {
+          <MuiButton variant="contained" style={{ marginLeft: 'auto' }} 
+            disabled={selectedSourceId === null}
+            onClick={() => {
               const selectedSource = sourceItems.find(item => item.id === selectedSourceId);
-              if (selectedSource) {
+              if (selectedSource && onSourceSelected) {
                 onSourceSelected(selectedSource);
               }
-            }
           }}>
-            Weiter mit Vererbung
+            Weiter
           </MuiButton>
         </Stack>
     </div>
