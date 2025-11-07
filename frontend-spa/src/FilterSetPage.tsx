@@ -24,15 +24,14 @@ import { Rule, UnmatchedResponse } from "./schema";
 import { useStep } from "./steps";
 
 
+const apiBase = "http://localhost:8000/api";
+
 export default function FilterSetPage(props: { filterSetId: number, csrfToken: string }) {
   // type is a json dict
-  const [selectedRuleDetails, setSelectedRuleDetails] = useState({});
-  const [unmatchedUrls, setUnmatchedUrls] = useState<UnmatchedResponse | null>(null);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
   const [evaluationResult, setEvaluationResult] = useState<EvaluateFiltersResult>({ id: 0, remaining_urls: 0, name: "", created_at: "", updated_at: "", rules: [] });
   const crawlJobId = 14;  // TODO: make dynamic
 
-  const apiBase = "http://localhost:8000/api";
   const filterSetId = props.filterSetId;
   useStep('filters')
 
@@ -45,25 +44,16 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
         'Content-Type': 'application/json',
         'X-CSRFToken': props.csrfToken,
       },
-      body: JSON.stringify({ rules: selectedRuleDetails }),
+      body: JSON.stringify({}),
     });
     const data: EvaluateFiltersResult = await response.json();
-    console.log(data);
     setEvaluationResult(data);
   }
   
   useEffect(() => {
     evaluateFilters();
-    fetchUnmatchedUrls();
   }, [filterSetId]);
 
-  async function fetchUnmatchedUrls() {
-    const url = apiBase + `/filter_sets/${filterSetId}/unmatched?crawl_job=${crawlJobId}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-    setUnmatchedUrls(data);
-  }
 
   async function deleteRow(id: number) {
     console.log("delete", id);
@@ -171,7 +161,6 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
 
     // actually we should refresh everything to get the new match counts
     await evaluateFilters();
-    await fetchUnmatchedUrls();
   }
 
   function moveDelta(delta: number) {
@@ -198,26 +187,17 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     }
   }
 
-  async function showDetails(id: number) {
-    console.log("show details", id);
-    setSelectedRuleDetails({});
-    // fetch the details
-    const url = `${apiBase}/filter_rules/${id}/matches/?crawl_job=${crawlJobId}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-    setSelectedRuleDetails(data);
-  }
+  
 
-  useEffect(() => {
-    console.log("rowSelection changed", rowSelection);
-    const selectedRowId = Object.keys(rowSelection)[0];
-    // get the row object (rule)
-    const selectedRow = evaluationResult.rules.find((rule) => rule.id === Number(selectedRowId));
-    if (selectedRow) {
-      showDetails(Number(selectedRowId));
-    }
-  }, [rowSelection, evaluationResult.rules]);
+  // useEffect(() => {
+  //   console.log("rowSelection changed", rowSelection);
+  //   const selectedRowId = Object.keys(rowSelection)[0];
+  //   // get the row object (rule)
+  //   const selectedRow = evaluationResult.rules.find((rule) => rule.id === Number(selectedRowId));
+  //   if (selectedRow) {
+  //     showDetails(Number(selectedRowId));
+  //   }
+  // }, [rowSelection, evaluationResult.rules]);
 
   const selectedFilterRule = useMemo(() => {
     const selectedRowId = Object.keys(rowSelection)[0];
@@ -225,14 +205,6 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       return evaluationResult.rules.find((rule) => rule.id === Number(selectedRowId));
     }
   }, [rowSelection, evaluationResult.rules]);
-
-  let detailUrls: string[];
-  // selectedRuleDetails['new_matches'];
-  if (selectedRuleDetails['new_matches'] !== undefined) {
-    detailUrls = selectedRuleDetails['new_matches'];
-  } else {
-    detailUrls = [];
-  }
 
   const lastId = Math.max(...evaluationResult.rules.map(r => r.id), 0);
 
@@ -483,24 +455,70 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
 
       {sidebarOutlet && createPortal(
         <FilterSetPageSidebar
-          selectedFilterRule={selectedFilterRule}
-          detailUrls={selectedFilterRule ? detailUrls : unmatchedUrls?.unmatched_urls || []} />,
+          filterSetId={filterSetId}
+          crawlJobId={crawlJobId}
+          selectedFilterRule={selectedFilterRule} />,
         sidebarOutlet
       )}
     </>
   );
 }
 
-function FilterSetPageSidebar(props: { selectedFilterRule?: Rule, detailUrls: string[] }) {
-  const { selectedFilterRule, detailUrls } = props;
+function FilterSetPageSidebar(props: {
+  filterSetId: number,
+  selectedFilterRule?: Rule,
+  crawlJobId: number
+}) {
+  const { selectedFilterRule, filterSetId, crawlJobId } = props;
+  const [unmatchedUrls, setUnmatchedUrls] = useState<UnmatchedResponse | null>(null);
+  const [selectedRuleDetails, setSelectedRuleDetails] = useState<{ new_matches: string[], other_matches: string[] }>({ new_matches: [], other_matches: [] });
+  const selectedFilterRuleId = selectedFilterRule?.id || null;
+
+  async function fetchUnmatchedUrls(filterSetId: number, crawlJobId: number) {
+    const url = apiBase + `/filter_sets/${filterSetId}/unmatched?crawl_job=${crawlJobId}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    setUnmatchedUrls(data);
+  }
+
+async function showDetails(selectedFilterRuleId: number, crawlJobId: number) {
+    setSelectedRuleDetails({new_matches: [], other_matches: []});
+    // fetch the details
+    const url = `${apiBase}/filter_rules/${selectedFilterRuleId}/matches/?crawl_job=${crawlJobId}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    setSelectedRuleDetails(data);
+  }
+
+  useEffect(() => {
+    if (selectedFilterRuleId !== undefined && selectedFilterRuleId !== null) {
+      showDetails(selectedFilterRuleId, crawlJobId);
+    } else {
+      if (filterSetId !== undefined) {
+        fetchUnmatchedUrls(filterSetId, crawlJobId);
+      }
+    }
+  }, [selectedFilterRuleId, crawlJobId, filterSetId]);
+
+
+  let detailUrls: string[];
+  if (selectedFilterRuleId) {
+    // show urls matching this rule
+    detailUrls = selectedRuleDetails['new_matches'] || [];
+  } else {
+    // show unmatched urls
+    detailUrls = unmatchedUrls?.unmatched_urls || [];
+  }
+
   return <div>
     <div style={{ position: 'sticky' }}>
       <h3>Details</h3>
 
-      <p>Ausgewählter Filter:</p>
-      <p>Regel: <code>{selectedFilterRule?.rule}</code></p>
-      <p>Treffer: <code>{selectedFilterRule?.count}</code></p>
-      <p>Davon nicht durch vorherige Regeln erfasst: <code>{selectedFilterRule?.cumulative_count}</code></p>
+      {selectedFilterRuleId ? (
+      <><p>Ausgewählter Filter:</p><p>Regel: <code>{selectedFilterRule?.rule}</code></p><p>Treffer: <code>{selectedFilterRule?.count}</code></p><p>Davon nicht durch vorherige Regeln erfasst: <code>{selectedFilterRule?.cumulative_count}</code></p></>
+      ) : (
+      <p>URLs, die durch keine Regel erfasst wurden:</p>
+      )}
     </div>
 
     <TableContainer component={Paper}>
