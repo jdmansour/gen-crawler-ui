@@ -2,7 +2,6 @@ import { Button as MuiButton } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import Button from "./Button";
 import ListView from "./ListView";
 import { SelectSourcePageContext } from "./RootContext";
 import { SourceItem } from "./apitypes";

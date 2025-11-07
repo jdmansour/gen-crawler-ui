@@ -225,6 +225,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
           // table.setEditingCell(null) is called automatically onBlur internally
           console.log("onBlur called");
           console.log('table.getState().creatingRow', table.getState().creatingRow);
+          // TODO: this is broken and needs fixing!
           if (table.getState().creatingRow) {
             console.log("Submitting new row");
             const data = await addRowWithDataAfter(lastId, { rule: event.target.value });
@@ -298,6 +299,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     enableSorting: false,
     enableHiding: false,
     enableTopToolbar: false,
+    enableBottomToolbar: false,
     enableGlobalFilter: false,
     enableRowOrdering: true,
     enablePagination: false,
@@ -416,9 +418,9 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     positionToolbarAlertBanner: 'none',
     createDisplayMode: 'row',
     positionCreatingRow: 'bottom',
-    renderBottomToolbarCustomActions: ({ table }) => (
-      <Button variant="contained" onClick={() => table.setCreatingRow(true)}>Regel hinzufügen</Button>
-    ),
+    // renderBottomToolbarCustomActions: ({ table }) => (
+    //   <Button variant="contained" onClick={() => table.setCreatingRow(true)}>Regel hinzufügen</Button>
+    // ),
     // onCreatingRowCancel: () => setValidationErrors({}),
     onCreatingRowSave: ({ row, table, values }) => {
       console.log("Creating row", { row, table, values });
@@ -431,24 +433,31 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       sx: {
         maxHeight: '100%', // take all available height
         overflowY: 'overlay', // enable vertical scroll
-        // overflowX: 'clip',
       },
-    }
+    },
+    muiTablePaperProps: {
+      sx: {
+        flexBasis: 'auto',
+        // flexGrow: 1
+        flexShrink: 1,
+      },
+    },
   });
 
   const sidebarOutlet = document.getElementById("sidebar-outlet");
 
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "column", flex: 1,
+                        padding: "8px 24px 16px 24px", gap: "16px", flexShrink: 1, minHeight: 350}}>
       {/* <p>{filterSet?.crawl_job.crawled_url_count} pages total, {filterSet?.remaining_urls} not handled yet</p> */}
-      <h3>Rules</h3>
+      <h2 style={{ margin: "0px 0px" }}>Filterregeln</h2>
 
-      <p>Data from crawl job {crawlJobId}</p>
+      <div>Data from crawl job {crawlJobId}</div>
 
       <MaterialReactTable table={table} />
 
-      <Stack direction="row" spacing={2} sx={{ mt: 2, mb: 2 }}>
-        <Button variant="outlined" sx={{ textTransform: 'none' }}>Regel hinzufügen</Button>
+      <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
+        <Button variant="outlined" sx={{ textTransform: 'none' }} onClick={() => table.setCreatingRow(true)}>Regel hinzufügen</Button>
         <Button variant='outlined' sx={{ textTransform: 'none' }} onClick={evaluateFilters}>Filter auswerten</Button>
         <Button variant="contained" style={{ textTransform: 'none', marginLeft: 'auto' }}>Start content crawl</Button>
       </Stack>
@@ -460,7 +469,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
           selectedFilterRule={selectedFilterRule} />,
         sidebarOutlet
       )}
-    </>
+    </div>
   );
 }
 
