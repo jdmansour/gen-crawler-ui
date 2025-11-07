@@ -17,7 +17,7 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef
 } from 'material-react-table';
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { EvaluateFiltersResult } from './apitypes';
 import { Rule, UnmatchedResponse } from "./schema";
@@ -35,7 +35,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
   const filterSetId = props.filterSetId;
   useStep('filters')
 
-  async function evaluateFilters() {
+  const evaluateFilters = useCallback(async () => {
     const url = apiBase + `/crawl_jobs/${crawlJobId}/evaluate_filters/`;
     // POST
     const response = await fetch(url, {
@@ -48,11 +48,11 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     });
     const data: EvaluateFiltersResult = await response.json();
     setEvaluationResult(data);
-  }
+  }, [crawlJobId, props.csrfToken]);
   
   useEffect(() => {
     evaluateFilters();
-  }, [filterSetId]);
+  }, [evaluateFilters]);
 
 
   async function deleteRow(id: number) {
@@ -69,37 +69,6 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
 
     //setRules(rules.filter((rule) => rule.id !== id));
     setEvaluationResult({ ...evaluationResult, rules: evaluationResult.rules.filter((rule) => rule.id !== id) });
-  }
-
-  async function addRowAfter(id: number) {
-    console.log("add after", id);
-    const filterSetUrl = apiBase + `/filter_sets/${filterSetId}/`;
-    console.log("filterSetUrl", filterSetUrl);
-    const newRule = {
-      // TODO: how to make it so we can use an ID and not a URL?
-      "filter_set": filterSetUrl,
-      //"filter_set": "1",
-      "rule": "https://www.weltderphysik.de/wir",
-      "count": 123,
-      "include": true,
-      "page_type": "New row"
-    }
-    //setRules([...rules, newRule]);
-    // insert after rule with the id
-    const post_url = apiBase + "/filter_rules/";
-    const response = await fetch(post_url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': props.csrfToken,
-      },
-      body: JSON.stringify(newRule),
-    });
-    const data = await response.json();
-    console.log(data);
-    // TODO: add ordering
-    //setRules([...rules, data]);
-    setEvaluationResult({ ...evaluationResult, rules: [...evaluationResult.rules, data] });
   }
 
   async function addRowWithDataAfter(id: number, ruleData: { rule: string }): Promise<Rule> {
@@ -163,42 +132,6 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     await evaluateFilters();
   }
 
-  function moveDelta(delta: number) {
-    return async (id: number) => {
-      // construct the url
-      const url = `${apiBase}/filter_rules/${id}/`;
-      // call the api
-      const old_position = evaluationResult.rules.find((rule) => rule.id === id)?.position;
-      if (old_position === undefined) {
-        console.error("Could not find position of rule with id", id);
-        return;
-      }
-      const response = await fetch(url, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': props.csrfToken,
-        },
-        body: JSON.stringify({ position: old_position + delta }),
-      });
-      const updatedRule = await response.json();
-      console.log(updatedRule);
-      await evaluateFilters();
-    }
-  }
-
-  
-
-  // useEffect(() => {
-  //   console.log("rowSelection changed", rowSelection);
-  //   const selectedRowId = Object.keys(rowSelection)[0];
-  //   // get the row object (rule)
-  //   const selectedRow = evaluationResult.rules.find((rule) => rule.id === Number(selectedRowId));
-  //   if (selectedRow) {
-  //     showDetails(Number(selectedRowId));
-  //   }
-  // }, [rowSelection, evaluationResult.rules]);
-
   const selectedFilterRule = useMemo(() => {
     const selectedRowId = Object.keys(rowSelection)[0];
     if (selectedRowId) {
@@ -215,7 +148,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       header: 'URL-Muster',
       size: 300,
       enableEditing: true,
-      muiEditTextFieldProps: ({ cell, column, row, table }) => ({
+      muiEditTextFieldProps: ({ column, row, table }) => ({
         variant: "standard",
         fullWidth: true,
         slotProps: {
@@ -306,7 +239,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     enableEditing: true,
     enableRowActions: true,
     positionActionsColumn: 'last',
-    renderRowActions: ({ row, table }) => (
+    renderRowActions: ({ row }) => (
       <IconButton onClick={() => console.info('Delete')}>
         <Delete onClick={() => {
           const id = row.original.id;
@@ -403,7 +336,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
         // maxWidth: 'initial', //column.id === 'mrt-row-drag' ? 10 : 'none',
       },
     }),
-    muiTableBodyCellProps: ({ cell, column, table }) => ({
+    muiTableBodyCellProps: ({ column }) => ({
       // adjust padding for cells in the position and actions columns
       sx: {
         // // textAlign: (column.id === 'mrt-row-drag'  ? 'center' : 'left',
