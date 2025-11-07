@@ -103,12 +103,15 @@ ROBOTSTXT_OBEY = True
 EXTENSIONS = {
 #    "scrapy.extensions.telnet.TelnetConsole": None,
     "scrapy.extensions.periodic_log.PeriodicLog": 0,
+    "scrapy.extensions.closespider.CloseSpider": 1,
 }
 # PeriodicLog Extension Settings
 # (see: https://docs.scrapy.org/en/latest/topics/extensions.html#periodic-log-extension)
 PERIODIC_LOG_STATS = True
 PERIODIC_LOG_DELTA = True
 PERIODIC_LOG_TIMING_ENABLED = True
+
+CLOSESPIDER_PAGECOUNT = int(env.get("CLOSESPIDER_PAGECOUNT", default="1000"))
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html

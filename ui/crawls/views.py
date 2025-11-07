@@ -14,6 +14,7 @@ from aggregator import CallbackAggregator
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import StreamingHttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -183,6 +184,19 @@ class CrawlJobViewSet(viewsets.ModelViewSet):
     # TODO: restrict to authenticated users!
     permission_classes = [permissions.AllowAny]
 
+    @action(detail=True, methods=['post'])
+    def evaluate_filters(self, request, pk=None):
+        """ Evaluate the filter set for this crawl job. Lives at
+            http://127.0.0.1:8000/api/crawl_jobs/1/evaluate_filters/ """
+        
+        try:
+            crawl_job = self.get_object()
+            filter_set = crawl_job.crawler.filter_set
+        except ObjectDoesNotExist as e:
+            return Response({'error': str(e)}, status=400)
+        response_dict = filter_set.evaluate(crawl_job)
+        return Response(response_dict)
+
 
 class FilterSetViewSet(viewsets.ModelViewSet):
     """ Provides the API under /api/filter_sets/ """
@@ -194,10 +208,16 @@ class FilterSetViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def unmatched(self, request, pk=None):
         """ Returns a list of unmatched URLs. Lives at
-            http://127.0.0.1:8000/api/filter_sets/1/unmatched/ """
+            http://127.0.0.1:8000/api/filter_sets/1/unmatched/?crawl_job=<crawl_job_id> """
+
+        crawl_job_id = request.query_params.get("crawl_job")
+        if crawl_job_id is None:
+            return Response({'error': 'crawl_job parameter is required'}, status=400)
+        
+        crawl_job = get_object_or_404(CrawlJob, pk=crawl_job_id)
 
         # pylint: disable=unused-argument
-        qs = self.get_object().crawl_job.crawled_urls
+        qs = crawl_job.crawled_urls
         for rule in self.get_object().rules.all():
             qs = qs.exclude(url__startswith=rule.rule)
         qs = qs.all()
@@ -226,7 +246,7 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer: FilterRuleSerializer):  # type: ignore[override]
         """ Run when a new rule is created. """
         rule = serializer.save()
-        rule.filter_set.evaluate()
+        # rule.filter_set.evaluate()
         # TODO: in what is returned in the request, the new count is not reflected yet (?)
         rule.save()  # ?
 
@@ -234,11 +254,11 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
         """ Run when a rule is updated. """
         log.info("perform_update")
         rule = serializer.save()
-        rule.filter_set.evaluate(rule)
+        # rule.filter_set.evaluate(rule)
         log.info("Rule %r updated", rule)
         # rule.save()
 
-    # add endpoint under filter_rules/<id>/matches to get all matching URLs
+    # add endpoint under filter_rules/<id>/matches?crawl_job=<crawl_job_id> to get all matching URLs
     @action(detail=True, methods=['get'])
     def matches(self, request, pk=None):
         """ Returns a list of URLs that match this rule. Lives at
@@ -247,16 +267,22 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
         # pylint: disable=unused-argument
         rule = self.get_object()
 
+        crawl_job_id = request.query_params.get("crawl_job")
+        if crawl_job_id is None:
+            return Response({'error': 'crawl_job parameter is required'}, status=400)
+        
+        crawl_job = get_object_or_404(CrawlJob, pk=crawl_job_id)
+
         # get previous rules, when sorted by position
         previous_rules = rule.filter_set.rules.filter(
             position__lt=rule.position)
 
         # get all URLs that match this rule and any of the previous rules
-        qs = rule.filter_set.crawl_job.crawled_urls
+        qs = crawl_job.crawled_urls
         for r in previous_rules:
             qs = qs.exclude(url__startswith=r.rule)
         new_matches = qs.filter(url__startswith=rule.rule)
-        other_matches = rule.filter_set.crawl_job.crawled_urls.filter(
+        other_matches = crawl_job.crawled_urls.filter(
             url__startswith=rule.rule).exclude(pk__in=new_matches)
         result = {
             'new_matches': [url.url for url in new_matches],

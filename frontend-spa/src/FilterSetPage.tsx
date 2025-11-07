@@ -19,38 +19,46 @@ import {
 } from 'material-react-table';
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { FilterSet, Rule, UnmatchedResponse } from "./schema";
+import { EvaluateFiltersResult } from './apitypes';
+import { Rule, UnmatchedResponse } from "./schema";
 import { useStep } from "./steps";
 
 
 export default function FilterSetPage(props: { filterSetId: number, csrfToken: string }) {
-  const [filterSet, setFilterSet] = useState<FilterSet | null>(null);
-  const [rules, setRules] = useState<Rule[]>([]);
   // type is a json dict
   const [selectedRuleDetails, setSelectedRuleDetails] = useState({});
   const [unmatchedUrls, setUnmatchedUrls] = useState<UnmatchedResponse | null>(null);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+  const [evaluationResult, setEvaluationResult] = useState<EvaluateFiltersResult>({ id: 0, remaining_urls: 0, name: "", created_at: "", updated_at: "", rules: [] });
+  const crawlJobId = 14;  // TODO: make dynamic
 
   const apiBase = "http://localhost:8000/api";
   const filterSetId = props.filterSetId;
-  // console.log("filterSetId", filterSetId);
   useStep('filters')
 
-  async function fetchData() {
-    const url = apiBase + `/filter_sets/${filterSetId}/`;
-    const response = await fetch(url);
-    const data = await response.json();
+  async function evaluateFilters() {
+    const url = apiBase + `/crawl_jobs/${crawlJobId}/evaluate_filters/`;
+    // POST
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': props.csrfToken,
+      },
+      body: JSON.stringify({ rules: selectedRuleDetails }),
+    });
+    const data: EvaluateFiltersResult = await response.json();
     console.log(data);
-    setFilterSet(data);
-    setRules(data.rules);
+    setEvaluationResult(data);
   }
+  
   useEffect(() => {
-    fetchData();
+    evaluateFilters();
     fetchUnmatchedUrls();
-  }, []);
+  }, [filterSetId]);
 
   async function fetchUnmatchedUrls() {
-    const url = apiBase + `/filter_sets/${filterSetId}/unmatched`;
+    const url = apiBase + `/filter_sets/${filterSetId}/unmatched?crawl_job=${crawlJobId}`;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
@@ -69,7 +77,8 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     const data = await response.json();
     console.log(data);
 
-    setRules(rules.filter((rule) => rule.id !== id));
+    //setRules(rules.filter((rule) => rule.id !== id));
+    setEvaluationResult({ ...evaluationResult, rules: evaluationResult.rules.filter((rule) => rule.id !== id) });
   }
 
   async function addRowAfter(id: number) {
@@ -99,7 +108,8 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     const data = await response.json();
     console.log(data);
     // TODO: add ordering
-    setRules([...rules, data]);
+    //setRules([...rules, data]);
+    setEvaluationResult({ ...evaluationResult, rules: [...evaluationResult.rules, data] });
   }
 
   async function addRowWithDataAfter(id: number, ruleData: { rule: string }): Promise<Rule> {
@@ -129,16 +139,16 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     const data = await response.json();
     console.log(data);
     // TODO: add ordering
-    setRules([...rules, data]);
+    //setRules([...rules, data]);
+    setEvaluationResult({ ...evaluationResult, rules: [...evaluationResult.rules, data] });
     return data;
   }
 
   async function updateFields(id: number, fields: { rule?: string, include?: boolean, page_type?: string }) {
     // Update the fields in the row right away
-    const newRules1 = rules.map((rule) => (rule.id === id) ? { ...rule, ...fields } : rule);
-    setRules(newRules1);
-
     // TODO: add a "pending" field to the row, so we can see that the update is in progress
+    const newRules1 = evaluationResult.rules.map((rule) => (rule.id === id) ? { ...rule, ...fields } : rule);
+    setEvaluationResult({ ...evaluationResult, rules: newRules1 });
 
     // // sleep 2 seconds to simulate a bad connection
     // await new Promise(r => setTimeout(r, 2000));
@@ -159,13 +169,8 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     const updatedRule = await response.json();
     console.log(updatedRule);
 
-    // console.log("update", id, newRuleString);
-    // update the state
-    const newRules = rules.map((rule) => (rule.id === id) ? updatedRule : rule);
-    setRules(newRules);
-
     // actually we should refresh everything to get the new match counts
-    await fetchData();
+    await evaluateFilters();
     await fetchUnmatchedUrls();
   }
 
@@ -174,7 +179,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       // construct the url
       const url = `${apiBase}/filter_rules/${id}/`;
       // call the api
-      const old_position = rules.find((rule) => rule.id === id)?.position;
+      const old_position = evaluationResult.rules.find((rule) => rule.id === id)?.position;
       if (old_position === undefined) {
         console.error("Could not find position of rule with id", id);
         return;
@@ -189,7 +194,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       });
       const updatedRule = await response.json();
       console.log(updatedRule);
-      await fetchData();
+      await evaluateFilters();
     }
   }
 
@@ -197,7 +202,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     console.log("show details", id);
     setSelectedRuleDetails({});
     // fetch the details
-    const url = `${apiBase}/filter_rules/${id}/matches`;
+    const url = `${apiBase}/filter_rules/${id}/matches/?crawl_job=${crawlJobId}`;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
@@ -208,18 +213,18 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     console.log("rowSelection changed", rowSelection);
     const selectedRowId = Object.keys(rowSelection)[0];
     // get the row object (rule)
-    const selectedRow = rules.find((rule) => rule.id === Number(selectedRowId));
+    const selectedRow = evaluationResult.rules.find((rule) => rule.id === Number(selectedRowId));
     if (selectedRow) {
       showDetails(Number(selectedRowId));
     }
-  }, [rowSelection, rules]);
+  }, [rowSelection, evaluationResult.rules]);
 
   const selectedFilterRule = useMemo(() => {
     const selectedRowId = Object.keys(rowSelection)[0];
     if (selectedRowId) {
-      return rules.find((rule) => rule.id === Number(selectedRowId));
+      return evaluationResult.rules.find((rule) => rule.id === Number(selectedRowId));
     }
-  }, [rowSelection, rules]);
+  }, [rowSelection, evaluationResult.rules]);
 
   let detailUrls: string[];
   // selectedRuleDetails['new_matches'];
@@ -229,16 +234,9 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     detailUrls = [];
   }
 
-  // iterate over all rules and pick the one with the last id
-  let lastId = 0;
-  for (let i = 0; i < rules.length; i++) {
-    if (rules[i].id > lastId) {
-      lastId = rules[i].id;
-    }
-  }
+  const lastId = Math.max(...evaluationResult.rules.map(r => r.id), 0);
 
-
-  const rows = rules;
+  const rows = evaluationResult.rules;
   const columns: MRT_ColumnDef<Rule>[] = [
     {
       accessorKey: 'rule',
@@ -265,18 +263,6 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
             row._valuesCache['count'] = data.count;
             row._valuesCache['cumulative_count'] = data.cumulative_count;
             table.setCreatingRow(row);
-            // const row = {...table.getState().creatingRow?.original || {}, ...data};
-            // console.log("Combined row", row);
-            //table.setCreatingRow(createRow(table, row));
-            // table.setCreatingRow(null);
-            // const r = table.getRow(""+row.id);
-            // console.log("New row object", r);
-            // table.setEditingRow(r);
-            // console.log("Row is:", row);
-            // //console.log("Attempting to set editing row to:", row);
-            // const newRow = table.getRow(String(data.id));
-
-            // table.setEditingRow(newRow);
           } else {
             updateFields(row.original.id, { rule: event.target.value });
           }
@@ -351,7 +337,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
         <Delete onClick={() => {
           const id = row.original.id;
           deleteRow(row.original.id);
-          setRules(rules.filter((rule) => rule.id !== id));
+          setEvaluationResult({ ...evaluationResult, rules: evaluationResult.rules.filter((rule) => rule.id !== id) });
         }} />
       </IconButton>
     ),
@@ -482,13 +468,16 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
 
   return (
     <>
-      <p>{filterSet?.crawl_job.crawled_url_count} pages total, {filterSet?.remaining_urls} not handled yet</p>
+      {/* <p>{filterSet?.crawl_job.crawled_url_count} pages total, {filterSet?.remaining_urls} not handled yet</p> */}
       <h3>Rules</h3>
+
+      <p>Data from crawl job {crawlJobId}</p>
 
       <MaterialReactTable table={table} />
 
       <Stack direction="row" spacing={2} sx={{ mt: 2, mb: 2 }}>
         <Button variant="outlined" sx={{ textTransform: 'none' }}>Regel hinzufügen</Button>
+        <Button variant='outlined' sx={{ textTransform: 'none' }} onClick={evaluateFilters}>Filter auswerten</Button>
         <Button variant="contained" style={{ textTransform: 'none', marginLeft: 'auto' }}>Start content crawl</Button>
       </Stack>
 
