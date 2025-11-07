@@ -17,11 +17,11 @@ export default function SelectSourcePage() {
 
   useStep("select-source");
   
-  return (<>
-        <h2>Neuen Crawler erstellen</h2>
-        <p>Für welches Quellobjekt soll ein Crawler erstellt werden?</p>
+  return (<div style={{ display: "flex", flexDirection: "column", flex: 1,
+                        padding: "16px", gap: "16px" }}>
+        <div>Für welches Quellobjekt soll ein Crawler erstellt werden?</div>
 
-        <div style={{ overflowY: "scroll" }}>
+        <div style={{ overflowY: "scroll", flexBasis: 100, flexGrow: 1}}>
         <ListView>
           {sourceItems.map((item) => (
             <InheritanceTableRow
@@ -34,7 +34,7 @@ export default function SelectSourcePage() {
         </ListView>
         </div>
 
-        <Stack direction="row" gap={1} sx={{ mt: 2}}>
+        <Stack direction="row" gap={1}>
           <MuiButton variant="outlined" onClick={() => navigate(-1)}>Abbrechen</MuiButton>
           <MuiButton variant="contained" style={{ marginLeft: 'auto' }} onClick={() => {
             if (onSourceSelected && selectedSourceId !== null) {
@@ -47,22 +47,7 @@ export default function SelectSourcePage() {
             Weiter mit Vererbung
           </MuiButton>
         </Stack>
-
-        <div className="wlo-button-group">
-          <Button leftAlign onClick={() => navigate(-1)}>Abbrechen</Button>
-          <Button>Quelldaten neu anlegen</Button>
-          <Button default onClick={() => {
-            if (onSourceSelected && selectedSourceId !== null) {
-              const selectedSource = sourceItems.find(item => item.id === selectedSourceId);
-              if (selectedSource) {
-                onSourceSelected(selectedSource);
-              }
-            }
-          }}>
-            Weiter mit Vererbung
-          </Button>
-        </div>
-    </>
+    </div>
   );
 }
 
