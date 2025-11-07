@@ -484,7 +484,7 @@ function FilterSetPageSidebar(props: {
   const selectedFilterRuleId = selectedFilterRule?.id || null;
 
   async function fetchUnmatchedUrls(filterSetId: number, crawlJobId: number) {
-    const url = apiBase + `/filter_sets/${filterSetId}/unmatched?crawl_job=${crawlJobId}`;
+    const url = apiBase + `/filter_sets/${filterSetId}/unmatched/?crawl_job=${crawlJobId}`;
     const response = await fetch(url);
     const data = await response.json();
     setUnmatchedUrls(data);

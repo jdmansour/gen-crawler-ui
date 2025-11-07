@@ -62,14 +62,14 @@ export default function RootLayout() {
   }
 
   async function fetchCrawlers() {
-    const response = await fetch("http://localhost:8000/api/crawlers");
+    const response = await fetch("http://localhost:8000/api/crawlers/");
     const data: Crawler[] = await response.json();
     // TODO: validate?
     setCrawlerList(data);
   }
 
   async function fetchSourceItems() {
-    const response = await fetch("http://localhost:8000/api/source_items");
+    const response = await fetch("http://localhost:8000/api/source_items/");
     const data: SourceItem[] = await response.json();
     setSourceItems(data);
   }
