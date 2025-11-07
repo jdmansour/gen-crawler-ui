@@ -8,7 +8,8 @@ export type CrawlerDashboardStep =
   | "add-crawler"
   | "metadata-inheritance"
   | "filter-crawls"
-  | "crawler-details";
+  | "crawler-details"
+  | "filters";
 
 export function useStep(step: CrawlerDashboardStep) {
   const { setStep } = useOutletContext<UseStepContext>();
