@@ -69,7 +69,7 @@ export async function getInheritableFields(sourceItemGuid: string): Promise<{fie
     const data = await response.json();
     return data;
 }
-type RuleEvaluation = {
+export type RuleEvaluation = {
   id: number;
   rule: string;
   include: boolean;

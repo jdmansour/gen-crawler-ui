@@ -19,7 +19,7 @@ import {
 } from 'material-react-table';
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { EvaluateFiltersResult } from './apitypes';
+import { EvaluateFiltersResult, RuleEvaluation } from './apitypes';
 import { Rule, UnmatchedResponse } from "./schema";
 import { useStep } from "./steps";
 
@@ -141,7 +141,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
 
   const lastId = Math.max(...evaluationResult.rules.map(r => r.id), 0);
 
-  const rows = evaluationResult.rules;
+  const rows = evaluationResult.rules.sort((a, b) => a.position - b.position);
   const columns: MRT_ColumnDef<Rule>[] = [
     {
       accessorKey: 'rule',
@@ -208,18 +208,18 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
           updateFields(row.id, { include: e.target.checked });
         }} />,
     },
-    // {
-    //   accessorKey: 'position',
-    //   header: 'Position',
-    //   size: 10,
-    //   enableEditing: false,
-    // },
-    // {
-    //   accessorKey: 'id',
-    //   header: 'Id',
-    //   size: 10,
-    //   enableEditing: false,
-    // },
+    {
+      accessorKey: 'position',
+      header: 'Position',
+      size: 10,
+      enableEditing: false,
+    },
+    {
+      accessorKey: 'id',
+      header: 'Id',
+      size: 10,
+      enableEditing: false,
+    },
   ];
 
 
@@ -235,6 +235,42 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     enableBottomToolbar: false,
     enableGlobalFilter: false,
     enableRowOrdering: true,
+    muiRowDragHandleProps: ({ table }) => ({
+      onDragEnd: async () => {
+        const { draggingRow, hoveredRow } = table.getState();
+
+        if (!(hoveredRow && draggingRow)) {
+          return;
+        }
+
+        const hoveredPosition = hoveredRow.original!.position;
+        const draggedId = draggingRow.original!.id;
+
+        const url = `${apiBase}/filter_rules/${draggedId}/`;
+        // call PATCH and update position to the position of where it was dropped
+        const response = await fetch(url, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': props.csrfToken,
+          },
+          body: JSON.stringify({ position: hoveredPosition }),
+        });
+        const data = await response.json();
+        console.log("Move response", data);
+
+        // Update local state so we get immediate feedback
+        // const newRules = moveRule(evaluationResult.rules, draggedId, hoveredPosition);
+        // for (let i = 0; i < newRules.length; i++) {
+        //   console.log("Moving rule", newRules[i].id, "from", evaluationResult.rules[i].position, "to", newRules[i].position);
+        // }
+        // setEvaluationResult({ ...evaluationResult, rules: newRules });
+        setEvaluationResult(prev => ({ ...prev, rules: moveRule(prev.rules, draggedId, hoveredPosition) }));
+
+        // re-evaluate filters to get updated counts
+        await evaluateFilters();
+      },
+    }),
     enablePagination: false,
     enableEditing: true,
     enableRowActions: true,
@@ -482,4 +518,53 @@ async function showDetails(selectedFilterRuleId: number, crawlJobId: number) {
       </Table>
     </TableContainer>
   </div>;
+}
+
+function moveRule(rules: RuleEvaluation[], id: number, toPosition: number) {
+  // this mirrors move_to in models.py
+  // Move rule id to toPosition, shifting other rules as necessary.
+  // If the target position is already taken, increase the position of all rules
+  // above or equal to toPosition by 1.
+
+  console.log("moveRule moving id", id, "to position:", toPosition);
+
+  // const rules = evaluationResult.rules;
+  const rule = rules.find((r) => r.id === id);
+  if (!rule) {
+    return rules;
+  }
+
+  if (rule.position == toPosition) {
+    // notihing to do
+    return rules;
+  }
+
+  const clamp = (num: number, min: number, max: number): number => Math.min(Math.max(num, min), max);
+  const newPosition = clamp(toPosition, 1, rules.length);
+  const curPosition = rule.position;
+  if (newPosition > curPosition) {
+    // moving down
+    const newRules = rules.map((r) => {
+      if (r.id === id) {
+        return { ...r, position: newPosition };
+      }
+      if (r.position > curPosition && r.position <= newPosition) {
+        return { ...r, position: r.position - 1 };
+      }
+      return r;
+    });
+    return newRules;
+  } else {
+    // moving up
+    const newRules = rules.map((r) => {
+      if (r.id === id) {
+        return { ...r, position: newPosition };
+      }
+      if (r.position >= newPosition && r.position < curPosition) {
+        return { ...r, position: r.position + 1 };
+      }
+      return r;
+    });
+    return newRules;
+  }
 }
