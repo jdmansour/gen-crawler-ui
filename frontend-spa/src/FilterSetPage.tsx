@@ -140,14 +140,25 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
   }, [rowSelection, evaluationResult.rules]);
 
   const lastId = Math.max(...evaluationResult.rules.map(r => r.id), 0);
+  const lastPosition = Math.max(...evaluationResult.rules.map(r => r.position), 0);
 
-  const rows = evaluationResult.rules.sort((a, b) => a.position - b.position);
+  const sortedRows = evaluationResult.rules.sort((a, b) => a.position - b.position)
+  const lastRow: Rule = {
+    'id': -1,
+    'position': lastPosition + 1,
+    'rule': '<Nicht erfasst>',
+    'count': 0,
+    'cumulative_count': evaluationResult.remaining_urls,
+    'include': true,
+    'page_type': '',
+  };
+  const rows = [...sortedRows, lastRow];
   const columns: MRT_ColumnDef<Rule>[] = [
     {
       accessorKey: 'rule',
       header: 'URL-Muster',
       size: 300,
-      enableEditing: true,
+      enableEditing: (row) => row.original.id !== -1,
       muiEditTextFieldProps: ({ column, row, table }) => ({
         variant: "standard",
         fullWidth: true,
@@ -187,6 +198,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     },
     {
       accessorKey: 'count',
+      accessorFn: (row: Rule): string => row.id === -1 ? '' : String(row.count),
       header: 'Treffer',
       size: 10,
       enableEditing: false,
@@ -202,7 +214,9 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       header: 'Behalten',
       size: 10,
       enableEditing: false,
-      Cell: ({ cell }) => <Switch checked={Boolean(cell.getValue())} sx={{ m: -1 }}
+      Cell: ({ cell }) => <Switch
+        checked={Boolean(cell.getValue())}
+        sx={{ m: -1, visibility: cell.row.original.id === -1 ? 'hidden' : 'visible' }}
         onChange={(e) => {
           const row = cell.row.original;
           updateFields(row.id, { include: e.target.checked });
@@ -235,7 +249,8 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     enableBottomToolbar: false,
     enableGlobalFilter: false,
     enableRowOrdering: true,
-    muiRowDragHandleProps: ({ table }) => ({
+    muiRowDragHandleProps: ({ row, table }) => ({
+      sx: { visibility: row.original.id === -1 ? 'hidden' : 'visible', cursor: 'grab' },
       onDragEnd: async () => {
         const { draggingRow, hoveredRow } = table.getState();
 
@@ -276,13 +291,14 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     enableRowActions: true,
     positionActionsColumn: 'last',
     renderRowActions: ({ row }) => (
-      <IconButton onClick={() => console.info('Delete')}>
-        <Delete onClick={() => {
-          const id = row.original.id;
-          deleteRow(row.original.id);
-          setEvaluationResult({ ...evaluationResult, rules: evaluationResult.rules.filter((rule) => rule.id !== id) });
+      (row.original.id !== -1) && (
+        <IconButton onClick={() => console.info('Delete')}>
+          <Delete onClick={() => {
+            const id = row.original.id;
+            deleteRow(row.original.id);
+            setEvaluationResult({ ...evaluationResult, rules: evaluationResult.rules.filter((rule) => rule.id !== id) });
         }} />
-      </IconButton>
+      </IconButton>)
     ),
     editDisplayMode: 'cell',
     enableMultiRowSelection: false, //shows radio buttons instead of checkboxes
@@ -386,7 +402,7 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
     }),
     positionToolbarAlertBanner: 'none',
     createDisplayMode: 'row',
-    positionCreatingRow: 'bottom',
+    positionCreatingRow: rows.length-1,
     // renderBottomToolbarCustomActions: ({ table }) => (
     //   <Button variant="contained" onClick={() => table.setCreatingRow(true)}>Regel hinzufügen</Button>
     // ),

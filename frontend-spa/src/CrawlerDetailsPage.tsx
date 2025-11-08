@@ -91,8 +91,8 @@ export default function CrawlerDetailsPage() {
         </div>;
     }
 
-    return <div className="main-content">
-        <h1>Crawler-Details</h1>
+    return <div style={{overflowY: "scroll", padding: "0px 24px 24px 24px"}}>
+        <h2 style={{marginTop: 8}}>Crawler-Details</h2>
         <p>Crawler ID: {crawler.id}</p>
 
         {sourceItem ? <>

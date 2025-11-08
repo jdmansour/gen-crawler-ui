@@ -79,8 +79,8 @@ export default function MetadataInheritancePage() {
     setSelectedFields(tmp);
   }
 
-  return <div style={{overflowY: "scroll"}}>
-      <h2>Metadatenvererbung</h2>
+  return <div style={{overflowY: "scroll", padding: "0px 24px 24px 24px"}}>
+      <h2 style={{marginTop: 8}}>Metadatenvererbung</h2>
       <p>Dein neuer Crawler wurde erstellt! Während im Hintergrund die Quelle analysiert wird, kannst du jetzt schon mal die Felder auswählen, die von dem Quelldatensatz übernommen werden sollen.</p>
       <Stack direction="row" justifyContent="center" gap={1} sx={{ mb: 2}}>
         <Button variant="outlined" onClick={selectAllRecommendedFields}>Alle empfohlenen Felder auswählen</Button>

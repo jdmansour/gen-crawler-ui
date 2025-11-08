@@ -69,9 +69,9 @@ export default function AddCrawlerPage() {
   }
 
   return (
-    <div className="main-content">
+    <div style={{overflowY: "scroll", padding: "0px 24px 24px 24px"}}>
       <div>
-        <h2>Neuen Crawler erstellen</h2>
+        <h2 style={{marginTop: 8}}>Neuen Crawler erstellen</h2>
         {existingCrawlerId && (
           <p>Dieser crawler wurde bereits angelegt, du kannst hier den Namen noch ändern.</p>
         )}
