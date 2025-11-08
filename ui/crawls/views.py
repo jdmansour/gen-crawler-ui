@@ -284,6 +284,9 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
         new_matches = qs.filter(url__startswith=rule.rule)
         other_matches = crawl_job.crawled_urls.filter(
             url__startswith=rule.rule).exclude(pk__in=new_matches)
+        # limit to 30 results each
+        new_matches = new_matches.all()[:30]
+        other_matches = other_matches.all()[:30]
         result = {
             'new_matches': [url.url for url in new_matches],
             'other_matches': [url.url for url in other_matches],
