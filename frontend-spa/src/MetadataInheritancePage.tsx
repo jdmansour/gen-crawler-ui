@@ -24,6 +24,17 @@ export default function MetadataInheritancePage() {
   const [groups, setGroups] = useState<GroupInfo[]>([]);
   const [sourceFieldsLoading, setSourceFieldsLoading] = useState(false);
 
+  useEffect(() => {
+    // initialize selectedFields from crawler.inherited_fields
+    if (crawler) {
+      const initialSelectedFields: Record<string, boolean> = {};
+      for (const fieldId of crawler.inherited_fields) {
+        initialSelectedFields[fieldId] = true;
+      }
+      setSelectedFields(initialSelectedFields);
+    }
+  }, [crawler]);
+
   useStep("metadata-inheritance");
 
   async function onSave() {
