@@ -1,8 +1,14 @@
+import Delete from '@mui/icons-material/Delete';
 import ErrorOutlineOutlined from '@mui/icons-material/ErrorOutlineOutlined';
 import MoreVertOutlined from '@mui/icons-material/MoreVertOutlined';
+import IconButton from '@mui/material/IconButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import "./App.css";
+import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import FilterTabs, { TabInfo } from "./FilterTabs";
 import ListView from "./ListView";
 import { DashboardPageContext } from "./RootContext";
@@ -18,9 +24,25 @@ const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
 };
 
 export default function DashboardPage() {
-  const { crawlerList = [] } = useOutletContext<DashboardPageContext>();
+  // todo: move delete function up to context
+  const { crawlerList = [], setCrawlerList } = useOutletContext<DashboardPageContext>();
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [menuCrawlerId, setMenuCrawlerId] = useState<number | null>(null);
+  const menuOpen = Boolean(anchorEl);
+
+  const [crawlerDeleteDialogOpen, setCrawlerDeleteDialogOpen] = useState(false);
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, crawlerId: number) => {
+    setAnchorEl(event.currentTarget);
+    setMenuCrawlerId(crawlerId);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   useStep("dashboard");
 
@@ -41,6 +63,20 @@ export default function DashboardPage() {
     return crawler.status == filterState;
   });
 
+  async function deleteCrawler(crawlerId: number) {
+    // Delete crawler
+    const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
+        method: "DELETE",
+    });
+    if (response.ok) {
+        setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
+    } else {
+        console.error("Failed to delete crawler:", response.status, response.statusText);
+    }
+    // redirect to dashboard or another page after deletion
+    navigate("/");
+}
+
   return (
     <>
       <FilterTabs
@@ -60,9 +96,43 @@ export default function DashboardPage() {
             </td>
           </tr>
           {filteredCrawlerList.map((info) => (
-            <CrawlerTableRow key={info.id} info={info} />
+            <CrawlerTableRow key={info.id} info={info} menuOpen={menuOpen} handleMenuClick={handleMenuClick} />
           ))}
         </ListView>
+
+        <Menu id="crawler-menu"
+            anchorEl={anchorEl}
+            open={menuOpen}
+            onClose={handleMenuClose}
+            slotProps={{
+                list: {'aria-labelledby': 'crawler-button'},
+            }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        >
+          <MenuItem onClick={handleMenuClose}
+          >Hallo</MenuItem>
+            <MenuItem onClick={() => {
+              handleMenuClose();
+              navigate(`crawlers/${menuCrawlerId}`);
+            }}>
+              <ListItemIcon><MoreVertOutlined fontSize="small" /></ListItemIcon>
+              Details anzeigen
+            </MenuItem>
+
+          <MenuItem sx={{ color: 'error.main' }}
+              onClick={() => {
+                handleMenuClose();
+                setCrawlerDeleteDialogOpen(true);
+              }}>
+              <ListItemIcon sx={{ color: 'error.main' }}><Delete fontSize="small" /></ListItemIcon>
+                Crawler {menuCrawlerId} löschen
+            </MenuItem>
+        </Menu>
+        <DeleteCrawlerDialog
+          open={crawlerDeleteDialogOpen}
+          onClose={() => setCrawlerDeleteDialogOpen(false)}
+          onConfirm={() => {setCrawlerDeleteDialogOpen(false); if (menuCrawlerId) deleteCrawler(menuCrawlerId);}} />
       </div>
       <hr />
       {/* <div style={{ backgroundColor: "#f9f9f9", padding: "10px", fontSize: "0.9em", color: "#666666", margin: 20 }}>
@@ -72,7 +142,12 @@ export default function DashboardPage() {
   );
 }
 
-function CrawlerTableRow(props: { info: Crawler, onClick?: (crawlerId: number) => void }) {
+function CrawlerTableRow(props: {
+  info: Crawler,
+  onClick?: (crawlerId: number) => void,
+  menuOpen: boolean,
+  handleMenuClick: (event: React.MouseEvent<HTMLElement>, crawlerId: number) => void,
+}) {
   const updatedAt = new Date(props.info.updated_at);
   return (
     <tr>
@@ -93,7 +168,14 @@ function CrawlerTableRow(props: { info: Crawler, onClick?: (crawlerId: number) =
         , {updatedAt.toLocaleTimeString("de-DE")}
       </td>
       <td className="menu-column">
-        <MoreVertOutlined fontSize="medium" />
+        <IconButton
+          aria-controls={props.menuOpen ? 'crawler-job-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={props.menuOpen ? 'true' : undefined}
+          onClick={(e) => props.handleMenuClick(e, props.info.id)}
+        >
+          <MoreVertOutlined fontSize="medium" />
+        </IconButton>
       </td>
     </tr>
   );

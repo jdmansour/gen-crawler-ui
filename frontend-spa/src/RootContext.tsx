@@ -3,6 +3,7 @@ import { CrawlerDashboardStep } from "./steps";
 
 export type DashboardPageContext = {
   crawlerList: Crawler[];
+  setCrawlerList: (crawlers: Crawler[] | ((prev: Crawler[]) => Crawler[])) => void;
 };
 
 export type SelectSourcePageContext = {
