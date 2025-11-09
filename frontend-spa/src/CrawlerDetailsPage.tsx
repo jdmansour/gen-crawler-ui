@@ -16,11 +16,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
+import { Stack } from '@mui/system';
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { Crawler, CrawlJob } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
+import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import { SSEData, useCrawlerSSE } from "./hooks/useSSE";
 import { CrawlerDetailsPageContext } from "./RootContext";
 import { useStep } from "./steps";
@@ -42,10 +44,12 @@ export default function CrawlerDetailsPage() {
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
     const [crawlerURL, setCrawlerURL] = useState<string>("");
     const [crawlerName, setCrawlerName] = useState<string>("");
+    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     // const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
     const [selectedJob, setSelectedJob] = useState<CrawlJob | null>(null);
+    const navigate = useNavigate();
     const menuOpen = Boolean(anchorEl);
 
     const handleMenuClick = (event: React.MouseEvent<HTMLElement>, jobId: number) => {
@@ -84,6 +88,20 @@ export default function CrawlerDetailsPage() {
                 break;
         }
     }, [setCrawlerList, sseData]);
+
+    async function deleteCrawler(crawlerId: number) {
+        // Delete crawler
+        const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
+            method: "DELETE",
+        });
+        if (response.ok) {
+            setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
+        } else {
+            console.error("Failed to delete crawler:", response.status, response.statusText);
+        }
+        // redirect to dashboard or another page after deletion
+        navigate("/");
+    }
 
     if (!crawler) {
         return <div className="main-content">
@@ -126,27 +144,16 @@ export default function CrawlerDetailsPage() {
             label="Start-URL"
         />
 
-        <p><a href={`http://localhost:8000/admin/crawls/crawler/${crawler.id}/change/`}>Im Admin-Bereich anzeigen</a></p>
+        <Stack direction="row" spacing={2} sx={{ marginTop: 2, marginBottom: 2 }}>
+            <Button variant="contained" color="primary" onClick={async () => {
+                // Save crawler details
+            }}>Speichern</Button>
+        </Stack>
 
-        {/* Real-time status */}
-        <Box sx={{ mb: 2 }}>
-            <Chip 
-                label={isConnected ? "Live-Updates aktiv" : "Verbindung getrennt"} 
-                color={isConnected ? "success" : "error"}
-                sx={{ mr: 1 }}
-            />
-            {sseError && (
-                <Chip 
-                    label={`Fehler: ${sseError}`} 
-                    color="error"
-                    sx={{ mr: 1 }}
-                />
-            )}
-        </Box>
+        <h3>Aktionen</h3>
 
-        <h2>Läufe des Crawlers</h2>
-
-        <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={async () => {
+        <Stack direction="row" spacing={2} sx={{ marginTop: 2, marginBottom: 2, flexWrap: 'wrap' }} useFlexGap>
+            <Button variant="outlined" color="primary" onClick={async () => {
             // Trigger a new crawl job
             const response = await fetch(`http://localhost:8000/api/crawlers/${crawler.id}/start_crawl/`, {
                 method: "POST",
@@ -164,8 +171,38 @@ export default function CrawlerDetailsPage() {
                 c.id === crawler.id ? { ...c, crawl_jobs: [newJob, ...c.crawl_jobs] } : c
             ));
         }}>
-            Neuen Crawl starten
+            Crawler starten
         </Button>
+            <Button variant="outlined" component="a"
+                    href={`http://localhost:8000/admin/crawls/crawler/${crawler.id}/change/`}>
+                Im Admin-Bereich anzeigen
+            </Button>
+            <Button variant="outlined" color="error"
+                    onClick={() => setConfirmDeleteOpen(true)}>Crawler löschen</Button>
+        </Stack>
+
+        <DeleteCrawlerDialog
+            open={confirmDeleteOpen}
+            onClose={() => setConfirmDeleteOpen(false)} 
+            onConfirm={() => { setConfirmDeleteOpen(false); deleteCrawler(crawler.id); }} />
+    
+        {/* Real-time status */}
+        <Box sx={{ mb: 2 }}>
+            <Chip 
+                label={isConnected ? "Live-Updates aktiv" : "Verbindung getrennt"} 
+                color={isConnected ? "success" : "error"}
+                sx={{ mr: 1 }}
+            />
+            {sseError && (
+                <Chip 
+                    label={`Fehler: ${sseError}`} 
+                    color="error"
+                    sx={{ mr: 1 }}
+                />
+            )}
+        </Box>
+
+        <h3>Läufe des Crawlers</h3>
 
         <TableContainer component={Paper}>
         <Table>
