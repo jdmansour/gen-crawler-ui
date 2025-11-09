@@ -19,7 +19,7 @@ import TextField from '@mui/material/TextField';
 import { Stack } from '@mui/system';
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { Crawler, CrawlJob } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
@@ -173,6 +173,9 @@ export default function CrawlerDetailsPage() {
         }}>
             Crawler starten
         </Button>
+            <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/filters/`}>
+                Filter bearbeiten
+            </Button>
             <Button variant="outlined" component="a"
                     href={`http://localhost:8000/admin/crawls/crawler/${crawler.id}/change/`}>
                 Im Admin-Bereich anzeigen
