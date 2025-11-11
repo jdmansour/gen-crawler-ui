@@ -456,15 +456,28 @@ Hier folgt der Text:
             log.error("Failed to parse JSON response from AI service.", exc_info=True)
             log.info("AI response: %r", result)
             return
-        
+
         log.info("Structured AI response: %s", result_dict)
 
         description = result_dict.get("description")
-        keywords = result_dict.get("keywords")
-        disciplines = result_dict.get("discipline")
-        educational_context = result_dict.get("educationalContext")
-        intended_end_user_role = result_dict.get("intendedEndUserRole")
-        new_lrt = result_dict.get("new_lrt")
+
+        def get_list(result_dict: dict, key: str) -> list[str]:
+            value = result_dict.get(key)
+            if isinstance(value, list):
+                return value
+            if isinstance(value, str):
+                return [value]
+
+            log.warning(
+                "Invalid LLM response. Expected string or list for key %r, got %r (type %r)",
+                key, value, type(value))
+            return []
+
+        keywords = get_list(result_dict, "keywords")
+        disciplines = get_list(result_dict, "discipline")
+        educational_context = get_list(result_dict, "educationalContext")
+        intended_end_user_role = get_list(result_dict, "intendedEndUserRole")
+        new_lrt = get_list(result_dict, "new_lrt")
 
         log.info("Adding description: %s", description)
         log.info("Adding keywords: %s", keywords)
