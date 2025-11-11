@@ -46,6 +46,9 @@ RUN mkdir -p /workdir/app/eggs
 # The name of the project is "scraper"
 COPY --from=build-stage /workdir/scraper/1738306332.egg /workdir/app/eggs/scraper/1738306332.egg
 
+# Fetch the valuespace converter cache
+RUN uv run python /workdir/valuespace-converter/src/valuespace_converter/valuespaces.py
+
 EXPOSE 6800
 ENV DB_PATH=/workdir/app/database/db.sqlite
 ENV PATH="/workdir/app/.venv/bin:$PATH"
