@@ -81,6 +81,30 @@ class CrawlerViewSet(viewsets.ModelViewSet):
         else:
             obj = response.json()
             return Response(obj)
+        
+    @action(detail=True, methods=['post'])
+    def start_content_crawl(self, request, pk=None):
+        """ Starts a content crawl for this crawler's filter set. Lives at
+            http://127.0.0.1:8000/api/crawlers/<pk>/start_content_crawl/ """
+        crawler = self.get_object()
+        filter_set = crawler.filter_set
+        parameters = {
+            'project': 'scraper',
+            'spider': 'generic_spider',
+            'filter_set_id': str(filter_set.id),
+        }
+
+        url = settings.SCRAPYD_URL + "/schedule.json"
+        try:
+            response = requests.post(url, data=parameters, timeout=5)
+        except requests.exceptions.RequestException as e:
+            return Response({'status': 'error', 'message': str(e)}, status=500)
+
+        if response.status_code != 200:
+            return Response({'status': 'error', 'message': response.text}, status=500)
+        else:
+            obj = response.json()
+            return Response(obj)
 
 
 @csrf_exempt

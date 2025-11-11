@@ -173,6 +173,27 @@ export default function CrawlerDetailsPage() {
         }}>
             Crawler starten
         </Button>
+
+        <Button variant="outlined" onClick={async () => {
+            // Trigger a content crawl
+            const response = await fetch(`http://localhost:8000/api/crawlers/${crawler.id}/start_content_crawl/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                console.error("Failed to start content crawl:", response.status, response.statusText);
+                return;
+            }
+            const data = await response.json();
+            console.log("Content crawl started");
+            console.log("Response:", data);
+            // TODO: integrate content crawls into crawl job list
+        }}>
+            Content Crawl starten
+        </Button>
+
             <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/filters/`}>
                 Filter bearbeiten
             </Button>
