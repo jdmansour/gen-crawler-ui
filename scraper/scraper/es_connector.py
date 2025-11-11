@@ -578,6 +578,7 @@ class EduSharing:
         return spaces
 
     def create_groups_if_not_exists(self, groups, type: CreateGroupType):
+        log.info(f"create_groups_if_not_exists called with groups: {groups} and type: {type}")
         for group in groups:
             if type == EduSharing.CreateGroupType.MediaCenter:
                 uuid = EduSharingConstants.GROUP_PREFIX + EduSharingConstants.MEDIACENTER_PREFIX + group
@@ -617,6 +618,7 @@ class EduSharing:
                 "permissions": [],
             }
             public = item["permissions"]["public"]
+            log.info(f"Setting permissions for node {uuid}, public = {public}")
             if public is True:
                 if "groups" in item["permissions"] or "mediacenters" in item["permissions"]:
                     log.error(
@@ -724,6 +726,7 @@ class EduSharing:
         return auth
 
     def init_api_client(self):
+        log.debug("EduSharing.init_api_client called")
         if EduSharing.cookie is None:
             settings = get_project_settings()
             auth = self.init_cookie()
