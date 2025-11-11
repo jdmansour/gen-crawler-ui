@@ -62,15 +62,26 @@ def generate_url_filter(filter_rules: list[FilterRule]) -> tuple[str, list[str]]
 
 def fetch_urls_passing_filterset(connection: sqlite3.Connection, filter_set_id: int,
                                  limit: Optional[int] = None):
+    # We need to get all URLs from a (exploration) crawl job that pass the rules of this filter set
+
     log.info("Filter set ID: %s", filter_set_id)
     # List filter rules in this filter set
     cursor = connection.cursor()
 
-    # Get crawl job id
-    cursor.execute("SELECT crawl_job_id FROM crawls_filterset WHERE id = ?", (filter_set_id,))
+    # Get crawler id
+    cursor.execute("SELECT crawler_id FROM crawls_filterset WHERE id = ?", (filter_set_id,))
     row = cursor.fetchone()
+    crawler_id = row[0]
+    log.info("Crawler ID: %s", crawler_id)
+
+    # Fetch the latest crawl job for this crawler
+    cursor.execute("SELECT id FROM crawls_crawljob WHERE crawler_id = ? ORDER BY created_at DESC LIMIT 1", (crawler_id,))
+    row = cursor.fetchone()
+    if row is None:
+        log.info("No crawl jobs found for crawler ID %s", crawler_id)
+        return []
     crawl_job_id = row[0]
-    log.info("Crawl job ID: %s", crawl_job_id)
+    log.info("Latest crawl job ID: %s", crawl_job_id)
 
     # table: crawls_filterset, crawls_filterrule
     cursor.execute("SELECT id, rule, include, position FROM crawls_filterrule WHERE filter_set_id = ? ORDER BY position ASC", (filter_set_id,))
@@ -95,13 +106,14 @@ def fetch_urls_passing_filterset(connection: sqlite3.Connection, filter_set_id: 
     filter_expression, params = generate_url_filter(filter_rules)
 
    
-    # expressions.append("crawl_job_id == ?")
-    # params.append(crawl_job_id)
-    # where_clause = "WHERE (" + filter_expression + ") AND crawl_job_id = ?"
-    # params.append(crawl_job_id)
+    # expressions.append("crawler_id == ?")
+    # params.append(crawler_id)
+    # where_clause = "WHERE (" + filter_expression + ") AND crawler_id = ?"
+    # params.append(crawler_id)
     if limit:
         assert isinstance(limit, int)
     
+    # TODO: can we simplify this query?
     query = f"""
     SELECT 
         cu.url, 
@@ -110,8 +122,10 @@ def fetch_urls_passing_filterset(connection: sqlite3.Connection, filter_set_id: 
         crawls_crawledurl cu
     JOIN 
         crawls_crawljob cj ON cu.crawl_job_id = cj.id
+    JOIN
+        crawls_crawler cr ON cj.crawler_id = cr.id
     JOIN 
-        crawls_filterset fs ON cj.id = fs.crawl_job_id
+        crawls_filterset fs ON cr.id = fs.crawler_id
     JOIN 
         crawls_filterrule fr ON fs.id = fr.filter_set_id
     WHERE 
@@ -119,6 +133,7 @@ def fetch_urls_passing_filterset(connection: sqlite3.Connection, filter_set_id: 
         cu.noindex = 0 AND
         fr.include = 1 AND
         fs.id = ? AND
+        cj.id = ? AND
         fr.position = (
             SELECT MIN(position)
             FROM crawls_filterrule AS fr_inner
@@ -129,7 +144,8 @@ def fetch_urls_passing_filterset(connection: sqlite3.Connection, filter_set_id: 
         {f"LIMIT {limit}" if limit else ""};
     """
     params.append(str(filter_set_id))
-    
+    params.append(str(crawl_job_id))
+
     #query = "SELECT url FROM crawls_crawledurl AS cu " + where_clause
     log.info("Query: %s", query)
     log.info("Params: %s", params)
