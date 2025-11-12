@@ -18,28 +18,21 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import { Stack } from '@mui/system';
 import { DateTime } from "luxon";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { Crawler, CrawlJob } from "./apitypes";
+import { CrawlJob } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
-import { SSEData, useCrawlerSSE } from "./hooks/useSSE";
+import { useCrawlerSSE } from "./hooks/useSSE";
 import { CrawlerDetailsPageContext } from "./RootContext";
 import { useStep } from "./steps";
 
-function mergeCrawlJob(job: CrawlJob, update: Partial<CrawlJob>): CrawlJob {
-    if (job.id != update.id) return job;
-    return { ...job, ...update };
-}
-function mergeCrawler(c: Crawler, sseData: SSEData): Crawler {
-    if (c.id != sseData.crawler_id) return c;
-    return { ...c,
-            crawl_jobs: c.crawl_jobs.map(job => mergeCrawlJob(job, sseData.crawl_job)) };
-}
 
 export default function CrawlerDetailsPage() {
     const { crawlerId } = useParams();
-    const { crawlerList, sourceItems, setCrawlerList } = useOutletContext<CrawlerDetailsPageContext>();
+    const { crawlerList, sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
+    const { onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = useOutletContext<CrawlerDetailsPageContext>();
+
     const crawler = crawlerList.find(c => c.id.toString() === crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
     const [crawlerURL, setCrawlerURL] = useState<string>("");
@@ -61,33 +54,7 @@ export default function CrawlerDetailsPage() {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
-
-    // State manangement
-    // -----------------
-    function onCrawlJobAdded(newJob: CrawlJob) {
-        const crawlerId = newJob.crawler;
-        setCrawlerList(crawlerList => crawlerList.map(c => c.id === crawlerId ? { ...c, crawl_jobs: [newJob, ...c.crawl_jobs] } : c));
-    }
-
-    function onCrawlJobDeleted(crawlJobId: number) {
-        const crawlerId = crawlerList.find(c => c.crawl_jobs.some(j => j.id === crawlJobId))?.id;
-        if (!crawlerId) {
-            console.error(`Crawl job with ID ${crawlJobId} not found in any crawler.`);
-            return;
-        }
-        setCrawlerList(crawlerList => crawlerList.map(c => c.id === crawlerId ? { ...c, crawl_jobs: c.crawl_jobs.filter(j => j.id !== crawlJobId) } : c));
-    }
-
-    const onCrawlJobLiveUpdate = useCallback((sseData: SSEData) => {
-        setCrawlerList(crawlerList => crawlerList.map(c => mergeCrawler(c, sseData)));
-    }, [setCrawlerList]);
-
-    function onCrawlerDeleted(crawlerId: number) {
-        setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
-    }
-
-    // -----------------
-
+    
     // Set initial form values when 'crawler' is loaded
     useEffect(() => {
         if (crawler) {

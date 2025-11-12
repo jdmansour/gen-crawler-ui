@@ -1,4 +1,5 @@
-import { Crawler, SourceItem } from "./apitypes";
+import { Crawler, CrawlJob, SourceItem } from "./apitypes";
+import { SSEData } from "./hooks/useSSE";
 import { CrawlerDashboardStep } from "./steps";
 
 export type DashboardPageContext = {
@@ -30,6 +31,10 @@ export type CrawlerDetailsPageContext = {
   sourceItems: SourceItem[];
   crawlerList: Crawler[];
   setCrawlerList: (crawlers: Crawler[] | ((prev: Crawler[]) => Crawler[])) => void;
+  onCrawlJobAdded: (newJob: CrawlJob) => void;
+  onCrawlJobDeleted: (crawlJobId: number) => void;
+  onCrawlJobLiveUpdate: (sseData: SSEData) => void;
+  onCrawlerDeleted: (crawlerId: number) => void;
 };
 
 export type UseStepContext = {

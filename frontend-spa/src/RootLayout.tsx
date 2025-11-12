@@ -1,8 +1,8 @@
 // RootLayout.tsx
 import { createTheme, ThemeProvider } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import { Crawler, SourceItem } from "./apitypes";
+import { Crawler, CrawlJob, SourceItem } from "./apitypes";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
 import GenCrawlerSidebar from "./GenCrawlerSidebar";
 import { RootContext } from "./RootContext";
@@ -10,6 +10,7 @@ import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerDashboardStep } from "./steps";
 import { wloThemeData } from "./wloTheme";
 import WloFakeHeader from "./WloFakeHeader";
+import { SSEData } from "./hooks/useSSE";
 
 export default function RootLayout() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -34,6 +35,31 @@ export default function RootLayout() {
     navigate(loc, { state: state, replace: false });
   }
 
+  // State manangement
+  // -----------------
+  function onCrawlJobAdded(newJob: CrawlJob) {
+      const crawlerId = newJob.crawler;
+      setCrawlerList(crawlerList => crawlerList.map(c => c.id === crawlerId ? { ...c, crawl_jobs: [newJob, ...c.crawl_jobs] } : c));
+  }
+
+  function onCrawlJobDeleted(crawlJobId: number) {
+      const crawlerId = crawlerList.find(c => c.crawl_jobs.some(j => j.id === crawlJobId))?.id;
+      if (!crawlerId) {
+          console.error(`Crawl job with ID ${crawlJobId} not found in any crawler.`);
+          return;
+      }
+      setCrawlerList(crawlerList => crawlerList.map(c => c.id === crawlerId ? { ...c, crawl_jobs: c.crawl_jobs.filter(j => j.id !== crawlJobId) } : c));
+  }
+
+  const onCrawlJobLiveUpdate = useCallback((sseData: SSEData) => {
+      setCrawlerList(crawlerList => crawlerList.map(c => mergeCrawler(c, sseData)));
+  }, [setCrawlerList]);
+
+  function onCrawlerDeleted(crawlerId: number) {
+      setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
+  }
+
+
   const outletContext: RootContext = {
     sourceItems: sourceItems,
     setStep: setStep,
@@ -41,6 +67,10 @@ export default function RootLayout() {
       setSelectedSourceItem(source);
       setHistoryState({ step: "add-crawler", newCrawlerName: "abcd" });
     },
+    onCrawlJobAdded,
+    onCrawlJobDeleted,
+    onCrawlJobLiveUpdate,
+    onCrawlerDeleted,
     crawlerList: crawlerList,
     setCrawlerList: setCrawlerList,
     sourceItem: selectedSourceItem || undefined,
@@ -101,4 +131,14 @@ export default function RootLayout() {
     </div>
     </ThemeProvider>
   );
+}
+
+function mergeCrawlJob(job: CrawlJob, update: Partial<CrawlJob>): CrawlJob {
+    if (job.id != update.id) return job;
+    return { ...job, ...update };
+}
+function mergeCrawler(c: Crawler, sseData: SSEData): Crawler {
+    if (c.id != sseData.crawler_id) return c;
+    return { ...c,
+            crawl_jobs: c.crawl_jobs.map(job => mergeCrawlJob(job, sseData.crawl_job)) };
 }
