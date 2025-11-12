@@ -18,7 +18,7 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import { Stack } from '@mui/system';
 import { DateTime } from "luxon";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { Crawler, CrawlJob } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
@@ -62,6 +62,32 @@ export default function CrawlerDetailsPage() {
         setAnchorEl(null);
     };
 
+    // State manangement
+    // -----------------
+    function onCrawlJobAdded(newJob: CrawlJob) {
+        const crawlerId = newJob.crawler;
+        setCrawlerList(crawlerList => crawlerList.map(c => c.id === crawlerId ? { ...c, crawl_jobs: [newJob, ...c.crawl_jobs] } : c));
+    }
+
+    function onCrawlJobDeleted(crawlJobId: number) {
+        const crawlerId = crawlerList.find(c => c.crawl_jobs.some(j => j.id === crawlJobId))?.id;
+        if (!crawlerId) {
+            console.error(`Crawl job with ID ${crawlJobId} not found in any crawler.`);
+            return;
+        }
+        setCrawlerList(crawlerList => crawlerList.map(c => c.id === crawlerId ? { ...c, crawl_jobs: c.crawl_jobs.filter(j => j.id !== crawlJobId) } : c));
+    }
+
+    const onCrawlJobLiveUpdate = useCallback((sseData: SSEData) => {
+        setCrawlerList(crawlerList => crawlerList.map(c => mergeCrawler(c, sseData)));
+    }, [setCrawlerList]);
+
+    function onCrawlerDeleted(crawlerId: number) {
+        setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
+    }
+
+    // -----------------
+
     // Set initial form values when 'crawler' is loaded
     useEffect(() => {
         if (crawler) {
@@ -79,15 +105,15 @@ export default function CrawlerDetailsPage() {
         if (!sseData) return;
         
         switch (sseData.type) {
-            case 'crawl_job_update':
-                setCrawlerList(crawlerList => crawlerList.map(c => mergeCrawler(c, sseData)));
+            case 'crawl_job_update':                
+                onCrawlJobLiveUpdate(sseData);
                 break;
                 
             case 'error':
                 console.error('SSE Error:', sseData.message);
                 break;
         }
-    }, [setCrawlerList, sseData]);
+    }, [onCrawlJobLiveUpdate, sseData]);
 
     async function deleteCrawler(crawlerId: number) {
         // Delete crawler
@@ -95,7 +121,7 @@ export default function CrawlerDetailsPage() {
             method: "DELETE",
         });
         if (response.ok) {
-            setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
+            onCrawlerDeleted(crawlerId);
         } else {
             console.error("Failed to delete crawler:", response.status, response.statusText);
         }
@@ -167,9 +193,7 @@ export default function CrawlerDetailsPage() {
             }
             const newJob: CrawlJob = await response.json();
             // Optimistically add the new job to the list
-            setCrawlerList(crawlerList => crawlerList.map(c => 
-                c.id === crawler.id ? { ...c, crawl_jobs: [newJob, ...c.crawl_jobs] } : c
-            ));
+            onCrawlJobAdded(newJob);
         }}>
             Crawler starten
         </Button>
@@ -299,9 +323,7 @@ export default function CrawlerDetailsPage() {
                     return;
                 }
                 // Remove the job from the crawler's job list
-                setCrawlerList(crawlerList => crawlerList.map(c => 
-                    c.id === crawler.id ? { ...c, crawl_jobs: c.crawl_jobs.filter(j => j.id !== selectedJob.id) } : c
-                ));
+                onCrawlJobDeleted(selectedJob.id);
                 handleMenuClose();
             }}>
                 <ListItemIcon sx={{ color: 'error.main' }}><Delete fontSize="small" /></ListItemIcon>
@@ -317,6 +339,8 @@ export default function CrawlerDetailsPage() {
         </Menu>
 
     </div>;
+
+
 }
 
 // comparer for two iso date strings
