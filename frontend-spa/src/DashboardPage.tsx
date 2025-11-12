@@ -11,9 +11,11 @@ import "./App.css";
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import FilterTabs, { TabInfo } from "./FilterTabs";
 import ListView from "./ListView";
-import { DashboardPageContext } from "./RootContext";
+import { CrawlerDetailsPageContext, DashboardPageContext } from "./RootContext";
 import { Crawler, CrawlerStatus } from "./apitypes";
 import { useStep } from "./steps";
+import { CrawlerDetails } from './CrawlerDetailsPage';
+import { createPortal } from 'react-dom';
 
 const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
   draft: "Entwurf",
@@ -25,7 +27,7 @@ const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
 
 export default function DashboardPage() {
   // todo: move delete function up to context
-  const { crawlerList = [], setCrawlerList } = useOutletContext<DashboardPageContext>();
+  const { crawlerList = [], setCrawlerList, setSidebarVisible } = useOutletContext<DashboardPageContext>();
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
 
@@ -34,10 +36,15 @@ export default function DashboardPage() {
   const menuOpen = Boolean(anchorEl);
 
   const [crawlerDeleteDialogOpen, setCrawlerDeleteDialogOpen] = useState(false);
+  const [selectedCrawlerId, setSelectedCrawlerId] = useState<number | null>(null);
+
+  // for the sidebar
+  const { sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = useOutletContext<CrawlerDetailsPageContext>();
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, crawlerId: number) => {
     setAnchorEl(event.currentTarget);
     setMenuCrawlerId(crawlerId);
+    event.stopPropagation();
   };
 
   const handleMenuClose = () => {
@@ -77,6 +84,8 @@ export default function DashboardPage() {
     navigate("/");
 }
 
+  const sidebarOutlet = document.getElementById("sidebar-outlet");
+
   return (
     <>
       <FilterTabs
@@ -96,7 +105,11 @@ export default function DashboardPage() {
             </td>
           </tr>
           {filteredCrawlerList.map((info) => (
-            <CrawlerTableRow key={info.id} info={info} menuOpen={menuOpen} handleMenuClick={handleMenuClick} />
+            <CrawlerTableRow key={info.id} info={info} menuOpen={menuOpen} handleMenuClick={handleMenuClick}
+              onClick={() => {
+                setSelectedCrawlerId(info.id);
+                setSidebarVisible(true);
+              }}/>
           ))}
         </ListView>
 
@@ -138,6 +151,19 @@ export default function DashboardPage() {
       {/* <div style={{ backgroundColor: "#f9f9f9", padding: "10px", fontSize: "0.9em", color: "#666666", margin: 20 }}>
         {filteredCrawlerList.length} Crawler angezeigt, insgesamt {crawlerList.length} Crawler.
       </div> */}
+
+      {sidebarOutlet && (createPortal((
+        (selectedCrawlerId === null) ?
+        <div style={{ padding: "20px" }}>Kein Crawler ausgewählt</div> :
+        <CrawlerDetails
+          crawlerId={selectedCrawlerId}
+          crawlerList={crawlerList}
+          sourceItems={sourceItems}
+          onCrawlJobAdded={onCrawlJobAdded}
+          onCrawlJobDeleted={onCrawlJobDeleted}
+          onCrawlJobLiveUpdate={onCrawlJobLiveUpdate}
+          onCrawlerDeleted={onCrawlerDeleted}
+        />), sidebarOutlet))}
     </>
   );
 }
@@ -150,7 +176,7 @@ function CrawlerTableRow(props: {
 }) {
   const updatedAt = new Date(props.info.updated_at);
   return (
-    <tr>
+    <tr onClick={() => props.onClick && props.onClick(props.info.id)} style={{ cursor: props.onClick ? "pointer" : "default" }}>
       <td className="main-column">
         <Link to={"crawlers/" + props.info.id + ""}>{props.info.name}</Link>
       </td>

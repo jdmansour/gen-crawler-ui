@@ -5,6 +5,7 @@ import { CrawlerDashboardStep } from "./steps";
 export type DashboardPageContext = {
   crawlerList: Crawler[];
   setCrawlerList: (crawlers: Crawler[] | ((prev: Crawler[]) => Crawler[])) => void;
+  setSidebarVisible: (visible: boolean) => void;
 };
 
 export type SelectSourcePageContext = {

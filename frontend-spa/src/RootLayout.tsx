@@ -67,6 +67,7 @@ export default function RootLayout() {
       setSelectedSourceItem(source);
       setHistoryState({ step: "add-crawler", newCrawlerName: "abcd" });
     },
+    setSidebarVisible,
     onCrawlJobAdded,
     onCrawlJobDeleted,
     onCrawlJobLiveUpdate,
