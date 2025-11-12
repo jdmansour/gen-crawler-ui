@@ -20,7 +20,7 @@ import { Stack } from '@mui/system';
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { CrawlJob } from "./apitypes";
+import { Crawler, CrawlJob, SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import { useCrawlerSSE } from "./hooks/useSSE";
@@ -32,18 +32,30 @@ export default function CrawlerDetailsPage() {
     const { crawlerId } = useParams();
     const { crawlerList, sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
     const { onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = useOutletContext<CrawlerDetailsPageContext>();
+    return <CrawlerDetails
+        crawlerId={crawlerId ? parseInt(crawlerId) : 0}
+        crawlerList={crawlerList}
+        sourceItems={sourceItems}
+        onCrawlJobAdded={onCrawlJobAdded}
+        onCrawlJobDeleted={onCrawlJobDeleted}
+        onCrawlJobLiveUpdate={onCrawlJobLiveUpdate}
+        onCrawlerDeleted={onCrawlerDeleted}
+    />; 
+}
 
-    const crawler = crawlerList.find(c => c.id.toString() === crawlerId);
+export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[], onCrawlJobAdded: (newJob: CrawlJob) => void, onCrawlJobDeleted: (crawlJobId: number) => void, onCrawlJobLiveUpdate: (sseData: SSEData) => void, onCrawlerDeleted: (crawlerId: number) => void}) {
+    const { crawlerId, crawlerList, sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = params;
+    const crawler = crawlerList.find(c => c.id == crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
+
     const [crawlerURL, setCrawlerURL] = useState<string>("");
     const [crawlerName, setCrawlerName] = useState<string>("");
     const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    // const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
     const [selectedJob, setSelectedJob] = useState<CrawlJob | null>(null);
-    const navigate = useNavigate();
     const menuOpen = Boolean(anchorEl);
+
+    const navigate = useNavigate();
 
     const handleMenuClick = (event: React.MouseEvent<HTMLElement>, jobId: number) => {
         setAnchorEl(event.currentTarget);
