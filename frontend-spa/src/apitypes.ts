@@ -4,6 +4,9 @@ export type CrawlJobState = 'pending' | 'running' | 'completed' | 'failed';
 
 export type Crawler = {
     id: number;
+    url: string;
+    filter_set_id: number | null;
+    filter_set_url: string | null;
     name: string;
     status: CrawlerStatus;
     created_at: string;

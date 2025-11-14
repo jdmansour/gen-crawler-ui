@@ -25,12 +25,16 @@ class CrawlJobSerializer(serializers.ModelSerializer):
 class CrawlerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crawler
-        fields = ['id', 'name', 'start_url', 'source_item',
+        fields = ['id', 'url', 'filter_set_id', 'filter_set_url', 'name', 'start_url', 'source_item',
                   'created_at', 'updated_at', 'inherited_fields', 'crawl_jobs']
         read_only_fields = ['id', 'created_at', 'updated_at', 'crawl_jobs']
         depth = 1
 
     crawl_jobs = CrawlJobSerializer(many=True, read_only=True)
+    filter_set_id = serializers.ReadOnlyField(source='filter_set.id')
+    filter_set_url = serializers.HyperlinkedRelatedField(
+        view_name='filterset-detail', read_only=True, source='filter_set')
+    
 
 class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -46,7 +50,7 @@ class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
     def update(self, instance, validated_data):
         if 'count' in validated_data:
             validated_data.pop('count')
-        if 'position' in validated_data:
+        if '+' in validated_data:
             instance.move_to(validated_data['position'])
             validated_data.pop('position')
         return super().update(instance, validated_data)
@@ -63,14 +67,14 @@ class InlineFilterRuleSerializer(serializers.HyperlinkedModelSerializer):
 class FilterSetSerializer(serializers.ModelSerializer):
     class Meta:
         model = FilterSet
-        fields = ['id', 'crawl_job', 'remaining_urls', 'name',
-                  'created_at', 'updated_at', 'url', 'rules']
+        fields = ['id', 'url', 'crawler_id', 'crawler_url', 'remaining_urls', 'name',
+                  'created_at', 'updated_at', 'rules']
         depth = 1
 
     # order rules by position, ascending
     rules = serializers.SerializerMethodField('get_rules')
-    crawl_job = CrawlJobSerializer(read_only=True)
-    # crawl_job = serializers.HyperlinkedRelatedField(view_name='crawl-job-detail', read_only=True)
+    crawler_url = serializers.HyperlinkedRelatedField(
+        view_name='crawler-detail', read_only=True, source='crawler')
 
     def get_rules(self, obj):
         rules = obj.rules.order_by('position')

@@ -437,7 +437,8 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       {/* <p>{filterSet?.crawl_job.crawled_url_count} pages total, {filterSet?.remaining_urls} not handled yet</p> */}
       <h2 style={{ margin: "0px 0px" }}>Filterregeln</h2>
 
-      <div>Data from crawl job {crawlJobId}</div>
+      <div><a href={`http://localhost:8000/admin/crawls/filterset/${filterSetId}/change/`}>Filter set {filterSetId}</a></div>
+      <div><a href={`http://localhost:8000/admin/crawls/crawljob/${crawlJobId}/change/`}>Data from crawl job {crawlJobId}</a></div>
 
       <MaterialReactTable table={table} />
 
