@@ -2,21 +2,23 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any, Optional
 
+from django import forms
 from django.contrib import admin
 from django.contrib.admin import display
 from django.db import models
 from django.db.models import Count, OuterRef, QuerySet, Subquery, Value
-from django.forms import TextInput, ModelChoiceField
-from django.contrib.admin.widgets import RelatedFieldWidgetWrapper, AdminTextInputWidget
-from django.db.models.fields.related import ManyToOneRel
-from django import forms
+from django.forms import TextInput
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 
-from .models import Crawler, CrawledURL, CrawlJob, FilterRule, FilterSet, SourceItem
+from .admin_utils import ReverseModelChoiceField
+from .models import (CrawledURL, Crawler, CrawlJob, FilterRule, FilterSet,
+                     SourceItem)
 
+log = logging.getLogger(__name__)
 
 class SourceItemAdmin(admin.ModelAdmin):
     model = SourceItem
@@ -42,43 +44,37 @@ class FilterSetInline(admin.TabularInline):
     show_change_link = True
 
 
-# class CrawlerAdminForm(forms.ModelForm):
-#     filter_set = forms.ModelChoiceField(
-#         queryset=FilterSet.objects.all(),
-#         required=False,
-#         help_text="The FilterSet associated with this Crawler.",
-#     )
+class CrawlerAdminForm(forms.ModelForm):
+    filter_set = ReverseModelChoiceField(
+        queryset=FilterSet.objects.all(),
+        required=False,
+        help_text="The FilterSet associated with this Crawler.",
+    )
 
-#     class Meta:
-#         model = Crawler
-#         fields = '__all__'
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["filter_set"].initial = getattr(self.instance, "filter_set", None)
 
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         if self.instance.pk and hasattr(self.instance, "filter_set"):
-#             self.fields["filter_set"].initial = self.instance.filter_set
-#         self.fields["filter_set"].widget = RelatedFieldWidgetWrapper(
-#             self.fields["filter_set"].widget, FilterSet._meta.get_field('crawler').remote_field, admin.site)
+    def save(self, commit=True):
+        instance = super().save(commit)
+        filter_set = self.cleaned_data.get("filter_set")
+        self.fields["filter_set"].save_related(self.instance, filter_set)
 
+        return instance
 
-#     def save(self, commit=True):
-#         instance = super().save(commit)
-#         filter_set = self.cleaned_data.get("filter_set")
-#         if filter_set:
-#             filter_set.crawler = instance
-#             filter_set.save()
-#         return instance
 
 class CrawlerAdmin(admin.ModelAdmin):
     model = Crawler
     list_display = ['name', 'start_url', 'source_item',
-                    'created_at', 'updated_at', 'inherited_fields',
-                    'filter_set']
+                    'created_at', 'updated_at', 'inherited_fields']
     fields = ['name', 'start_url', 'source_item',
-              'inherited_fields', 'created_at', 'updated_at', 'filter_set']
+              'inherited_fields', 'created_at', 'updated_at',
+              'filter_set'
+              ]
     readonly_fields = ['created_at', 'updated_at']
     inlines = [CrawlJobInline, FilterSetInline]
-    # form = CrawlerAdminForm
+
+    form = CrawlerAdminForm
 
                          
 
