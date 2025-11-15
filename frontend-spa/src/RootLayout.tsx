@@ -16,6 +16,7 @@ export default function RootLayout() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
   const [crawlerList, setCrawlerList] = useState<Crawler[]>([]);
+  const [crawlerListLoaded, setCrawlerListLoaded] = useState<boolean>(false);
   // select source
   const [sourceItems, setSourceItems] = useState<SourceItem[]>([]);
   const [selectedSourceItem, setSelectedSourceItem] = useState<SourceItem | null>(null);
@@ -74,6 +75,7 @@ export default function RootLayout() {
     onCrawlerDeleted,
     crawlerList: crawlerList,
     setCrawlerList: setCrawlerList,
+    crawlerListLoaded,
     sourceItem: selectedSourceItem || undefined,
     setSourceItem: setSelectedSourceItem,
   };
@@ -96,7 +98,10 @@ export default function RootLayout() {
     const response = await fetch("http://localhost:8000/api/crawlers/");
     const data: Crawler[] = await response.json();
     // TODO: validate?
+    // wait 2 seconds to simulate loading
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     setCrawlerList(data);
+    setCrawlerListLoaded(true);
   }
 
   async function fetchSourceItems() {

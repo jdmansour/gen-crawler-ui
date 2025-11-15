@@ -44,6 +44,7 @@ export type UseStepContext = {
 
 export type FilterSetPageContext = {
   crawlerList: Crawler[];
+  crawlerListLoaded: boolean;
 };
 
 export type RootContext =

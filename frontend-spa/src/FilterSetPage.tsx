@@ -17,13 +17,14 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef
 } from 'material-react-table';
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { JSX, useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { EvaluateFiltersResult, RuleEvaluation } from './apitypes';
 import { Rule, UnmatchedResponse } from "./schema";
 import { useStep } from "./steps";
 import { useOutletContext, useParams } from 'react-router';
 import { FilterSetPageContext } from './RootContext';
+import { Skeleton } from '@mui/material';
 
 
 const apiBase = "http://localhost:8000/api";
@@ -32,7 +33,7 @@ export default function FilterSetPage(props: { csrfToken: string }) {
   // type is a json dict
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
   const [evaluationResult, setEvaluationResult] = useState<EvaluateFiltersResult>({ id: 0, remaining_urls: 0, name: "", created_at: "", updated_at: "", rules: [] });
-  const {crawlerList} = useOutletContext<FilterSetPageContext>();
+  const { crawlerList, crawlerListLoaded } = useOutletContext<FilterSetPageContext>();
   // const crawlJobId = 14;  // TODO: make dynamic
   const { crawlerId } = useParams();
 
@@ -453,33 +454,15 @@ export default function FilterSetPage(props: { csrfToken: string }) {
 
   const sidebarOutlet = document.getElementById("sidebar-outlet");
 
-  if (filterSetId === undefined || filterSetId === null) {
-    return (<div style={{
-      display: "flex", flexDirection: "column", flex: 1,
-      padding: "8px 24px 16px 24px", gap: "16px", flexShrink: 1, minHeight: 350
-    }}>
-      <div>Fehler: Kein filter_set gefunden</div>
-    </div>)
-  }
-
-if (crawlJobId === undefined || crawlJobId === null) {
-    return (<div style={{
-      display: "flex", flexDirection: "column", flex: 1,
-      padding: "8px 24px 16px 24px", gap: "16px", flexShrink: 1, minHeight: 350
-    }}>
-      <div>Fehler: Kein crawl job gefunden</div>
-    </div>)
-  }
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", flex: 1,
-                        padding: "8px 24px 16px 24px", gap: "16px", flexShrink: 1, minHeight: 350}}>
-      {/* <p>{filterSet?.crawl_job.crawled_url_count} pages total, {filterSet?.remaining_urls} not handled yet</p> */}
-      <h2 style={{ margin: "0px 0px" }}>Filterregeln</h2>
-
-      <div><a href={`http://localhost:8000/admin/crawls/filterset/${filterSetId}/change/`}>Filter set {filterSetId}</a></div>
-      <div><a href={`http://localhost:8000/admin/crawls/crawljob/${crawlJobId}/change/`}>Data from crawl job {crawlJobId}</a></div>
-
+  let content: JSX.Element;
+  if (!crawlerListLoaded) {
+    content = <Skeleton variant="rounded" animation="wave" width={"100%"} height={200} />;
+  } else if (filterSetId === undefined || filterSetId === null) {
+    content = <div>Fehler: Kein filter_set gefunden</div>;
+  } else if (crawlJobId === undefined || crawlJobId === null) {
+    content = <div>Fehler: Kein crawl job gefunden</div>;
+  } else {
+    content = <>
       <MaterialReactTable table={table} />
 
       <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
@@ -487,11 +470,23 @@ if (crawlJobId === undefined || crawlJobId === null) {
         <Button variant='outlined' sx={{ textTransform: 'none' }} onClick={evaluateFilters}>Filter auswerten</Button>
         <Button variant="contained" style={{ textTransform: 'none', marginLeft: 'auto' }}>Start content crawl</Button>
       </Stack>
+    </>;
+  }
+  return (
+    <div style={{ display: "flex", flexDirection: "column", flex: 1,
+                        padding: "8px 24px 16px 24px", gap: "16px", flexShrink: 1, minHeight: 350}}>
+      <h2 style={{ margin: "0px 0px" }}>Filterregeln</h2>
+
+      <div><a href={`http://localhost:8000/admin/crawls/filterset/${filterSetId}/change/`}>Filter set {filterSetId}</a></div>
+      <div><a href={`http://localhost:8000/admin/crawls/crawljob/${crawlJobId}/change/`}>Data from crawl job {crawlJobId}</a></div>
+      <div>Crawler list loaded: {crawlerListLoaded ? "Yes" : "No"}</div>
+
+      {content}
 
       {sidebarOutlet && createPortal(
         <FilterSetPageSidebar
-          filterSetId={filterSetId}
-          crawlJobId={crawlJobId}
+          filterSetId={filterSetId || null}
+          crawlJobId={crawlJobId || null}
           selectedFilterRule={selectedFilterRule} />,
         sidebarOutlet
       )}
@@ -500,9 +495,9 @@ if (crawlJobId === undefined || crawlJobId === null) {
 }
 
 function FilterSetPageSidebar(props: {
-  filterSetId: number,
+  filterSetId: number | null,
   selectedFilterRule?: Rule,
-  crawlJobId: number
+  crawlJobId: number | null,
 }) {
   const { selectedFilterRule, filterSetId, crawlJobId } = props;
   const [unmatchedUrls, setUnmatchedUrls] = useState<UnmatchedResponse | null>(null);
@@ -526,6 +521,10 @@ async function showDetails(selectedFilterRuleId: number, crawlJobId: number) {
   }
 
   useEffect(() => {
+    if (crawlJobId === null || filterSetId === null) {
+      return;
+    }
+
     if (selectedFilterRuleId !== undefined && selectedFilterRuleId !== null) {
       showDetails(selectedFilterRuleId, crawlJobId);
     } else {
