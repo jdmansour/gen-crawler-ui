@@ -19,7 +19,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="select-source" element={<SelectSourcePage />} />
           <Route path="add-crawler" element={<AddCrawlerPage />} />
           <Route path="crawlers/:crawlerId/metadata-inheritance" element={<MetadataInheritancePage />} />
-          <Route path="crawlers/:crawlerId/filters" element={<FilterSetPage filterSetId={3} csrfToken={"token"} />} />
+          <Route path="crawlers/:crawlerId/filters" element={<FilterSetPage csrfToken={"token"} />} />
           <Route path="crawlers/:crawlerId" element={<CrawlerDetailsPage />} />
         </Route>
       </Routes>

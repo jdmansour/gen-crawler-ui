@@ -22,17 +22,35 @@ import { createPortal } from "react-dom";
 import { EvaluateFiltersResult, RuleEvaluation } from './apitypes';
 import { Rule, UnmatchedResponse } from "./schema";
 import { useStep } from "./steps";
+import { useOutletContext, useParams } from 'react-router';
+import { FilterSetPageContext } from './RootContext';
 
 
 const apiBase = "http://localhost:8000/api";
 
-export default function FilterSetPage(props: { filterSetId: number, csrfToken: string }) {
+export default function FilterSetPage(props: { csrfToken: string }) {
   // type is a json dict
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
   const [evaluationResult, setEvaluationResult] = useState<EvaluateFiltersResult>({ id: 0, remaining_urls: 0, name: "", created_at: "", updated_at: "", rules: [] });
-  const crawlJobId = 14;  // TODO: make dynamic
+  const {crawlerList} = useOutletContext<FilterSetPageContext>();
+  // const crawlJobId = 14;  // TODO: make dynamic
+  const { crawlerId } = useParams();
 
-  const filterSetId = props.filterSetId;
+  const crawler = crawlerList.find(c => c.id === Number(crawlerId));
+
+  // // get crawler from crawlerList matching filterSetId
+  // const crawler = crawlerList.find(c => c.filter_set_id === props.filterSetId);
+  // pick the crawl job with the latest updated_at
+  const crawlJob = crawler?.crawl_jobs.reduce((latest, job) => {
+    return new Date(job.updated_at) > new Date(latest.updated_at) ? job : latest;
+  }, crawler.crawl_jobs[0]);
+
+  // todo: handle case where crawler or crawlJob is undefined
+  const crawlJobId = crawlJob?.id;
+  const filterSetId = crawler?.filter_set_id;
+  // const filterSetId = props.filterSetId;
+  console.log("FilterSetPage crawlerId", crawlerId, "crawlJobId", crawlJobId, "filterSetId", filterSetId);
+  console.log("crawlerList.length", crawlerList.length);
   useStep('filters')
 
   const evaluateFilters = useCallback(async () => {
@@ -46,6 +64,10 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
       },
       body: JSON.stringify({}),
     });
+    if (!response.ok) {
+      console.error("Failed to evaluate filters");
+      return;
+    }
     const data: EvaluateFiltersResult = await response.json();
     setEvaluationResult(data);
   }, [crawlJobId, props.csrfToken]);
@@ -430,6 +452,24 @@ export default function FilterSetPage(props: { filterSetId: number, csrfToken: s
   });
 
   const sidebarOutlet = document.getElementById("sidebar-outlet");
+
+  if (filterSetId === undefined || filterSetId === null) {
+    return (<div style={{
+      display: "flex", flexDirection: "column", flex: 1,
+      padding: "8px 24px 16px 24px", gap: "16px", flexShrink: 1, minHeight: 350
+    }}>
+      <div>Fehler: Kein filter_set gefunden</div>
+    </div>)
+  }
+
+if (crawlJobId === undefined || crawlJobId === null) {
+    return (<div style={{
+      display: "flex", flexDirection: "column", flex: 1,
+      padding: "8px 24px 16px 24px", gap: "16px", flexShrink: 1, minHeight: 350
+    }}>
+      <div>Fehler: Kein crawl job gefunden</div>
+    </div>)
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1,

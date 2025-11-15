@@ -42,7 +42,18 @@ export type UseStepContext = {
   setStep: (step: CrawlerDashboardStep) => void;
 };
 
-export type RootContext = DashboardPageContext & SelectSourcePageContext & AddCrawlerPageContext & MetadataInheritancePageContext & CrawlerDetailsPageContext & UseStepContext;
+export type FilterSetPageContext = {
+  crawlerList: Crawler[];
+};
+
+export type RootContext =
+  DashboardPageContext &
+  SelectSourcePageContext &
+  AddCrawlerPageContext &
+  MetadataInheritancePageContext &
+  CrawlerDetailsPageContext &
+  UseStepContext &
+  FilterSetPageContext;
 
 
 // export type RootContext = {
