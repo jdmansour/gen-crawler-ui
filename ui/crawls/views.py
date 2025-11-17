@@ -64,12 +64,25 @@ class CrawlerViewSet(viewsets.ModelViewSet):
         print("pk:", pk)
         obj = self.get_object()
         print("Crawler:", obj)
+
+        # create crawl job object
+        crawljob = CrawlJob.objects.create(
+            start_url=obj.start_url,
+            follow_links=True,
+            crawler=obj,
+            state='PENDING',
+        )
+        crawljob.save()
+        print("Created CrawlJob:", crawljob)
+
+        # Start scrapy job
         parameters = {
             'project': 'scraper',
             'spider': 'example',
             'start_url': obj.start_url,
             'follow_links': True,
             'crawler_id': str(obj.id),
+            'crawl_job_id': str(crawljob.id),
         }
         # get SCRAPYD_URL from settings
         url = settings.SCRAPYD_URL + "/schedule.json"
@@ -77,10 +90,14 @@ class CrawlerViewSet(viewsets.ModelViewSet):
         log.info("Response: %s", response.text)
         log.info("Status code: %s", response.status_code)
         if response.status_code != 200:
+            # update crawljob state to ERROR
+            crawljob.state = 'ERROR'
+            crawljob.save()
             return Response({'status': 'error', 'message': response.text}, status=500)
-        else:
-            obj = response.json()
-            return Response(obj)
+        
+        serializer = CrawlJobSerializer(crawljob)
+        return Response(serializer.data)
+
         
     @action(detail=True, methods=['post'])
     def start_content_crawl(self, request, pk=None):

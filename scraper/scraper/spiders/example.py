@@ -44,13 +44,13 @@ class ExampleSpider(scrapy.Spider):
         }
     }
 
-    def __init__(self, start_url: str, crawler_id: int, *args, follow_links: bool = False, **kwargs):
+    def __init__(self, start_url: str, crawler_id: int, crawl_job_id: int, *args, follow_links: bool = False, **kwargs):
         super().__init__(*args, **kwargs)
         self.start_urls = [start_url]
         self.follow_links = to_bool(follow_links)
         self.link_extractor = LinkExtractor()
         self.crawler_id = crawler_id
-        self.crawl_job_id = None
+        self.crawl_job_id = crawl_job_id
         self.items_processed = 0
         
         # Redis setup for status updates
@@ -81,23 +81,32 @@ class ExampleSpider(scrapy.Spider):
         log.info("Using database at %s", db_path)
         log.info("File exists? %s", os.path.exists(db_path))
 
+        scrapy_job_id = getattr(spider, '_job', None)  # type: ignore
+        log.info("Scrapy job id: %s", scrapy_job_id)
         try:
             connection = sqlite3.connect(db_path)
             cursor = connection.cursor()
-            start_url = self.start_urls[0]
-            log.info("Inserting crawl job with start_url=%s, follow_links=%s, crawler_id=%s", start_url, self.follow_links, self.crawler_id)
-            scrapy_job_id = getattr(spider, '_job', None)  # type: ignore
-            log.info("Scrapy job id: %s", scrapy_job_id)
-            cursor.execute("INSERT INTO crawls_crawljob (start_url, follow_links, crawler_id, created_at, updated_at, state, scrapy_job_id) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'RUNNING', ?)", (start_url, self.follow_links, self.crawler_id, scrapy_job_id))
+            # Insert if not exists, else update
+            if self.crawl_job_id is None:
+                # Create new crawl job row
+                cursor.execute("""INSERT INTO crawls_crawljob (start_url, follow_links, crawler_id, created_at, updated_at, state, scrapy_job_id)
+                                  VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'RUNNING', ?)""",
+                               (self.start_urls[0], int(self.follow_links), self.crawler_id, scrapy_job_id))
+                self.crawl_job_id = cursor.lastrowid
+                log.info("Created new crawl job in database with id %d", self.crawl_job_id)
+            else:
+                # Update CrawlJob in database:
+                # - set state to RUNNING
+                # - set update_at to current timestamp
+                # - set scrapy_job_id if available
+                cursor.execute("UPDATE crawls_crawljob SET state='RUNNING', updated_at=CURRENT_TIMESTAMP, scrapy_job_id=? WHERE id=?", (scrapy_job_id, self.crawl_job_id))
+                log.info("Updated crawl job %d to RUNNING", self.crawl_job_id)
+
             connection.commit()
-            crawl_job_id = cursor.lastrowid
             connection.close()
         except Exception as e:
-            log.error("Error creating crawl job: %s", e)
+            log.error("Error updating/creating crawl job: %s", e)
             raise CloseSpider(f"Database error: {e}") from e
-
-        self.crawl_job_id = crawl_job_id
-        log.info("Created crawl job with id %d", crawl_job_id)
 
 
     def update_spider_state(self, spider: ExampleSpider, state: str):
