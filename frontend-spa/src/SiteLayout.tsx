@@ -6,15 +6,11 @@ import ShowSidebarIcon from "./assets/icons/show-sidebar.svg?react";
 export default function SiteLayout(props: {
   children: React.ReactNode;
   sidebar?: React.ReactNode;
-  sidebarVisible?: boolean;
+  sidebarVisible: boolean;
   onSidebarClose?: () => void;
 } & HTMLProps<HTMLDivElement>) {
-  const { children, sidebar, onSidebarClose, ...otherProps } = props;
+  const { children, sidebar, onSidebarClose, sidebarVisible, ...otherProps } = props;
   const siteLayoutRef = useRef<HTMLDivElement>(null);
-  let { sidebarVisible } = props;
-  if (sidebarVisible == undefined) {
-    sidebarVisible = true;
-  }
 
   //const sidebarHeight = siteLayoutRef?.current?.clientHeight ? siteLayoutRef?.current?.clientHeight / 3 : undefined;
   // const [sidebarHeight, setSidebarHeight] = useState<number | undefined>(undefined);
