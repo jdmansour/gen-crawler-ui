@@ -73,7 +73,7 @@ class ExampleSpider(scrapy.Spider):
         return spider
     
 
-    def spider_opened(self, spider):
+    def spider_opened(self, spider: ExampleSpider):
         """ Called when the spider is opened. """
 
         log.info("Opened spider %s", spider.name)
@@ -86,7 +86,9 @@ class ExampleSpider(scrapy.Spider):
             cursor = connection.cursor()
             start_url = self.start_urls[0]
             log.info("Inserting crawl job with start_url=%s, follow_links=%s, crawler_id=%s", start_url, self.follow_links, self.crawler_id)
-            cursor.execute("INSERT INTO crawls_crawljob (start_url, follow_links, crawler_id, created_at, updated_at, state) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'RUNNING')", (start_url, self.follow_links, self.crawler_id))
+            scrapy_job_id = getattr(spider, '_job', None)  # type: ignore
+            log.info("Scrapy job id: %s", scrapy_job_id)
+            cursor.execute("INSERT INTO crawls_crawljob (start_url, follow_links, crawler_id, created_at, updated_at, state, scrapy_job_id) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'RUNNING', ?)", (start_url, self.follow_links, self.crawler_id, scrapy_job_id))
             connection.commit()
             crawl_job_id = cursor.lastrowid
             connection.close()

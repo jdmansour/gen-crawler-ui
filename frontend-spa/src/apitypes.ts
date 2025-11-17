@@ -1,6 +1,6 @@
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
-export type CrawlJobState = 'pending' | 'running' | 'completed' | 'failed';
+export type CrawlJobState = 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED';
 
 export type Crawler = {
     id: number;

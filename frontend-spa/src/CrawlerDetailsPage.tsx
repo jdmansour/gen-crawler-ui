@@ -309,8 +309,20 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
                 Crawl löschen
             </MenuItem>
             {/* <MenuItem>Crawl erneut starten</MenuItem> */}
-            {selectedJob && (selectedJob.state == 'RUNNING' || selectedJob.state == 'PENDING') && (
-                <MenuItem>
+            {selectedJob && (
+                <MenuItem disabled={selectedJob.state != 'RUNNING' && selectedJob.state != 'PENDING'} onClick={async () => {
+                    // Cancel the selected crawl job
+                    if (!selectedJob) return;
+                    const response = await fetch(`http://localhost:8000/api/crawl_jobs/${selectedJob.id}/cancel/`, {
+                        method: "POST",
+                    });
+                    if (!response.ok) {
+                        console.error("Failed to cancel crawl job:", response.status, response.statusText);
+                        return;
+                    }
+                    console.log("Crawl job cancelled");
+                    handleMenuClose();
+                }}>
                     <ListItemIcon><Cancel fontSize="small" /></ListItemIcon>
                     Crawl abbrechen
                 </MenuItem>
