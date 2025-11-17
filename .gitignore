@@ -9,6 +9,7 @@ __pycache__/
 /scraper/cache
 /scraper/database
 /scraper/logs
+/scrapyd/
 
 /metadataapi/cache
 

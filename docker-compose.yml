@@ -45,6 +45,7 @@ services:
       - "6800:6800"
     volumes:
       - "./database:/app/database"
+      - "./scrapyd:/var/lib/scrapyd"
     depends_on:
       - headless_chrome
       - redis
