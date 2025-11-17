@@ -40,6 +40,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Scrapy config
 VOLUME /etc/scrapyd/ /var/lib/scrapyd/
 COPY scraper/scrapyd.conf /etc/scrapyd/
+COPY scraper/scrapy.cfg /workdir/app/scrapy.cfg
 
 # Copy the built egg
 RUN mkdir -p /workdir/app/eggs
