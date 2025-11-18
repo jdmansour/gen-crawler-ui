@@ -200,6 +200,19 @@ class ExampleSpider(scrapy.Spider):
         log.info("Closed spider %s", spider.name)
         self.update_spider_state(spider, 'COMPLETED')
 
+        # get statistics
+        # if robotstxt/forbidden is 1 and downloader/request_count is 1,
+        # then the crawl was blocked by robots.txt
+
+        if spider.crawler.stats is None:
+            log.warning("No stats available for spider %s", spider.name)
+            return
+        
+        stats = spider.crawler.stats.get_stats()
+        log.info("Crawl statistics: %s", stats)
+        if stats.get('robotstxt/forbidden', 0) >= 1 and stats.get('downloader/request_count', 0) == 1:
+            log.warning("Crawl appears to have been blocked by robots.txt")
+            self.update_spider_state(spider, 'FAILED')
 
     def spider_error(self, failure, response, spider: ExampleSpider):
         """ Called when the spider encounters an error. """
