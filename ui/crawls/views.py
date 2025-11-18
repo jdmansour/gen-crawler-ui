@@ -58,6 +58,15 @@ class CrawlerViewSet(viewsets.ModelViewSet):
     # TODO: restrict to authenticated users!
     permission_classes = [permissions.AllowAny]
 
+    def perform_create(self, serializer) -> None:
+        crawler = serializer.save()
+        # Create a default FilterSet for this Crawler
+        filter_set = FilterSet.objects.create(
+            name=crawler.name,
+            crawler=crawler,
+        )
+        filter_set.save()
+
     @action(detail=True, methods=['post'])
     def start_crawl(self, request, pk=None):
         print("start_crawl called")
