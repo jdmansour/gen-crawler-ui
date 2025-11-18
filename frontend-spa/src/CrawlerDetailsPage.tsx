@@ -56,16 +56,6 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
     const menuOpen = Boolean(anchorEl);
 
     const navigate = useNavigate();
-
-    const handleMenuClick = (event: React.MouseEvent<HTMLElement>, jobId: number) => {
-        setAnchorEl(event.currentTarget);
-        const job = crawler?.crawl_jobs.find(j => j.id == jobId) || null;
-        setSelectedJob(job);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
     
     // Set initial form values when 'crawler' is loaded
     useEffect(() => {
@@ -94,6 +84,9 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
         }
     }, [onCrawlJobLiveUpdate, sseData]);
 
+    // Callbacks for buttons & menus
+    // -----------------------------
+
     async function deleteCrawler(crawlerId: number) {
         // Delete crawler
         const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
@@ -106,6 +99,80 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
         }
         // redirect to dashboard or another page after deletion
         navigate("/");
+    }
+
+    async function startCrawlClicked() {
+        // Trigger a new crawl job
+        const response = await fetch(`http://localhost:8000/api/crawlers/${crawler.id}/start_crawl/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        if (!response.ok) {
+            console.error("Failed to start crawl job:", response.status, response.statusText);
+            return;
+        }
+        const newJob: CrawlJob = await response.json();
+        // Optimistically add the new job to the list
+        onCrawlJobAdded(newJob);
+    }
+
+    async function startContentCrawlClicked() {
+        // Trigger a content crawl
+        const response = await fetch(`http://localhost:8000/api/crawlers/${crawler.id}/start_content_crawl/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        if (!response.ok) {
+            console.error("Failed to start content crawl:", response.status, response.statusText);
+            return;
+        }
+        const data = await response.json();
+        console.log("Content crawl started");
+        console.log("Response:", data);
+        // TODO: integrate content crawls into crawl job list
+    }
+
+    function handleMenuClick(event: React.MouseEvent<HTMLElement>, jobId: number) {
+        setAnchorEl(event.currentTarget);
+        const job = crawler?.crawl_jobs.find(j => j.id == jobId) || null;
+        setSelectedJob(job);
+    };
+
+    function handleMenuClose() {
+        setAnchorEl(null);
+    }
+
+    async function deleteCrawlClicked() {
+        // Delete the selected crawl job
+        if (!selectedJob) return;
+        const response = await fetch(`http://localhost:8000/api/crawl_jobs/${selectedJob.id}/`, {
+            method: "DELETE",
+        });
+        if (!response.ok) {
+            console.error("Failed to delete crawl job:", response.status, response.statusText);
+            return;
+        }
+        // Remove the job from the crawler's job list
+        onCrawlJobDeleted(selectedJob.id);
+        handleMenuClose();
+    }
+
+    async function cancelCrawlClicked() {
+        // Cancel the selected crawl job
+        if (!selectedJob) return;
+        const response = await fetch(`http://localhost:8000/api/crawl_jobs/${selectedJob.id}/cancel/`, {
+            method: "POST",
+        });
+        if (!response.ok) {
+            console.error("Failed to cancel crawl job:", response.status, response.statusText);
+            return;
+        }
+        console.log("Crawl job cancelled");
+        handleMenuClose();
     }
 
     if (!crawler) {
@@ -158,54 +225,11 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
         <h3>Aktionen</h3>
 
         <Stack direction="row" spacing={2} sx={{ marginTop: 2, marginBottom: 2, flexWrap: 'wrap' }} useFlexGap>
-            <Button variant="outlined" color="primary" onClick={async () => {
-            // Trigger a new crawl job
-            const response = await fetch(`http://localhost:8000/api/crawlers/${crawler.id}/start_crawl/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (!response.ok) {
-                console.error("Failed to start crawl job:", response.status, response.statusText);
-                return;
-            }
-            const newJob: CrawlJob = await response.json();
-            // Optimistically add the new job to the list
-            onCrawlJobAdded(newJob);
-        }}>
-            Crawler starten
-        </Button>
-
-        <Button variant="outlined" onClick={async () => {
-            // Trigger a content crawl
-            const response = await fetch(`http://localhost:8000/api/crawlers/${crawler.id}/start_content_crawl/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (!response.ok) {
-                console.error("Failed to start content crawl:", response.status, response.statusText);
-                return;
-            }
-            const data = await response.json();
-            console.log("Content crawl started");
-            console.log("Response:", data);
-            // TODO: integrate content crawls into crawl job list
-        }}>
-            Content Crawl starten
-        </Button>
-
-            <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/filters/`}>
-                Filter bearbeiten
-            </Button>
-            <Button variant="outlined" component="a"
-                    href={`http://localhost:8000/admin/crawls/crawler/${crawler.id}/change/`}>
-                Im Admin-Bereich anzeigen
-            </Button>
-            <Button variant="outlined" color="error"
-                    onClick={() => setConfirmDeleteOpen(true)}>Crawler löschen</Button>
+            <Button variant="outlined" color="primary" onClick={startCrawlClicked}>Crawler starten</Button>
+            <Button variant="outlined" onClick={startContentCrawlClicked}>Content Crawl starten</Button>
+            <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/filters/`}>Filter bearbeiten</Button>
+            <Button variant="outlined" component="a" href={`http://localhost:8000/admin/crawls/crawler/${crawler.id}/change/`}>Im Admin-Bereich anzeigen</Button>
+            <Button variant="outlined" color="error" onClick={() => setConfirmDeleteOpen(true)}>Crawler löschen</Button>
         </Stack>
 
         <DeleteCrawlerDialog
@@ -284,54 +308,31 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
             anchorEl={anchorEl}
             open={menuOpen}
             onClose={handleMenuClose}
-            slotProps={{
-                list: {'aria-labelledby': 'crawler-job-button'},
-            }}
+            slotProps={{ list: {'aria-labelledby': 'crawler-job-button'}, }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         >
-            {/* red color */}
-            <MenuItem sx={{ color: 'error.main' }} onClick={async () => {
-                // Delete the selected crawl job
-                if (!selectedJob) return;
-                const response = await fetch(`http://localhost:8000/api/crawl_jobs/${selectedJob.id}/`, {
-                    method: "DELETE",
-                });
-                if (!response.ok) {
-                    console.error("Failed to delete crawl job:", response.status, response.statusText);
-                    return;
-                }
-                // Remove the job from the crawler's job list
-                onCrawlJobDeleted(selectedJob.id);
-                handleMenuClose();
-            }}>
+            <MenuItem sx={{ color: 'error.main' }} onClick={deleteCrawlClicked}>
                 <ListItemIcon sx={{ color: 'error.main' }}><Delete fontSize="small" /></ListItemIcon>
                 Crawl löschen
             </MenuItem>
-            {/* <MenuItem>Crawl erneut starten</MenuItem> */}
-            {selectedJob && (
-                <MenuItem disabled={selectedJob.state != 'RUNNING' && selectedJob.state != 'PENDING'} onClick={async () => {
-                    // Cancel the selected crawl job
-                    if (!selectedJob) return;
-                    const response = await fetch(`http://localhost:8000/api/crawl_jobs/${selectedJob.id}/cancel/`, {
-                        method: "POST",
-                    });
-                    if (!response.ok) {
-                        console.error("Failed to cancel crawl job:", response.status, response.statusText);
-                        return;
-                    }
-                    console.log("Crawl job cancelled");
-                    handleMenuClose();
-                }}>
-                    <ListItemIcon><Cancel fontSize="small" /></ListItemIcon>
-                    Crawl abbrechen
-                </MenuItem>
-            )}
+            <MenuItem disabled={selectedJob?.state != 'RUNNING' && selectedJob?.state != 'PENDING'} onClick={cancelCrawlClicked}>
+                <ListItemIcon><Cancel fontSize="small" /></ListItemIcon>
+                Crawl abbrechen
+            </MenuItem>
+            <MenuItem disabled={!(selectedJob?.scrapy_job_id)} component="a" href={logUrl(selectedJob)}>
+                <ListItemIcon><MoreVertOutlined fontSize="small" /></ListItemIcon>
+                Show logs
+            </MenuItem>
         </Menu>
 
     </div>;
+}
 
-
+// Gets the scrapy log URL for a crawl job
+function logUrl(crawlJob: CrawlJob | null): string {
+    if (!crawlJob?.scrapy_job_id) return "";
+    return `http://localhost:6800/logs/scraper/example/${crawlJob.scrapy_job_id}.log`;
 }
 
 // comparer for two iso date strings
@@ -341,6 +342,7 @@ function compareISODateDesc(a: string, b: string) {
     return dateB.getTime() - dateA.getTime();
 }
 
+// Makes a relative date string from an ISO timestamp
 function toRelativeDate(isoTimestamp: string) {
     if (!isoTimestamp) return '-';
     const result = DateTime.fromISO(isoTimestamp).toRelative();
