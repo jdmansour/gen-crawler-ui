@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import InheritableWloField from './InheritableWloField';
 
 const meta = {
+  title: 'Components/InheritableWloField',
   component: InheritableWloField,
   tags: ['autodocs'],
 } satisfies Meta<typeof InheritableWloField>;

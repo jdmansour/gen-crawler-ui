@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import Breadcrumbs from '../Breadcrumbs';
-import { Breadcrumb } from '../Breadcrumbs';
+import { MemoryRouter } from 'react-router-dom';
+import Breadcrumbs, { Breadcrumb } from '../Breadcrumbs';
 
 const meta: Meta<typeof Breadcrumbs> = {
   title: 'Components/Breadcrumbs',
@@ -15,6 +15,13 @@ const meta: Meta<typeof Breadcrumbs> = {
       description: 'Array of breadcrumb objects with label and optional url',
     },
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 };
 
 export default meta;

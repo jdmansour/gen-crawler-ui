@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import DashboardPage from './DashboardPage';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { crawlerList } from './data';
+import { DashboardPageContext, UseStepContext } from './RootContext';
 
 const meta = {
   title: 'Pages/DashboardPage',
@@ -18,10 +19,20 @@ export const Default: Story = {
     crawlerList: crawlerList
   },
   decorators: [
-    (Story) => (
-      <MemoryRouter>
-        <Story />
-      </MemoryRouter>
-    ),
+    (Story) => {
+      const outletContext: DashboardPageContext & UseStepContext= {
+        crawlerList: crawlerList,
+        setCrawlerList: () => {},
+        setSidebarVisible: () => {},
+        setStep: () => {},
+      };
+      return <MemoryRouter>
+        <Routes>
+          <Route path="/" element={<Outlet context={outletContext} />}>
+            <Route index element={<Story />} />
+          </Route>
+        </Routes>
+      </MemoryRouter>;
+    }
   ],
 };

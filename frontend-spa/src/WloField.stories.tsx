@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import WloField from './WloField';
 
 const meta = {
+  title: 'Components/WloField',
   component: WloField,
   tags: ['autodocs'],
 } satisfies Meta<typeof WloField>;

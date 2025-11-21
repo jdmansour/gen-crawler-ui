@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import MdsEditor from './MdsEditor';
 
 const meta = {
+  title: 'Components/MdsEditor',
   component: MdsEditor,
 } satisfies Meta<typeof MdsEditor>;
 
