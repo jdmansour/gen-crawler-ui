@@ -61,7 +61,7 @@ export default function MetadataInheritancePage() {
     const data = await getInheritableFields(sourceItemGuid);
     
     // sleep 2 seconds to simulate loading
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     setFields(data.fields as WloFieldInfo[]);
     setGroups(data.groups as GroupInfo[]);
