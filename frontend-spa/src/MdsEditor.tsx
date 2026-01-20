@@ -3,14 +3,16 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
 import RobotIcon from "./assets/icons/robot.svg?react";
+import { CustomIcon, NamedIcon } from './CustomIcon';
 
 export default function MdsEditor(props: {
     title: string | React.ReactNode;
-    icon?: React.ReactNode;
+    icon?: NamedIcon | React.ReactNode;
     children?: React.ReactNode;
 }) {
 
-    const icon = props.icon ? props.icon : <RobotIcon style={{ width: 32, height: 32 }} />;
+    const icon = props.icon ? (typeof props.icon !== 'string' ?
+    <CustomIcon iconName={props.icon} /> : props.icon) : <RobotIcon style={{ width: 32, height: 32 }} />;
 
   return (
     <Card variant='outlined'>

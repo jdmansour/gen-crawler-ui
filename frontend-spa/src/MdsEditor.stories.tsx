@@ -14,6 +14,14 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     title: "Hello World",
+    icon: "school",
+  },
+  argTypes: {
+    icon: {
+      options: ['school', 'robot', 'settings', 'user'],
+      control: { type: 'select' },
+      description: 'Name of the icon to display in the editor header',
+    },
   },
   render: (args) => {
     const commonProps: TextFieldProps = {

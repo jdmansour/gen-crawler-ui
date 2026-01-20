@@ -9,7 +9,19 @@ import PendingOutlined from '@mui/icons-material/PendingOutlined';
 import SchoolOutlined from '@mui/icons-material/SchoolOutlined';
 import SmartToyOutlined from '@mui/icons-material/SmartToyOutlined';
 
-export function CustomIcon(props: { iconName: string|undefined; }) {
+export type NamedIcon =
+    | "description"
+    | "school"
+    | "done_all"
+    | "copyright"
+    | "accessibility"
+    | "robot"
+    | "error"
+    | "edit"
+    | "pending"
+    | "stop";
+
+export function CustomIcon(props: { iconName: NamedIcon|undefined; }) {
     switch (props.iconName) {
         case "description":
             return <DescriptionOutlined />;

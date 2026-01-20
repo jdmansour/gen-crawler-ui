@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CustomIcon } from "./CustomIcon";
+import { CustomIcon, NamedIcon } from "./CustomIcon";
 import styles from "./FilterTabs.module.css";
 import FilterIcon from "./assets/icons/filter.svg?react";
 
@@ -153,7 +153,7 @@ function inhibitAnimation(indicator: HTMLElement) {
 
 function TabLabel(props: {
   label: string;
-  icon?: string | React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  icon?: NamedIcon | React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   active?: boolean;
   complete?: boolean;
   clickable?: boolean;
