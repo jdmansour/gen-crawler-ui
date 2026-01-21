@@ -42,30 +42,27 @@ export default defineConfig(({ mode }) => {
     // Library build configuration
     return {
       ...baseConfig,
+      define: {
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+      },
       css: {
         modules: {
           // Ensure CSS modules work in library mode
           localsConvention: 'camelCase',
-          generateScopedName: '[name]__[local]___[hash:base64:5]'
+          // Keep original class names instead of hashing
+          generateScopedName: "[local]",
         }
       },
       build: {
         lib: {
-          entry: resolve(__dirname, 'src/index.ts'),
+          entry: resolve(__dirname, 'src/elements/wlo-gen-crawler.tsx'),
           name: 'WloComponents',
           fileName: 'index',
           formats: ['es']
         },
         rollupOptions: {
+          // nothing is external, we don't use react in wlo
           external: [
-            'react', 
-            'react-dom', 
-            'react-router-dom',
-            'react/jsx-runtime',
-            '@mui/material',
-            '@mui/icons-material',
-            '@emotion/react',
-            '@emotion/styled'
           ],
           output: {
             globals: {

@@ -11,8 +11,10 @@ import { CrawlerDashboardStep } from "./steps";
 import { wloThemeData } from "./wloTheme";
 import WloFakeHeader from "./WloFakeHeader";
 import { SSEData } from "./hooks/useSSE";
+import {ApiUrlContext, useApiUrl} from "./ApiUrlContext.tsx";
 
 export default function RootLayout() {
+  const apiUrl = useApiUrl();
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
   const [crawlerList, setCrawlerList] = useState<Crawler[]>([]);
@@ -95,7 +97,7 @@ export default function RootLayout() {
   }
 
   async function fetchCrawlers() {
-    const response = await fetch("http://localhost:8000/api/crawlers/");
+    const response = await fetch(apiUrl + "/crawlers/");
     const data: Crawler[] = await response.json();
     // TODO: validate?
     // wait 2 seconds to simulate loading
@@ -105,7 +107,7 @@ export default function RootLayout() {
   }
 
   async function fetchSourceItems() {
-    const response = await fetch("http://localhost:8000/api/source_items/");
+    const response = await fetch(apiUrl + "/source_items/");
     const data: SourceItem[] = await response.json();
     setSourceItems(data);
   }
@@ -120,7 +122,6 @@ export default function RootLayout() {
   return (
     <ThemeProvider theme={wloTheme}>
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }} >
-      <WloFakeHeader />
       <SiteLayout
         style={{ }}
         sidebar={<GenCrawlerSidebar step={step} />}

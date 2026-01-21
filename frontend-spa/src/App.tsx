@@ -7,7 +7,6 @@ import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
 import "./Button.css";
 import CrawlerDetailsPage from "./CrawlerDetailsPage";
 import DashboardPage from "./DashboardPage";
-import FilterCrawlsPage from "./FilterCrawlsPage";
 import GenCrawlerSidebar from "./GenCrawlerSidebar";
 import MetadataInheritancePage from "./MetadataInheritancePage";
 import SelectSourcePage from "./SelectSourcePage";
@@ -206,9 +205,6 @@ export default function App() {
         )}
         {step == "crawler-details" && (
           <CrawlerDetailsPage />
-        )}
-        {step == "filter-crawls" && (
-          <FilterCrawlsPage />
         )}
       </SiteLayout>
     </>

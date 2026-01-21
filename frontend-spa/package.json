@@ -19,7 +19,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:lib": "vite build --mode library",
+    "build:lib": "vite build --mode library && cp -r dist/* /home/torsten/.edusharing/wlo/link/maven/fixes/10.0/repository/Frontend/src/assets/js/gen-crawler/",
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
