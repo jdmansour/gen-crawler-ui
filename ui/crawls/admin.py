@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any, Optional
 
+from django import forms
 from django.contrib import admin
 from django.contrib.admin import display
 from django.db import models
@@ -12,7 +14,69 @@ from django.forms import TextInput
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 
-from .models import CrawledURL, CrawlJob, FilterRule, FilterSet
+from .admin_utils import ReverseModelChoiceField
+from .models import (CrawledURL, Crawler, CrawlJob, FilterRule, FilterSet,
+                     SourceItem)
+
+log = logging.getLogger(__name__)
+
+class SourceItemAdmin(admin.ModelAdmin):
+    model = SourceItem
+    list_display = ['title', 'guid', 'created_at', 'updated_at']
+    readonly_fields = ['created_at', 'updated_at']
+
+
+class CrawlJobInline(admin.TabularInline):
+    model = CrawlJob
+    extra = 0
+    fields = ['pk', 'start_url', 'follow_links', 'created_at', 'updated_at']
+    readonly_fields = ['pk', 'start_url', 'follow_links', 'created_at', 'updated_at']
+    can_delete = False
+    show_change_link = True
+
+
+class FilterSetInline(admin.TabularInline):
+    model = FilterSet
+    extra = 0
+    fields = ['pk', 'created_at', 'updated_at']
+    readonly_fields = ['pk', 'created_at', 'updated_at']
+    can_delete = False
+    show_change_link = True
+
+
+class CrawlerAdminForm(forms.ModelForm):
+    filter_set = ReverseModelChoiceField(
+        queryset=FilterSet.objects.all(),
+        required=False,
+        help_text="The FilterSet associated with this Crawler.",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["filter_set"].initial = getattr(self.instance, "filter_set", None)
+
+    def save(self, commit=True):
+        instance = super().save(commit)
+        filter_set = self.cleaned_data.get("filter_set")
+        self.fields["filter_set"].save_related(self.instance, filter_set)
+
+        return instance
+
+
+class CrawlerAdmin(admin.ModelAdmin):
+    model = Crawler
+    list_display = ['name', 'start_url', 'source_item',
+                    'created_at', 'updated_at', 'inherited_fields']
+    fields = ['name', 'start_url', 'source_item',
+              'inherited_fields', 'created_at', 'updated_at',
+              'filter_set'
+              ]
+    readonly_fields = ['created_at', 'updated_at']
+    inlines = [CrawlJobInline, FilterSetInline]
+
+    form = CrawlerAdminForm
+
+                         
 
 
 class FilterRuleInline(admin.TabularInline):
@@ -33,15 +97,22 @@ class FilterRuleInline(admin.TabularInline):
 
 class FilterSetAdmin(admin.ModelAdmin):
     model = FilterSet
-    list_display = ['name', 'crawl_lob_link',
+    list_display = ['name', 'crawler_link',
                     'created_at', 'updated_at', 'rules_count']
     readonly_fields = ['remaining_urls', 'created_at', 'updated_at']
     inlines = [FilterRuleInline]
 
+    # @mark_safe
+    # @display(description='Crawl Job')
+    # def crawl_lob_link(self, obj: FilterSet) -> str:
+    #     return f'<a href="/admin/crawls/crawljob/{obj.crawl_job.id}/">{obj.crawl_job}</a>'
+
     @mark_safe
-    @display(description='Crawl Job')
-    def crawl_lob_link(self, obj: FilterSet) -> str:
-        return f'<a href="/admin/crawls/crawljob/{obj.crawl_job.id}/">{obj.crawl_job}</a>'
+    @display(description='Crawler')
+    def crawler_link(self, obj: FilterSet) -> str:
+        if obj.crawler is None:
+            return 'No Crawler'
+        return f'<a href="/admin/crawls/crawler/{obj.crawler.id}/">{obj.crawler}</a>'
 
     @display(description='# Rules')
     def rules_count(self, obj: FilterSet) -> int:
@@ -56,32 +127,23 @@ class FilterSetAdmin(admin.ModelAdmin):
             # check if this formset is for FilterRule
             if formset.model == FilterRule:
                 instances = formset.save(commit=False)
-                for instance in instances:
-                    instance.filter_set.evaluate()
-                    break
-
-
-class FilterSetInline(admin.TabularInline):
-    model = FilterSet
-    extra = 0
-    fields = ['pk', 'created_at', 'updated_at']
-    readonly_fields = ['pk', 'created_at', 'updated_at']
-    can_delete = False
-    show_change_link = True
+                # for instance in instances:
+                #     instance.filter_set.evaluate()
+                #     break
 
 
 class CrawlJobAdmin(admin.ModelAdmin):
     list_display = ['start_url', 'follow_links', 'created_at',
-                    'updated_at', 'crawled_urls_count', 'filter_sets_count']
+                    'updated_at', 'crawled_urls_count']
     fields = ['start_url', 'follow_links',
-              'created_at', 'updated_at', 'crawled_urls']
-    inlines = [FilterSetInline]
+              'created_at', 'updated_at', 'crawled_urls', 'crawler', 'scrapy_job_id']
+    readonly_fields = ['created_at', 'updated_at', 'crawled_urls', 'crawler']
     date_hierarchy = 'created_at'
 
     class AnnotatedCrawlJob(CrawlJob):
         """ CrawlJob with additional fields we fetch in get_queryset(). """
         crawled_urls_count: int
-        filter_sets_count: int
+        # filter_sets_count: int
 
     # link to the admin page for the related crawled urls
     @mark_safe
@@ -123,15 +185,15 @@ class CrawlJobAdmin(admin.ModelAdmin):
             .annotate(d=Value(1)).values('d')
             .annotate(c=Count('*')).values('c')
         )
-        filter_sets_count_subquery = (
-            FilterSet.objects.filter(crawl_job=OuterRef('pk'))
-            # dummy to get rid of the GROUP BY
-            .annotate(d=Value(1)).values('d')
-            .annotate(c=Count('*')).values('c')
-        )
+        # filter_sets_count_subquery = (
+        #     FilterSet.objects.filter(crawl_job=OuterRef('pk'))
+        #     # dummy to get rid of the GROUP BY
+        #     .annotate(d=Value(1)).values('d')
+        #     .annotate(c=Count('*')).values('c')
+        # )
         queryset = queryset.annotate(
             crawled_urls_count=Subquery(crawled_urls_count_subquery),
-            filter_sets_count=Subquery(filter_sets_count_subquery),
+            # filter_sets_count=Subquery(filter_sets_count_subquery),
         )
 
         # This would also work, but the above is much faster
@@ -150,8 +212,8 @@ class CrawlJobAdmin(admin.ModelAdmin):
 
     # make this model read only
     # type: ignore[override]
-    def has_change_permission(self, request: HttpRequest, obj: Optional[CrawlJob] = None) -> bool:
-        return False
+    # def has_change_permission(self, request: HttpRequest, obj: Optional[CrawlJob] = None) -> bool:
+    #     return False
         # return super().has_change_permission(request, obj)
 
 
@@ -207,6 +269,8 @@ class CrawledURLAdmin(admin.ModelAdmin):
         return not obj.noindex
 
 
+admin.site.register(SourceItem, SourceItemAdmin)
+admin.site.register(Crawler, CrawlerAdmin)
 admin.site.register(CrawlJob, CrawlJobAdmin)
 admin.site.register(CrawledURL, CrawledURLAdmin)
 admin.site.register(FilterSet, FilterSetAdmin)

@@ -1,0 +1,39 @@
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+
+const meta = {
+  title: 'Components/Checkbox',
+  component: Checkbox,
+  tags: ['autodocs'],
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta<typeof Checkbox>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+  }
+};
+
+export const Checked: Story = {
+  args: {
+    defaultChecked: true,
+  }
+};
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  }
+};
+
+export const CheckboxWithLabel: Story = {
+  render: (args) => (
+    <FormControlLabel control={<Checkbox {...args} />} label="Checkbox Label" />
+  ),
+};

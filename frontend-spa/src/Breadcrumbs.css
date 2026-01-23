@@ -1,0 +1,102 @@
+.wlo-breadcrumbs {
+  list-style: none;
+  display: flex;
+  /* align-items: center;
+    align-content: center; */
+
+  box-sizing: border-box;
+  height: 60px;
+  margin: 0px 24px;
+  padding: 0;
+  align-items: center;
+  text-wrap: nowrap;
+
+  color: #163e76;
+  font-family: Montserrat;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+/* .wlo-breadcrumbs,
+.wlo-breadcrumbs *
+ {
+    outline: 1px solid orange;
+} */
+
+.wlo-breadcrumbs li {
+  display: flex;
+  align-items: center;
+}
+
+.wlo-breadcrumbs li svg {
+  /* padding: 10px; */
+  padding: 0px 12px;
+}
+
+.wlo-breadcrumbs-temporary {
+  color: color-mix(in srgb, #163e76 50%, white 50%);
+}
+
+.wlo-breadcrumbs a:link,
+.wlo-breadcrumbs a:visited {
+  text-decoration: none;
+  color: #163e76;
+  padding: 6px 12px;
+  margin: -6px -12px;
+  transition: background-color 0.2s linear;
+}
+
+.wlo-breadcrumbs a:hover,
+.wlo-breadcrumbs a:active {
+  background-color: #f7f8fa;
+  border-radius: 12px;
+  transition: background-color 0s linear;
+}
+
+.wlo-breadcrumbs-home-icon {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .wlo-breadcrumbs {
+    font-size: 16px;
+    margin: 0 16px;
+    height: 40px;
+    /* font-family: 'Noto Sans'; */
+    font-weight: 400;
+  }
+  .wlo-breadcrumbs li svg {
+    padding: 0px 8px;
+    /* transform: scaleX(0.5); */
+  }
+  .wlo-breadcrumbs li svg path {
+    /* fill: #163E76; */
+    stroke-width: 1.5px;
+  }
+  /* .wlo-breadcrumbs a:link, .wlo-breadcrumbs a:visited {
+        padding: 4px 8px;
+        margin: -4px -8px;
+    } */
+  /* .wlo-breadcrumbs li:first-child {
+        padding: 0px;
+        margin: 0px;
+    }
+    .wlo-breadcrumbs li:first-child a {
+        padding: 0px;
+        margin: 0px;
+    } */
+  /* .wlo-breadcrumbs li:first-child a:link, .wlo-breadcrumbs li:first-child a:visited {
+        padding: 0px;
+        margin: 0px;
+     } */
+  .wlo-breadcrumbs svg.wlo-breadcrumbs-home-icon {
+    display: block;
+    /* padding: 0px 8px; */
+    padding: 0;
+  }
+  .wlo-breadcrumbs-home-icon + span {
+    display: none;
+  }
+}

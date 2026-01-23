@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+  </head>
+  <body>
+    <script type="module" src="/src/elements/Button.tsx"></script>
+    <script type="module" src="/src/elements/wlo-gen-crawler.tsx"></script>
+    <wlo-button label="Hello World"></wlo-button>
+    <wlo-button label="Hello World" default></wlo-button>
+    <p>This should not be styled:</p>
+    <button class="wlo-button">Hello World</button>
+    <hr />
+    <wlo-gen-crawler base-path="test_component.html"/>
+  </body>
+</html>

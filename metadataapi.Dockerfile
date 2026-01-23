@@ -1,4 +1,3 @@
-# FROM python:3.12-slim
 
 # # Install uv.
 # COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
@@ -17,6 +16,8 @@ WORKDIR /app/metadataapi
 # .venv on the host.
 ENV UV_PROJECT_ENVIRONMENT=/app/.venv
 RUN uv sync --frozen --no-cache
+# Populate the valuespace cache
+RUN uv run python -m valuespace_converter.valuespaces
 
 # Run the application.
 CMD ["uv", "run", "fastapi", "run", "main.py", "--port", "8081", "--host", "0.0.0.0"]

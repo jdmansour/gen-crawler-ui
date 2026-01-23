@@ -1,0 +1,38 @@
+.wlo-input-with-button {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.wlo-input-with-button input {
+  flex: 1;
+  padding: 14px 24px;
+
+  font: inherit;
+
+  border: 2px solid #d9e2eb;
+  background-color: white;
+  border-radius: 100px;
+}
+
+.wlo-input-with-button button {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0px 12px;
+  border-radius: 50%;
+  background-color: #003b7c;
+  border: none;
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wlo-input-with-button button:hover {
+  background-color: #2465ac;
+  transition: background-color 0s linear;
+}

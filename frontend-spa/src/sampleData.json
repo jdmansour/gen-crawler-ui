@@ -1,0 +1,412 @@
+{
+  "fields": [
+    {
+      "id": "cclom:title",
+      "type": "text",
+      "inheritable": false,
+      "recommended": false,
+      "caption": "Voller Titel",
+      "bottomCaption": "Name des Inhalts",
+      "placeholder": "Gib dem Inhalt einen Namen",
+      "value": "Klexikon (Quellen-Datensatz Testobjekt)"
+    },
+    {
+      "id": "cclom:general_description",
+      "type": "textarea",
+      "inheritable": false,
+      "recommended": false,
+      "caption": "Beschreibung",
+      "bottomCaption": "Beschreibe den Inhalt",
+      "placeholder": "Das MATERIALART des ANBIETERS zeigt INHALTSBESCHREIBUNG. Es eignet sich für ZWECK für folgende ZIELGRUPPE",
+      "value": "Das freie Internet-Lexikon Klexikon ist ein Wiki mit kindgerechten Inhalten und Ansprache für die Altersgruppe von etwa 6-12 Jahren.\n\n(TestObjekt - Kopie des Quellen-Datensatzes auf Prod: https://redaktion.openeduhub.net/edu-sharing/components/render/0a504542-b202-4835-9b64-196c99814226 )"
+    },
+    {
+      "id": "ccm:wwwurl",
+      "type": "text",
+      "inheritable": false,
+      "recommended": false,
+      "caption": "URL",
+      "bottomCaption": "Internetadresse des Inhalts",
+      "placeholder": "http://www.beispiel.de",
+      "value": "https://klexikon.zum.de/wiki/Klexikon:Willkommen_im_Klexikon"
+    },
+    {
+      "id": "cclom:general_language",
+      "type": "multivalueFixedBadges",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Sprache(n)",
+      "bottomCaption": "Alle Sprachen, die im Dokument vorkommen",
+      "placeholder": null,
+      "values": [
+        {
+          "value": "de_DE",
+          "display": "Deutsch (Deutschland)"
+        }
+      ]
+    },
+    {
+      "id": "ccm:published_date",
+      "type": "date",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Veröffentlichungsdatum",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": null
+    },
+    {
+      "id": "cm:created",
+      "type": "date",
+      "inheritable": false,
+      "recommended": false,
+      "caption": "erstellt",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": {
+        "value": "2024-01-24T12:10:21.583Z",
+        "display": "24.01.2024, 12:10"
+      }
+    },
+    {
+      "id": "cm:modified",
+      "type": "date",
+      "inheritable": false,
+      "recommended": false,
+      "caption": "zuletzt geändert",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": {
+        "value": "2024-01-24T12:31:34.326Z",
+        "display": "24.01.2024, 12:31"
+      }
+    },
+    {
+      "id": "cclom:version",
+      "type": "text",
+      "inheritable": false,
+      "recommended": false,
+      "caption": "Versionsnummer",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": "1.3"
+    },
+    {
+      "id": "cclom:typicallearningtime",
+      "type": "duration",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Zeitbedarf im Unterricht",
+      "bottomCaption": "Die durchschnittliche benötigte Zeitdauer zur Bearbeitung der Ressource.",
+      "placeholder": null,
+      "value": null
+    },
+    {
+      "id": "cclom:duration",
+      "type": "duration",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Abspieldauer",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": null
+    },
+    {
+      "id": "ccm:curriculum",
+      "type": "multivalueTree",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Lehrplanthema",
+      "bottomCaption": null,
+      "placeholder": "Gib ein Thema ein, zu dem dein Inhalt passt",
+      "values": []
+    },
+    {
+      "id": "ccm:educationalintendedenduserrole",
+      "type": "multivalueFixedBadges",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Zielgruppe",
+      "bottomCaption": null,
+      "placeholder": null,
+      "values": [
+        {
+          "value": "http://w3id.org/openeduhub/vocabs/intendedEndUserRole/learner",
+          "display": "Lerner/in"
+        },
+        {
+          "value": "http://w3id.org/openeduhub/vocabs/intendedEndUserRole/parent",
+          "display": "Eltern"
+        }
+      ]
+    },
+    {
+      "id": "ccm:oeh_competence_requirements",
+      "type": "multivalueTree",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Vorkenntnisse (Kompetenzen)",
+      "bottomCaption": "Benötigte Vorkenntnisse, die zur Bearbeitung des Inhalts nötig sind.",
+      "placeholder": null,
+      "values": []
+    },
+    {
+      "id": "ccm:oeh_profession_group",
+      "type": "multivalueTree",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Berufsgruppe",
+      "bottomCaption": "für Inhalte speziell zur Berufsausbildung",
+      "placeholder": null,
+      "values": []
+    },
+    {
+      "id": "ccm:oeh_languageTarget",
+      "type": "singleoption",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Sprachniveau-Lernsprache",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": {
+        "value": "de",
+        "display": "Deutsch"
+      }
+    },
+    {
+      "id": "ccm:oeh_languageLevel",
+      "type": "multivalueTree",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Sprachniveaustufen (GER)",
+      "bottomCaption": null,
+      "placeholder": null,
+      "values": []
+    },
+    {
+      "id": "ccm:educationalcontext",
+      "type": "multivalueFixedBadges",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Bildungsstufe",
+      "bottomCaption": null,
+      "placeholder": null,
+      "values": [
+        {
+          "value": "http://w3id.org/openeduhub/vocabs/educationalContext/grundschule",
+          "display": "Primarstufe"
+        },
+        {
+          "value": "http://w3id.org/openeduhub/vocabs/educationalContext/sekundarstufe_1",
+          "display": "Sekundarstufe I"
+        }
+      ]
+    },
+    {
+      "id": "ccm:educationaltypicalagerange",
+      "type": "range",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "typisches Alter der Zielgruppe",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": {
+        "from": "6",
+        "to": "12",
+        "display": "6 - 12"
+      }
+    },
+    {
+      "id": "ccm:oeh_lrt",
+      "type": "multivalueTree",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Kategorie / Typ des Inhalts",
+      "bottomCaption": null,
+      "placeholder": null,
+      "values": [
+        {
+          "value": "http://w3id.org/openeduhub/vocabs/new_lrt/9f40cd56-8def-46cc-a21b-63d9557dc93d",
+          "display": "Lexikon oder Enzyklopädie",
+          "parent": {
+            "value": "http://w3id.org/openeduhub/vocabs/new_lrt/3869b453-d3c1-4b34-8f25-9127e9d68766",
+            "display": "Quelle"
+          }
+        },
+        {
+          "value": "http://w3id.org/openeduhub/vocabs/new_lrt/3869b453-d3c1-4b34-8f25-9127e9d68766",
+          "display": "Quelle"
+        }
+      ]
+    },
+    {
+      "id": "ccm:taxonid",
+      "type": "multivalueTree",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Fach-/Sachgebiet",
+      "bottomCaption": null,
+      "placeholder": null,
+      "values": [
+        {
+          "value": "http://w3id.org/openeduhub/vocabs/discipline/720",
+          "display": "Allgemein",
+          "parent": {
+            "value": "http://w3id.org/openeduhub/vocabs/discipline/",
+            "display": "Schulfächer"
+          }
+        },
+        {
+          "value": "http://w3id.org/openeduhub/vocabs/discipline/120",
+          "display": "Deutsch",
+          "parent": {
+            "value": "http://w3id.org/openeduhub/vocabs/discipline/",
+            "display": "Schulfächer"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cclom:general_keyword",
+      "type": "multivalueSuggestBadges",
+      "inheritable": true,
+      "recommended": true,
+      "caption": "Schlagworte",
+      "bottomCaption": null,
+      "placeholder": "z.B. Mathe",
+      "values": []
+    },
+    {
+      "id": "virtual:mediatype",
+      "type": "text",
+      "inheritable": true,
+      "recommended": false,
+      "caption": "Medien-/Dateiformat",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": "Website"
+    },
+    {
+      "id": "cclom:format",
+      "type": "text",
+      "inheritable": true,
+      "recommended": false,
+      "caption": "Mimetyp",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": null
+    },
+    {
+      "id": "license",
+      "type": "license",
+      "inheritable": true,
+      "recommended": false,
+      "caption": "Lizenz",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": {
+        "url": [
+          "https://creativecommons.org/licenses/by-sa/3.0/deed.de"
+        ],
+        "icon_url": [
+          "https://repository.staging.openeduhub.net/edu-sharing/ccimages/licenses/cc-by-sa.svg"
+        ],
+        "cc_key": [
+          "CC_BY_SA"
+        ],
+        "cc_version": [
+          "3.0"
+        ]
+      }
+    },
+    {
+      "id": "ccm:price",
+      "type": "singleoption",
+      "inheritable": true,
+      "recommended": false,
+      "caption": "Kosten",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": {
+        "value": "http://w3id.org/openeduhub/vocabs/price/no",
+        "display": "nein"
+      }
+    },
+    {
+      "id": "ccm:oeh_quality_login",
+      "type": "singleoption",
+      "inheritable": true,
+      "recommended": false,
+      "caption": "Login notwendig",
+      "bottomCaption": null,
+      "placeholder": null,
+      "value": {
+        "value": "1",
+        "display": "Ohne Login zugänglich"
+      }
+    }
+  ],
+  "groups": [
+    {
+      "id": "general",
+      "display": "Allgemein",
+      "icon": "description",
+      "fields": [
+        "cclom:title",
+        "cclom:general_description",
+        "ccm:wwwurl",
+        "cclom:general_language",
+        "ccm:published_date",
+        "cm:created",
+        "cclom:version",
+        "cm:modified"
+      ]
+    },
+    {
+      "id": "pedagogical",
+      "display": "Pädagogisches",
+      "icon": "school",
+      "fields": [
+        "cclom:typicallearningtime",
+        "cclom:duration",
+        "ccm:curriculum",
+        "ccm:educationalintendedenduserrole",
+        "ccm:oeh_competence_requirements",
+        "ccm:oeh_profession_group",
+        "ccm:oeh_languageTarget",
+        "ccm:oeh_languageLevel"
+      ]
+    },
+    {
+      "id": "typisierung",
+      "display": "Typisierung",
+      "icon": "done_all",
+      "fields": [
+        "ccm:oeh_lrt",
+        "ccm:taxonid",
+        "cclom:general_keyword",
+        "ccm:educationalcontext",
+        "ccm:educationaltypicalagerange",
+        "virtual:mediatype",
+        "cclom:format"
+      ]
+    },
+    {
+      "id": "license",
+      "display": "Lizenz",
+      "icon": "copyright",
+      "fields": [
+        "license"
+      ]
+    },
+    {
+      "id": "quality",
+      "display": "Zugänglichkeit / Qualität",
+      "icon": "accessibility",
+      "fields": [
+        "ccm:price",
+        "ccm:oeh_quality_login"
+      ]
+    }
+  ]
+}

@@ -5,3 +5,5 @@ logs/
 *.egg-info/
 .scrapy/
 .venv/
+.mypy_cache/
+__pycache__

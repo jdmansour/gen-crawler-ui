@@ -8,9 +8,54 @@ from django.db import models
 
 log = logging.getLogger(__name__)
 
+## WLO Sources
+
+class SourceItem(models.Model):
+    """ An edu-sharing source item that can be crawled. """
+
+    id = models.AutoField(primary_key=True)
+    guid = models.CharField(max_length=255, unique=True)
+    title = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    data = models.JSONField()
+
+    def __str__(self):
+        return f"{self.title} ({self.guid})"
+
+    def preview_url(self) -> str:
+        """ Returns the preview URL for this source item. """
+        return self.data.get('preview', {}).get('url', None)
+
+## Crawlers
+
+class Crawler(models.Model):
+    """ A definition of a generic web crawler. """
+    
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    # This could be multiple URLs in the future
+    start_url = models.URLField()
+    # The source item in edu-sharing as a GUID
+    source_item = models.CharField(max_length=255)
+    # TODO: add validation
+    # List of field IDs that are inherited from the source item
+    inherited_fields = models.JSONField(default=list)
+
+    def __str__(self):
+        return self.name
 
 class CrawlJob(models.Model):
     """ A crawl job contains a start URL and references to all crawled URLs. """
+
+    # Crawl job state: pending, running, completed, failed
+    class State(models.TextChoices):
+        PENDING = 'PENDING', 'Pending'
+        RUNNING = 'RUNNING', 'Running'
+        COMPLETED = 'COMPLETED', 'Completed'
+        FAILED = 'FAILED', 'Failed'
 
     id = models.AutoField(primary_key=True)
     start_url = models.URLField()
@@ -19,6 +64,11 @@ class CrawlJob(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     crawled_urls: models.QuerySet[CrawledURL]
     filter_sets: models.QuerySet[FilterSet]
+    crawler = models.ForeignKey(
+        Crawler, on_delete=models.CASCADE, related_name="crawl_jobs")
+    state = models.CharField(
+        max_length=20, choices=State.choices, default=State.PENDING)
+    scrapy_job_id = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"#{self.id} {self.start_url} at {self.created_at.strftime('%Y-%m-%d %H:%M')}"
@@ -56,8 +106,11 @@ class FilterSet(models.Model):
     """ A set of rules that can be used to filter URLs in a crawl job. """
 
     id = models.AutoField(primary_key=True)
-    crawl_job = models.ForeignKey(
-        CrawlJob, on_delete=models.CASCADE, related_name="filter_sets")
+
+    # TODO: FilterSets should now attach to Crawlers, not CrawlJobs
+    # Each Crawler has exactly one FilterSet (one on one)
+    crawler = models.OneToOneField(
+        Crawler, on_delete=models.CASCADE, related_name="filter_set", blank=True, null=True)
     remaining_urls = models.IntegerField(default=0)
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -67,7 +120,7 @@ class FilterSet(models.Model):
     def __str__(self):
         return self.name
 
-    def evaluate(self, rule=None):
+    def evaluate(self, crawl_job: CrawlJob, rule=None):
         """ Evaluate the filter set. If a rule is given, evaluate this rule
         and all dependent (later) rules. If no rule is given, evaluate all rules."""
 
@@ -78,30 +131,46 @@ class FilterSet(models.Model):
         # TODO: rewrite using sqlite GLOB?
         # TODO: start with the given rule and do all after
         rules = self.rules.order_by('position')
-        q = self.crawl_job.crawled_urls
+        q = crawl_job.crawled_urls
         # total_matches = 0
+        # rule_id -> {rule, count, cumulative_count}
+        results = []
         for r in rules:
-            log.info("Evaluating rule %s", r.rule)
-            r.count = self.crawl_job.crawled_urls.filter(
+            log.info("Evaluating rule %s on CrawlJob %s", r.rule, crawl_job.id)
+            count = crawl_job.crawled_urls.filter(
                 url__startswith=r.rule).count()
-            r.cumulative_count = q.filter(url__startswith=r.rule).count()
+            cumulative_count = q.filter(url__startswith=r.rule).count()
             log.info("Count: %d in isolation, %d after previous rules",
-                     r.count, r.cumulative_count)
-            # total_matches += r.cumulative_count
-            r.save(update_fields=[
-                   'count', 'cumulative_count'], force_update=True)
+                     count, cumulative_count)
+            
+            results.append({
+                'id': r.pk,
+                'rule': r.rule,
+                'include': r.include,
+                'created_at': r.created_at,
+                'updated_at': r.updated_at,
+                'page_type': r.page_type,
+                'count': count,
+                'cumulative_count': cumulative_count,
+                'position': r.position
+            })
+
+            # r.save(update_fields=[
+            #        'count', 'cumulative_count'], force_update=True)
 
             # select all that don't trigger the filter
             q = q.exclude(url__startswith=r.rule)
-            # cumulative_count = q.count()
-            # cumulative_count += r.count
-        # self.remaining_urls = self.crawl_job.crawled_urls.count() - total_matches
-        self.remaining_urls = q.count()
-        log.info("Remaining URLs: %d", self.remaining_urls)
-        self.save(update_fields=['remaining_urls'], force_update=True)
-        # log.info("Done")
-        # return rules
 
+        remaining_urls = q.count()
+        log.info("Remaining URLs: %d", remaining_urls)
+        return {
+            'id': self.id,
+            'remaining_urls': remaining_urls,
+            'name': self.name,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at,
+            'rules': results
+        }
 
 class FilterRule(models.Model):
     """ A rule to filter URLs in or out. """

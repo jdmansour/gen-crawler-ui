@@ -31,8 +31,12 @@ ALLOWED_HOSTS = [
     '127.0.0.1:8000',
     'localhost',
     'localhost:8000',
+    'generic-crawler-ui-web.staging.openeduhub.net',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://generic-crawler-ui-web.staging.openeduhub.net",
+]
 
 # Application definition
 
@@ -60,6 +64,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -144,13 +149,10 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-        'rest_framework.permissions.AllowAny'
+        # 'rest_framework.permissions.AllowAny'
+        'rest_framework.permissions.IsAuthenticated'
     ]
 }
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-]
 
 # Set up logging for Django. Set the log level to INFO for the dashboards app. Include the level and module in the format.
 LOGGING = {
@@ -177,8 +179,24 @@ LOGGING = {
             "handlers": ["console"],
             "level": "INFO",
         },
+        "aggregator": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
     },
 }
+
+DJANGO_VITE_DEV_MODE = config("DJANGO_VITE_DEV_MODE", default=True, cast=bool)
+DJANGO_VITE_DEV_SERVER_PROTOCOL = config("DJANGO_VITE_DEV_SERVER_PROTOCOL", default="http")
+DJANGO_VITE_DEV_SERVER_HOST = config("DJANGO_VITE_DEV_SERVER_HOST", default="localhost")
+DJANGO_VITE_DEV_SERVER_PORT = config("DJANGO_VITE_DEV_SERVER_PORT", default=5173)
+DJANGO_VITE_DEV_SERVER_URL = f"{DJANGO_VITE_DEV_SERVER_PROTOCOL}://{DJANGO_VITE_DEV_SERVER_HOST}:{DJANGO_VITE_DEV_SERVER_PORT}"
+
+#CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = []
+CORS_ALLOWED_ORIGINS.append("http://localhost:5173")
+if DJANGO_VITE_DEV_MODE:
+    CORS_ALLOWED_ORIGINS.append(DJANGO_VITE_DEV_SERVER_URL)
 
 DJANGO_VITE = {
   "default": {
@@ -186,7 +204,10 @@ DJANGO_VITE = {
     # In that case, you must run the vite server in the frontend directory (npm run dev).
     # If you set this to false, you must build and bundle the frontend with npm run build,
     # and then manage.py collectstatic.
-    "dev_mode": config("DJANGO_VITE_DEV_MODE", default=True, cast=bool),
+    "dev_mode": DJANGO_VITE_DEV_MODE,
+    "dev_server_protocol": DJANGO_VITE_DEV_SERVER_PROTOCOL,
+    "dev_server_host": DJANGO_VITE_DEV_SERVER_HOST,
+    "dev_server_port": DJANGO_VITE_DEV_SERVER_PORT,
   }
 }
 
@@ -226,3 +247,5 @@ INTERNAL_IPS = [
 ]
 
 SCRAPYD_URL = config("SCRAPYD_URL", "http://127.0.0.1:6800")
+
+LOGOUT_REDIRECT_URL = '/'

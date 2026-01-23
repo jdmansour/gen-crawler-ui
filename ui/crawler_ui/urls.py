@@ -14,25 +14,31 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from crawls.views import (CrawlDetailView, CrawlsListView, FilterRuleViewSet,
+from crawls.views import (CrawlerViewSet, CrawlDetailView, CrawlsListView, FilterRuleViewSet,
                           FilterSetCreateView, FilterSetDetailView,
-                          FilterSetViewSet, StartCrawlFormView, start_content_crawl)
+                          FilterSetViewSet, HealthViewSet, StartCrawlFormView, crawler_status_stream,
+                          start_content_crawl, SourceItemViewSet, CrawlJobViewSet)
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import index
+from .views import index, wlo_spa
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
+router.register(r'crawlers', CrawlerViewSet)
+router.register(r'crawl_jobs', CrawlJobViewSet)
+router.register(r'source_items', SourceItemViewSet)
 router.register(r'filter_sets', FilterSetViewSet)
 router.register(r'filter_rules', FilterRuleViewSet)
+router.register(r'health', HealthViewSet, basename='health')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', index, name='index'),
+    path('wlo_spa/', wlo_spa, name='wlo_spa'),
     path('crawls/add/', StartCrawlFormView.as_view(), name='crawl_create'),
     path('crawls/<int:pk>/', CrawlDetailView.as_view(), name='crawl_details'),
     path('crawls/', CrawlsListView.as_view(), name='crawls_list'),
@@ -42,6 +48,8 @@ urlpatterns = [
     path('filters/<int:pk>/', FilterSetDetailView.as_view(), name='filter_details'),
     path('filters/<int:pk>/crawl/', start_content_crawl, name='filterset_start_crawl'),
     path('admin/', admin.site.urls),
+    path('api/crawlers/<int:crawler_id>/status_stream/', crawler_status_stream, name='crawler_status_stream'),
     path('api/', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path("accounts/", include("django.contrib.auth.urls")),
 ] + debug_toolbar_urls()

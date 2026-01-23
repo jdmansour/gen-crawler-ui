@@ -204,9 +204,13 @@ class WebTools:
         # relevant docs for this implementation: https://hub.docker.com/r/browserless/chrome#playwright and
         # https://playwright.dev/python/docs/api/class-browsertype#browser-type-connect-over-cdp
         async with async_playwright() as p:
-            browser = await p.chromium.connect_over_cdp(endpoint_url=env.get("PLAYWRIGHT_WS_ENDPOINT"))
+            log.debug("Fetching data with Playwright")
+            ws_endpoint = env.get("PLAYWRIGHT_WS_ENDPOINT") + "/chrome/playwright"
+            browser = await p.chromium.connect(ws_endpoint)
             browser = await browser.new_context(java_script_enabled=True)
+            log.debug("  browser.new_page()")
             page = await browser.new_page()
+            log.debug("  page.goto(url=%r)", url)
             await page.goto(url, wait_until="load", timeout=90000)
             # waits for a website to fire the DOMContentLoaded event or for a timeout of 90s
             # since waiting for 'networkidle' seems to cause timeouts

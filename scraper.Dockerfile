@@ -1,7 +1,7 @@
 
 # First stage: build the egg file
 
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS build-stage
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS build-stage
 
 # Copy deps
 COPY scraper /workdir/scraper
@@ -15,7 +15,7 @@ RUN uv run scrapyd-deploy --build-egg=1738306332.egg
 
 # Main stage: build the scrapyd container
 
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim
 
 WORKDIR /workdir/app
 
@@ -40,11 +40,15 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Scrapy config
 VOLUME /etc/scrapyd/ /var/lib/scrapyd/
 COPY scraper/scrapyd.conf /etc/scrapyd/
+COPY scraper/scrapy.cfg /workdir/app/scrapy.cfg
 
 # Copy the built egg
 RUN mkdir -p /workdir/app/eggs
 # The name of the project is "scraper"
 COPY --from=build-stage /workdir/scraper/1738306332.egg /workdir/app/eggs/scraper/1738306332.egg
+
+# Fetch the valuespace converter cache
+RUN uv run python /workdir/valuespace-converter/src/valuespace_converter/valuespaces.py
 
 EXPOSE 6800
 ENV DB_PATH=/workdir/app/database/db.sqlite

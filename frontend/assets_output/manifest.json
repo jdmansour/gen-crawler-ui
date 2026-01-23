@@ -1,19 +1,19 @@
 {
-  "_client-DJJ63Tcp.js": {
-    "file": "assets/client-DJJ63Tcp.js",
+  "_client-DFgYQUdv.js": {
+    "file": "assets/client-DFgYQUdv.js",
     "name": "client"
   },
   "src/demo.tsx": {
-    "file": "assets/demo-9tqYKfTj.js",
+    "file": "assets/demo-CU-C4i1p.js",
     "name": "demo",
     "src": "src/demo.tsx",
     "isEntry": true,
     "imports": [
-      "_client-DJJ63Tcp.js"
+      "_client-DFgYQUdv.js"
     ],
     "css": [
       "assets/demo-DEmrpTTR.css",
-      "assets/css-9ZX7evUj.css"
+      "assets/css-DOrf2AlJ.css"
     ],
     "assets": [
       "assets/montserrat-v26-latin-regular-BfmCfwfZ.woff2",
@@ -34,21 +34,39 @@
     "src": "src/fonts/montserrat-v26-latin-regular.woff2"
   },
   "src/index.css": {
-    "file": "assets/css-9ZX7evUj.css",
+    "file": "assets/css-DOrf2AlJ.css",
     "src": "src/index.css",
     "isEntry": true
   },
   "src/main.tsx": {
-    "file": "assets/main-D3DiyIuV.js",
+    "file": "assets/main-CaiUJy1E.js",
     "name": "main",
     "src": "src/main.tsx",
     "isEntry": true,
     "imports": [
-      "_client-DJJ63Tcp.js"
+      "_client-DFgYQUdv.js"
     ],
     "css": [
       "assets/main-D9fjUwis.css",
-      "assets/css-9ZX7evUj.css"
+      "assets/css-DOrf2AlJ.css"
+    ],
+    "assets": [
+      "assets/montserrat-v26-latin-regular-BfmCfwfZ.woff2",
+      "assets/montserrat-v26-latin-500-CN3hDfLq.woff2",
+      "assets/montserrat-v26-latin-700-Dkxlx_w4.woff2"
+    ]
+  },
+  "src/wlo_spa.tsx": {
+    "file": "assets/wlo_spa-B80QnU3L.js",
+    "name": "wlo_spa",
+    "src": "src/wlo_spa.tsx",
+    "isEntry": true,
+    "imports": [
+      "_client-DFgYQUdv.js"
+    ],
+    "css": [
+      "assets/wlo_spa-Dg-vj2yH.css",
+      "assets/css-DOrf2AlJ.css"
     ],
     "assets": [
       "assets/montserrat-v26-latin-regular-BfmCfwfZ.woff2",

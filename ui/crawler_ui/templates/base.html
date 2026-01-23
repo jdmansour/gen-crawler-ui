@@ -30,6 +30,20 @@
               <li><a href="{% url 'crawls_list' %}">Crawls</a></li>
             </ul>
           </div>
+          <div class="header-right">
+            <ul class="menu"><li>
+              {% if user.is_authenticated %}
+                {% comment %} <a href="{% url 'logout' %}">Logout</a> {% endcomment %}
+                <form method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <button type="submit">Log out</button>
+                </form>
+              {% else %}
+                <a href="{% url 'login' %}?next={{request.path}}">Log in</a>
+              {% endif %}
+            </li>
+            </ul>
+          </div>
         </div>
         <div class="content">
           <!-- show django messages -->

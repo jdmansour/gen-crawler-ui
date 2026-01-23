@@ -1,0 +1,18 @@
+body {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  background-color: #f6f8fb;
+}
+
+button {
+  font: inherit;
+}
+
+/* apply default font to shadow dom root */
+:host {
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+}

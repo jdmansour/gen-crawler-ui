@@ -1,0 +1,309 @@
+.wloFiltertabs {
+  margin: 0px;
+  margin-bottom: 20px;
+  --wlo-filtertabs-indicator-height: 5px;
+}
+
+.wloFiltertabsMenu {
+  /* Menu container styles - will be styled in media queries */
+  display: block;
+}
+
+.wloFiltertabs ul {
+  list-style: none;
+  display: flex;
+  gap: 12px;
+
+  padding: 0 16px;
+  margin: 0;
+
+  color: #163e76;
+  font-family: Montserrat;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+  width: 100%;
+
+  border-bottom: 1px solid #cbcbcb;
+
+  position: relative;
+}
+
+/* only not on mobile */
+@media screen and (min-width: 769px) {
+  .wloFiltertabs {
+    display: block;
+    overflow-x: scroll;
+    overscroll-behavior-x: contain;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    width: 100%;
+    scroll-padding: 60px;
+  }
+  /* .wloFiltertabs > div {
+        scroll-margin: 20px;
+    } */
+
+  .wloFiltertabs {
+    box-shadow:
+      inset 20px 0 10px -15px rgba(0, 0, 0, 0.25),
+      inset -20px 0 10px -15px rgba(0, 0, 0, 0.25);
+    /* box-shadow: inset 20px 0 10px -15px #919294, inset -20px 0 10px -15px #919294; */
+    /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
+    /* margin: 0; */
+    padding: 0;
+  }
+
+  .wloFiltertabs > div {
+    background:
+      linear-gradient(to right, #fff 40px, transparent 100px),
+      linear-gradient(to left, #fff 40px, transparent 100px);
+    background-size: 100% 100%;
+    width: 100%;
+    min-width: fit-content;
+    display: inline-block;
+    position: relative;
+    overflow: visible;
+    box-sizing: border-box;
+    /* background: linear-gradient(to right, transparent 0%, transparent 60px, #ccccff 80px); */
+  }
+
+  .wloFiltertabs ul {
+    box-sizing: border-box;
+    /* padding: 0; */
+  }
+}
+
+/* .wloFiltertabs {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    transform: rotate(-90deg);
+    height: 100%
+}
+
+.wloFiltertabs > div {
+    transform: rotate(90deg);
+} */
+
+/* add shadow to the left and right when wloFiltertabs scrolls */
+/* .wloFiltertabs {
+    box-shadow: inset 20px 0 10px -15px #000;
+    position: relative;
+}
+
+.wloFiltertabs > div:before {
+    content: '';
+    position: absolutely;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 100%;
+    border: 1px solid red;
+    background: white;
+    background: linear-gradient(to left, #ffffff 30px, #ffffff00 60px);
+} */
+
+.wloFiltertabs a {
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 400;
+  text-wrap: nowrap;
+}
+
+/* .wloFiltertabs ul { outline: 1px solid green; }
+.wloFiltertabs li { outline: 1px solid orange; }
+.wloFiltertabs li > * { outline: 1px solid red; }
+.wloFiltertabs li > * > * { outline: 1px solid blue; } */
+
+.wloFiltertabsSidebar {
+  --wlo-filtertabs-indicator-height: 3px;
+}
+
+.wloFiltertabsSidebar ul {
+  gap: 0px;
+  padding: 0 5px;
+
+  color: #49454f;
+}
+
+.wloFiltertabsSidebar li {
+  /* make the <a> child fill this */
+  display: flex;
+}
+
+.wloFiltertabsSidebar li a {
+  flex-direction: column;
+  gap: 0px;
+  padding: 4px 6px;
+  /* orient at bottom */
+  justify-content: end;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.wloFiltertabsTabComplete svg {
+  color: #b4da1c;
+}
+
+.wloFiltertabs a:link,
+.wloFiltertabs a:visited {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 12px 12px 0 0;
+  /* background-color: #f7f8fa00; */
+  transition: background-color 0.2s linear;
+}
+
+.wloFiltertabs a:hover,
+.wloFiltertabs a:active {
+  color: #003b7c;
+  background-color: #f7f8fa;
+  border-radius: 12px 12px 0 0;
+  transition: background-color 0s linear;
+}
+
+.wloFiltertabsTabDisabled a:hover,
+.wloFiltertabsTabDisabled a:active {
+  color: inherit;
+  background-color: inherit;
+  cursor: default;
+}
+
+.wloFiltertabs .indicator {
+  position: absolute;
+  width: 50px;
+  bottom: calc(-1 * var(--wlo-filtertabs-indicator-height));
+  height: var(--wlo-filtertabs-indicator-height);
+  border-radius: var(--wlo-filtertabs-indicator-height);
+  border-top: var(--wlo-filtertabs-indicator-height) solid #80a4cb;
+  transition:
+    left 0.2s ease-out,
+    width 0.2s ease-out;
+}
+
+.wloFiltertabsToggle {
+  display: none;
+}
+
+.wloFiltertabsMenuCheckbox {
+  display: none;
+}
+
+.icon {
+  /* Icon styles - specific styling can be added if needed */
+  display: inline-block;
+}
+
+@media screen and (max-width: 768px) {
+  .wloFiltertabs ul {
+    display: none;
+  }
+
+  .wloFiltertabsToggle {
+    font-size: 18px;
+
+    position: fixed;
+    right: 0px;
+    top: 0px;
+    height: 40px;
+    width: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 101;
+    color: #163e76;
+    border-radius: 12px;
+  }
+
+  .wloFiltertabs {
+    position: relative;
+  }
+
+  /* .wloFiltertabs {
+        position: absolute;
+        width: 100%;
+        z-in
+    } */
+
+  .wloFiltertabsMenu {
+    display: flex;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    z-index: 100;
+
+    background-color: #00000088;
+
+    transition: all 0.2s linear;
+    opacity: 0;
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+  }
+
+  .wloFiltertabsMenuCheckbox:checked ~ div {
+    pointer-events: all;
+    opacity: 1;
+    transition: all 0s linear;
+  }
+
+  .wloFiltertabs ul {
+    display: flex;
+    opacity: 1;
+    z-index: 102;
+    width: 100%;
+    height: 100%;
+
+    /* margin: 70px; */
+    box-sizing: border-box;
+
+    position: relative;
+    z-index: 110;
+    /* position: fixed; */
+    /* width: 100%;
+        height: 100%;
+        top: 0px;
+        left: 0; */
+    /* transform: translateX(100%); */
+    /* margin: 20px; */
+
+    box-sizing: border-box;
+    flex-direction: column;
+    gap: 0px;
+    font-weight: 400;
+    border-radius: 12px;
+    margin: 0;
+    padding: 12px;
+    background-color: #d2e1f1;
+  }
+
+  .wloFiltertabs a:link,
+  .wloFiltertabs a:visited {
+    border-radius: 0;
+  }
+
+  /* .wloFiltertabsToggle {
+        display: flex;
+        gap: 24px;
+        padding: 0 16px;
+        margin-top: 8px;
+    }
+
+    .wloFiltertabsToggle a {
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 400;
+    } */
+}

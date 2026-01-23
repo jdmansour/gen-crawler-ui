@@ -7,40 +7,34 @@ requires-python = ">=3.10"
 dependencies = [
     "asgiref>=3.8.1",
     "async-lru==2.0.4",
-    "extruct==0.17.0",
     "html2text==2024.2.26",
     "httpx==0.27.2",
-    "importlib-resources==6.4.0",
     "isodate>=0.7.2",
-    "jaraco-collections==5.1.0",
     "langcodes==3.4.0",
     "metadataenricher",
-    "mypy==1.11.2",
     "openai>=1.64.0",
-    "overrides==7.7.0",
     "pillow==10.4.0",
-    "pip-chill==1.0.3",
     "platformdirs==4.2.2",
-    "playwright==1.47.0",
+    "playwright~=1.49.0",
     "python-decouple==3.8",
     "python-dotenv==1.0.1",
-    "scrapy==2.11.2",
+    "redis==5.1.1",
+    "scrapy>=2.11.2",
     "scrapyd==1.4.3",
     "scrapyd-client==1.2.3",
     "sqlparse==0.5.1",
-    "trafilatura==1.9.0",
-    "types-beautifulsoup4==4.12.0.20240907",
+    "trafilatura>=2.0.0",
     "valuespace-converter",
     "vobject==0.9.7",
-    "whitenoise==6.7.0",
-    "xmltodict==0.13.0",
 ]
 
 [tool.uv.sources]
-metadataenricher = { path = "../metadataenricher", editable = true }
 valuespace-converter = { path = "../valuespace-converter", editable = true }
+metadataenricher = { path = "../metadataenricher", editable = true }
 
 [dependency-groups]
 dev = [
+    "mypy>=1.11.2",
     "pytest>=8.3.4",
+    "types-beautifulsoup4>=4.12.0.20250204",
 ]
