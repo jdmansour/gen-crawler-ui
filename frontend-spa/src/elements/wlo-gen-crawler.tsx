@@ -31,6 +31,10 @@ class WLOGenCrawler extends HTMLElement {
     const shadowRoot = this.attachShadow({ mode: "open" });
 
     const mountPoint = document.createElement("div");
+    mountPoint.style.boxSizing = "border-box";
+    mountPoint.style.height = "100%";
+    mountPoint.style.display = "flex";
+    mountPoint.style.flexDirection = "column";
     shadowRoot.appendChild(mountPoint);
 
     const cache = createCache({

@@ -123,3 +123,31 @@ npm run build
 cd ../ui
 python manage.py collectstatic
 ```
+
+## Web Component
+
+To build the generic crawler web component:
+
+```bash
+cd frontend-spa
+npx vite build --mode library
+# output in dist/
+```
+
+To test the web component:
+
+```bash
+cd frontend-spa
+npx vite serve
+```
+
+Now you can view it at http://localhost:5174/test_component.html .
+
+The component can be used as follows:
+
+```html
+<script type="module" src="dist/index.js"></script>
+<!-- base-path is the URL root which is used by the component for routing.
+     Every URL below this is assumed to route to the component.  -->
+<wlo-gen-crawler base-path="test_component.html"/>
+```

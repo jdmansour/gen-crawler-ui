@@ -121,7 +121,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider theme={wloTheme}>
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }} >
+    <div style={{ display: "flex", flexDirection: "column", flex: "1" }} >
       <SiteLayout
         style={{ }}
         sidebar={<GenCrawlerSidebar step={step} />}
