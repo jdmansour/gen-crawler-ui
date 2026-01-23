@@ -6,7 +6,6 @@ import logging
 import os
 import threading
 import time
-from typing import Any, Optional
 
 import redis
 import requests
@@ -17,16 +16,13 @@ from django.contrib.auth.decorators import login_not_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import StreamingHttpResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.views.generic import CreateView, DetailView, FormView, ListView
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from crawls.fields_processor import FieldsProcessor
-from crawls.forms import StartCrawlForm
 from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
 from crawls.serializers import (CrawlerSerializer, FilterRuleSerializer,
                                 FilterSetSerializer, SourceItemSerializer, CrawlJobSerializer)
@@ -373,61 +369,6 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
         return Response(result)
 
 
-class CrawlsListView(ListView):
-    model = CrawlJob
-    template_name = 'crawls_list.html'
-    context_object_name = 'crawls'
-
-    def get_queryset(self):
-        return CrawlJob.objects.all().order_by('-created_at')
-
-
-class CrawlDetailView(DetailView):
-    model = CrawlJob
-    template_name = 'crawl_detail.html'
-    context_object_name = 'crawl'
-
-
-class FilterSetDetailView(DetailView):
-    model = FilterSet
-    template_name = 'filterset_detail.html'
-    context_object_name = 'filterset'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-
-class FilterSetCreateView(CreateView):
-    model = FilterSet
-    fields = ['name', 'crawl_job']
-    template_name = 'filterset_create.html'
-    # success_url = '/crawls/'
-    object: Optional[FilterSet]
-
-    def get_success_url(self) -> str:
-        # return the new filter set's detail page
-        assert self.object is not None
-        return reverse_lazy('filter_details', kwargs={'pk': self.object.pk})
-
-    # get crawl job id from URL
-    def get_initial(self) -> dict[str, Any]:
-        initial = super().get_initial().copy()
-        # get crawl_job_id from GET parameters
-        crawl_job_id = self.request.GET.get('crawl_job_id')
-        # Raise error if crawl_job_id is not provided
-        if crawl_job_id is None:
-            raise ValueError("crawl_job_id is required")
-        initial['crawl_job'] = crawl_job_id
-        return initial
-
-    # run code on successful form submission
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.info(self.request, 'Filter set created')
-        return response
-
-
 class HealthViewSet(viewsets.ViewSet):
     """ Provides the API under /api/health/ """
 
@@ -436,43 +377,6 @@ class HealthViewSet(viewsets.ViewSet):
     def list(self, request):
         """ Return health status. """
         return Response({'status': 'ok'})
-
-
-class StartCrawlFormView(FormView):
-    """ Start a new crawl job. """
-
-    template_name = 'start_crawl.html'
-    form_class = StartCrawlForm
-    success_url = '/crawls/'
-
-    def form_valid(self, form: StartCrawlForm):
-        start_url = form.cleaned_data['start_url']
-        follow_links = form.cleaned_data['follow_links']
-        parameters = {
-            'project': 'scraper',
-            'spider': 'example',
-            'start_url': start_url,
-            'follow_links': follow_links,
-        }
-        # get SCRAPYD_URL from settings
-        url = settings.SCRAPYD_URL + "/schedule.json"
-        response = requests.post(url, data=parameters, timeout=5)
-        log.info("Response: %s", response.text)
-        log.info("Status code: %s", response.status_code)
-
-        if response.status_code != 200:
-            messages.error(self.request, f"Error starting crawl: {response.text}")
-            return super().form_invalid(form)
-
-        obj = response.json()
-        # response can be something like:
-        # {"status": "error", "message": "spider 'generic_spider' not found"}
-        if obj.get('status') == 'error':
-            messages.error(self.request, f"Error starting crawl: {obj.get('message')}")
-        else:
-            messages.info(self.request, f"Crawl of '{start_url}' started")
-
-        return super().form_valid(form)
 
 
 @require_POST

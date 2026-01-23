@@ -213,7 +213,7 @@ DJANGO_VITE = {
 
 # Where to get static files from
 STATICFILES_DIRS = [
-  BASE_DIR / "../frontend/assets_output"
+#   BASE_DIR / "../frontend/assets_output"
 ]
 
 # Where to put static files to serve them
@@ -248,4 +248,6 @@ INTERNAL_IPS = [
 
 SCRAPYD_URL = config("SCRAPYD_URL", "http://127.0.0.1:6800")
 
+# Use builtin admin login page
+LOGIN_URL = '/admin/login/'
 LOGOUT_REDIRECT_URL = '/'
