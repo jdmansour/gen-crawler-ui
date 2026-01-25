@@ -26,6 +26,7 @@ import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import { useCrawlerSSE } from "./hooks/useSSE";
 import { CrawlerDetailsPageContext } from "./RootContext";
 import { useStep } from "./steps";
+import Api from './api';
 
 
 export default function CrawlerDetailsPage() {
@@ -44,6 +45,7 @@ export default function CrawlerDetailsPage() {
 }
 
 export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[], onCrawlJobAdded: (newJob: CrawlJob) => void, onCrawlJobDeleted: (crawlJobId: number) => void, onCrawlJobLiveUpdate: (sseData: SSEData) => void, onCrawlerDeleted: (crawlerId: number) => void}) {
+    // todo: move onCrawlerDeleted from a param to context?
     const { crawlerId, crawlerList, sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = params;
     const crawler = crawlerList.find(c => c.id == crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
@@ -56,7 +58,8 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
     const menuOpen = Boolean(anchorEl);
 
     const navigate = useNavigate();
-    
+    const api = new Api("http://localhost:8000/api");
+
     // Set initial form values when 'crawler' is loaded
     useEffect(() => {
         if (crawler) {
@@ -88,52 +91,23 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
     // -----------------------------
 
     async function deleteCrawler(crawlerId: number) {
-        // Delete crawler
-        const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
-            method: "DELETE",
-        });
-        if (response.ok) {
-            onCrawlerDeleted(crawlerId);
-        } else {
-            console.error("Failed to delete crawler:", response.status, response.statusText);
-        }
-        // redirect to dashboard or another page after deletion
+        await api.deleteCrawler(crawlerId);
+        onCrawlerDeleted(crawlerId);
         navigate("/");
     }
 
     async function startCrawlClicked() {
-        // Trigger a new crawl job
-        const response = await fetch(`http://localhost:8000/api/crawlers/${crawler.id}/start_crawl/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        if (!response.ok) {
-            console.error("Failed to start crawl job:", response.status, response.statusText);
-            return;
-        }
-        const newJob: CrawlJob = await response.json();
+        if (!crawler) return;
+        const newJob = await api.startCrawl(crawler.id);
         // Optimistically add the new job to the list
         onCrawlJobAdded(newJob);
     }
 
     async function startContentCrawlClicked() {
-        // Trigger a content crawl
-        const response = await fetch(`http://localhost:8000/api/crawlers/${crawler.id}/start_content_crawl/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        if (!response.ok) {
-            console.error("Failed to start content crawl:", response.status, response.statusText);
-            return;
-        }
-        const data = await response.json();
+        if (!crawler) return;
+        const response = await api.startContentCrawl(crawler.id);
         console.log("Content crawl started");
-        console.log("Response:", data);
-        // TODO: integrate content crawls into crawl job list
+        console.log("Response:", response);
     }
 
     function handleMenuClick(event: React.MouseEvent<HTMLElement>, jobId: number) {
@@ -147,32 +121,19 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
     }
 
     async function deleteCrawlClicked() {
+        handleMenuClose();
         // Delete the selected crawl job
         if (!selectedJob) return;
-        const response = await fetch(`http://localhost:8000/api/crawl_jobs/${selectedJob.id}/`, {
-            method: "DELETE",
-        });
-        if (!response.ok) {
-            console.error("Failed to delete crawl job:", response.status, response.statusText);
-            return;
-        }
+        await api.deleteCrawlJob(selectedJob.id);
         // Remove the job from the crawler's job list
         onCrawlJobDeleted(selectedJob.id);
-        handleMenuClose();
     }
 
     async function cancelCrawlClicked() {
+        handleMenuClose();
         // Cancel the selected crawl job
         if (!selectedJob) return;
-        const response = await fetch(`http://localhost:8000/api/crawl_jobs/${selectedJob.id}/cancel/`, {
-            method: "POST",
-        });
-        if (!response.ok) {
-            console.error("Failed to cancel crawl job:", response.status, response.statusText);
-            return;
-        }
-        console.log("Crawl job cancelled");
-        handleMenuClose();
+        await api.cancelCrawlJob(selectedJob.id);
     }
 
     if (!crawler) {
@@ -228,7 +189,7 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
             <Button variant="outlined" color="primary" onClick={startCrawlClicked}>Crawler starten</Button>
             <Button variant="outlined" onClick={startContentCrawlClicked}>Content Crawl starten</Button>
             <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/filters/`}>Filter bearbeiten</Button>
-            <Button variant="outlined" component="a" href={`http://localhost:8000/admin/crawls/crawler/${crawler.id}/change/`}>Im Admin-Bereich anzeigen</Button>
+            <Button variant="outlined" component="a" href={api.getAdminUrl(crawler.id)}>Im Admin-Bereich anzeigen</Button>
             <Button variant="outlined" color="error" onClick={() => setConfirmDeleteOpen(true)}>Crawler löschen</Button>
         </Stack>
 
