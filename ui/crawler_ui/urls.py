@@ -16,7 +16,7 @@ Including another URLconf
 """
 from crawls.views import (CrawlerViewSet, FilterRuleViewSet,
                           FilterSetViewSet, HealthViewSet, crawler_status_stream,
-                          start_content_crawl, SourceItemViewSet, CrawlJobViewSet)
+                          SourceItemViewSet, CrawlJobViewSet)
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
 from django.urls import include, path
@@ -38,8 +38,6 @@ router.register(r'health', HealthViewSet, basename='health')
 urlpatterns = [
     path('', index, name='index'),
     path('wlo_spa/', wlo_spa, name='wlo_spa'),
-    # todo: is this used?
-    path('filters/<int:pk>/crawl/', start_content_crawl, name='filterset_start_crawl'),
     path('admin/', admin.site.urls),
     path('api/crawlers/<int:crawler_id>/status_stream/', crawler_status_stream, name='crawler_status_stream'),
     path('api/', include(router.urls)),
