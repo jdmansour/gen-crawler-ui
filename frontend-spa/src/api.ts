@@ -1,10 +1,58 @@
-import { CrawlJob } from "./apitypes";
+import { Crawler, CrawlJob, SourceItem } from "./apitypes";
+import { GroupInfo, WloBaseFieldInfo, WloFieldInfo } from "./wloTypes";
 
 export default class Api {
     constructor(private baseUrl: string) {
     }
 
     // Crawlers
+
+    async listCrawlers(): Promise<Crawler[]> {
+        const response = await fetch(`${this.baseUrl}/crawlers/`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch crawlers: ${response.status} ${response.statusText}`);
+        }
+        const data: Crawler[] = await response.json();
+        return data;
+    }
+
+    async createCrawler(sourceItemGuid: string, startURL: string, crawlerName: string): Promise<Crawler> {
+        const response = await fetch(`${this.baseUrl}/crawlers/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                source_item: sourceItemGuid,
+                start_url: startURL,
+                name: crawlerName,
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to create crawler: ${response.status} ${response.statusText}`);
+        }
+
+        const data: Crawler = await response.json();
+        return data;
+    }
+
+    async updateCrawler(crawlerId: number, updates: Partial<Crawler>): Promise<Crawler> {
+        const response = await fetch(`${this.baseUrl}/crawlers/${crawlerId}/`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updates)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to update crawler with ID ${crawlerId}: ${response.status} ${response.statusText}`);
+        }
+
+        const data: Crawler = await response.json();
+        return data;
+    }
 
     async deleteCrawler(crawlerId: number): Promise<void> {
         const response = await fetch(`${this.baseUrl}/crawlers/${crawlerId}/`, {
@@ -60,6 +108,27 @@ export default class Api {
 
     getAdminUrl(crawlerId: number): string {
         return `${this.baseUrl.replace('/api', '')}/admin/crawls/crawler/${crawlerId}/change/`;
+    }
+
+    // Edu-sharing source items
+    
+    async listSourceItems(): Promise<SourceItem[]> {
+        const response = await fetch(`${this.baseUrl}/source_items/`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch source items: ${response.status} ${response.statusText}`);
+        }
+        const data: SourceItem[] = await response.json();
+        return data;
+    }
+
+    // TODO: check return type
+    async getInheritableFields(sourceItemGuid: string): Promise<{fields: WloFieldInfo[]; groups: GroupInfo[]}> {
+        const response = await fetch(`${this.baseUrl}/source_items/${sourceItemGuid}/inheritable_fields`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch inheritable fields for source item ${sourceItemGuid}: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        return data;
     }
 
 }

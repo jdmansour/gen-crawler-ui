@@ -46,27 +46,6 @@ export type CrawlJob = {
     crawler: number;
 }
 
-
-export async function createCrawler(sourceItemGuid: string, startURL: string, crawlerName: string): Promise<Crawler> {
-    const response = await fetch("http://localhost:8000/api/crawlers/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            source_item: sourceItemGuid,
-            start_url: startURL,
-            name: crawlerName,
-        })
-    });
-
-    if (!response.ok) {
-        throw new Error(`Failed to create crawler: ${response.status} ${response.statusText}`);
-    }
-
-    const data: Crawler = await response.json();
-    return data;
-}
     
 export async function getInheritableFields(sourceItemGuid: string): Promise<{fields: WloFieldInfo[]; groups: GroupInfo[]}> {
     const response = await fetch(`http://localhost:8000/api/source_items/${sourceItemGuid}/inheritable_fields`);

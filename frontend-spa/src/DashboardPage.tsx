@@ -16,6 +16,7 @@ import { Crawler, CrawlerStatus } from "./apitypes";
 import { useStep } from "./steps";
 import { CrawlerDetails } from './CrawlerDetailsPage';
 import { createPortal } from 'react-dom';
+import Api from './api';
 
 const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
   draft: "Entwurf",
@@ -40,6 +41,8 @@ export default function DashboardPage() {
 
   // for the sidebar
   const { sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = useOutletContext<CrawlerDetailsPageContext>();
+
+  const api = new Api("http://localhost:8000/api");
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, crawlerId: number) => {
     setAnchorEl(event.currentTarget);
@@ -72,17 +75,10 @@ export default function DashboardPage() {
 
   async function deleteCrawler(crawlerId: number) {
     // Delete crawler
-    const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
-        method: "DELETE",
-    });
-    if (response.ok) {
-        setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
-    } else {
-        console.error("Failed to delete crawler:", response.status, response.statusText);
-    }
-    // redirect to dashboard or another page after deletion
+    await api.deleteCrawler(crawlerId);
+    setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
     navigate("/");
-}
+  }
 
   const sidebarOutlet = document.getElementById("sidebar-outlet");
 

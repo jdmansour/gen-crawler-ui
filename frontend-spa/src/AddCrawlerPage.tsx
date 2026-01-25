@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useSearchParams } from "react-router";
 // import Button from "./Button";
 import { AddCrawlerPageContext } from "./RootContext";
-import { createCrawler } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import { useStep } from "./steps";
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import Api from './api';
 
 
 export default function AddCrawlerPage() {
@@ -31,6 +31,7 @@ export default function AddCrawlerPage() {
   // default start URL
   const defaultURL = sourceItem?.data?.properties['ccm:wwwurl'][0] || "";
   const defaultName = sourceItem?.title || "";
+  const api = new Api("http://localhost:8000/api");
 
   useEffect(() => {
     if (existingCrawlerId) {
@@ -59,7 +60,7 @@ export default function AddCrawlerPage() {
   async function onCreateClick() {
     if (!sourceItem) return;
     // create a crawler, and launch an initial analysis-crawl
-    const newCrawler = await createCrawler(sourceItem.guid, crawlerURL, crawlerName);
+    const newCrawler = await api.createCrawler(sourceItem.guid, crawlerURL, crawlerName);
     setCrawlerList([...crawlerList, newCrawler]);
     navigate(`/crawlers/${newCrawler.id}/metadata-inheritance`);
   }

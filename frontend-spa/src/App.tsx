@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddCrawlerPage from "./AddCrawlerPage";
-import { Crawler, createCrawler, SourceItem } from "./apitypes";
+import { Crawler, SourceItem } from "./apitypes";
 import "./App.css";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
 import "./Button.css";
@@ -13,6 +13,7 @@ import SelectSourcePage from "./SelectSourcePage";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerDashboardStep } from "./steps";
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
+import Api from "./api";
 
 
 
@@ -36,6 +37,7 @@ export default function App() {
   const [crawlerId, setCrawlerId] = useState<number|null>(null);
 
   const step = location.state?.step || "dashboard";
+  const api = new Api("http://localhost:8000/api");
 
   const breadcrumbs: Breadcrumb[] = [
     { label: "Startseite", url: "/" },
@@ -57,9 +59,7 @@ export default function App() {
   }, [step]);
 
   async function fetchCrawlers() {
-    const response = await fetch("http://localhost:8000/api/crawlers");
-    const data: Crawler[] = await response.json();
-
+    const data = await api.listCrawlers();
     console.log("Fetched crawlers:", data);
 
     // Map the API response to the CrawlerInfo type
@@ -76,22 +76,17 @@ export default function App() {
   }
 
   async function fetchSourceItems() {
-    const response = await fetch("http://localhost:8000/api/source_items");
-    const data: SourceItem[] = await response.json();
-
+    const data = await api.listSourceItems();
     console.log("Fetched source items:", data);
-
     setSourceItems(data);
   }
 
   async function fetchSourceFields(sourceItemGuid: string) {
     setSourceFieldsLoading(true);
-    const response = await fetch(`http://localhost:8000/api/source_items/${sourceItemGuid}/inheritable_fields`);
-    const data = await response.json();
-
+    const data = await api.getInheritableFields(sourceItemGuid);
     console.log("Fetched source fields:", data);
-    setFields(data.fields as WloFieldInfo[]);
-    setFieldGroups(data.groups as GroupInfo[]);
+    setFields(data.fields);
+    setFieldGroups(data.groups);
     setSourceFieldsLoading(false);
 
     return data;
@@ -155,7 +150,7 @@ export default function App() {
               console.log("Creating crawler for source:", sourceItem, "with URL:", crawlerURL);
 
               // create a crawler, and launch an initial analysis-crawl
-              const newCrawler = await createCrawler(sourceItem.guid, crawlerURL, crawlerName);
+              const newCrawler = await api.createCrawler(sourceItem.guid, crawlerURL, crawlerName);
 
               console.log("Known crawlers before adding new one:", crawlerList);
               console.log("Created new crawler:", newCrawler);
@@ -183,22 +178,9 @@ export default function App() {
               }
               const inheritedFields = Object.keys(selectedFields).filter(fieldId => selectedFields[fieldId]);
               console.log("Updating crawler", crawlerId, "with inherited fields:", inheritedFields);
-              const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
-                  method: "PATCH",
-                  headers: {
-                      "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                      inherited_fields: inheritedFields
-                  })
-              });
-              if (!response.ok) {
-                  console.error("Failed to update crawler:", response.status, response.statusText);
-                  return;
-              }
-              console.log("Crawler updated successfully.");
-              //setHistoryState({ step: "filter-crawls", newCrawlerName: crawlerName || undefined });
 
+              await api.updateCrawler(crawlerId, { inherited_fields: inheritedFields });
+              console.log("Crawler updated successfully.");
             }}
             />
           )
