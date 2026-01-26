@@ -72,6 +72,18 @@ export default function RootLayout() {
     navigate("/");
   }
 
+  async function startSearchCrawl(crawlerId: number) {
+    const crawlJob = await api.startCrawl(crawlerId);
+    onCrawlJobAdded(crawlJob);
+    return crawlJob;
+  }
+
+  async function startContentCrawl(crawlerId: number) {
+    const crawlJob = await api.startContentCrawl(crawlerId);
+    // todo: update state
+    return crawlJob;
+  }
+
   const outletContext: RootContext = {
     sourceItems: sourceItems,
     setStep: setStep,
@@ -88,6 +100,8 @@ export default function RootLayout() {
     setCrawlerList: setCrawlerList,
     crawlerListLoaded,
     deleteCrawler,
+    startSearchCrawl,
+    startContentCrawl,
     sourceItem: selectedSourceItem || undefined,
     setSourceItem: setSelectedSourceItem,
   };

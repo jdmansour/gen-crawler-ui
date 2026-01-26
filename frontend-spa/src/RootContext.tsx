@@ -40,6 +40,8 @@ export type CrawlerDetailsPageContext = {
 
 export type CrawlerDetailsContext = {
   deleteCrawler: (crawlerId: number) => Promise<void>;
+  startSearchCrawl: (crawlerId: number) => Promise<CrawlJob>;
+  startContentCrawl: (crawlerId: number) => Promise<CrawlJob>;
 };
 
 export type UseStepContext = {

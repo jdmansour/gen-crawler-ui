@@ -32,21 +32,20 @@ import Api from './api';
 export default function CrawlerDetailsPage() {
     const { crawlerId } = useParams();
     const { crawlerList, sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
-    const { onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate } = useOutletContext<CrawlerDetailsPageContext>();
+    const { onCrawlJobDeleted, onCrawlJobLiveUpdate } = useOutletContext<CrawlerDetailsPageContext>();
     return <CrawlerDetails
         crawlerId={crawlerId ? parseInt(crawlerId) : 0}
         crawlerList={crawlerList}
         sourceItems={sourceItems}
-        onCrawlJobAdded={onCrawlJobAdded}
         onCrawlJobDeleted={onCrawlJobDeleted}
         onCrawlJobLiveUpdate={onCrawlJobLiveUpdate}
     />; 
 }
 
-export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[], onCrawlJobAdded: (newJob: CrawlJob) => void, onCrawlJobDeleted: (crawlJobId: number) => void, onCrawlJobLiveUpdate: (sseData: SSEData) => void}) {
+export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[], onCrawlJobDeleted: (crawlJobId: number) => void, onCrawlJobLiveUpdate: (sseData: SSEData) => void}) {
     // todo: move onCrawlerDeleted from a param to context?
-    const { crawlerId, crawlerList, sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate } = params;
-    const { deleteCrawler } = useOutletContext<CrawlerDetailsContext>();
+    const { crawlerId, crawlerList, sourceItems, onCrawlJobDeleted, onCrawlJobLiveUpdate } = params;
+    const { deleteCrawler, startSearchCrawl, startContentCrawl } = useOutletContext<CrawlerDetailsContext>();
     const crawler = crawlerList.find(c => c.id == crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
 
@@ -91,16 +90,12 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
 
     async function startCrawlClicked() {
         if (!crawler) return;
-        const newJob = await api.startCrawl(crawler.id);
-        // Optimistically add the new job to the list
-        onCrawlJobAdded(newJob);
+        await startSearchCrawl(crawler.id);
     }
 
     async function startContentCrawlClicked() {
         if (!crawler) return;
-        const response = await api.startContentCrawl(crawler.id);
-        console.log("Content crawl started");
-        console.log("Response:", response);
+        await startContentCrawl(crawler.id);
     }
 
     function handleMenuClick(event: React.MouseEvent<HTMLElement>, jobId: number) {

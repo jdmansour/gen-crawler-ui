@@ -11,12 +11,11 @@ import "./App.css";
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import FilterTabs, { TabInfo } from "./FilterTabs";
 import ListView from "./ListView";
-import { CrawlerDetailsPageContext, DashboardPageContext } from "./RootContext";
+import { CrawlerDetailsContext, CrawlerDetailsPageContext, DashboardPageContext } from "./RootContext";
 import { Crawler, CrawlerStatus } from "./apitypes";
 import { useStep } from "./steps";
 import { CrawlerDetails } from './CrawlerDetailsPage';
 import { createPortal } from 'react-dom';
-import Api from './api';
 
 const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
   draft: "Entwurf",
@@ -39,7 +38,8 @@ export default function DashboardPage() {
   const [selectedCrawlerId, setSelectedCrawlerId] = useState<number | null>(null);
 
   // for the sidebar
-  const { sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted, deleteCrawler } = useOutletContext<CrawlerDetailsPageContext>();
+  const { sourceItems, onCrawlJobDeleted, onCrawlJobLiveUpdate } = useOutletContext<CrawlerDetailsPageContext>();
+  const { deleteCrawler } = useOutletContext<CrawlerDetailsContext>();
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, crawlerId: number) => {
     setAnchorEl(event.currentTarget);
@@ -145,10 +145,8 @@ export default function DashboardPage() {
           crawlerId={selectedCrawlerId}
           crawlerList={crawlerList}
           sourceItems={sourceItems}
-          onCrawlJobAdded={onCrawlJobAdded}
           onCrawlJobDeleted={onCrawlJobDeleted}
           onCrawlJobLiveUpdate={onCrawlJobLiveUpdate}
-          onCrawlerDeleted={onCrawlerDeleted}
         />), sidebarOutlet))}
     </>
   );
