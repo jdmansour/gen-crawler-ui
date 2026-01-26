@@ -10,7 +10,7 @@ import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerDashboardStep } from "./steps";
 import { wloThemeData } from "./wloTheme";
 import WloFakeHeader from "./WloFakeHeader";
-import { SSEData } from "./hooks/useSSE";
+import { SSEData, useCrawlerSSE } from "./hooks/useSSE";
 import {ApiUrlContext, useApiUrl} from "./ApiUrlContext.tsx";
 import Api from "./api.ts";
 
@@ -65,6 +65,24 @@ export default function RootLayout() {
       setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
   }
 
+  // SSE for real-time updates
+  const { data: sseData, isConnected, error: sseError } = useCrawlerSSE(crawlerId);
+
+  useEffect(() => {
+      if (!sseData) return;
+      
+      switch (sseData.type) {
+          case 'crawl_job_update':                
+              onCrawlJobLiveUpdate(sseData);
+              break;
+              
+          case 'error':
+              console.error('SSE Error:', sseData.message);
+              break;
+      }
+  }, [onCrawlJobLiveUpdate, sseData]);
+
+
   // Delete a crawler and update state
   async function deleteCrawler(crawlerId: number) {
     await api.deleteCrawler(crawlerId);
@@ -103,7 +121,6 @@ export default function RootLayout() {
     },
     setSidebarVisible,
     onCrawlJobAdded,
-    onCrawlJobLiveUpdate,
     onCrawlerDeleted,
     crawlerList: crawlerList,
     setCrawlerList: setCrawlerList,
@@ -113,6 +130,8 @@ export default function RootLayout() {
     startContentCrawl,
     cancelCrawlJob,
     deleteCrawlJob,
+    liveUpdatesConnected: isConnected,
+    liveUpdatesError: sseError,
     sourceItem: selectedSourceItem || undefined,
     setSourceItem: setSelectedSourceItem,
   };

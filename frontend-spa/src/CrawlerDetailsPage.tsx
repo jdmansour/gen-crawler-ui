@@ -23,7 +23,6 @@ import { Link, useOutletContext, useParams } from "react-router-dom";
 import { Crawler, CrawlJob, SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
-import { useCrawlerSSE } from "./hooks/useSSE";
 import { CrawlerDetailsContext, CrawlerDetailsPageContext } from "./RootContext";
 import { useStep } from "./steps";
 import Api from './api';
@@ -32,19 +31,17 @@ import Api from './api';
 export default function CrawlerDetailsPage() {
     const { crawlerId } = useParams();
     const { crawlerList, sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
-    const { onCrawlJobLiveUpdate } = useOutletContext<CrawlerDetailsPageContext>();
     return <CrawlerDetails
         crawlerId={crawlerId ? parseInt(crawlerId) : 0}
         crawlerList={crawlerList}
         sourceItems={sourceItems}
-        onCrawlJobLiveUpdate={onCrawlJobLiveUpdate}
     />; 
 }
 
-export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[], onCrawlJobLiveUpdate: (sseData: SSEData) => void}) {
+export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[]}) {
     // todo: move onCrawlerDeleted from a param to context?
-    const { crawlerId, crawlerList, sourceItems, onCrawlJobLiveUpdate } = params;
-    const { deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob } = useOutletContext<CrawlerDetailsContext>();
+    const { crawlerId, crawlerList, sourceItems } = params;
+    const { deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob, liveUpdatesConnected, liveUpdatesError } = useOutletContext<CrawlerDetailsContext>();
     const crawler = crawlerList.find(c => c.id == crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
 
@@ -66,23 +63,6 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
     }, [crawler]);
 
     useStep("crawler-details");
-
-    // SSE for real-time updates
-    const { data: sseData, isConnected, error: sseError } = useCrawlerSSE(crawlerId);
-
-    useEffect(() => {
-        if (!sseData) return;
-        
-        switch (sseData.type) {
-            case 'crawl_job_update':                
-                onCrawlJobLiveUpdate(sseData);
-                break;
-                
-            case 'error':
-                console.error('SSE Error:', sseData.message);
-                break;
-        }
-    }, [onCrawlJobLiveUpdate, sseData]);
 
     // Callbacks for buttons & menus
     // -----------------------------
@@ -162,13 +142,13 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
         {/* Real-time status */}
         <Box sx={{ mb: 2 }}>
             <Chip 
-                label={isConnected ? "Live-Updates aktiv" : "Verbindung getrennt"} 
-                color={isConnected ? "success" : "error"}
+                label={liveUpdatesConnected ? "Live-Updates aktiv" : "Verbindung getrennt"} 
+                color={liveUpdatesConnected ? "success" : "error"}
                 sx={{ mr: 1 }}
             />
-            {sseError && (
+            {liveUpdatesError && (
                 <Chip 
-                    label={`Fehler: ${sseError}`} 
+                    label={`Fehler: ${liveUpdatesError}`} 
                     color="error"
                     sx={{ mr: 1 }}
                 />

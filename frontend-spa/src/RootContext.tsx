@@ -33,7 +33,6 @@ export type CrawlerDetailsPageContext = {
   crawlerList: Crawler[];
   setCrawlerList: (crawlers: Crawler[] | ((prev: Crawler[]) => Crawler[])) => void;
   onCrawlJobAdded: (newJob: CrawlJob) => void;
-  onCrawlJobLiveUpdate: (sseData: SSEData) => void;
   onCrawlerDeleted: (crawlerId: number) => void;
 };
 
@@ -43,6 +42,8 @@ export type CrawlerDetailsContext = {
   startContentCrawl: (crawlerId: number) => Promise<CrawlJob>;
   cancelCrawlJob: (crawlJobId: number) => Promise<void>;
   deleteCrawlJob: (crawlJobId: number) => Promise<void>;
+  liveUpdatesConnected: boolean;
+  liveUpdatesError: string | null;
 };
 
 export type UseStepContext = {
