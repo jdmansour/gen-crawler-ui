@@ -12,6 +12,7 @@ import { wloThemeData } from "./wloTheme";
 import WloFakeHeader from "./WloFakeHeader";
 import { SSEData } from "./hooks/useSSE";
 import {ApiUrlContext, useApiUrl} from "./ApiUrlContext.tsx";
+import Api from "./api.ts";
 
 export default function RootLayout() {
   const apiUrl = useApiUrl();
@@ -38,6 +39,8 @@ export default function RootLayout() {
     navigate(loc, { state: state, replace: false });
   }
 
+  const api = new Api("http://localhost:8000/api");
+
   // State manangement
   // -----------------
   function onCrawlJobAdded(newJob: CrawlJob) {
@@ -62,6 +65,12 @@ export default function RootLayout() {
       setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
   }
 
+  // Delete a crawler and update state
+  async function deleteCrawler(crawlerId: number) {
+    await api.deleteCrawler(crawlerId);
+    onCrawlerDeleted(crawlerId);
+    navigate("/");
+  }
 
   const outletContext: RootContext = {
     sourceItems: sourceItems,
@@ -78,6 +87,7 @@ export default function RootLayout() {
     crawlerList: crawlerList,
     setCrawlerList: setCrawlerList,
     crawlerListLoaded,
+    deleteCrawler,
     sourceItem: selectedSourceItem || undefined,
     setSourceItem: setSelectedSourceItem,
   };

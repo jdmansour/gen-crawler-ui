@@ -19,12 +19,12 @@ import TextField from '@mui/material/TextField';
 import { Stack } from '@mui/system';
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { Link, useOutletContext, useParams } from "react-router-dom";
 import { Crawler, CrawlJob, SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import { useCrawlerSSE } from "./hooks/useSSE";
-import { CrawlerDetailsPageContext } from "./RootContext";
+import { CrawlerDetailsContext, CrawlerDetailsPageContext } from "./RootContext";
 import { useStep } from "./steps";
 import Api from './api';
 
@@ -32,7 +32,7 @@ import Api from './api';
 export default function CrawlerDetailsPage() {
     const { crawlerId } = useParams();
     const { crawlerList, sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
-    const { onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = useOutletContext<CrawlerDetailsPageContext>();
+    const { onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate } = useOutletContext<CrawlerDetailsPageContext>();
     return <CrawlerDetails
         crawlerId={crawlerId ? parseInt(crawlerId) : 0}
         crawlerList={crawlerList}
@@ -40,13 +40,13 @@ export default function CrawlerDetailsPage() {
         onCrawlJobAdded={onCrawlJobAdded}
         onCrawlJobDeleted={onCrawlJobDeleted}
         onCrawlJobLiveUpdate={onCrawlJobLiveUpdate}
-        onCrawlerDeleted={onCrawlerDeleted}
     />; 
 }
 
-export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[], onCrawlJobAdded: (newJob: CrawlJob) => void, onCrawlJobDeleted: (crawlJobId: number) => void, onCrawlJobLiveUpdate: (sseData: SSEData) => void, onCrawlerDeleted: (crawlerId: number) => void}) {
+export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[], onCrawlJobAdded: (newJob: CrawlJob) => void, onCrawlJobDeleted: (crawlJobId: number) => void, onCrawlJobLiveUpdate: (sseData: SSEData) => void}) {
     // todo: move onCrawlerDeleted from a param to context?
-    const { crawlerId, crawlerList, sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = params;
+    const { crawlerId, crawlerList, sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate } = params;
+    const { deleteCrawler } = useOutletContext<CrawlerDetailsContext>();
     const crawler = crawlerList.find(c => c.id == crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
 
@@ -57,7 +57,6 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
     const [selectedJob, setSelectedJob] = useState<CrawlJob | null>(null);
     const menuOpen = Boolean(anchorEl);
 
-    const navigate = useNavigate();
     const api = new Api("http://localhost:8000/api");
 
     // Set initial form values when 'crawler' is loaded
@@ -89,12 +88,6 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
 
     // Callbacks for buttons & menus
     // -----------------------------
-
-    async function deleteCrawler(crawlerId: number) {
-        await api.deleteCrawler(crawlerId);
-        onCrawlerDeleted(crawlerId);
-        navigate("/");
-    }
 
     async function startCrawlClicked() {
         if (!crawler) return;

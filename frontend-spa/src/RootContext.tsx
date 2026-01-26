@@ -38,6 +38,10 @@ export type CrawlerDetailsPageContext = {
   onCrawlerDeleted: (crawlerId: number) => void;
 };
 
+export type CrawlerDetailsContext = {
+  deleteCrawler: (crawlerId: number) => Promise<void>;
+};
+
 export type UseStepContext = {
   setStep: (step: CrawlerDashboardStep) => void;
 };
@@ -53,6 +57,7 @@ export type RootContext =
   AddCrawlerPageContext &
   MetadataInheritancePageContext &
   CrawlerDetailsPageContext &
+  CrawlerDetailsContext &
   UseStepContext &
   FilterSetPageContext;
 

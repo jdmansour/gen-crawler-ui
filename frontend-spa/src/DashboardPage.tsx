@@ -27,8 +27,7 @@ const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
 };
 
 export default function DashboardPage() {
-  // todo: move delete function up to context
-  const { crawlerList = [], setCrawlerList, setSidebarVisible } = useOutletContext<DashboardPageContext>();
+  const { crawlerList = [], setSidebarVisible } = useOutletContext<DashboardPageContext>();
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
 
@@ -40,9 +39,7 @@ export default function DashboardPage() {
   const [selectedCrawlerId, setSelectedCrawlerId] = useState<number | null>(null);
 
   // for the sidebar
-  const { sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = useOutletContext<CrawlerDetailsPageContext>();
-
-  const api = new Api("http://localhost:8000/api");
+  const { sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted, deleteCrawler } = useOutletContext<CrawlerDetailsPageContext>();
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, crawlerId: number) => {
     setAnchorEl(event.currentTarget);
@@ -72,13 +69,6 @@ export default function DashboardPage() {
     }
     return crawler.status == filterState;
   });
-
-  async function deleteCrawler(crawlerId: number) {
-    // Delete crawler
-    await api.deleteCrawler(crawlerId);
-    setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
-    navigate("/");
-  }
 
   const sidebarOutlet = document.getElementById("sidebar-outlet");
 
