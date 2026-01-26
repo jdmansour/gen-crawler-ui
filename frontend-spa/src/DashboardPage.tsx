@@ -38,7 +38,7 @@ export default function DashboardPage() {
   const [selectedCrawlerId, setSelectedCrawlerId] = useState<number | null>(null);
 
   // for the sidebar
-  const { sourceItems, onCrawlJobDeleted, onCrawlJobLiveUpdate } = useOutletContext<CrawlerDetailsPageContext>();
+  const { sourceItems, onCrawlJobLiveUpdate } = useOutletContext<CrawlerDetailsPageContext>();
   const { deleteCrawler } = useOutletContext<CrawlerDetailsContext>();
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, crawlerId: number) => {
@@ -145,7 +145,6 @@ export default function DashboardPage() {
           crawlerId={selectedCrawlerId}
           crawlerList={crawlerList}
           sourceItems={sourceItems}
-          onCrawlJobDeleted={onCrawlJobDeleted}
           onCrawlJobLiveUpdate={onCrawlJobLiveUpdate}
         />), sidebarOutlet))}
     </>

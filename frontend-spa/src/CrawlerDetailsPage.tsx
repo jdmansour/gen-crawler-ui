@@ -32,20 +32,19 @@ import Api from './api';
 export default function CrawlerDetailsPage() {
     const { crawlerId } = useParams();
     const { crawlerList, sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
-    const { onCrawlJobDeleted, onCrawlJobLiveUpdate } = useOutletContext<CrawlerDetailsPageContext>();
+    const { onCrawlJobLiveUpdate } = useOutletContext<CrawlerDetailsPageContext>();
     return <CrawlerDetails
         crawlerId={crawlerId ? parseInt(crawlerId) : 0}
         crawlerList={crawlerList}
         sourceItems={sourceItems}
-        onCrawlJobDeleted={onCrawlJobDeleted}
         onCrawlJobLiveUpdate={onCrawlJobLiveUpdate}
     />; 
 }
 
-export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[], onCrawlJobDeleted: (crawlJobId: number) => void, onCrawlJobLiveUpdate: (sseData: SSEData) => void}) {
+export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[], onCrawlJobLiveUpdate: (sseData: SSEData) => void}) {
     // todo: move onCrawlerDeleted from a param to context?
-    const { crawlerId, crawlerList, sourceItems, onCrawlJobDeleted, onCrawlJobLiveUpdate } = params;
-    const { deleteCrawler, startSearchCrawl, startContentCrawl } = useOutletContext<CrawlerDetailsContext>();
+    const { crawlerId, crawlerList, sourceItems, onCrawlJobLiveUpdate } = params;
+    const { deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob } = useOutletContext<CrawlerDetailsContext>();
     const crawler = crawlerList.find(c => c.id == crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
 
@@ -112,16 +111,14 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
         handleMenuClose();
         // Delete the selected crawl job
         if (!selectedJob) return;
-        await api.deleteCrawlJob(selectedJob.id);
-        // Remove the job from the crawler's job list
-        onCrawlJobDeleted(selectedJob.id);
+        deleteCrawlJob(selectedJob.id);
     }
 
     async function cancelCrawlClicked() {
         handleMenuClose();
         // Cancel the selected crawl job
         if (!selectedJob) return;
-        await api.cancelCrawlJob(selectedJob.id);
+        cancelCrawlJob(selectedJob.id);
     }
 
     if (!crawler) {

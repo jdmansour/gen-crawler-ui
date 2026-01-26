@@ -84,6 +84,16 @@ export default function RootLayout() {
     return crawlJob;
   }
 
+  async function cancelCrawlJob(crawlJobId: number) {
+    await api.cancelCrawlJob(crawlJobId);
+    // todo: update state?
+  }
+
+  async function deleteCrawlJob(crawlJobId: number) {
+    await api.deleteCrawlJob(crawlJobId);
+    onCrawlJobDeleted(crawlJobId);
+  }
+
   const outletContext: RootContext = {
     sourceItems: sourceItems,
     setStep: setStep,
@@ -93,7 +103,6 @@ export default function RootLayout() {
     },
     setSidebarVisible,
     onCrawlJobAdded,
-    onCrawlJobDeleted,
     onCrawlJobLiveUpdate,
     onCrawlerDeleted,
     crawlerList: crawlerList,
@@ -102,6 +111,8 @@ export default function RootLayout() {
     deleteCrawler,
     startSearchCrawl,
     startContentCrawl,
+    cancelCrawlJob,
+    deleteCrawlJob,
     sourceItem: selectedSourceItem || undefined,
     setSourceItem: setSelectedSourceItem,
   };
