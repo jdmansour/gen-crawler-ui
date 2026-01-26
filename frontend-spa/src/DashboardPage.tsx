@@ -79,7 +79,7 @@ export default function DashboardPage() {
         selectedTab={activeTab}
         onTabClick={(index) => setActiveTab(index)}
       />
-      <div style={{ overflowY: "overlay", flex: 1, marginTop: "-20px", paddingTop: "20px", marginBottom: "-20px", paddingBottom: "20px", paddingLeft: "40px", paddingRight: "40px"}}>
+      <div style={{ overflowY: "auto", flex: 1, marginTop: "-20px", paddingTop: "20px", marginBottom: "-20px", paddingBottom: "20px", paddingLeft: "40px", paddingRight: "40px"}}>
         <ListView style={{ width: "100%", boxSizing: "border-box" }}>
           <tr key="add">
             <td colSpan={4} className="action-cell">

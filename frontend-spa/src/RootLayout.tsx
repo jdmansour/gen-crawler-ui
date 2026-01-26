@@ -2,17 +2,16 @@
 import { createTheme, ThemeProvider } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
+import Api from "./api.ts";
 import { Crawler, CrawlJob, SourceItem } from "./apitypes";
+import { useApiUrl } from "./ApiUrlContext.tsx";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
 import GenCrawlerSidebar from "./GenCrawlerSidebar";
+import { SSEData, useCrawlerSSE } from "./hooks/useSSE";
 import { RootContext } from "./RootContext";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerDashboardStep } from "./steps";
 import { wloThemeData } from "./wloTheme";
-import WloFakeHeader from "./WloFakeHeader";
-import { SSEData, useCrawlerSSE } from "./hooks/useSSE";
-import {ApiUrlContext, useApiUrl} from "./ApiUrlContext.tsx";
-import Api from "./api.ts";
 
 export default function RootLayout() {
   const apiUrl = useApiUrl();
@@ -152,26 +151,26 @@ export default function RootLayout() {
     breadcrumbs.push({ label: crawlerName || "-", url: `/crawlers/${crawlerId}` });
   }
 
-  async function fetchCrawlers() {
-    const response = await fetch(apiUrl + "/crawlers/");
-    const data: Crawler[] = await response.json();
-    // TODO: validate?
-    // wait 2 seconds to simulate loading
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setCrawlerList(data);
-    setCrawlerListLoaded(true);
-  }
-
-  async function fetchSourceItems() {
-    const response = await fetch(apiUrl + "/source_items/");
-    const data: SourceItem[] = await response.json();
-    setSourceItems(data);
-  }
-
   useEffect(() => {
+    async function fetchCrawlers() {
+      const response = await fetch(apiUrl + "/crawlers/");
+      const data: Crawler[] = await response.json();
+      // TODO: validate?
+      // wait 2 seconds to simulate loading
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setCrawlerList(data);
+      setCrawlerListLoaded(true);
+    }
+
+    async function fetchSourceItems() {
+      const response = await fetch(apiUrl + "/source_items/");
+      const data: SourceItem[] = await response.json();
+      setSourceItems(data);
+    }
+
     fetchCrawlers();
     fetchSourceItems();
-  }, []);
+  }, [apiUrl]);
 
   const wloTheme = createTheme(wloThemeData);
 

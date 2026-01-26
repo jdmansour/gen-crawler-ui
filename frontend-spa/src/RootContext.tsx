@@ -1,5 +1,4 @@
 import { Crawler, CrawlJob, SourceItem } from "./apitypes";
-import { SSEData } from "./hooks/useSSE";
 import { CrawlerDashboardStep } from "./steps";
 
 export type DashboardPageContext = {

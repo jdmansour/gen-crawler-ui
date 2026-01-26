@@ -3,7 +3,6 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import appCss from "../App.css?inline";
-import App from "../App.tsx";
 import breadcrumbsCss from "../Breadcrumbs.css?inline";
 import buttonCss from "../Button.css?inline";
 import filterTabsCss from "../FilterTabs.css?inline";

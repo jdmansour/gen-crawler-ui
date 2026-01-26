@@ -4,10 +4,6 @@
   --wlo-filtertabs-indicator-height: 5px;
 }
 
-.wlo-filtertabs-menu {
-  /* display: flex; */
-}
-
 .wlo-filtertabs ul {
   list-style: none;
   display: flex;

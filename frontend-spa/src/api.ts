@@ -1,5 +1,5 @@
 import { Crawler, CrawlJob, SourceItem } from "./apitypes";
-import { GroupInfo, WloBaseFieldInfo, WloFieldInfo } from "./wloTypes";
+import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
 export default class Api {
     constructor(private baseUrl: string) {

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { CustomIcon } from './CustomIcon';
+import { CustomIcon, NamedIcon } from './CustomIcon';
 
-const iconNames = [
+const iconNames: NamedIcon[] = [
   "description",
   "school",
   "done_all",

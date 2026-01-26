@@ -8,7 +8,7 @@ export type TabsStyle = "filter" | "sidebar";
 export type TabInfo = {
   label: string;
   // string or component
-  icon?: string | React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  icon?: NamedIcon | React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   tag?: string;
 };
 

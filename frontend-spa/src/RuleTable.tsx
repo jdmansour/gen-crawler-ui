@@ -71,10 +71,10 @@ export default function RuleTable(props: RuleTableProps) {
           <EditableTD value={rule.page_type} onChange={newValue => props.onUpdateFields(rule.id, {page_type: newValue})} />
           <td>{rule.position}</td>
           <td>
-            <button className="mybutton mybutton-table mybutton-delete" onClick={(e) => props.onDelete(rule.id)}>×</button>
-            <button className="mybutton mybutton-table" onClick={(e) => props.onAdd(rule.id)}>+</button>
-            <button className="mybutton mybutton-table" disabled={rule.position == 1} onClick={(e) => props.onMoveUp(rule.id)}>&uarr;</button>
-            <button className="mybutton mybutton-table" disabled={rule.position == props.rules.length} onClick={(e) => props.onMoveDown(rule.id)}>&darr;</button>
+            <button className="mybutton mybutton-table mybutton-delete" onClick={() => props.onDelete(rule.id)}>×</button>
+            <button className="mybutton mybutton-table" onClick={() => props.onAdd(rule.id)}>+</button>
+            <button className="mybutton mybutton-table" disabled={rule.position == 1} onClick={() => props.onMoveUp(rule.id)}>&uarr;</button>
+            <button className="mybutton mybutton-table" disabled={rule.position == props.rules.length} onClick={() => props.onMoveDown(rule.id)}>&darr;</button>
           </td>
         </tr>
       })}

@@ -25,6 +25,7 @@ export const Default: Story = {
         setCrawlerList: () => {},
         setSidebarVisible: () => {},
         setStep: () => {},
+        setObservedCrawlerId: () => {},
       };
       return <MemoryRouter>
         <Routes>

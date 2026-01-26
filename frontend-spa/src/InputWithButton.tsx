@@ -8,6 +8,7 @@ export default function InputWithButton(
   } & React.InputHTMLAttributes<HTMLInputElement>,
 ) {
   const input = useRef<HTMLInputElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { onAccept, ...inputProps } = props;
 
   function accept() {
