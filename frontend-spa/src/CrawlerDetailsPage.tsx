@@ -41,9 +41,10 @@ export default function CrawlerDetailsPage() {
 export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[]}) {
     // todo: move onCrawlerDeleted from a param to context?
     const { crawlerId, crawlerList, sourceItems } = params;
-    const { deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob, liveUpdatesConnected, liveUpdatesError } = useOutletContext<CrawlerDetailsContext>();
+    const { deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob, liveUpdatesConnected, liveUpdatesError, setObservedCrawlerId } = useOutletContext<CrawlerDetailsContext>();
     const crawler = crawlerList.find(c => c.id == crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
+    setObservedCrawlerId(crawlerId);
 
     const [crawlerURL, setCrawlerURL] = useState<string>("");
     const [crawlerName, setCrawlerName] = useState<string>("");

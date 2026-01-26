@@ -108,7 +108,7 @@ export function useSSE(url: string | null) {
   };
 }
 
-export function useCrawlerSSE(crawlerId: number | string | undefined) {
+export function useCrawlerSSE(crawlerId: number | string | undefined | null) {
   // Use relative URL to avoid CORS issues during development
   const url = crawlerId ? `http://localhost:8000/api/crawlers/${crawlerId}/status_stream/` : null;
   return useSSE(url);

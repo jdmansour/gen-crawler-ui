@@ -24,6 +24,7 @@ export default function RootLayout() {
   const [sourceItems, setSourceItems] = useState<SourceItem[]>([]);
   const [selectedSourceItem, setSelectedSourceItem] = useState<SourceItem | null>(null);
 
+  const [observedCrawlerId, setObservedCrawlerId] = useState<number | null>(null);
 
 
   const [step, setStep] = useState<CrawlerDashboardStep>("dashboard");
@@ -66,7 +67,7 @@ export default function RootLayout() {
   }
 
   // SSE for real-time updates
-  const { data: sseData, isConnected, error: sseError } = useCrawlerSSE(crawlerId);
+  const { data: sseData, isConnected, error: sseError } = useCrawlerSSE(observedCrawlerId);
 
   useEffect(() => {
       if (!sseData) return;
@@ -134,6 +135,7 @@ export default function RootLayout() {
     liveUpdatesError: sseError,
     sourceItem: selectedSourceItem || undefined,
     setSourceItem: setSelectedSourceItem,
+    setObservedCrawlerId,
   };
 
   const breadcrumbs: Breadcrumb[] = [

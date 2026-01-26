@@ -6,6 +6,7 @@ export type DashboardPageContext = {
   crawlerList: Crawler[];
   setCrawlerList: (crawlers: Crawler[] | ((prev: Crawler[]) => Crawler[])) => void;
   setSidebarVisible: (visible: boolean) => void;
+  setObservedCrawlerId: (crawlerId: number | null) => void;
 };
 
 export type SelectSourcePageContext = {
@@ -42,6 +43,7 @@ export type CrawlerDetailsContext = {
   startContentCrawl: (crawlerId: number) => Promise<CrawlJob>;
   cancelCrawlJob: (crawlJobId: number) => Promise<void>;
   deleteCrawlJob: (crawlJobId: number) => Promise<void>;
+  setObservedCrawlerId: (crawlerId: number | null) => void;
   liveUpdatesConnected: boolean;
   liveUpdatesError: string | null;
 };

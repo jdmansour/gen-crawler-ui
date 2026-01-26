@@ -26,7 +26,7 @@ const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
 };
 
 export default function DashboardPage() {
-  const { crawlerList = [], setSidebarVisible } = useOutletContext<DashboardPageContext>();
+  const { crawlerList = [], setSidebarVisible, setObservedCrawlerId } = useOutletContext<DashboardPageContext>();
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
 
@@ -94,6 +94,7 @@ export default function DashboardPage() {
             <CrawlerTableRow key={info.id} info={info} menuOpen={menuOpen} handleMenuClick={handleMenuClick}
               onClick={() => {
                 setSelectedCrawlerId(info.id);
+                setObservedCrawlerId(info.id);
                 setSidebarVisible(true);
               }}/>
           ))}
