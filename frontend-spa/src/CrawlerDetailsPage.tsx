@@ -87,38 +87,14 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
     // Callbacks for buttons & menus
     // -----------------------------
 
-    async function startCrawlClicked() {
-        if (!crawler) return;
-        await startSearchCrawl(crawler.id);
-    }
-
-    async function startContentCrawlClicked() {
-        if (!crawler) return;
-        await startContentCrawl(crawler.id);
-    }
-
     function handleMenuClick(event: React.MouseEvent<HTMLElement>, jobId: number) {
         setAnchorEl(event.currentTarget);
         const job = crawler?.crawl_jobs.find(j => j.id == jobId) || null;
         setSelectedJob(job);
     };
 
-    function handleMenuClose() {
+    function close() {
         setAnchorEl(null);
-    }
-
-    async function deleteCrawlClicked() {
-        handleMenuClose();
-        // Delete the selected crawl job
-        if (!selectedJob) return;
-        deleteCrawlJob(selectedJob.id);
-    }
-
-    async function cancelCrawlClicked() {
-        handleMenuClose();
-        // Cancel the selected crawl job
-        if (!selectedJob) return;
-        cancelCrawlJob(selectedJob.id);
     }
 
     if (!crawler) {
@@ -171,8 +147,8 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
         <h3>Aktionen</h3>
 
         <Stack direction="row" spacing={2} sx={{ marginTop: 2, marginBottom: 2, flexWrap: 'wrap' }} useFlexGap>
-            <Button variant="outlined" color="primary" onClick={startCrawlClicked}>Crawler starten</Button>
-            <Button variant="outlined" onClick={startContentCrawlClicked}>Content Crawl starten</Button>
+            <Button variant="outlined" color="primary" onClick={()=>startSearchCrawl(crawler!.id)}>Crawler starten</Button>
+            <Button variant="outlined" onClick={()=>startContentCrawl(crawler!.id)}>Content Crawl starten</Button>
             <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/filters/`}>Filter bearbeiten</Button>
             <Button variant="outlined" component="a" href={api.getAdminUrl(crawler.id)}>Im Admin-Bereich anzeigen</Button>
             <Button variant="outlined" color="error" onClick={() => setConfirmDeleteOpen(true)}>Crawler löschen</Button>
@@ -253,16 +229,16 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
         <Menu id="crawler-job-menu"
             anchorEl={anchorEl}
             open={menuOpen}
-            onClose={handleMenuClose}
+            onClose={close}
             slotProps={{ list: {'aria-labelledby': 'crawler-job-button'}, }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         >
-            <MenuItem sx={{ color: 'error.main' }} onClick={deleteCrawlClicked}>
+            <MenuItem sx={{ color: 'error.main' }} onClick={()=>{close(); deleteCrawlJob(selectedJob!.id)}}>
                 <ListItemIcon sx={{ color: 'error.main' }}><Delete fontSize="small" /></ListItemIcon>
                 Crawl löschen
             </MenuItem>
-            <MenuItem disabled={selectedJob?.state != 'RUNNING' && selectedJob?.state != 'PENDING'} onClick={cancelCrawlClicked}>
+            <MenuItem disabled={selectedJob?.state != 'RUNNING' && selectedJob?.state != 'PENDING'} onClick={()=>{close(); cancelCrawlJob(selectedJob!.id)}}>
                 <ListItemIcon><Cancel fontSize="small" /></ListItemIcon>
                 Crawl abbrechen
             </MenuItem>
