@@ -158,7 +158,7 @@ export default function RootLayout() {
       const data: Crawler[] = await response.json();
       // TODO: validate?
       // wait 2 seconds to simulate loading
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
       setCrawlerList(data);
       setCrawlerListLoaded(true);
     }
