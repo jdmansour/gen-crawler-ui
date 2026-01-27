@@ -144,6 +144,7 @@ class CrawlerViewSet(viewsets.ModelViewSet):
         # {"node_name": "8cc425300b18", "status": "ok", "jobid": "03d1f0d8fb8211f0aff70242ac120004"}
         # Set the correct scrapy_job_id on the crawljob, so the frontend can refer to it
         crawljob.scrapy_job_id = response.json().get('jobid', '')
+        crawljob.save()
 
         serializer = CrawlJobSerializer(crawljob)
         return Response(serializer.data)
