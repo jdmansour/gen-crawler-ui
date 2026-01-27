@@ -87,6 +87,7 @@ class GenericSpider(Spider):
         self.crawl_job_id: Optional[int] = crawl_job_id
         self.crawler_id: Optional[int] = crawler_id
         self.items_processed = 0
+        self.spider_failed = False
 
         try:
             ai_enabled = to_bool(ai_enabled)
@@ -154,6 +155,7 @@ class GenericSpider(Spider):
             else:
                 # Stop the crawl
                 log.error("No crawler_id found for filter_set_id %s", self.filter_set_id)
+                self.spider_failed = True
                 raise CloseSpider(f"No crawler_id found for filter_set_id {self.filter_set_id}.")
 
             scrapy_job_id = getattr(spider, '_job', None)  # type: ignore
@@ -177,9 +179,10 @@ class GenericSpider(Spider):
             connection.commit()
             connection.close()
             log.info("Created new crawl job in database with id %d", self.crawl_job_id)
-        except sqlite3.Error as e:
-            log.error("Error accessing database: %s", e)
-            raise CloseSpider(f"Error accessing database: {e}") from e
+        except (sqlite3.Error, ValueError) as e:
+            log.error("Error while running crawler: %s", e)
+            self.spider_failed = True
+            raise CloseSpider(f"Error while running crawler: {e}") from e
 
         self.enricher.setup(self.settings)
 
@@ -272,21 +275,10 @@ class GenericSpider(Spider):
     def spider_closed(self, spider: GenericSpider):
         """ Called when the spider is closed. """
         log.info("Closed spider %s", spider.name)
-        self.update_spider_state(spider, 'COMPLETED')
-
-        # get statistics
-        # if robotstxt/forbidden is 1 and downloader/request_count is 1,
-        # then the crawl was blocked by robots.txt
-
-        if spider.crawler.stats is None:
-            log.warning("No stats available for spider %s", spider.name)
-            return
-        
-        stats = spider.crawler.stats.get_stats()
-        log.info("Crawl statistics: %s", stats)
-        if stats.get('robotstxt/forbidden', 0) >= 1 and stats.get('downloader/request_count', 0) == 1:
-            log.warning("Crawl appears to have been blocked by robots.txt")
+        if self.spider_failed:
             self.update_spider_state(spider, 'FAILED')
+        else:
+            self.update_spider_state(spider, 'COMPLETED')
 
     def spider_error(self, failure, response, spider: GenericSpider):
         """ Called when the spider encounters an error. """
