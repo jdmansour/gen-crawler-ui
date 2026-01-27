@@ -26,6 +26,7 @@ import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import { CrawlerDetailsContext, CrawlerDetailsPageContext } from "./RootContext";
 import { useStep } from "./steps";
 import Api from './api';
+import { CircularProgress } from '@mui/material';
 
 
 export default function CrawlerDetailsPage() {
@@ -41,7 +42,7 @@ export default function CrawlerDetailsPage() {
 export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[]}) {
     // todo: move onCrawlerDeleted from a param to context?
     const { crawlerId, crawlerList, sourceItems } = params;
-    const { deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob, liveUpdatesConnected, liveUpdatesError, setObservedCrawlerId } = useOutletContext<CrawlerDetailsContext>();
+    const { deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob, liveUpdatesConnected, liveUpdatesError, setObservedCrawlerId, crawlerListLoaded } = useOutletContext<CrawlerDetailsContext>();
     const crawler = crawlerList.find(c => c.id == crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
     setObservedCrawlerId(crawlerId);
@@ -78,9 +79,22 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
         setAnchorEl(null);
     }
 
+    if (!crawlerListLoaded) {
+        return <div className="main-content" style={{flex: 1, display: "flex", justifyContent: "center", alignItems: "center"}}>
+            <Stack spacing={2} alignItems="center" style={{marginTop: -50}}>
+            <CircularProgress />
+            <div>Loading crawler details...</div>
+            </Stack>
+        </div>;
+    }
+
     if (!crawler) {
         return <div className="main-content">
             <p>Crawler not found</p>
+            <h3>Debug info:</h3>
+            <p>Crawler object: <code>{JSON.stringify(crawler)}</code></p>
+            <p>Crawler id: {crawlerId}</p>
+            <p>Crawler list: <code>{JSON.stringify(crawlerList)}</code></p>
         </div>;
     }
 

@@ -46,6 +46,7 @@ export type CrawlerDetailsContext = {
   setObservedCrawlerId: (crawlerId: number | null) => void;
   liveUpdatesConnected: boolean;
   liveUpdatesError: string | null;
+  crawlerListLoaded: boolean;
 };
 
 export type UseStepContext = {
