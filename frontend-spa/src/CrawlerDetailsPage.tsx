@@ -27,6 +27,8 @@ import { CrawlerDetailsContext, CrawlerDetailsPageContext } from "./RootContext"
 import { useStep } from "./steps";
 import Api from './api';
 import { CircularProgress } from '@mui/material';
+import AutoAwesome from '@mui/icons-material/AutoAwesome';
+import Explore from '@mui/icons-material/Explore';
 
 
 export default function CrawlerDetailsPage() {
@@ -178,6 +180,7 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
         <Table>
             <TableHead>
                 <TableRow>
+                    <TableCell>Typ</TableCell>
                     <TableCell>Start URL</TableCell>
                     <TableCell>Gecrawlte URLs</TableCell>
                     <TableCell>Status</TableCell>
@@ -188,6 +191,11 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
             <TableBody>
                 {crawler.crawl_jobs.sort((a,b) => compareISODateDesc(a.created_at, b.created_at)).map(job => (
                     <TableRow key={job.id}>
+                        <TableCell>{
+                            (job.crawl_type === 'EXPLORATION') ?
+                            <Stack direction="row" alignContent="center" gap={1}><Explore sx={{ fontSize: 20 }} color='primary'/>Sitemap</Stack> :
+                            <Stack direction="row" alignContent="center" gap={1}><AutoAwesome sx={{ fontSize: 20 }} color='primary'/>Inhalte</Stack>
+                        }</TableCell>
                         <TableCell>{job.start_url}</TableCell>
                         <TableCell>{job.crawled_url_count || '-'}</TableCell>
                         <TableCell>
