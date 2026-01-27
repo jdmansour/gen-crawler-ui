@@ -78,8 +78,9 @@ def fetch_urls_passing_filterset(connection: sqlite3.Connection, filter_set_id: 
     cursor.execute("SELECT id FROM crawls_crawljob WHERE crawler_id = ? AND crawl_type = 'EXPLORATION' ORDER BY created_at DESC LIMIT 1", (crawler_id,))
     row = cursor.fetchone()
     if row is None:
-        log.info("No crawl jobs found for crawler ID %s", crawler_id)
-        return []
+        raise ValueError(f"No exploration crawl jobs found for crawler ID {crawler_id}")
+        # log.info("No crawl jobs found for crawler ID %s", crawler_id)
+        # return []
     crawl_job_id = row[0]
     log.info("Latest crawl job ID: %s", crawl_job_id)
 
