@@ -76,6 +76,7 @@ class CrawlerViewSet(viewsets.ModelViewSet):
             follow_links=True,
             crawler=obj,
             state='PENDING',
+            crawl_type='EXPLORATION',
         )
         crawljob.save()
         print("Created CrawlJob:", crawljob)
@@ -109,24 +110,43 @@ class CrawlerViewSet(viewsets.ModelViewSet):
         """ Starts a content crawl for this crawler's filter set. Lives at
             http://127.0.0.1:8000/api/crawlers/<pk>/start_content_crawl/ """
         crawler = self.get_object()
-        filter_set = crawler.filter_set
+
+        # create crawl job object
+        crawljob = CrawlJob.objects.create(
+            start_url=crawler.start_url,  # not used in content crawl
+            follow_links=True,  # not used in content crawl
+            crawler=crawler,
+            state='PENDING',
+            crawl_type='CONTENT',
+        )
+        crawljob.save()
+        print("Created CrawlJob:", crawljob)
+
         parameters = {
             'project': 'scraper',
             'spider': 'generic_spider',
-            'filter_set_id': str(filter_set.id),
+            'filter_set_id': str(crawler.filter_set.id),
+            'crawler_id': str(crawler.id),
+            'crawl_job_id': str(crawljob.id),
         }
 
-        url = settings.SCRAPYD_URL + "/schedule.json"
-        try:
-            response = requests.post(url, data=parameters, timeout=5)
-        except requests.exceptions.RequestException as e:
-            return Response({'status': 'error', 'message': str(e)}, status=500)
+        ## TODO: implement the other path in generic_spider.py where we start a crawl and pass filter_set_id!!!
 
+        url = settings.SCRAPYD_URL + "/schedule.json"
+        response = requests.post(url, data=parameters, timeout=5)
+        log.info("Response: %s", response.text)
+        log.info("Status code: %s", response.status_code)
         if response.status_code != 200:
+            crawljob.state = 'ERROR'
+            crawljob.save()
             return Response({'status': 'error', 'message': response.text}, status=500)
-        else:
-            obj = response.json()
-            return Response(obj)
+        # Respone is like:
+        # {"node_name": "8cc425300b18", "status": "ok", "jobid": "03d1f0d8fb8211f0aff70242ac120004"}
+        # Set the correct scrapy_job_id on the crawljob, so the frontend can refer to it
+        crawljob.scrapy_job_id = response.json().get('jobid', '')
+
+        serializer = CrawlJobSerializer(crawljob)
+        return Response(serializer.data)
 
 
 @csrf_exempt

@@ -57,6 +57,10 @@ class CrawlJob(models.Model):
         COMPLETED = 'COMPLETED', 'Completed'
         FAILED = 'FAILED', 'Failed'
 
+    class CrawlType(models.TextChoices):
+        EXPLORATION = 'EXPLORATION', 'Exploration'
+        CONTENT = 'CONTENT', 'Content'
+
     id = models.AutoField(primary_key=True)
     start_url = models.URLField()
     follow_links = models.BooleanField(default=False)
@@ -69,6 +73,8 @@ class CrawlJob(models.Model):
     state = models.CharField(
         max_length=20, choices=State.choices, default=State.PENDING)
     scrapy_job_id = models.CharField(max_length=255, blank=True, null=True)
+    crawl_type = models.CharField(
+        max_length=20, choices=CrawlType.choices, default=CrawlType.EXPLORATION)
 
     def __str__(self):
         return f"#{self.id} {self.start_url} at {self.created_at.strftime('%Y-%m-%d %H:%M')}"

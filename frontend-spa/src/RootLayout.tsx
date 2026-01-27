@@ -98,7 +98,8 @@ export default function RootLayout() {
 
   async function startContentCrawl(crawlerId: number) {
     const crawlJob = await api.startContentCrawl(crawlerId);
-    // todo: update state
+    console.log("Started content crawl:", crawlJob);
+    onCrawlJobAdded(crawlJob);
     return crawlJob;
   }
 

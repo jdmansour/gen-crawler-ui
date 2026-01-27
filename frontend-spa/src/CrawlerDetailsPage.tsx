@@ -45,7 +45,9 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
     const { deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob, liveUpdatesConnected, liveUpdatesError, setObservedCrawlerId, crawlerListLoaded } = useOutletContext<CrawlerDetailsContext>();
     const crawler = crawlerList.find(c => c.id == crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
-    setObservedCrawlerId(crawlerId);
+    useEffect(() => {
+        setObservedCrawlerId(crawlerId);
+    }, [crawlerId, setObservedCrawlerId]);
 
     const [crawlerURL, setCrawlerURL] = useState<string>("");
     const [crawlerName, setCrawlerName] = useState<string>("");
@@ -249,7 +251,8 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
 // Gets the scrapy log URL for a crawl job
 function logUrl(crawlJob: CrawlJob | null): string {
     if (!crawlJob?.scrapy_job_id) return "";
-    return `http://localhost:6800/logs/scraper/example/${crawlJob.scrapy_job_id}.log`;
+    const scraperName = crawlJob.crawl_type === 'CONTENT' ? 'generic_spider' : 'example';
+    return `http://localhost:6800/logs/scraper/${scraperName}/${crawlJob.scrapy_job_id}.log`;
 }
 
 // comparer for two iso date strings
