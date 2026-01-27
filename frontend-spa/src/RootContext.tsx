@@ -6,6 +6,7 @@ export type DashboardPageContext = {
   setCrawlerList: (crawlers: Crawler[] | ((prev: Crawler[]) => Crawler[])) => void;
   setSidebarVisible: (visible: boolean) => void;
   setObservedCrawlerId: (crawlerId: number | null) => void;
+  crawlerListLoaded: boolean;
 };
 
 export type SelectSourcePageContext = {

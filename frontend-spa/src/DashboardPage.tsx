@@ -16,6 +16,8 @@ import { Crawler, CrawlerStatus } from "./apitypes";
 import { useStep } from "./steps";
 import { CrawlerDetails } from './CrawlerDetailsPage';
 import { createPortal } from 'react-dom';
+import Skeleton from '@mui/material/Skeleton';
+import { Stack } from '@mui/material';
 
 const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
   draft: "Entwurf",
@@ -26,7 +28,7 @@ const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
 };
 
 export default function DashboardPage() {
-  const { crawlerList = [], setSidebarVisible, setObservedCrawlerId } = useOutletContext<DashboardPageContext>();
+  const { crawlerList = [], setSidebarVisible, setObservedCrawlerId, crawlerListLoaded } = useOutletContext<DashboardPageContext>();
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
 
@@ -80,7 +82,14 @@ export default function DashboardPage() {
         onTabClick={(index) => setActiveTab(index)}
       />
       <div style={{ overflowY: "auto", flex: 1, marginTop: "-20px", paddingTop: "20px", marginBottom: "-20px", paddingBottom: "20px", paddingLeft: "40px", paddingRight: "40px"}}>
-        <ListView style={{ width: "100%", boxSizing: "border-box" }}>
+        {!crawlerListLoaded && <div>
+          <Stack spacing={1}>
+            {[...Array(10)].map((_, index) => (
+              <Skeleton key={index} variant="rounded" width="100%" height={80} animation="wave" />
+            ))}
+          </Stack>
+        </div>}
+        <ListView style={{ width: "100%", boxSizing: "border-box", display: crawlerListLoaded ? "table" : "none" }}>
           <tr key="add">
             <td colSpan={4} className="action-cell">
               <button className="wlo-button" onClick={() => {
