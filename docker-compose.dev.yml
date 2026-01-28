@@ -25,3 +25,8 @@ services:
       UV_LINK_MODE: copy
       UV_PROJECT_ENVIRONMENT: /app/.venv
     command: ["uv", "run", "fastapi", "dev", "main.py", "--port", "8081", "--host", "0.0.0.0"]
+  scrapyd:
+    volumes:
+      - ./metadataenricher:/workdir/metadataenricher
+      - ./valuespace-converter:/workdir/valuespace-converter
+      - ./scraper/edu_sharing_client:/workdir/app/edu_sharing_client
