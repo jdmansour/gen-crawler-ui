@@ -32,6 +32,9 @@ from .web_tools import WebEngine, WebTools
 
 log = logging.getLogger(__name__)
 
+class AuthenticationError(Exception):
+    pass
+
 
 class MetadataEnricher:
     zapi_client: zapi.AuthenticatedClient
@@ -510,6 +513,8 @@ Hier folgt der Text:
             except openai.APITimeoutError:
                 log.error("LLM API request timed out.")
                 return None
+            except openai.AuthenticationError as e:
+                raise AuthenticationError("LLM API authentication failed.") from e
             # log.info("LLM API response: %s", chat_completion)
             return chat_completion.choices[0].message.content or ""
 

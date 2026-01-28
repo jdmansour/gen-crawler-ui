@@ -19,6 +19,7 @@ from scrapy.spiders.crawl import Rule
 
 import scraper
 from metadataenricher.metadata_enricher import MetadataEnricher
+from metadataenricher import metadata_enricher
 from scraper.es_connector import EduSharing
 
 from .. import env
@@ -354,7 +355,13 @@ class GenericSpider(Spider):
                 )
                 return
 
-        item = await self.enricher.parse_page(response_url=response.url)
+        try:
+            item = await self.enricher.parse_page(response_url=response.url)
+        except metadata_enricher.AuthenticationError as auth_error:
+            log.error("Authentication error while enriching metadata for %s: %s",
+                      response.url, auth_error)
+            self.spider_failed = True
+            raise CloseSpider(f"Authentication error: {auth_error}") from auth_error
 
         log.info("New URL processed:------------------------------------------")
         log.info(item)
