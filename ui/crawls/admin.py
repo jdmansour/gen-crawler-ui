@@ -29,10 +29,16 @@ class SourceItemAdmin(admin.ModelAdmin):
 class CrawlJobInline(admin.TabularInline):
     model = CrawlJob
     extra = 0
-    fields = ['pk', 'start_url', 'follow_links', 'created_at', 'updated_at']
-    readonly_fields = ['pk', 'start_url', 'follow_links', 'created_at', 'updated_at']
+    fields = ['pk', 'crawl_type_display', 'start_url', 'follow_links', 'created_at', 'updated_at']
+    readonly_fields = ['pk', 'crawl_type_display', 'start_url', 'follow_links', 'created_at', 'updated_at']
     can_delete = False
     show_change_link = True
+
+    @display(description='Type')
+    def crawl_type_display(self, obj: CrawlJob) -> str:
+        if obj.crawl_type == CrawlJob.CrawlType.EXPLORATION:
+            return '🧭 Exploration'
+        return '🪄 Content'
 
 
 class FilterSetInline(admin.TabularInline):
@@ -133,11 +139,11 @@ class FilterSetAdmin(admin.ModelAdmin):
 
 
 class CrawlJobAdmin(admin.ModelAdmin):
-    list_display = ['start_url', 'follow_links', 'created_at',
+    list_display = ['start_url', 'crawl_type', 'follow_links', 'created_at',
                     'updated_at', 'crawled_urls_count']
-    fields = ['start_url', 'follow_links',
+    fields = ['start_url', 'crawl_type', 'follow_links',
               'created_at', 'updated_at', 'crawled_urls', 'crawler', 'scrapy_job_id']
-    readonly_fields = ['created_at', 'updated_at', 'crawled_urls', 'crawler']
+    readonly_fields = ['created_at', 'crawl_type', 'follow_links', 'updated_at', 'crawled_urls', 'crawler']
     date_hierarchy = 'created_at'
 
     class AnnotatedCrawlJob(CrawlJob):
