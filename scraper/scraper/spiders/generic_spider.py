@@ -8,6 +8,7 @@ import sqlite3
 import time
 from typing import Optional
 
+import playwright.async_api
 import redis
 import scrapy.http
 import scrapy.signals
@@ -362,6 +363,13 @@ class GenericSpider(Spider):
                       response.url, auth_error)
             self.spider_failed = True
             raise CloseSpider(f"Authentication error: {auth_error}") from auth_error
+        except playwright.async_api.Error as e:
+            log.error("Playwright error while enriching metadata for %s: %s",
+                      response.url, e)
+            self.spider_failed = True
+            raise CloseSpider(f"Playwright error: {e}") from e
+
+        # item["custom"]["generic_crawler_name"] = "test"
 
         log.info("New URL processed:------------------------------------------")
         log.info(item)
