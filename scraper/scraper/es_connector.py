@@ -696,10 +696,12 @@ class EduSharing:
             # inserting items is controlled with a Semaphore, otherwise we'd get PoolTimeout Exceptions when there's a
             # temporary burst of items that need to be inserted
             node = self.sync_node(spider, "ccm:io", self.transform_item(uuid, spider, item))
+            log.info("In insert_item, got node: %s", pprint.pformat(node))
             self.set_node_permissions(node["ref"]["id"], item)
             await self.set_node_preview(node["ref"]["id"], item)
             if not await self.set_node_binary_data(node["ref"]["id"], item):
                 await self.set_node_text(node["ref"]["id"], item)
+            return node
 
     async def update_item(self, spider, uuid, item):
         await self.insert_item(spider, uuid, item)

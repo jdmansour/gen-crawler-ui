@@ -10,6 +10,7 @@ import base64
 import csv
 import datetime
 import logging
+import pprint
 import re
 import time
 from abc import ABCMeta
@@ -39,6 +40,7 @@ from scraper import env
 from scraper.constants import *
 from scraper.es_connector import EduSharing
 from scraper.items import BaseItem
+from scraper.spiders.generic_spider import GenericSpider
 from scraper.util.edu_sharing_source_template_helper import EduSharingSourceTemplateHelper
 from scraper.util.language_mapper import LanguageMapper
 from scraper.web_tools import WebTools, WebEngine
@@ -871,8 +873,22 @@ class EduSharingStorePipeline(EduSharing, BasicPipeline):
         if "title" in item["lom"]["general"]:
             title = str(item["lom"]["general"]["title"])
         entryUUID = EduSharing.build_uuid(item["response"]["url"] if "url" in item["response"] else item["hash"])
-        await self.insert_item(spider, entryUUID, item)
+        inserted = await self.insert_item(spider, entryUUID, item)
         log.info("item " + entryUUID + " inserted/updated")
+        log.info("type(inserted): " + str(type(inserted)))
+        log.info(">>>>> raw item:\n %s", P().pformat(raw_item))
+        log.info(">>>>> processed item\n: %s", P().pformat(inserted))
+        # todo: move this to a signal in the crawler?
+        # todo: set the parent_id on the returned item?
+        if isinstance(spider, GenericSpider):
+            if spider.crawler_output_node is None:
+                parent_id = inserted.get("parent", {}).get("id", None)
+                spider.crawler_output_node = parent_id
+                log.info(f"Set crawler_output_node for spider {spider.name} to {parent_id}")
+                url = f"https://repository.staging.openeduhub.net/edu-sharing/components/workspace?root=MY_FILES&id={parent_id}&displayType=0"
+                log.info(f"You can view the crawled items at: {url}")
+        self.counter += 1
+            
 
         # @TODO: We may need to handle Collections
         # if 'collection' in item:
@@ -905,6 +921,17 @@ class EduSharingStorePipeline(EduSharing, BasicPipeline):
         #         json,
         #     ))
         return raw_item
+
+
+class P(pprint.PrettyPrinter):
+    def __init__(self, indent=1, width=80, depth=None, stream=None, *, compact=True, sort_dicts=True, underscore_numbers=False):
+        super().__init__(indent, width, depth, stream, compact=compact, sort_dicts=sort_dicts, underscore_numbers=underscore_numbers)
+
+    def _format(self, object, *args, **kwargs):
+        if isinstance(object, str):
+            if len(object) > 40:
+                object = object[:19] + '...' + object[-18:]
+        return pprint.PrettyPrinter._format(self, object, *args, **kwargs)
 
 
 class DummyPipeline(BasicPipeline):

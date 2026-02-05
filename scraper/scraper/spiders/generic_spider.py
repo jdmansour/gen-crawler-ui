@@ -90,6 +90,7 @@ class GenericSpider(Spider):
         self.crawler_id: Optional[int] = crawler_id
         self.items_processed = 0
         self.spider_failed = False
+        self.crawler_output_node: Optional[str] = None
 
         try:
             ai_enabled = to_bool(ai_enabled)
