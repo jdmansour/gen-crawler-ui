@@ -2,6 +2,7 @@ import json
 import logging
 from asyncio import Semaphore
 from enum import Enum
+from typing import TypedDict
 
 import html2text
 import httpx
@@ -70,6 +71,18 @@ class WebEngine(Enum):
     # Playwright is controlling a headless Chrome browser
     Playwright = "playwright"
 
+
+class UrlDataPlaywrightDict(TypedDict):
+    html: str
+    text: str
+    cookies: dict[str, str] | None
+    har: str | None
+    screenshot_bytes: bytes | None
+
+class PlaywrightDataDict(TypedDict):
+    content: str
+    title: str
+    screenshot_bytes: bytes
 
 class WebTools:
     _sem_splash: Semaphore = Semaphore(10)
@@ -148,7 +161,7 @@ class WebTools:
         raise Exception("Invalid engine")
 
     @staticmethod
-    async def __getUrlDataPlaywright(url: str):
+    async def __getUrlDataPlaywright(url: str) -> UrlDataPlaywrightDict:
         playwright_dict = await WebTools.fetchDataPlaywright(url)
         html: str = playwright_dict.get("content")
         screenshot_bytes: bytes = playwright_dict.get("screenshot_bytes")
@@ -200,7 +213,7 @@ class WebTools:
             return {"html": None, "text": None, "cookies": None, "har": None}
 
     @staticmethod
-    async def fetchDataPlaywright(url: str):
+    async def fetchDataPlaywright(url: str) -> PlaywrightDataDict:
         # relevant docs for this implementation: https://hub.docker.com/r/browserless/chrome#playwright and
         # https://playwright.dev/python/docs/api/class-browsertype#browser-type-connect-over-cdp
         async with async_playwright() as p:
