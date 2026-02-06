@@ -36,7 +36,6 @@ class GenericSpider(Spider):
     start_urls = []
     rules = [Rule(callback="parse")]
     custom_settings = {
-        "WEB_TOOLS": "playwright",
         "ROBOTSTXT_OBEY": False,
         "ITEM_PIPELINES": {
             "scraper.pipelines_edusharing.EduSharingCheckPipeline": 0,

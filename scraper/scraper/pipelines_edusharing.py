@@ -43,7 +43,7 @@ from scraper.items import BaseItem
 from scraper.spiders.generic_spider import GenericSpider
 from scraper.util.edu_sharing_source_template_helper import EduSharingSourceTemplateHelper
 from scraper.util.language_mapper import LanguageMapper
-from scraper.web_tools import WebTools, WebEngine
+from metadataenricher.web_tools import WebTools
 from valuespace_converter.valuespaces import Valuespaces
 
 log = logging.getLogger(__name__)
@@ -376,16 +376,12 @@ class ProcessThumbnailPipeline(BasicPipeline):
         --- (afterward delete the URL from "BaseItem.thumbnail")
 
         - if there is NO "BaseItem.thumbnail"-field:
-        -- default: take a screenshot of the URL from "technical.location" with Splash, rescale and save (as above)
-        -- alternatively, on-demand: use Playwright to take a screenshot, rescale and save (as above)
+        -- on-demand: use Playwright to take a screenshot, rescale and save (as above)
         """
         item = ItemAdapter(raw_item)
         response: scrapy.http.Response | None = None
         url: str | None = None
         settings_crawler = get_settings_for_crawler(spider)
-        # checking if the (optional) attribute WEB_TOOLS exists:
-        web_tools = settings_crawler.get("WEB_TOOLS", default=WebEngine.Splash)
-        _splash_success: bool | None = None  # control flag flips to False if Splash can't handle a URL
 
         # if screenshot_bytes is provided (the crawler has already a binary representation of the image,
         # the pipeline will convert/scale the given image
@@ -462,67 +458,22 @@ class ProcessThumbnailPipeline(BasicPipeline):
                 "location" in item["lom"]["technical"]
                 and len(item["lom"]["technical"]["location"]) > 0
         ):
-            if settings_crawler.get("SPLASH_URL") and web_tools == WebEngine.Splash:
-                target_url: str = item["lom"]["technical"]["location"][0]
-                _splash_url: str = f"{settings_crawler.get('SPLASH_URL')}/render.png"
-                _splash_parameter_wait: str = f"{settings_crawler.get('SPLASH_WAIT')}"
-                _splash_parameter_html5media: str = str(1)
-                _splash_headers: dict = settings_crawler.get("SPLASH_HEADERS")
-                _splash_dict: dict = {
-                    "url": target_url,
-                    "wait": _splash_parameter_wait,
-                    "html5_media": _splash_parameter_wait,
-                    "headers": _splash_headers
-                }
-                request_splash = scrapy.FormRequest(
-                    url=_splash_url,
-                    formdata=_splash_dict,
-                    callback=NO_CALLBACK,
-                    priority=1
-                )
-                splash_response: scrapy.http.Response = await maybe_deferred_to_future(
-                    spider.crawler.engine.download(request_splash)
-                )
-                if splash_response and splash_response.status != 200:
-                    log.debug(f"SPLASH could not handle the requested website. "
-                              f"(Splash returned HTTP Status {splash_response.status} for {target_url} !)")
-                    _splash_success = False
-                    # ToDo (optional): more granular Error-Handling for unsupported URLs?
-                    if splash_response.status == 415:
-                        log.debug(f"SPLASH (HTTP Status {splash_response.status} -> Unsupported Media Type): "
-                                  f"Could not render target url {target_url}")
-                elif splash_response:
-                    response: scrapy.http.Response = splash_response
-                else:
-                    log.debug(f"SPLASH returned HTTP Status {splash_response.status} for {target_url} ")
-
             playwright_websocket_endpoint: str | None = env.get("PLAYWRIGHT_WS_ENDPOINT")
-            if (not bool(_splash_success) and playwright_websocket_endpoint
-                    or playwright_websocket_endpoint and web_tools == WebEngine.Playwright):
+            if (playwright_websocket_endpoint):
                 # we're using Playwright to take a website screenshot if:
                 # - the spider explicitly defined Playwright in its 'custom_settings'-dict
-                # - or: Splash failed to render a website (= fallback)
                 # - or: the thumbnail URL could not be downloaded (= fallback)
 
                 # this edge-case is necessary for spiders that only need playwright to gather a screenshot,
                 # but don't use playwright within the spider itself
                 target_url: str = item["lom"]["technical"]["location"][0]
-                playwright_dict = await WebTools.getUrlData(url=target_url,
-                                                            engine=WebEngine.Playwright)
+                playwright_dict = await WebTools.getUrlData(url=target_url)
                 screenshot_bytes = playwright_dict.get("screenshot_bytes")
                 img = Image.open(BytesIO(screenshot_bytes))
                 self.create_thumbnails_from_image_bytes(img, item, settings_crawler)
-            else:
-                if settings_crawler.get("DISABLE_SPLASH") is False:
-                    log.warning(
-                        "No thumbnail provided (and .env variable 'SPLASH_URL' was not configured for screenshots!)"
-                    )
+
         if response is None:
-            if settings_crawler.get("DISABLE_SPLASH") is False:
-                log.error(
-                    "Neither thumbnail or technical.location (and technical.format) provided! "
-                    "Please provide at least one of them"
-                )
+            pass
         else:
             try:
                 if response.headers["Content-Type"] == b"image/svg+xml":

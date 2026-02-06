@@ -28,7 +28,7 @@ from .items import (AiPromptItemLoader, BaseItemLoader, KIdraItemLoader,
                      LomTechnicalItemLoader, PermissionItemLoader,
                      ResponseItemLoader, ValuespaceItemLoader)
 from .util.license_mapper import LicenseMapper
-from .web_tools import WebEngine, WebTools
+from .web_tools import WebTools
 
 log = logging.getLogger(__name__)
 
@@ -124,7 +124,7 @@ Hier folgt der Text:
         self.llm_client = openai.OpenAI(api_key=api_key, base_url=base_url)
 
     async def parse_page(self, response_url: str):
-        url_data = await WebTools.getUrlData(response_url, engine=WebEngine.Playwright)
+        url_data = await WebTools.getUrlData(response_url)
         if not url_data:
             log.warning("Playwright failed to fetch data for %s", response_url)
             return

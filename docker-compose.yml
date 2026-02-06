@@ -27,7 +27,6 @@ services:
       - headless_chrome
     environment:
       - "PLAYWRIGHT_WS_ENDPOINT=ws://headless_chrome:3000"
-      - "SPLASH_URL=http://splash:8050"
       - "Z_API_KEY=${Z_API_KEY?}"
       - "GENERIC_CRAWLER_USE_LLM_API=${GENERIC_CRAWLER_USE_LLM_API?}"
       - "GENERIC_CRAWLER_LLM_API_KEY=${GENERIC_CRAWLER_LLM_API_KEY?}"
@@ -55,7 +54,6 @@ services:
       - REDIS_URL=redis://redis:6379/0
       # For the generic crawler
       - "PLAYWRIGHT_WS_ENDPOINT=ws://headless_chrome:3000"
-      - "SPLASH_URL=http://splash:8050"
       # optional keyword args, e.g. cleanrun=true
       - "ARGS=${ARGS}"
       - "MODE=edu-sharing"

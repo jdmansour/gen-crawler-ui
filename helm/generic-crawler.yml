@@ -54,8 +54,6 @@ spec:
               value: edu-sharing
             - name: PLAYWRIGHT_WS_ENDPOINT
               value: ws://headless_chrome:3000
-            - name: SPLASH_URL
-              value: http://splash:8050
             - name: Z_API_KEY
               value: fASDBg3as#fASFjk
           ports:

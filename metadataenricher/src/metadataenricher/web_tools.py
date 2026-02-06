@@ -65,13 +65,6 @@ ignored_file_extensions: list[str] = [
 ]
 
 
-class WebEngine(Enum):
-    # Splash (default engine)
-    Splash = "splash"
-    # Playwright is controlling a headless Chrome browser
-    Playwright = "playwright"
-
-
 class UrlDataPlaywrightDict(TypedDict):
     html: str
     text: str
@@ -85,21 +78,10 @@ class PlaywrightDataDict(TypedDict):
     screenshot_bytes: bytes
 
 class WebTools:
-    _sem_splash: Semaphore = Semaphore(10)
     _sem_playwright: Semaphore = Semaphore(10)
     # reminder: if you increase this Semaphore value, you NEED to change the "browserless v2"-docker-container
     # configuration accordingly! (e.g., by increasing the MAX_CONCURRENT_SESSIONS and MAX_QUEUE_LENGTH configuration
     # settings, see: https://www.browserless.io/docs/docker)
-
-    @classmethod
-    async def __safely_get_splash_response(cls, url: str):
-        """Send a URL string to the Splash container for HTTP / Screenshot rendering if a Semaphore can be acquired.
-
-        (The Semaphore is used to control / throttle the number of concurrent pending requests to the Splash container,
-        which is necessary because Splash can only handle a specific number of connections at the same time.)
-        """
-        async with cls._sem_splash:
-            return await WebTools.__getUrlDataSplash(url)
 
     @classmethod
     async def __safely_get_playwright_response(cls, url: str):
@@ -141,10 +123,10 @@ class WebTools:
             return False
 
     @classmethod
-    async def getUrlData(cls, url: str, engine: WebEngine = WebEngine.Playwright):
+    async def getUrlData(cls, url: str):
         url_contains_problematic_file_extension: bool = cls.url_cant_be_rendered_by_headless_browsers(url=url)
         if url_contains_problematic_file_extension:
-            # most binary files cannot be rendered by Playwright or Splash and would cause unexpected behavior in the
+            # most binary files cannot be rendered by Playwright and would cause unexpected behavior in the
             # Thumbnail Pipeline
             # ToDo: handle websites that redirect to binary downloads gracefully
             #   - maybe by checking the MIME-Type in response headers first?
@@ -154,11 +136,7 @@ class WebTools:
             )
             return
 
-        if engine == WebEngine.Splash:
-            return await cls.__safely_get_splash_response(url)
-        elif engine == WebEngine.Playwright:
-            return await cls.__safely_get_playwright_response(url)
-        raise Exception("Invalid engine")
+        return await cls.__safely_get_playwright_response(url)
 
     @staticmethod
     async def __getUrlDataPlaywright(url: str) -> UrlDataPlaywrightDict:
@@ -177,40 +155,6 @@ class WebTools:
                 "cookies": None,
                 "har": None,
                 "screenshot_bytes": screenshot_bytes}
-
-    @staticmethod
-    async def __getUrlDataSplash(url: str):
-        settings = get_project_settings()
-        # html = None
-        if settings.get("SPLASH_URL") and not url.endswith(".pdf") and not url.endswith(".docx"):
-            # Splash can't handle some binary direct-links (Splash will throw "LUA Error 400: Bad Request" as a result)
-            async with httpx.AsyncClient() as client:
-                result = await client.post(
-                    settings.get("SPLASH_URL") + "/render.json",
-                    json={
-                        "html": 1,
-                        "iframes": 1,
-                        "url": url,
-                        "wait": settings.get("SPLASH_WAIT"),
-                        "headers": settings.get("SPLASH_HEADERS"),
-                        "script": 1,
-                        "har": 1,
-                        "response_body": 1,
-                    },
-                    timeout=30
-                )
-                data = result.content.decode("UTF-8")
-                j = json.loads(data)
-                html = j['html'] if 'html' in j else ''
-                text = html
-                text += '\n'.join(list(map(lambda x: x["html"], j["childFrames"]))) if 'childFrames' in j else ''
-                cookies = dict(result.cookies)
-                return {"html": html,
-                        "text": WebTools.html2Text(text),
-                        "cookies": cookies,
-                        "har": json.dumps(j["har"])}
-        else:
-            return {"html": None, "text": None, "cookies": None, "har": None}
 
     @staticmethod
     async def fetchDataPlaywright(url: str) -> PlaywrightDataDict:

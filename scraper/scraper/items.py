@@ -215,7 +215,7 @@ class LomBaseItem(Item):
 
 class ResponseItem(Item):
     """
-    Attributes of ResponseItem are populated by either Playwright or Splash when an item is processed by the pipelines.
+    Attributes of ResponseItem are populated by Playwright when an item is processed by the pipelines.
     """
 
     cookies = Field()

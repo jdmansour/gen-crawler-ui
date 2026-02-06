@@ -34,14 +34,6 @@ NEWSPIDER_MODULE = "scraper.spiders"
 # When set False, no permissions are set at all, which can be helpful if you want to control them later (e.g. via inherition)
 DEFAULT_PUBLIC_STATE = False
 
-# Splash (Web Thumbnailer)
-# Will be rolled out via docker-compose by default
-SPLASH_URL = None if env.get_bool("DISABLE_SPLASH", default=False) else env.get("SPLASH_URL")
-SPLASH_WAIT = 2  # seconds to let the page load
-SPLASH_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
-}  # use chrome to not create warnings on pages
-
 # edu-sharing config
 EDU_SHARING_BASE_URL = env.get("EDU_SHARING_BASE_URL")
 EDU_SHARING_USERNAME = env.get("EDU_SHARING_USERNAME")
