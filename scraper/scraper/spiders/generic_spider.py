@@ -285,6 +285,8 @@ class GenericSpider(Spider):
     def spider_error(self, failure, response, spider: GenericSpider):
         """ Called when the spider encounters an error. """
         log.error("Spider %s encountered an error: %s", spider.name, failure)
+        self.spider_failed = True
+        # TODO: add "if not failed" check in database to update_spider_state
         self.update_spider_state(spider, 'FAILED')
 
     def getId(self, response: Optional[Response] = None) -> str:
