@@ -3,7 +3,6 @@ services:
     volumes:
       - ./ui:/app/ui
       - ./database:/app/database
-      - ./frontend:/app/frontend
     environment:
       DJANGO_VITE_DEV_MODE: ${DJANGO_VITE_DEV_MODE:-false}
       # DJANGO_VITE_DEV_SERVER_HOST: localhost
