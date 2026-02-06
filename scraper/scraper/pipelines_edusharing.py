@@ -43,7 +43,7 @@ from scraper.items import BaseItem
 from scraper.spiders.generic_spider import GenericSpider
 from scraper.util.edu_sharing_source_template_helper import EduSharingSourceTemplateHelper
 from scraper.util.language_mapper import LanguageMapper
-from metadataenricher.web_tools import WebTools
+from metadataenricher.web_tools import get_url_data
 from valuespace_converter.valuespaces import Valuespaces
 
 log = logging.getLogger(__name__)
@@ -467,7 +467,7 @@ class ProcessThumbnailPipeline(BasicPipeline):
                 # this edge-case is necessary for spiders that only need playwright to gather a screenshot,
                 # but don't use playwright within the spider itself
                 target_url: str = item["lom"]["technical"]["location"][0]
-                playwright_dict = await WebTools.getUrlData(url=target_url)
+                playwright_dict = await get_url_data(url=target_url)
                 screenshot_bytes = playwright_dict.get("screenshot_bytes")
                 img = Image.open(BytesIO(screenshot_bytes))
                 self.create_thumbnails_from_image_bytes(img, item, settings_crawler)

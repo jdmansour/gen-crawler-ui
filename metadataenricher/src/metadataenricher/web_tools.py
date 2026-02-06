@@ -1,14 +1,10 @@
-import json
 import logging
 from asyncio import Semaphore
-from enum import Enum
 from typing import TypedDict
 
 import html2text
-import httpx
 import trafilatura
 from playwright.async_api import async_playwright
-from scrapy.utils.project import get_project_settings
 
 from . import env
 
@@ -65,101 +61,31 @@ ignored_file_extensions: list[str] = [
 ]
 
 
-class UrlDataPlaywrightDict(TypedDict):
+class UrlDataDict(TypedDict):
     html: str
     text: str
     cookies: dict[str, str] | None
     har: str | None
     screenshot_bytes: bytes | None
 
-class PlaywrightDataDict(TypedDict):
-    content: str
-    title: str
-    screenshot_bytes: bytes
 
-class WebTools:
-    _sem_playwright: Semaphore = Semaphore(10)
-    # reminder: if you increase this Semaphore value, you NEED to change the "browserless v2"-docker-container
-    # configuration accordingly! (e.g., by increasing the MAX_CONCURRENT_SESSIONS and MAX_QUEUE_LENGTH configuration
-    # settings, see: https://www.browserless.io/docs/docker)
+_sem_playwright: Semaphore = Semaphore(10)
+# reminder: if you increase this Semaphore value, you NEED to change the "browserless v2"-docker-container
+# configuration accordingly! (e.g., by increasing the MAX_CONCURRENT_SESSIONS and MAX_QUEUE_LENGTH configuration
+# settings, see: https://www.browserless.io/docs/docker)
 
-    @classmethod
-    async def __safely_get_playwright_response(cls, url: str):
-        """Send a URL string to the Playwright container ("browserless v2") for HTTP / Screenshot rendering if a
-        Semaphore can be acquired.
+async def get_url_data(url: str) -> UrlDataDict | None:
+    # Ignore URLs that look like binary files.
+    # Note that this does not detect the case when a problematic MIME type is served
+    # but the URL looks OK.
+    bad_extension_found = any(url.endswith(ext) for ext in ignored_file_extensions)
+    if bad_extension_found:
+        log.warning("File extension in URL %s detected which cannot be rendered by headless browsers. Skipping WebTools rendering for this url...", url)
+        return
 
-        (The Semaphore is used to control / throttle the number of concurrent pending requests to the Playwright
-        container, which is necessary because Playwright only allows a specific number of connections / requests in the
-        queue at the same time.
-        browserless v2 defaults to: 5 concurrent requests // 5 requests in the queue
-        => Semaphore value of 10 should guarantee that neither the crawler nor the pipelines make more requests than the
-        container is able to handle.)
-
-        For details, see:
-        https://www.browserless.io/docs/docker#max-concurrent-sessions
-        https://www.browserless.io/docs/docker#max-queue-length
-        """
-        async with cls._sem_playwright:
-            return await WebTools.__getUrlDataPlaywright(url)
-
-    @classmethod
-    def url_cant_be_rendered_by_headless_browsers(cls, url: str) -> bool:
-        """Rudimentary check for problematic file extensions within a provided URL string.
-        Returns True if a problematic extension was detected."""
-        # ToDo:
-        #  - extend the list of problematic file extensions as they occur during debugging
-        #  - implement check for parametrized URLs (e.g. "<URL>/image.png?token=..." and other edge-cases
-        if isinstance(url, str) and url:
-            # checking if the provided URL is actually a string
-            for file_extension in ignored_file_extensions:
-                if url.endswith(file_extension):
-                    log.warning(
-                        f"Problematic file extension {file_extension} detected in URL {url} ! "
-                        f"Headless browsers can't render this file type."
-                    )
-                    return True
-        else:
-            log.debug(f"URL {url} does not appear to be a string value. WebTools REQUIRE an URL string.")
-            return False
-
-    @classmethod
-    async def getUrlData(cls, url: str):
-        url_contains_problematic_file_extension: bool = cls.url_cant_be_rendered_by_headless_browsers(url=url)
-        if url_contains_problematic_file_extension:
-            # most binary files cannot be rendered by Playwright and would cause unexpected behavior in the
-            # Thumbnail Pipeline
-            # ToDo: handle websites that redirect to binary downloads gracefully
-            #   - maybe by checking the MIME-Type in response headers first?
-            log.warning(
-                f"File extension in URL {url} detected which cannot be rendered by headless browsers. "
-                f"Skipping WebTools rendering for this url..."
-            )
-            return
-
-        return await cls.__safely_get_playwright_response(url)
-
-    @staticmethod
-    async def __getUrlDataPlaywright(url: str) -> UrlDataPlaywrightDict:
-        playwright_dict = await WebTools.fetchDataPlaywright(url)
-        html: str = playwright_dict.get("content")
-        screenshot_bytes: bytes = playwright_dict.get("screenshot_bytes")
-        fulltext: str = WebTools.html2Text(html)
-        if html and isinstance(html, str):
-            html_bytes: bytes = html.encode()
-            trafilatura_text: str | None = trafilatura.extract(html_bytes)
-            if trafilatura_text:
-                # trafilatura text extraction is (in general) more precise than html2Text, so we'll use it if available
-                fulltext = trafilatura_text
-        return {"html": html,
-                "text": fulltext,
-                "cookies": None,
-                "har": None,
-                "screenshot_bytes": screenshot_bytes}
-
-    @staticmethod
-    async def fetchDataPlaywright(url: str) -> PlaywrightDataDict:
-        # relevant docs for this implementation: https://hub.docker.com/r/browserless/chrome#playwright and
-        # https://playwright.dev/python/docs/api/class-browsertype#browser-type-connect-over-cdp
+    # relevant docs for this implementation: https://hub.docker.com/r/browserless/chrome#playwright and
+    # https://playwright.dev/python/docs/api/class-browsertype#browser-type-connect-over-cdp
+    async with _sem_playwright:
         async with async_playwright() as p:
             log.debug("Fetching data with Playwright")
             ws_endpoint = env.get("PLAYWRIGHT_WS_ENDPOINT") + "/chrome/playwright"
@@ -171,21 +97,27 @@ class WebTools:
             await page.goto(url, wait_until="load", timeout=90000)
             # waits for a website to fire the DOMContentLoaded event or for a timeout of 90s
             # since waiting for 'networkidle' seems to cause timeouts
-            content = await page.content()
+            html = await page.content()
             screenshot_bytes = await page.screenshot()
             # ToDo: HAR / cookies
             #  if we are able to replicate the Splash response with all its fields,
             #  we could save traffic/requests that are currently still being handled by Splash
             #  see: https://playwright.dev/python/docs/api/class-browsercontext#browser-context-cookies
-            return {
-                "content": content,
-                "title": await page.title(),
-                "screenshot_bytes": screenshot_bytes
-            }
 
-    @staticmethod
-    def html2Text(html: str):
-        h = html2text.HTML2Text()
-        h.ignore_links = True
-        h.ignore_images = True
-        return h.handle(html)
+        fulltext = ""
+        html_bytes: bytes = html.encode()
+        trafilatura_text: str | None = trafilatura.extract(html_bytes)
+        if trafilatura_text:
+            # trafilatura text extraction is (in general) more precise than html2Text, so we'll use it if available
+            fulltext = trafilatura_text
+        else:
+            h = html2text.HTML2Text()
+            h.ignore_links = True
+            h.ignore_images = True
+            fulltext = h.handle(html)
+
+        return {"html": html,
+                "text": fulltext,
+                "cookies": None,
+                "har": None,
+                "screenshot_bytes": screenshot_bytes}

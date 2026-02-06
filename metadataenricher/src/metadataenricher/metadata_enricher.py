@@ -4,6 +4,7 @@ import json
 import logging
 from typing import Optional
 
+import html2text
 import httpx
 import openai
 import scrapy
@@ -28,7 +29,7 @@ from .items import (AiPromptItemLoader, BaseItemLoader, KIdraItemLoader,
                      LomTechnicalItemLoader, PermissionItemLoader,
                      ResponseItemLoader, ValuespaceItemLoader)
 from .util.license_mapper import LicenseMapper
-from .web_tools import WebTools
+from .web_tools import get_url_data
 
 log = logging.getLogger(__name__)
 
@@ -124,11 +125,11 @@ Hier folgt der Text:
         self.llm_client = openai.OpenAI(api_key=api_key, base_url=base_url)
 
     async def parse_page(self, response_url: str):
-        url_data = await WebTools.getUrlData(response_url)
+        url_data = await get_url_data(response_url)
         if not url_data:
             log.warning("Playwright failed to fetch data for %s", response_url)
             return
-        log.info("Response from WebTools.getUrlData:")
+        log.info("Response from get_url_data:")
         for key, val in url_data.items():
             log.info("%s: %r", key, str(val)[:100])
 
@@ -320,7 +321,10 @@ Hier folgt der Text:
         for t in crawler_ignore:
             t.clear()
         html = parsed_html.prettify()
-        return WebTools.html2Text(html)
+        h = html2text.HTML2Text()
+        h.ignore_links = True
+        h.ignore_images = True
+        return h.handle(html)
 
     def get_id(self, response_url: str) -> str:
         """ Return a stable identifier (URI) of the crawled item """
