@@ -1,17 +1,14 @@
 from __future__ import annotations
 
 import datetime
-import json
 import logging
-import os
 import sqlite3
-import time
 from typing import Optional
 
 import playwright.async_api
-import redis
-import scrapy.http
 import scrapy.signals
+from metadataenricher import metadata_enricher
+from metadataenricher.metadata_enricher import MetadataEnricher
 from scrapy.exceptions import CloseSpider
 from scrapy.http.response import Response
 from scrapy.http.response.text import TextResponse
@@ -19,12 +16,12 @@ from scrapy.spiders import Spider
 from scrapy.spiders.crawl import Rule
 
 import scraper
-from metadataenricher.metadata_enricher import MetadataEnricher
-from metadataenricher import metadata_enricher
 from scraper.es_connector import EduSharing
 
 from .. import env
 from ..util.generic_crawler_db import fetch_urls_passing_filterset
+from .state_helper import StateHelper
+from .utils import check_db
 
 log = logging.getLogger(__name__)
 
@@ -98,16 +95,7 @@ class GenericSpider(Spider):
             raise
 
         self.enricher = MetadataEnricher(ai_enabled=ai_enabled)
-
-        # Shared with ExampleSpider
-                # Redis setup for status updates
-        redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
-        try:
-            self.redis_client = redis.from_url(redis_url)
-            log.info("Redis client initialized with URL: %s", redis_url)
-        except Exception as e:
-            log.warning("Could not connect to Redis: %s", e)
-            self.redis_client = None
+        self.state_helper = StateHelper(False, self.crawler_id, self.crawl_job_id)
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -123,171 +111,62 @@ class GenericSpider(Spider):
             Open the database and get the list of URLs to crawl. """
 
         log.info("Opened spider %s version %s", spider.name, spider.version)
-        # TODO: synchronize DB loading logic with ExampleSpider
-        db_path = self.settings.get('GENERIC_CRAWLER_DB_PATH')
-        log.info("Using database at %s", db_path)
-        if db_path is not None:
-            log.info("File exists? %s", os.path.exists(db_path))
-        if db_path is None or not os.path.exists(db_path):
-            log.error(
-                "No database set or database not found. Please set GENERIC_CRAWLER_DB_PATH.")
-            return
-
-        if not self.filter_set_id:
-            return
+        check_db(self.settings)
+        self.state_helper.setup(self.settings)
 
         log.info("Filter set ID: %s", self.filter_set_id)
-        # List filter rules in this filter set
+        if not self.filter_set_id:
+            # TODO: think about how we can run the spider without a filter set, e.g. for testing
+            raise ValueError("filter_set_id is required to run the spider.")
+
+        log.info("GENERIC_CRAWLER_DB_PATH: %s", self.settings.get('GENERIC_CRAWLER_DB_PATH'))
+        log.info("DB_PATH: %s", self.settings.get('DB_PATH'))
+        db_path = self.settings.get('GENERIC_CRAWLER_DB_PATH')
+
         try:
             connection = sqlite3.connect(db_path)
 
+            # Load URLs from the latest exploration crawl passing this filter set
             matches = fetch_urls_passing_filterset(connection, self.filter_set_id, limit=self.max_urls)
-
             log.info("Adding %d URLs to start_urls", len(matches))
             for row in matches:
-                log.info("Adding URL to start_urls: %s", row.url)
                 self.start_urls.append(row.url)
 
             # get crawler_id from FilterSet
             cursor = connection.cursor()
             cursor.execute("SELECT crawler_id FROM crawls_filterset WHERE id=?", (self.filter_set_id,))
-            row = cursor.fetchone()
-            if row:
-                self.crawler_id = row[0]
+            if row := cursor.fetchone():
+                self.state_helper.crawler_id = row[0]
             else:
                 # Stop the crawl
                 log.error("No crawler_id found for filter_set_id %s", self.filter_set_id)
                 self.spider_failed = True
                 raise CloseSpider(f"No crawler_id found for filter_set_id {self.filter_set_id}.")
 
-            scrapy_job_id = getattr(spider, '_job', None)  # type: ignore
-            log.info("Scrapy job id: %s", scrapy_job_id)
+            self.state_helper.spider_opened(spider, "", True, 'CONTENT')
 
-            if self.crawl_job_id is None:
-                # e.g. launched from command line
-                # Add a new CrawlJob entry in the database
-
-                #cursor = connection.cursor()
-                cursor.execute("""INSERT INTO crawls_crawljob (start_url, follow_links, crawler_id, created_at, updated_at, state, scrapy_job_id, crawl_type)
-                                  VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'RUNNING', ?, 'CONTENT')""",
-                                ("", 1, self.crawler_id, scrapy_job_id))
-                self.crawl_job_id = cursor.lastrowid
-            else:
-                # Launched from the web app
-                # Update CrawlJob entry to set state to RUNNING
-                cursor.execute("UPDATE crawls_crawljob SET state='RUNNING', updated_at=CURRENT_TIMESTAMP, scrapy_job_id=? WHERE id=?", (scrapy_job_id, self.crawl_job_id))
-                log.info("Updated crawl job %d to RUNNING", self.crawl_job_id)
-                
-            connection.commit()
-            connection.close()
-            log.info("Created new crawl job in database with id %d", self.crawl_job_id)
         except (sqlite3.Error, ValueError) as e:
             log.error("Error while running crawler: %s", e)
             self.spider_failed = True
             raise CloseSpider(f"Error while running crawler: {e}") from e
 
+
         self.enricher.setup(self.settings)
-
-    def update_spider_state(self, spider: GenericSpider, state: str):
-        """ Updates the CrawlJob instance in the database and publishes to Redis. """
-
-        log.info("Updating spider %s state to %s", spider.name, state)
-        try:
-            # Update database
-            connection = sqlite3.connect(self.settings.get('DB_PATH'))
-            cursor = connection.cursor()
-            cursor.execute("UPDATE crawls_crawljob SET state=?, updated_at=CURRENT_TIMESTAMP WHERE id=?", (state, self.crawl_job_id))
-            connection.commit()
-            connection.close()
-            log.info("Updated crawl job %d state to %s", self.crawl_job_id, state)
-
-            # Publish to Redis for real-time updates
-            if self.redis_client:
-                try:
-                    connection = sqlite3.connect(self.settings.get('DB_PATH'))
-                    cursor = connection.cursor()
-                    # select state and count of crawled urls
-                    cursor.execute("SELECT state, (SELECT COUNT(*) FROM crawls_crawledurl WHERE crawl_job_id=?) FROM crawls_crawljob WHERE id=?", (self.crawl_job_id, self.crawl_job_id))
-                    row = cursor.fetchone()
-                    connection.close()
-                    if row:
-                        crawl_job_state = row[0]
-                        crawl_job_crawled_url_count = row[1]
-                    else:
-                        crawl_job_state = 'UNKNOWN'
-                        crawl_job_crawled_url_count = 0 
-
-                    status_data = {
-                        'type': 'crawl_job_update',
-                        'crawler_id': self.crawler_id,
-                        'crawl_job': {
-                            'id': self.crawl_job_id,
-                            'state': crawl_job_state,
-                            'crawled_url_count': crawl_job_crawled_url_count,
-                        },
-                        'items_processed': self.items_processed,
-                        'current_url': None,
-                        'timestamp': time.time()
-                    }
-                    channel = f'crawler_status_{self.crawler_id}'
-                    self.redis_client.publish(channel, json.dumps(status_data))
-                    log.info("Published status update to Redis channel: %s", channel)
-                except Exception as redis_error:
-                    log.warning("Failed to publish to Redis: %s", redis_error)
-            
-        except Exception as e:
-            log.error("Error updating crawl job state: %s", e)
-
-    def _publish_progress_update(self, current_url: str):
-        """ Publishes progress update to Redis. """
-        if self.redis_client:
-            try:
-                # Count crawled URLs for this job
-                connection = sqlite3.connect(self.settings.get('DB_PATH'))
-                cursor = connection.cursor()
-                # select state and count of crawled urls
-                cursor.execute("SELECT state, (SELECT COUNT(*) FROM crawls_crawledurl WHERE crawl_job_id=?) FROM crawls_crawljob WHERE id=?", (self.crawl_job_id, self.crawl_job_id))
-                row = cursor.fetchone()
-                connection.close()
-                if row:
-                    crawl_job_state = row[0]
-                    crawl_job_crawled_url_count = row[1]
-                else:
-                    crawl_job_state = 'UNKNOWN'
-                    crawl_job_crawled_url_count = 0
-
-                progress_data = {
-                    'type': 'crawl_job_update',
-                    'crawler_id': self.crawler_id,
-                    'crawl_job': {
-                        'id': self.crawl_job_id,
-                        'state': crawl_job_state,
-                        'crawled_url_count': crawl_job_crawled_url_count,
-                    },
-                    'items_processed': self.items_processed,
-                    'current_url': current_url,
-                    'timestamp': time.time()
-                }
-                channel = f'crawler_status_{self.crawler_id}'
-                self.redis_client.publish(channel, json.dumps(progress_data))
-                log.debug("Published progress update: %d items processed", self.items_processed)
-            except Exception as e:
-                log.warning("Failed to publish progress update: %s", e)
 
     def spider_closed(self, spider: GenericSpider):
         """ Called when the spider is closed. """
         log.info("Closed spider %s", spider.name)
         if self.spider_failed:
-            self.update_spider_state(spider, 'FAILED')
+            self.state_helper.update_spider_state(spider, 'FAILED')
         else:
-            self.update_spider_state(spider, 'COMPLETED')
+            self.state_helper.update_spider_state(spider, 'COMPLETED')
 
-    def spider_error(self, failure, response, spider: GenericSpider):
+    def spider_error(self, failure, response, spider: GenericSpider):  # pylint: disable=unused-argument
         """ Called when the spider encounters an error. """
         log.error("Spider %s encountered an error: %s", spider.name, failure)
         self.spider_failed = True
         # TODO: add "if not failed" check in database to update_spider_state
-        self.update_spider_state(spider, 'FAILED')
+        self.state_helper.update_spider_state(spider, 'FAILED')
 
     def getId(self, response: Optional[Response] = None) -> str:
         """Return a stable identifier (URI) of the crawled item"""
@@ -382,7 +261,7 @@ class GenericSpider(Spider):
         
         # Send progress update every 10 items
         if self.items_processed % 10 == 0:
-            self._publish_progress_update(response.url)
+            self.state_helper.publish_progress_update(response.url)
 
         yield item
 

@@ -2,20 +2,23 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 import sqlite3
-import time
 from urllib.parse import urlparse
 
 import openai
-import redis
 import scrapy
 import scrapy.signals
 from scrapy.crawler import Crawler
 from scrapy.exceptions import CloseSpider
-from scrapy.linkextractors import LinkExtractor
+from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
+from scrapy.http.response import Response
+from scrapy.http.response.text import TextResponse
+
+from .state_helper import StateHelper
+from .utils import check_db
 
 log = logging.getLogger(__name__)
+
 
 class CustomItem(scrapy.Item):
     job_id = scrapy.Field()
@@ -28,6 +31,7 @@ class CustomItem(scrapy.Item):
     title = scrapy.Field()
     content = scrapy.Field()
 
+
 class HierarchyAnalysisItem(scrapy.Item):
     job_id = scrapy.Field()
     url = scrapy.Field()
@@ -36,54 +40,51 @@ class HierarchyAnalysisItem(scrapy.Item):
     breadcrumb_item_selector = scrapy.Field()
     breadcrumbs = scrapy.Field()
 
+
 class NoindexItem(scrapy.Item):
     """ Used to mark a page as noindex. """
     job_id = scrapy.Field()
     url = scrapy.Field()
 
+
 class ExampleSpider(scrapy.Spider):
     name = "example"
-    #allowed_domains = ["example.com"]
+    # allowed_domains = ["example.com"]
     start_urls = ["https://example.com"]
     # rules = [
-    #     Rule(LinkExtractor())
+    #     Rule(LxmlLinkExtractor())
     # ]
     custom_settings = {
         'ITEM_PIPELINES': {
             'scraper.pipelines.ScraperPipeline': 300,
         },
-        'FEED_EXPORT_FIELDS': None #['job_id', 'url', 'request_url', 'from_url', 'title', 'content'],
+        'FEED_EXPORT_FIELDS': None,
     }
+    llm_client: openai.OpenAI
 
-    def __init__(self, start_url: str, crawler_id: int = None, crawl_job_id: int = None, *args, follow_links: bool = False, infer_hierarchy: bool = False, **kwargs):
+    def __init__(self, start_url: str, crawler_id: int | None = None, crawl_job_id: int | None = None,
+                 follow_links: bool = False, infer_hierarchy: bool = False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.start_urls = [start_url]
         self.follow_links = to_bool(follow_links)
-        self.link_extractor = LinkExtractor()
-        self.crawler_id = crawler_id
-        self.crawl_job_id = crawl_job_id
+        self.link_extractor = LxmlLinkExtractor()
+        # self.crawler_id = crawler_id
+        # self.crawl_job_id = crawl_job_id
         self.items_processed = 0
         self.infer_hierarchy = infer_hierarchy
         self.dry_run = False
+        self.spider_failed = False
+        self.llm_model = ''
 
-        if self.crawler_id is None:
-            log.info("No crawler_id provided, this is a dry run without database updates or Redis status publishing.")
+        if crawler_id is None:
+            log.info("No crawler_id provided, this is a dry run without "
+                     "database updates or Redis status publishing.")
             self.dry_run = True
-        
-        # Redis setup for status updates
-        self.redis_client = None
-        if not self.dry_run:
-            redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
-            try:
-                self.redis_client = redis.from_url(redis_url)
-                log.info("Redis client initialized with URL: %s", redis_url)
-            except Exception as e:
-                log.warning("Could not connect to Redis: %s", e)
-                self.redis_client = None
+
+        self.state_helper = StateHelper(self.dry_run, crawler_id, crawl_job_id)
 
         if self.infer_hierarchy:
             log.info("Hierarchy inference is enabled for this spider.")
-
 
     def setup_llm_client(self):
         api_key = self.settings.get('GENERIC_CRAWLER_LLM_API_KEY', '')
@@ -100,28 +101,32 @@ class ExampleSpider(scrapy.Spider):
         if not self.llm_model:
             raise RuntimeError(
                 "No model set for LLM API. Please set GENERIC_CRAWLER_LLM_MODEL.")
-    
+
         log.info("Using LLM API with the following settings:")
         log.info("GENERIC_CRAWLER_LLM_API_KEY: <set>")
         log.info("GENERIC_CRAWLER_LLM_API_BASE_URL: %r", base_url)
         log.info("GENERIC_CRAWLER_LLM_MODEL: %r", self.llm_model)
         self.llm_client = openai.OpenAI(api_key=api_key, base_url=base_url)
 
-
     @classmethod
     def from_crawler(cls, crawler: Crawler, *args, **kwargs):
         # pylint: disable=E1101
-        spider = super(ExampleSpider, cls).from_crawler(crawler, *args, **kwargs)
-        crawler.signals.connect(spider.spider_opened, signal=scrapy.signals.spider_opened)
-        crawler.signals.connect(spider.spider_closed, signal=scrapy.signals.spider_closed)
-        crawler.signals.connect(spider.spider_error, signal=scrapy.signals.spider_error)
+        spider = super(ExampleSpider, cls).from_crawler(
+            crawler, *args, **kwargs)
+        crawler.signals.connect(spider.spider_opened,
+                                signal=scrapy.signals.spider_opened)
+        crawler.signals.connect(spider.spider_closed,
+                                signal=scrapy.signals.spider_closed)
+        crawler.signals.connect(spider.spider_error,
+                                signal=scrapy.signals.spider_error)
         return spider
-    
 
     def spider_opened(self, spider: ExampleSpider):
         """ Called when the spider is opened. """
 
         log.info("Opened spider %s", spider.name)
+        check_db(self.settings)
+        self.state_helper.setup(self.settings)
 
         if self.infer_hierarchy:
             self.setup_llm_client()
@@ -129,133 +134,24 @@ class ExampleSpider(scrapy.Spider):
         if self.dry_run:
             return
 
-        db_path = self.settings.get('DB_PATH')
-        log.info("Using database at %s", db_path)
-        log.info("File exists? %s", os.path.exists(db_path))
-
-        scrapy_job_id = getattr(spider, '_job', None)  # type: ignore
-        log.info("Scrapy job id: %s", scrapy_job_id)
         try:
-            connection = sqlite3.connect(db_path)
-            cursor = connection.cursor()
-            # Insert if not exists, else update
-            if self.crawl_job_id is None:
-                # Create new crawl job row
-                cursor.execute("""INSERT INTO crawls_crawljob (start_url, follow_links, crawler_id, created_at, updated_at, state, scrapy_job_id)
-                                  VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'RUNNING', ?)""",
-                               (self.start_urls[0], int(self.follow_links), self.crawler_id, scrapy_job_id))
-                self.crawl_job_id = cursor.lastrowid
-                log.info("Created new crawl job in database with id %d", self.crawl_job_id)
-            else:
-                # Update CrawlJob in database:
-                # - set state to RUNNING
-                # - set update_at to current timestamp
-                # - set scrapy_job_id if available
-                cursor.execute("UPDATE crawls_crawljob SET state='RUNNING', updated_at=CURRENT_TIMESTAMP, scrapy_job_id=? WHERE id=?", (scrapy_job_id, self.crawl_job_id))
-                log.info("Updated crawl job %d to RUNNING", self.crawl_job_id)
-
-            connection.commit()
-            connection.close()
-        except Exception as e:
-            log.error("Error updating/creating crawl job: %s", e)
-            raise CloseSpider(f"Database error: {e}") from e
-
-
-    def update_spider_state(self, spider: ExampleSpider, state: str):
-        """ Updates the CrawlJob instance in the database and publishes to Redis. """
-
-        log.info("Updating spider %s state to %s", spider.name, state)
-        if self.dry_run:
-            return
-        
-        try:
-            # Update database
-            connection = sqlite3.connect(self.settings.get('DB_PATH'))
-            cursor = connection.cursor()
-            cursor.execute("UPDATE crawls_crawljob SET state=?, updated_at=CURRENT_TIMESTAMP WHERE id=?", (state, self.crawl_job_id))
-            connection.commit()
-            connection.close()
-            log.info("Updated crawl job %d state to %s", self.crawl_job_id, state)
-
-            # Publish to Redis for real-time updates
-            if self.redis_client:
-                try:
-                    connection = sqlite3.connect(self.settings.get('DB_PATH'))
-                    cursor = connection.cursor()
-                    # select state and count of crawled urls
-                    cursor.execute("SELECT state, (SELECT COUNT(*) FROM crawls_crawledurl WHERE crawl_job_id=?) FROM crawls_crawljob WHERE id=?", (self.crawl_job_id, self.crawl_job_id))
-                    row = cursor.fetchone()
-                    connection.close()
-                    if row:
-                        crawl_job_state = row[0]
-                        crawl_job_crawled_url_count = row[1]
-                    else:
-                        crawl_job_state = 'UNKNOWN'
-                        crawl_job_crawled_url_count = 0 
-
-                    status_data = {
-                        'type': 'crawl_job_update',
-                        'crawler_id': self.crawler_id,
-                        'crawl_job': {
-                            'id': self.crawl_job_id,
-                            'state': crawl_job_state,
-                            'crawled_url_count': crawl_job_crawled_url_count,
-                        },
-                        'items_processed': self.items_processed,
-                        'current_url': None,
-                        'timestamp': time.time()
-                    }
-                    channel = f'crawler_status_{self.crawler_id}'
-                    self.redis_client.publish(channel, json.dumps(status_data))
-                    log.info("Published status update to Redis channel: %s", channel)
-                except Exception as redis_error:
-                    log.warning("Failed to publish to Redis: %s", redis_error)
-            
-        except Exception as e:
+            self.state_helper.spider_opened(
+                spider, self.start_urls[0], self.follow_links, 'EXPLORATION')
+        except (sqlite3.Error, ValueError) as e:
             log.error("Error updating crawl job state: %s", e)
-
-    def _publish_progress_update(self, current_url: str):
-        """ Publishes progress update to Redis. """
-        if self.redis_client:
-            try:
-                # Count crawled URLs for this job
-                connection = sqlite3.connect(self.settings.get('DB_PATH'))
-                cursor = connection.cursor()
-                # select state and count of crawled urls
-                cursor.execute("SELECT state, (SELECT COUNT(*) FROM crawls_crawledurl WHERE crawl_job_id=?) FROM crawls_crawljob WHERE id=?", (self.crawl_job_id, self.crawl_job_id))
-                row = cursor.fetchone()
-                connection.close()
-                if row:
-                    crawl_job_state = row[0]
-                    crawl_job_crawled_url_count = row[1]
-                else:
-                    crawl_job_state = 'UNKNOWN'
-                    crawl_job_crawled_url_count = 0
-
-                progress_data = {
-                    'type': 'crawl_job_update',
-                    'crawler_id': self.crawler_id,
-                    'crawl_job': {
-                        'id': self.crawl_job_id,
-                        'state': crawl_job_state,
-                        'crawled_url_count': crawl_job_crawled_url_count,
-                    },
-                    'items_processed': self.items_processed,
-                    'current_url': current_url,
-                    'timestamp': time.time()
-                }
-                channel = f'crawler_status_{self.crawler_id}'
-                self.redis_client.publish(channel, json.dumps(progress_data))
-                log.debug("Published progress update: %d items processed", self.items_processed)
-            except Exception as e:
-                log.warning("Failed to publish progress update: %s", e)
+            self.spider_failed = True
+            raise CloseSpider("Failed to initialize crawl job state") from e
 
     def spider_closed(self, spider: ExampleSpider):
         """ Called when the spider is closed. """
         log.info("Closed spider %s", spider.name)
         if self.dry_run:
             return
-        self.update_spider_state(spider, 'COMPLETED')
+
+        if self.spider_failed:
+            self.state_helper.update_spider_state(spider, 'FAILED')
+        else:
+            self.state_helper.update_spider_state(spider, 'COMPLETED')
 
         # get statistics
         # if robotstxt/forbidden is 1 and downloader/request_count is 1,
@@ -264,24 +160,25 @@ class ExampleSpider(scrapy.Spider):
         if spider.crawler.stats is None:
             log.warning("No stats available for spider %s", spider.name)
             return
-        
+
         stats = spider.crawler.stats.get_stats()
         log.info("Crawl statistics: %s", stats)
         if stats.get('robotstxt/forbidden', 0) >= 1 and stats.get('downloader/request_count', 0) == 1:
             log.warning("Crawl appears to have been blocked by robots.txt")
-            self.update_spider_state(spider, 'FAILED')
+            self.state_helper.update_spider_state(spider, 'FAILED')
 
-    def spider_error(self, failure, response, spider: ExampleSpider):
+    def spider_error(self, failure, response, spider: ExampleSpider):  # pylint: disable=W0613
         """ Called when the spider encounters an error. """
         log.error("Spider %s encountered an error: %s", spider.name, failure)
-        self.update_spider_state(spider, 'FAILED')
+        self.state_helper.update_spider_state(spider, 'FAILED')
 
-
-    def parse(self, response: scrapy.http.Response, from_url=None):
+    def parse(self, response: Response, from_url=None):
         """
             from_url: the url that linked to this page, None if it is the start page
             respose.request.url: the url of this page
         """
+        assert response.request is not None
+        assert isinstance(response, TextResponse)
         request_origin = get_origin(response.request.url)
         # log.info("response.request.url: %s", response.request.url)
         # log.info("from_url: %s", from_url)
@@ -298,7 +195,7 @@ class ExampleSpider(scrapy.Spider):
             log.info("Page is marked as noindex, skipping")
             # Mark this page as noindex
             item = NoindexItem()
-            item['job_id'] = self.crawl_job_id
+            item['job_id'] = self.state_helper.crawl_job_id
             item['url'] = response.request.url
             yield item
             return
@@ -316,24 +213,24 @@ class ExampleSpider(scrapy.Spider):
                 # print(f"Origin is {get_origin(link.url)}, request origin is {request_origin}")
                 continue
             item = CustomItem()
-            item['job_id'] = self.crawl_job_id
+            item['job_id'] = self.state_helper.crawl_job_id
             item['request_url'] = response.request.url
             item['url'] = link.url
             if from_url:
                 item['from_url'] = from_url
             log.info("Found link %s", link.url)
-            
+
             # Track processed items for progress updates
             self.items_processed += 1
-            
+
             # Send progress update every 10 items
             if self.items_processed % 10 == 0:
-                self._publish_progress_update(link.url)
-            
+                self.state_helper.publish_progress_update(link.url)
+
             yield item
             if self.follow_links:
                 yield scrapy.Request(link.url, callback=self.parse, cb_kwargs={'from_url': response.url})
-                #yield response.follow(link, self.parse)
+                # yield response.follow(link, self.parse)
 
         # # find all links on the page that are to the same origin
         # origin = get_origin(response.url)
@@ -344,23 +241,28 @@ class ExampleSpider(scrapy.Spider):
 
             chat_completion = self.llm_client.chat.completions.create(
                 messages=[
-                    {"role":"system","content":"You are a helpful assistant"},
-                    {"role":"user","content":query},
+                    {"role": "system", "content": "You are a helpful assistant"},
+                    {"role": "user", "content": query},
                 ],
-                model= self.llm_model,
+                model=self.llm_model,
             )
             llm_response = chat_completion.choices[0].message.content
+            assert llm_response is not None
             log.info("Hierarchy inference response: %s", llm_response)
             obj = extract_and_validate_json(llm_response)
-            
+
             hierarchy_item = HierarchyAnalysisItem()
-            hierarchy_item['job_id'] = self.crawl_job_id
+            hierarchy_item['job_id'] = self.state_helper.crawl_job_id
             hierarchy_item['url'] = response.request.url
-            hierarchy_item['breadcrumbs_found'] = obj.get('breadcrumbs_found', False)
-            hierarchy_item['breadcrumb_selector'] = obj.get('breadcrumb_selector', None)
-            hierarchy_item['breadcrumb_item_selector'] = obj.get('breadcrumb_item_selector', None)
+            hierarchy_item['breadcrumbs_found'] = obj.get(
+                'breadcrumbs_found', False)
+            hierarchy_item['breadcrumb_selector'] = obj.get(
+                'breadcrumb_selector', None)
+            hierarchy_item['breadcrumb_item_selector'] = obj.get(
+                'breadcrumb_item_selector', None)
             hierarchy_item['breadcrumbs'] = obj.get('breadcrumbs', [])
             yield hierarchy_item
+
 
 def extract_and_validate_json(response: str) -> dict:
     """
@@ -380,7 +282,7 @@ def extract_and_validate_json(response: str) -> dict:
         return obj
     except json.JSONDecodeError as e:
         raise ValueError(f"Invalid JSON: {e}") from e
-    
+
 
 INFER_HIERARCHY_QUERY = """The following is the source code of a web page. Please check if the page includes
 breadcrumb navigation. If it does, please extract the breadcrumb navigation, and if possible CSS
@@ -449,7 +351,7 @@ def get_origin(url: str):
     return f"{parsed.scheme}://{parsed.netloc}"
 
 
-def to_bool(value: str|bool) -> bool:
+def to_bool(value: str | bool) -> bool:
     if isinstance(value, bool):
         return value
     if value.lower() in ['true', '1']:
@@ -457,5 +359,3 @@ def to_bool(value: str|bool) -> bool:
     if value.lower() in ['false', '0']:
         return False
     raise ValueError(f"Cannot convert {value} to boolean")
-
-
