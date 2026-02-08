@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { CrawlJobState } from '../apitypes';
+import { CrawlerState, CrawlJobState } from '../apitypes';
 
-export type SSEData = {
+export type CrawlJobUpdate = {
     type: 'crawl_job_update';
     crawler_id: number;
     crawl_job: {
@@ -13,6 +13,15 @@ export type SSEData = {
     current_url: string;
     timestamp: number;
 };
+
+export type CrawlerUpdate = {
+    type: 'crawler_update';
+    crawler_id: number;
+    state: CrawlerState;
+    timestamp: number;
+};
+
+export type SSEData = CrawlJobUpdate | CrawlerUpdate;
 
 export type SSEError = {
     type: 'error';

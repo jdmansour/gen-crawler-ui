@@ -1,6 +1,11 @@
 import { GroupInfo, WloFieldInfo } from "./wloTypes";
 
 export type CrawlJobState = 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED';
+export type CrawlerState = 
+  'EXPLORATION_REQUIRED' |
+  'EXPLORATION_RUNNING' |
+  'READY_FOR_CONTENT_CRAWL' |
+  'CONTENT_CRAWL_RUNNING';
 
 export type Crawler = {
     id: number;
@@ -8,12 +13,13 @@ export type Crawler = {
     filter_set_id: number | null;
     filter_set_url: string | null;
     name: string;
-    status: CrawlerStatus;
+    status: CrawlerStatus;  // todo: is this used currenty?
     created_at: string;
     updated_at: string;
     source_item: string;
     start_url: string;
     inherited_fields: string[];
+    state: CrawlerState;
     crawl_jobs: CrawlJob[];
 };
 

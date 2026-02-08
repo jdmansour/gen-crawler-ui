@@ -12,7 +12,7 @@ import FilterSetPage from "./FilterSetPage.tsx";
 import WloFakeHeader from "./WloFakeHeader.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  // <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route element={<><WloFakeHeader /><RootLayout /></>} >
@@ -25,5 +25,5 @@ createRoot(document.getElementById("root")!).render(
         </Route>
       </Routes>
     </BrowserRouter>
-  </StrictMode>,
+  // </StrictMode>
 );

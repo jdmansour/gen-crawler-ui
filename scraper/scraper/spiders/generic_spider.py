@@ -48,8 +48,9 @@ class GenericSpider(Spider):
         }
     }
 
-    def __init__(self, urltocrawl="", ai_enabled="True",
-                 max_urls="3", filter_set_id="", crawler_id=None, crawl_job_id=None, **kwargs):
+    def __init__(self, urltocrawl:str="", ai_enabled:str="True",
+                 max_urls:str="3", filter_set_id:str="",
+                 crawler_id:str|None=None, crawl_job_id:str|None=None, **kwargs):
         EduSharing.resetVersion = True
         super().__init__(**kwargs)
 
@@ -82,20 +83,22 @@ class GenericSpider(Spider):
             self.start_urls = urls[:self.max_urls]
 
         # logging.warning("self.start_urls=" + self.start_urls[0])
-        self.crawl_job_id: Optional[int] = crawl_job_id
-        self.crawler_id: Optional[int] = crawler_id
+        self.crawl_job_id: Optional[int] = int(crawl_job_id) if crawl_job_id else None
+        self.crawler_id: Optional[int] = int(crawler_id) if crawler_id else None
         self.items_processed = 0
         self.spider_failed = False
         self.crawler_output_node: Optional[str] = None
 
         try:
-            ai_enabled = to_bool(ai_enabled)
+            ai_enabled_bool = to_bool(ai_enabled)
         except ValueError:
             log.error("Invalid value for ai_enabled: %s", ai_enabled)
             raise
 
-        self.enricher = MetadataEnricher(ai_enabled=ai_enabled)
-        self.state_helper = StateHelper(False, self.crawler_id, self.crawl_job_id)
+        self.enricher = MetadataEnricher(ai_enabled=ai_enabled_bool)
+        self.state_helper = StateHelper(False,
+            int(crawler_id) if crawler_id else None,
+            int(crawl_job_id) if crawl_job_id else None)
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):

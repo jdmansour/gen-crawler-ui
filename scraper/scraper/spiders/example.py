@@ -61,13 +61,18 @@ class ExampleSpider(scrapy.Spider):
         'FEED_EXPORT_FIELDS': None,
     }
     llm_client: openai.OpenAI
+    crawler_id: int | None
+    crawl_job_id: int | None
+    follow_links: bool
+    infer_hierarchy: bool
 
-    def __init__(self, start_url: str, crawler_id: int | None = None, crawl_job_id: int | None = None,
+    def __init__(self, start_url: str, crawler_id: str | None = None, crawl_job_id: str | None = None,
                  follow_links: bool = False, infer_hierarchy: bool = False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.start_urls = [start_url]
         self.follow_links = to_bool(follow_links)
         self.link_extractor = LxmlLinkExtractor()
+        log.info("type(crawler_id): %s, type(crawl_job_id): %s", type(crawler_id), type(crawl_job_id))
         # self.crawler_id = crawler_id
         # self.crawl_job_id = crawl_job_id
         self.items_processed = 0
@@ -75,13 +80,16 @@ class ExampleSpider(scrapy.Spider):
         self.dry_run = False
         self.spider_failed = False
         self.llm_model = ''
+        self.follow_links = False
 
         if crawler_id is None:
             log.info("No crawler_id provided, this is a dry run without "
                      "database updates or Redis status publishing.")
             self.dry_run = True
 
-        self.state_helper = StateHelper(self.dry_run, crawler_id, crawl_job_id)
+        self.state_helper = StateHelper(self.dry_run,
+            int(crawler_id) if crawler_id else None,
+            int(crawl_job_id) if crawl_job_id else None)
 
         if self.infer_hierarchy:
             log.info("Hierarchy inference is enabled for this spider.")

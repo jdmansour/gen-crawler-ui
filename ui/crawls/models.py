@@ -46,6 +46,26 @@ class Crawler(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class State(models.TextChoices):
+        EXPLORATION_REQUIRED = 'EXPLORATION_REQUIRED', 'Exploration Required'
+        EXPLORATION_RUNNING = 'EXPLORATION_RUNNING', 'Exploration Running'
+        READY_FOR_CONTENT_CRAWL = 'READY_FOR_CONTENT_CRAWL', 'Ready for Content Crawl'
+        CONTENT_CRAWL_RUNNING = 'CONTENT_CRAWL_RUNNING', 'Content Crawl Running'
+
+    # TODO: recalculate this when a dynamic update of a crawl job is sent to the client.
+    # Where do we do that best?
+    def state(self) -> str:
+        """ Returns the current state of the crawler based on its crawl jobs. """
+        crawl_jobs = self.crawl_jobs.all()
+        if crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
+            return self.State.EXPLORATION_RUNNING
+        elif not crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state=CrawlJob.State.COMPLETED).exists():
+            return self.State.EXPLORATION_REQUIRED
+        elif crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.CONTENT, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
+            return self.State.CONTENT_CRAWL_RUNNING
+        else:
+            return self.State.READY_FOR_CONTENT_CRAWL
 
 class CrawlJob(models.Model):
     """ A crawl job contains a start URL and references to all crawled URLs. """

@@ -7,7 +7,7 @@ import { Crawler, CrawlJob, SourceItem } from "./apitypes";
 import { useApiUrl } from "./ApiUrlContext.tsx";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
 import GenCrawlerSidebar from "./GenCrawlerSidebar";
-import { SSEData, useCrawlerSSE } from "./hooks/useSSE";
+import { CrawlerUpdate, CrawlJobUpdate, SSEData, useCrawlerSSE } from "./hooks/useSSE";
 import { RootContext } from "./RootContext";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerDashboardStep } from "./steps";
@@ -57,8 +57,17 @@ export default function RootLayout() {
       setCrawlerList(crawlerList => crawlerList.map(c => c.id === crawlerId ? { ...c, crawl_jobs: c.crawl_jobs.filter(j => j.id !== crawlJobId) } : c));
   }
 
-  const onCrawlJobLiveUpdate = useCallback((sseData: SSEData) => {
-      setCrawlerList(crawlerList => crawlerList.map(c => mergeCrawler(c, sseData)));
+  // update the fields of the crawler matching sseData.crawler_id with the data from
+  // sseData (status and timestamp)
+  const onCrawlerUpdate = useCallback((sseData: CrawlerUpdate) => {
+      console.log("Updating crawler with ID", sseData.crawler_id, "to state", sseData.state);
+      const crawlerId = typeof sseData.crawler_id === 'string' ? parseInt(sseData.crawler_id) : sseData.crawler_id;
+      setCrawlerList(crawlerList => crawlerList.map(c =>
+        (c.id === crawlerId) ? { ...c, state: sseData.state } : c));
+  }, [setCrawlerList]);
+
+  const onCrawlJobLiveUpdate = useCallback((sseData: CrawlJobUpdate) => {
+      setCrawlerList(crawlerList => crawlerList.map(c => mergeCrawlJobUpdate(c, sseData)));
   }, [setCrawlerList]);
 
   function onCrawlerDeleted(crawlerId: number) {
@@ -70,8 +79,14 @@ export default function RootLayout() {
 
   useEffect(() => {
       if (!sseData) return;
+
+      console.log("SSE data received in RootLayout:", sseData);
       
       switch (sseData.type) {
+          case 'crawler_update':
+              onCrawlerUpdate(sseData);
+              break;
+
           case 'crawl_job_update':                
               onCrawlJobLiveUpdate(sseData);
               break;
@@ -80,8 +95,7 @@ export default function RootLayout() {
               console.error('SSE Error:', sseData.message);
               break;
       }
-  }, [onCrawlJobLiveUpdate, sseData]);
-
+  }, [onCrawlJobLiveUpdate, onCrawlerUpdate, sseData]);
 
   // Delete a crawler and update state
   async function deleteCrawler(crawlerId: number) {
@@ -200,7 +214,7 @@ function mergeCrawlJob(job: CrawlJob, update: Partial<CrawlJob>): CrawlJob {
     if (job.id != update.id) return job;
     return { ...job, ...update };
 }
-function mergeCrawler(c: Crawler, sseData: SSEData): Crawler {
+function mergeCrawlJobUpdate(c: Crawler, sseData: CrawlJobUpdate): Crawler {
     if (c.id != sseData.crawler_id) return c;
     return { ...c,
             crawl_jobs: c.crawl_jobs.map(job => mergeCrawlJob(job, sseData.crawl_job)) };

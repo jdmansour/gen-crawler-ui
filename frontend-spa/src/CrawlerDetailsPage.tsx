@@ -43,9 +43,9 @@ export default function CrawlerDetailsPage() {
 
 export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[]}) {
     // todo: move onCrawlerDeleted from a param to context?
-    const { crawlerId, crawlerList, sourceItems } = params;
-    const { deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob, liveUpdatesConnected, liveUpdatesError, setObservedCrawlerId, crawlerListLoaded } = useOutletContext<CrawlerDetailsContext>();
-    const crawler = crawlerList.find(c => c.id == crawlerId);
+    const { crawlerId } = params;
+    const { crawlerList, sourceItems, deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob, liveUpdatesConnected, liveUpdatesError, setObservedCrawlerId, crawlerListLoaded } = useOutletContext<CrawlerDetailsPageContext & CrawlerDetailsContext>();
+    const crawler = crawlerList.find(c => c.id === crawlerId);
     const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
     useEffect(() => {
         setObservedCrawlerId(crawlerId);
@@ -144,6 +144,8 @@ export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[
         </Stack>
 
         <h3>Aktionen</h3>
+
+        <p>Status: {crawler.state}</p>
 
         <Stack direction="row" spacing={2} sx={{ marginTop: 2, marginBottom: 2, flexWrap: 'wrap' }} useFlexGap>
             <Button variant="outlined" color="primary" onClick={()=>startSearchCrawl(crawler!.id)}>Crawler starten</Button>
