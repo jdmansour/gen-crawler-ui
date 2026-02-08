@@ -30,7 +30,7 @@ export default function FilterSetTable(props: {
   const lastId = Math.max(...evaluationResult.rules.map(r => r.id), 0);
   const lastPosition = Math.max(...evaluationResult.rules.map(r => r.position), 0);
 
-  const sortedRows = evaluationResult.rules.sort((a, b) => a.position - b.position)
+  const sortedRows = [...evaluationResult.rules].sort((a, b) => a.position - b.position)
   const lastRow: Rule = {
     'id': -1,
     'position': lastPosition + 1,

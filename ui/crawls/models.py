@@ -197,6 +197,19 @@ class FilterSet(models.Model):
             'updated_at': self.updated_at,
             'rules': results
         }
+    
+    def fix_rule_positions(self):
+        """ Fix the positions of the rules in this filter set. """
+        # Get a list of all positions and ids, ordered by position ascending.
+        # If a position is duplicate, the rules will be ordered arbitrarily (by id).
+        # Then, go through the list and reassign positions to be 1, 2, 3, ... in the order of the list.
+        rules = self.rules.order_by('position', 'id')
+        for i, rule in enumerate(rules):
+            if rule.position != i + 1:
+                log.info("Fixing position of rule %s from %d to %d",
+                         rule.rule, rule.position, i + 1)
+                rule.position = i + 1
+                rule.save(update_fields=['position'], force_update=True)        
 
 class FilterRule(models.Model):
     """ A rule to filter URLs in or out. """
@@ -233,7 +246,13 @@ class FilterRule(models.Model):
         """ Move the rule to the new position. If the position is already taken,
             increase the position of all rules above the new position by 1. """
         # TODO: We have to renumber the rules when one is deleted.
+        log.info("move_to called with new_position %d for rule %s at position %d",
+                 new_position, self.rule, self.position)
         if new_position == self.position:
+            # check for duplicates at this position and fix them
+            if self.filter_set.rules.filter(position=self.position).count() > 1:
+                log.info("Duplicate positions found for position %d, fixing positions", self.position)
+                self.filter_set.fix_rule_positions()
             return
         new_position = clamp(new_position, 1, self.filter_set.rules.count())
         log.info("Moving rule %s from %d to %d",

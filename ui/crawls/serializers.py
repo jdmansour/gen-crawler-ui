@@ -47,10 +47,10 @@ class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
     cumulative_count = serializers.ReadOnlyField()
 
     # if position is updated, call move_to on the FilterRule
-    def update(self, instance, validated_data):
+    def update(self, instance: FilterRule, validated_data: dict):
         if 'count' in validated_data:
             validated_data.pop('count')
-        if '+' in validated_data:
+        if 'position' in validated_data:
             instance.move_to(validated_data['position'])
             validated_data.pop('position')
         return super().update(instance, validated_data)
