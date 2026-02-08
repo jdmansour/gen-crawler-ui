@@ -47,30 +47,29 @@ export default function FilterSetTable(props: {
       header: 'URL-Muster',
       size: 300,
       enableEditing: (row) => row.original.id !== -1,
-      muiEditTextFieldProps: ({ column, row, table }) => ({
+      muiEditTextFieldProps: ({ row, table }) => ({
         variant: "standard",
         fullWidth: true,
         slotProps: {
           input: { sx: { fontSize: 'inherit', m: -0, height: 22, marginTop: "2px", marginBottom: "-2px" } }
         },
-        onBlur: async (event) => {
-          // table.setEditingCell(null) is called automatically onBlur internally
-          console.log("onBlur called");
-          console.log('table.getState().creatingRow', table.getState().creatingRow);
-          // TODO: this is broken and needs fixing!
-          if (table.getState().creatingRow) {
-            console.log("Submitting new row");
-            const data = await addRowWithDataAfter(lastId, { rule: event.target.value });
-            console.log("data returned from addRowWithDataAfter", data);
-
-            row._valuesCache[column.id] = event.target.value;
-            row._valuesCache['id'] = data.id;
-            row._valuesCache['count'] = data.count;
-            row._valuesCache['cumulative_count'] = data.cumulative_count;
-            table.setCreatingRow(row);
-          } else {
-            updateFields(row.original.id, { rule: event.target.value });
+        onKeyDown: async (event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            if (table.getState().creatingRow) {
+              await addRowWithDataAfter(lastId, { rule: (event.target as HTMLInputElement).value });
+              table.setCreatingRow(null);
+            } else {
+              (event.target as HTMLInputElement).blur();
+            }
           }
+        },
+        onBlur: async (event) => {
+          if (table.getState().creatingRow) {
+            // Don't save on blur during row creation — onCreatingRowSave handles it
+            return;
+          }
+          updateFields(row.original.id, { rule: event.target.value });
         },
         // Make double click work properly: Don't select the whole text, but only the word under the cursor
         onDoubleClick: (event) => event.stopPropagation(),
@@ -210,9 +209,8 @@ const table = useMaterialReactTable({
     positionToolbarAlertBanner: 'none',
     createDisplayMode: 'row',
     positionCreatingRow: rows.length-1,
-    onCreatingRowSave: ({ row, table, values }) => {
-      console.log("Creating row", { row, table, values });
-      addRowWithDataAfter(lastId, values);
+    onCreatingRowSave: async ({ table, values }) => {
+      await addRowWithDataAfter(lastId, values);
       table.setCreatingRow(null);
     },
     enableStickyHeader: true,

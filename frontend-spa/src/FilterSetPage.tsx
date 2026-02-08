@@ -161,9 +161,16 @@ export default function FilterSetPage(props: { csrfToken: string }) {
         'X-CSRFToken': props.csrfToken,
       },
     });
-    const data = await response.json();
-    console.log("delete response: ", data);
-    setEvaluationResult({ ...evaluationResult, rules: evaluationResult.rules.filter((rule) => rule.id !== id) });
+    if (!response.ok) {
+      console.error("Failed to delete rule", id);
+      return;
+    }
+    setEvaluationResult(prev => ({ ...prev, rules: prev.rules.filter((rule) => rule.id !== id) }));
+    setRowSelection(prev => {
+      const next = { ...prev };
+      delete next[String(id)];
+      return next;
+    });
   }
 
   const selectedFilterRule = useMemo(() => {
