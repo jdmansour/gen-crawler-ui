@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 class StateHelper:
     settings: BaseSettings
-    
+
     def __init__(self, dry_run: bool, crawler_id: int | None, crawl_job_id: int | None):
         self.dry_run = dry_run
         self.crawler_id = crawler_id
@@ -47,7 +47,8 @@ class StateHelper:
             connection = sqlite3.connect(spider.settings.get('DB_PATH'))
             cursor = connection.cursor()
             cursor.execute(
-                "UPDATE crawls_crawljob SET state=?, updated_at=CURRENT_TIMESTAMP WHERE id=?", (state, self.crawl_job_id))
+                "UPDATE crawls_crawljob SET state=?, updated_at=CURRENT_TIMESTAMP WHERE id=?",
+                (state, self.crawl_job_id))
             connection.commit()
             connection.close()
             log.info("Updated crawl job %d state to %s",
@@ -103,7 +104,7 @@ class StateHelper:
             log.error("Error updating crawl job state: %s", e)
 
     def recalc_crawler_state(self) -> str:
-        ## Replicate this logic in plain SQL:
+        # Replicate this logic in plain SQL:
         # crawl_jobs = self.crawl_jobs.all()
         # if crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
         #     return self.State.EXPLORATION_RUNNING
@@ -119,17 +120,20 @@ class StateHelper:
         connection = sqlite3.connect(db_path)
         cursor = connection.cursor()
         # any exploration crawl jobs running or pending?
-        #cursor.execute("SELECT COUNT(*) FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state IN ('RUNNING', 'PENDING')", (self.crawler_id,))
+        # cursor.execute("SELECT COUNT(*) FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state IN ('RUNNING', 'PENDING')", (self.crawler_id,))
         # instead of counting, we can just check for existence, which should be faster
-        cursor.execute("SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state IN ('RUNNING', 'PENDING') LIMIT 1", (self.crawler_id,))
+        cursor.execute(
+            "SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state IN ('RUNNING', 'PENDING') LIMIT 1", (self.crawler_id,))
         if cursor.fetchone():
             return 'EXPLORATION_RUNNING'
         # no exploration crawl jobs completed?
-        cursor.execute("SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state='COMPLETED' LIMIT 1", (self.crawler_id,))
+        cursor.execute(
+            "SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state='COMPLETED' LIMIT 1", (self.crawler_id,))
         if not cursor.fetchone():
             return 'EXPLORATION_REQUIRED'
         # any content crawl jobs running or pending?
-        cursor.execute("SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='CONTENT' AND state IN ('RUNNING', 'PENDING') LIMIT 1", (self.crawler_id,))
+        cursor.execute(
+            "SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='CONTENT' AND state IN ('RUNNING', 'PENDING') LIMIT 1", (self.crawler_id,))
         if cursor.fetchone():
             return 'CONTENT_CRAWL_RUNNING'
         # else ready for content crawl

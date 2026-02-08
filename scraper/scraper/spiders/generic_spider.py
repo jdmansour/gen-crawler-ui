@@ -130,14 +130,16 @@ class GenericSpider(Spider):
             connection = sqlite3.connect(db_path)
 
             # Load URLs from the latest exploration crawl passing this filter set
-            matches = fetch_urls_passing_filterset(connection, self.filter_set_id, limit=self.max_urls)
+            matches = fetch_urls_passing_filterset(
+                connection, self.filter_set_id, limit=self.max_urls)
             log.info("Adding %d URLs to start_urls", len(matches))
             for row in matches:
                 self.start_urls.append(row.url)
 
             # get crawler_id from FilterSet
             cursor = connection.cursor()
-            cursor.execute("SELECT crawler_id FROM crawls_filterset WHERE id=?", (self.filter_set_id,))
+            cursor.execute(
+                "SELECT crawler_id FROM crawls_filterset WHERE id=?", (self.filter_set_id,))
             if row := cursor.fetchone():
                 self.state_helper.crawler_id = row[0]
             else:
@@ -176,7 +178,7 @@ class GenericSpider(Spider):
         assert response
         return response.url
 
-    def getHash(self, response: Optional[Response] = None) -> str:
+    def getHash(self, response: Optional[Response] = None) -> str:  # pylint: disable=unused-argument
         """
         Return a stable hash to detect content changes (for future crawls).
         """
@@ -198,14 +200,13 @@ class GenericSpider(Spider):
         db = EduSharing().find_item(self.getId(response), self)
         if db is None or db[1] != self.getHash(response):
             return True
-        else:
-            logging.info(f"Item {self.getId(response)} (uuid: {db[0]}) has not changed")
-            return False
+        logging.info("Item %s (uuid: %s) has not changed", self.getId(response), db[0])
+        return False
 
     async def parse(self, response: Response):
         if not self.hasChanged(response):
             return
-        
+
         assert isinstance(response, TextResponse)
 
         # Respect robots meta tags
@@ -261,7 +262,7 @@ class GenericSpider(Spider):
 
         # Track processed items for progress updates
         self.items_processed += 1
-        
+
         # Send progress update every 10 items
         if self.items_processed % 10 == 0:
             self.state_helper.publish_progress_update(response.url)
