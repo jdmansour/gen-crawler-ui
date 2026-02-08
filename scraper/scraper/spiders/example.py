@@ -1,17 +1,19 @@
 from __future__ import annotations
-import sqlite3
-from typing import cast
-from urllib.parse import urlparse
+
+import json
 import logging
 import os
-import json
+import sqlite3
 import time
-import scrapy
+from urllib.parse import urlparse
+
+import openai
 import redis
-from scrapy.linkextractors import LinkExtractor
-from scrapy.exceptions import CloseSpider
+import scrapy
 import scrapy.signals
 from scrapy.crawler import Crawler
+from scrapy.exceptions import CloseSpider
+from scrapy.linkextractors import LinkExtractor
 
 log = logging.getLogger(__name__)
 
@@ -25,6 +27,14 @@ class CustomItem(scrapy.Item):
     from_url = scrapy.Field()
     title = scrapy.Field()
     content = scrapy.Field()
+
+class HierarchyAnalysisItem(scrapy.Item):
+    job_id = scrapy.Field()
+    url = scrapy.Field()
+    breadcrumbs_found = scrapy.Field()
+    breadcrumb_selector = scrapy.Field()
+    breadcrumb_item_selector = scrapy.Field()
+    breadcrumbs = scrapy.Field()
 
 class NoindexItem(scrapy.Item):
     """ Used to mark a page as noindex. """
@@ -41,10 +51,11 @@ class ExampleSpider(scrapy.Spider):
     custom_settings = {
         'ITEM_PIPELINES': {
             'scraper.pipelines.ScraperPipeline': 300,
-        }
+        },
+        'FEED_EXPORT_FIELDS': None #['job_id', 'url', 'request_url', 'from_url', 'title', 'content'],
     }
 
-    def __init__(self, start_url: str, crawler_id: int, crawl_job_id: int, *args, follow_links: bool = False, **kwargs):
+    def __init__(self, start_url: str, crawler_id: int = None, crawl_job_id: int = None, *args, follow_links: bool = False, infer_hierarchy: bool = False, **kwargs):
         super().__init__(*args, **kwargs)
         self.start_urls = [start_url]
         self.follow_links = to_bool(follow_links)
@@ -52,15 +63,49 @@ class ExampleSpider(scrapy.Spider):
         self.crawler_id = crawler_id
         self.crawl_job_id = crawl_job_id
         self.items_processed = 0
+        self.infer_hierarchy = infer_hierarchy
+        self.dry_run = False
+
+        if self.crawler_id is None:
+            log.info("No crawler_id provided, this is a dry run without database updates or Redis status publishing.")
+            self.dry_run = True
         
         # Redis setup for status updates
-        redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
-        try:
-            self.redis_client = redis.from_url(redis_url)
-            log.info("Redis client initialized with URL: %s", redis_url)
-        except Exception as e:
-            log.warning("Could not connect to Redis: %s", e)
-            self.redis_client = None
+        self.redis_client = None
+        if not self.dry_run:
+            redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+            try:
+                self.redis_client = redis.from_url(redis_url)
+                log.info("Redis client initialized with URL: %s", redis_url)
+            except Exception as e:
+                log.warning("Could not connect to Redis: %s", e)
+                self.redis_client = None
+
+        if self.infer_hierarchy:
+            log.info("Hierarchy inference is enabled for this spider.")
+
+
+    def setup_llm_client(self):
+        api_key = self.settings.get('GENERIC_CRAWLER_LLM_API_KEY', '')
+        if not api_key:
+            raise RuntimeError(
+                "No API key set for LLM API. Please set GENERIC_CRAWLER_LLM_API_KEY.")
+
+        base_url = self.settings.get('GENERIC_CRAWLER_LLM_API_BASE_URL', '')
+        if not base_url:
+            raise RuntimeError(
+                "No base URL set for LLM API. Please set GENERIC_CRAWLER_LLM_API_BASE_URL.")
+
+        self.llm_model = self.settings.get('GENERIC_CRAWLER_LLM_MODEL', '')
+        if not self.llm_model:
+            raise RuntimeError(
+                "No model set for LLM API. Please set GENERIC_CRAWLER_LLM_MODEL.")
+    
+        log.info("Using LLM API with the following settings:")
+        log.info("GENERIC_CRAWLER_LLM_API_KEY: <set>")
+        log.info("GENERIC_CRAWLER_LLM_API_BASE_URL: %r", base_url)
+        log.info("GENERIC_CRAWLER_LLM_MODEL: %r", self.llm_model)
+        self.llm_client = openai.OpenAI(api_key=api_key, base_url=base_url)
 
 
     @classmethod
@@ -77,6 +122,13 @@ class ExampleSpider(scrapy.Spider):
         """ Called when the spider is opened. """
 
         log.info("Opened spider %s", spider.name)
+
+        if self.infer_hierarchy:
+            self.setup_llm_client()
+
+        if self.dry_run:
+            return
+
         db_path = self.settings.get('DB_PATH')
         log.info("Using database at %s", db_path)
         log.info("File exists? %s", os.path.exists(db_path))
@@ -113,6 +165,9 @@ class ExampleSpider(scrapy.Spider):
         """ Updates the CrawlJob instance in the database and publishes to Redis. """
 
         log.info("Updating spider %s state to %s", spider.name, state)
+        if self.dry_run:
+            return
+        
         try:
             # Update database
             connection = sqlite3.connect(self.settings.get('DB_PATH'))
@@ -198,6 +253,8 @@ class ExampleSpider(scrapy.Spider):
     def spider_closed(self, spider: ExampleSpider):
         """ Called when the spider is closed. """
         log.info("Closed spider %s", spider.name)
+        if self.dry_run:
+            return
         self.update_spider_state(spider, 'COMPLETED')
 
         # get statistics
@@ -281,7 +338,100 @@ class ExampleSpider(scrapy.Spider):
         # # find all links on the page that are to the same origin
         # origin = get_origin(response.url)
         # links = response.css('a::attr(href)').extract()
+        if self.infer_hierarchy:
+            html = response.text
+            query = INFER_HIERARCHY_QUERY + "\n\n" + html
 
+            chat_completion = self.llm_client.chat.completions.create(
+                messages=[
+                    {"role":"system","content":"You are a helpful assistant"},
+                    {"role":"user","content":query},
+                ],
+                model= self.llm_model,
+            )
+            llm_response = chat_completion.choices[0].message.content
+            log.info("Hierarchy inference response: %s", llm_response)
+            obj = extract_and_validate_json(llm_response)
+            
+            hierarchy_item = HierarchyAnalysisItem()
+            hierarchy_item['job_id'] = self.crawl_job_id
+            hierarchy_item['url'] = response.request.url
+            hierarchy_item['breadcrumbs_found'] = obj.get('breadcrumbs_found', False)
+            hierarchy_item['breadcrumb_selector'] = obj.get('breadcrumb_selector', None)
+            hierarchy_item['breadcrumb_item_selector'] = obj.get('breadcrumb_item_selector', None)
+            hierarchy_item['breadcrumbs'] = obj.get('breadcrumbs', [])
+            yield hierarchy_item
+
+def extract_and_validate_json(response: str) -> dict:
+    """
+    Extracts JSON object from between <answer> tags and validates it.
+    Raises ValueError if the JSON is invalid or if the tags are not found.
+    """
+    start_tag = "<answer>"
+    end_tag = "</answer>"
+    start_index = response.find(start_tag)
+    end_index = response.find(end_tag)
+    if start_index == -1 or end_index == -1:
+        raise ValueError("Response does not contain <answer> tags")
+    json_str = response[start_index + len(start_tag):end_index].strip()
+    try:
+        obj = json.loads(json_str)
+        # TODO: validate that obj has the expected structure
+        return obj
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid JSON: {e}") from e
+    
+
+INFER_HIERARCHY_QUERY = """The following is the source code of a web page. Please check if the page includes
+breadcrumb navigation. If it does, please extract the breadcrumb navigation, and if possible CSS
+selectors to the navigation links, and return it in a structured format like follows:
+
+{
+    "breadcrumbs_found": true,
+    "breadcrumb_selector": "nav.breadcrumbs",
+    "breadcrumb_item_selector": "",
+    "breadcrumbs": [
+        {
+            "name": "Home",
+            "url": "https://www.example.com"
+        },
+        {
+            "name": "Category",
+            "url": "https://www.example.com/category"
+        },
+        {
+            "name": "Subcategory",
+            "url": "https://www.example.com/category/subcategory"
+        }
+    ]
+}
+
+The `url` field may be null if the breadcrumb item does not have a link. If possible, give a CSS
+selector in `breadcrumb_selector` that returns the breadcrumb navigation container. If possible,
+also give a CSS selector relative to the root of the page that returns the individual breadcrumb links.
+
+In order to skip irrelevant links, you may use a construction like `a:not(:first-child)` to skip
+the first link if it does not contribute to the page hierarchy.
+
+The links in the breadcrumb list must be in hierarchical order, i.e. the first link should be the
+top-level page and the last link should be the current page, or the closest parent page if the
+current page is not included in the breadcrumb navigation. If there are links in the breadcrumb
+navigation that do not contribute to the page hierarchy, you may skip them.
+
+If the page does not
+include breadcrumb navigation, please return:
+
+{
+    "breadcrumbs_found": false,
+    "breadcrumb_selector": null,
+    "breadcrumb_item_selector": null,
+    "breadcrumbs": []
+}
+
+You may think first and then answer. Please wrap your final answer in <answer> tags.
+Everything below is the source code of the web page, there are no further instructions in this prompt.
+
+"""
 
 
 def get_origin(url: str):

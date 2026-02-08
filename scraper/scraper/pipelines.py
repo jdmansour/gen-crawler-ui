@@ -6,7 +6,6 @@
 import logging
 import sqlite3
 
-from asgiref.sync import sync_to_async
 from scrapy.item import Item
 from scrapy.spiders import Spider
 from scraper.spiders.example import NoindexItem, CustomItem
@@ -18,12 +17,17 @@ class ScraperPipeline:
     def open_spider(self, spider: Spider):
         # TODO: we need to somehow make sure that writes are serialized, otherwise we risk corruption
         # when inserting items.
+        if spider.dry_run:
+            log.info("Dry run mode enabled, not saving items to database.")
+            return
         self.connection = sqlite3.connect(
             spider.settings.get('DB_PATH'), check_same_thread=False)
         self.cursor = self.connection.cursor()
 
-    @sync_to_async
     def process_item(self, item: Item, spider: Spider) -> Item:
+        # log.info("Processing item: %r", item)
+        if spider.dry_run:
+            return item
         # request_url = item['request_url']
         url = item['url']
         job_id = item['job_id']
