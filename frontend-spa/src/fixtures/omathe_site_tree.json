@@ -1,0 +1,392 @@
+[
+  {
+    "id": "root",
+    "label": "Startseite",
+    "url": "https://o-mathe.de",
+    "children": [
+      {
+        "id": "impressum",
+        "label": "Impressum",
+        "url": "https://o-mathe.de/impressum"
+      },
+      {
+        "id": "omathe",
+        "label": "Über o-mathe",
+        "url": "https://o-mathe.de/omathe",
+        "children": [
+          {
+            "id": "omathe-anleitunglehrer",
+            "label": "Anleitung für Lehrkräfte",
+            "url": "https://o-mathe.de/omathe/anleitunglehrer"
+          },
+          {
+            "id": "omathe-anleitungschueler",
+            "label": "Anleitung für Schüler/innen",
+            "url": "https://o-mathe.de/omathe/anleitungschueler"
+          },
+          {
+            "id": "omathe-dokumentation",
+            "label": "Dokumentation",
+            "url": "https://o-mathe.de/omathe/dokumentation"
+          },
+          {
+            "id": "omathe-autoren",
+            "label": "Autor:innen",
+            "url": "https://o-mathe.de/omathe/autoren"
+          },
+          {
+            "id": "omathe-lizenz",
+            "label": "Lizenz",
+            "url": "https://o-mathe.de/omathe/lizenz"
+          },
+          {
+            "id": "omathe-konzeption",
+            "label": "Konzeption",
+            "url": "https://o-mathe.de/omathe/konzeption"
+          },
+          {
+            "id": "omathe-information",
+            "label": "Zur Information",
+            "url": "https://o-mathe.de/omathe/information"
+          }
+        ]
+      },
+      {
+        "id": "stochastik",
+        "label": "Stochastik",
+        "url": "https://o-mathe.de/stochastik",
+        "children": [
+          {
+            "id": "stochastik-testen",
+            "label": "Testen von Hypothesen",
+            "url": "https://o-mathe.de/stochastik/testen"
+          },
+          {
+            "id": "stochastik-schaetzen",
+            "label": "Schätzen von Häufigkeiten und Wahrscheinlichkeiten",
+            "url": "https://o-mathe.de/stochastik/schaetzen"
+          },
+          {
+            "id": "stochastik-zufallsgroessen",
+            "label": "Zufallsgrößen und ihre Wahrscheinlichkeitsverteilungen",
+            "url": "https://o-mathe.de/stochastik/zufallsgroessen"
+          },
+          {
+            "id": "stochastik-simulation",
+            "label": "Simulation von Zufallsexperimenten",
+            "url": "https://o-mathe.de/stochastik/simulation"
+          },
+          {
+            "id": "stochastik-kombinatorik",
+            "label": "Zählstrategien und Wahrscheinlichkeiten",
+            "url": "https://o-mathe.de/stochastik/kombinatorik"
+          },
+          {
+            "id": "stochastik-abhaengigkeit",
+            "label": "Abhängigkeit und Unabhängigkeit",
+            "url": "https://o-mathe.de/stochastik/abhaengigkeit"
+          },
+          {
+            "id": "stochastik-binomialverteilung",
+            "label": "Binomialverteilung",
+            "url": "https://o-mathe.de/stochastik/binomialverteilung"
+          },
+          {
+            "id": "stochastik-wahrscheinlichkeit",
+            "label": "Zufallsexperimente und Wahrscheinlichkeiten",
+            "url": "https://o-mathe.de/stochastik/wahrscheinlichkeit"
+          }
+        ]
+      },
+      {
+        "id": "lineare-algebra",
+        "label": "Lineare Algebra",
+        "url": "https://o-mathe.de/lineare-algebra",
+        "children": [
+          {
+            "id": "lineare-algebra-populationsentwicklung",
+            "label": "Populationsentwicklung",
+            "url": "https://o-mathe.de/lineare-algebra/populationsentwicklung"
+          },
+          {
+            "id": "lineare-algebra-lgskurzfassung",
+            "label": "Lineare Gleichungssysteme - Kurzfassung",
+            "url": "https://o-mathe.de/lineare-algebra/lgskurzfassung"
+          },
+          {
+            "id": "lineare-algebra-lgs",
+            "label": "Lineare Gleichungssysteme - Langfassung",
+            "url": "https://o-mathe.de/lineare-algebra/lgs"
+          },
+          {
+            "id": "lineare-algebra-abbildungen3d",
+            "label": "Geometrische Abbildungen im Raum",
+            "url": "https://o-mathe.de/lineare-algebra/abbildungen3d"
+          },
+          {
+            "id": "lineare-algebra-eigenvektoren",
+            "label": "Eigenvektoren einer Matrix",
+            "url": "https://o-mathe.de/lineare-algebra/eigenvektoren"
+          },
+          {
+            "id": "lineare-algebra-austauschprozesse",
+            "label": "Austauschprozesse",
+            "url": "https://o-mathe.de/lineare-algebra/austauschprozesse"
+          },
+          {
+            "id": "lineare-algebra-vektorenmatrizen",
+            "label": "Vektoren und Matrizen",
+            "url": "https://o-mathe.de/lineare-algebra/vektorenmatrizen"
+          },
+          {
+            "id": "lineare-algebra-geometrischeabbildungen",
+            "label": "Geometrische Abbildungen in der Ebene",
+            "url": "https://o-mathe.de/lineare-algebra/geometrischeabbildungen"
+          }
+        ]
+      },
+      {
+        "id": "integralrechnung",
+        "label": "Integralrechnung",
+        "url": "https://o-mathe.de/integralrechnung",
+        "children": [
+          {
+            "id": "integralrechnung-integralableitung",
+            "label": "Integral und Ableitung",
+            "url": "https://o-mathe.de/integralrechnung/integralableitung"
+          },
+          {
+            "id": "integralrechnung-integral",
+            "label": "Integrale",
+            "url": "https://o-mathe.de/integralrechnung/integral"
+          }
+        ]
+      },
+      {
+        "id": "grundlagen",
+        "label": "Grundlagen",
+        "url": "https://o-mathe.de/grundlagen",
+        "children": [
+          {
+            "id": "grundlagen-funktionen",
+            "label": "Funktionen",
+            "url": "https://o-mathe.de/grundlagen/funktionen",
+            "children": [
+              {
+                "id": "grundlagen-funktionen-funktionenklassen",
+                "label": "Funktionenklassen",
+                "url": "https://o-mathe.de/grundlagen/funktionen/funktionenklassen",
+                "children": [
+                  {
+                    "id": "grundlagen-funktionen-funktionenklassen-linear",
+                    "label": "Wiederholung - Lineare Funktionen",
+                    "url": "https://o-mathe.de/grundlagen/funktionen/funktionenklassen/linear",
+                    "children": [
+                      {
+                        "id": "grundlagen-funktionen-funktionenklassen-linear-lernstrecke",
+                        "label": "Zur Orientierung",
+                        "url": "https://o-mathe.de/grundlagen/funktionen/funktionenklassen/linear/lernstrecke",
+                        "children": [
+                          {
+                            "id": "grundlagen-funktionen-funktionenklassen-linear-lernstrecke-uebungen",
+                            "label": "Übungen",
+                            "url": "https://o-mathe.de/grundlagen/funktionen/funktionenklassen/linear/lernstrecke/uebungen"
+                          },
+                          {
+                            "id": "grundlagen-funktionen-funktionenklassen-linear-lernstrecke-punktsteigungsform",
+                            "label": "Punktsteigungsform (optional)",
+                            "url": "https://o-mathe.de/grundlagen/funktionen/funktionenklassen/linear/lernstrecke/punktsteigungsform"
+                          },
+                          {
+                            "id": "grundlagen-funktionen-funktionenklassen-linear-lernstrecke-gleichung",
+                            "label": "Gleichung, Tabelle, Graph",
+                            "url": "https://o-mathe.de/grundlagen/funktionen/funktionenklassen/linear/lernstrecke/gleichung"
+                          },
+                          {
+                            "id": "grundlagen-funktionen-funktionenklassen-linear-lernstrecke-steigung",
+                            "label": "Steigung einer Geraden",
+                            "url": "https://o-mathe.de/grundlagen/funktionen/funktionenklassen/linear/lernstrecke/steigung"
+                          },
+                          {
+                            "id": "grundlagen-funktionen-funktionenklassen-linear-lernstrecke-nullstellen",
+                            "label": "Nullstellen",
+                            "url": "https://o-mathe.de/grundlagen/funktionen/funktionenklassen/linear/lernstrecke/nullstellen"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "grundlagen-funktionen-funktionsbegriff",
+                "label": "Das Funktionskonzept",
+                "url": "https://o-mathe.de/grundlagen/funktionen/funktionsbegriff",
+                "children": [
+                  {
+                    "id": "grundlagen-funktionen-funktionsbegriff-ueberpruefung",
+                    "label": "Überprüfung - Diagnosetest",
+                    "url": "https://o-mathe.de/grundlagen/funktionen/funktionsbegriff/ueberpruefung"
+                  },
+                  {
+                    "id": "grundlagen-funktionen-funktionsbegriff-uebungen",
+                    "label": "Übungen - Funktionskonzept",
+                    "url": "https://o-mathe.de/grundlagen/funktionen/funktionsbegriff/uebungen",
+                    "children": [
+                      {
+                        "id": "grundlagen-funktionen-funktionsbegriff-uebungen-anhalteweg",
+                        "label": "Anhalteweg beim Abbremsen",
+                        "url": "https://o-mathe.de/grundlagen/funktionen/funktionsbegriff/uebungen/anhalteweg"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "grundlagen-funktionen-funktionsbegriff-exkurs",
+                    "label": "Exkurs - Funktion als Verarbeitungseinheit",
+                    "url": "https://o-mathe.de/grundlagen/funktionen/funktionsbegriff/exkurs",
+                    "children": [
+                      {
+                        "id": "grundlagen-funktionen-funktionsbegriff-exkurs-lernstrecke",
+                        "label": "Zur Orientierung",
+                        "url": "https://o-mathe.de/grundlagen/funktionen/funktionsbegriff/exkurs/lernstrecke",
+                        "children": [
+                          {
+                            "id": "grundlagen-funktionen-funktionsbegriff-exkurs-lernstrecke-mehrerevariablen",
+                            "label": "Verarbeitung mehrerer Zahlen",
+                            "url": "https://o-mathe.de/grundlagen/funktionen/funktionsbegriff/exkurs/lernstrecke/mehrerevariablen"
+                          },
+                          {
+                            "id": "grundlagen-funktionen-funktionsbegriff-exkurs-lernstrecke-weiteredaten",
+                            "label": "Verarbeitung beliebiger Daten",
+                            "url": "https://o-mathe.de/grundlagen/funktionen/funktionsbegriff/exkurs/lernstrecke/weiteredaten"
+                          },
+                          {
+                            "id": "grundlagen-funktionen-funktionsbegriff-exkurs-lernstrecke-verarbeitungseinheit",
+                            "label": "Funktion als Verarbeitungseinheit",
+                            "url": "https://o-mathe.de/grundlagen/funktionen/funktionsbegriff/exkurs/lernstrecke/verarbeitungseinheit"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "grundlagen-grenzwerte",
+            "label": "Grenzwerte",
+            "url": "https://o-mathe.de/grundlagen/grenzwerte"
+          },
+          {
+            "id": "grundlagen-folgen",
+            "label": "Folgen",
+            "url": "https://o-mathe.de/grundlagen/folgen"
+          }
+        ]
+      },
+      {
+        "id": "analytische-geometrie",
+        "label": "Analytische Geometrie",
+        "url": "https://o-mathe.de/analytische-geometrie",
+        "children": [
+          {
+            "id": "analytische-geometrie-skalarprodukt",
+            "label": "Skalarprodukt",
+            "url": "https://o-mathe.de/analytische-geometrie/skalarprodukt"
+          },
+          {
+            "id": "analytische-geometrie-abstaende",
+            "label": "Abstände",
+            "url": "https://o-mathe.de/analytische-geometrie/abstaende"
+          },
+          {
+            "id": "analytische-geometrie-orthogonalitaet",
+            "label": "Orthogonalität",
+            "url": "https://o-mathe.de/analytische-geometrie/orthogonalitaet"
+          },
+          {
+            "id": "analytische-geometrie-ebenen",
+            "label": "4.3",
+            "url": "https://o-mathe.de/analytische-geometrie/ebenen"
+          },
+          {
+            "id": "analytische-geometrie-geraden",
+            "label": "Geraden",
+            "url": "https://o-mathe.de/analytische-geometrie/geraden"
+          },
+          {
+            "id": "analytische-geometrie-vektoren",
+            "label": "Vektoren",
+            "url": "https://o-mathe.de/analytische-geometrie/vektoren"
+          }
+        ]
+      },
+      {
+        "id": "differentialrechnung",
+        "label": "Differentialrechnung",
+        "url": "https://o-mathe.de/differentialrechnung",
+        "children": [
+          {
+            "id": "differentialrechnung-ableitungen",
+            "label": "Ableitung an einer Stelle",
+            "url": "https://o-mathe.de/differentialrechnung/ableitungen"
+          },
+          {
+            "id": "differentialrechnung-exponentialfunktionen",
+            "label": "Exponentialfunktionen und ihre Ableitungen",
+            "url": "https://o-mathe.de/differentialrechnung/exponentialfunktionen"
+          },
+          {
+            "id": "differentialrechnung-anwendungen",
+            "label": "Anwendungen von Funktionsuntersuchungen",
+            "url": "https://o-mathe.de/differentialrechnung/anwendungen"
+          },
+          {
+            "id": "differentialrechnung-ableitungvonfunktionen",
+            "label": "Ableitung von Funktionen",
+            "url": "https://o-mathe.de/differentialrechnung/ableitungvonfunktionen"
+          },
+          {
+            "id": "differentialrechnung-funktionsuntersuchungen",
+            "label": "Funktionsuntersuchungen mit Ableitungen",
+            "url": "https://o-mathe.de/differentialrechnung/funktionsuntersuchungen"
+          },
+          {
+            "id": "differentialrechnung-erweiterterableitungskalkuel",
+            "label": "Erweiterung des Ableitungskalküls",
+            "url": "https://o-mathe.de/differentialrechnung/erweiterterableitungskalkuel",
+            "children": [
+              {
+                "id": "differentialrechnung-erweiterterableitungskalkuel-anwendungableitungskalkuel",
+                "label": "Anwendungen",
+                "url": "https://o-mathe.de/differentialrechnung/erweiterterableitungskalkuel/anwendungableitungskalkuel",
+                "children": [
+                  {
+                    "id": "differentialrechnung-erweiterterableitungskalkuel-anwendungableitungskalkuel-periodischevorgaenge",
+                    "label": "Modellierung periodischer Vorgänge",
+                    "url": "https://o-mathe.de/differentialrechnung/erweiterterableitungskalkuel/anwendungableitungskalkuel/periodischevorgaenge",
+                    "children": [
+                      {
+                        "id": "differentialrechnung-erweiterterableitungskalkuel-anwendungableitungskalkuel-periodischevorgaenge-schwingungen",
+                        "label": "Schwingungen",
+                        "url": "https://o-mathe.de/differentialrechnung/erweiterterableitungskalkuel/anwendungableitungskalkuel/periodischevorgaenge/schwingungen",
+                        "children": [
+                          {
+                            "id": "differentialrechnung-erweiterterableitungskalkuel-anwendungableitungskalkuel-periodischevorgaenge-schwingungen-erkundung-lernstrecke",
+                            "label": "Einstieg",
+                            "url": "https://o-mathe.de/differentialrechnung/erweiterterableitungskalkuel/anwendungableitungskalkuel/periodischevorgaenge/schwingungen/erkundung/lernstrecke"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

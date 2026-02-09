@@ -2,122 +2,43 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import CheckBoxOutlineBlank from '@mui/icons-material/CheckBoxOutlineBlank';
+import Tooltip from '@mui/material/Tooltip';
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
+import { useTreeItemModel } from '@mui/x-tree-view/hooks';
 import {
   TreeItem,
   TreeItemProps,
   TreeItemSlotProps,
 } from '@mui/x-tree-view/TreeItem';
+import { Typography } from '@mui/material';
 
-type TreeItemType = {
+export type TreeItemType = {
   id: string;
   label: string;
+  url?: string;
   disabled?: boolean;
   editable?: boolean;
   children?: TreeItemType[];
 };
 
-const SITEMAP_ITEMS: TreeItemType[] = [
-  {
-    id: 'grundlagen',
-    label: 'Grundlagen',
-    children: [
-      {
-        id: 'grundlagen-funktionen',
-        label: 'Funktionen',
-        children: [
-          { id: 'grundlagen-funktionen-konzept', label: 'Das Funktionskonzept' },
-          { id: 'grundlagen-funktionen-klassen', label: 'Funktionenklassen' },
-        ],
-      },
-      {
-        id: 'grundlagen-folgen',
-        label: 'Folgen',
-        children: [
-          { id: 'grundlagen-folgen-konzept', label: 'Das Folgenkonzept' },
-          { id: 'grundlagen-folgen-eigenschaften', label: 'Eigenschaften von Folgen' },
-        ],
-      },
-      {
-        id: 'grundlagen-grenzwerte',
-        label: 'Grenzwerte',
-        children: [
-          { id: 'grundlagen-grenzwerte-folgen', label: 'Grenzverhalten von Folgen' },
-          { id: 'grundlagen-grenzwerte-praezisierung', label: 'Präzisierung des Grenzwertbegriffs' },
-          { id: 'grundlagen-grenzwerte-funktionen', label: 'Grenzwerte bei Funktionen' },
-          { id: 'grundlagen-grenzwerte-stetigkeit', label: 'Stetigkeit von Funktionen' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'differentialrechnung',
-    label: 'Differentialrechnung',
-    children: [
-      {
-        id: 'diff-ableitung-stelle',
-        label: 'Ableitung an einer Stelle',
-        children: [
-          { id: 'diff-ableitung-stelle-bestand', label: 'Entwicklung eines Bestandes' },
-          { id: 'diff-ableitung-stelle-mittlere', label: 'Mittlere Änderungsrate' },
-          { id: 'diff-ableitung-stelle-lokal', label: 'Ableitung als lokale Änderungsrate' },
-          { id: 'diff-ableitung-stelle-diffbar', label: 'Differenzierbarkeit' },
-        ],
-      },
-      {
-        id: 'diff-ableitung-funktionen',
-        label: 'Ableitung von Funktionen',
-        children: [
-          { id: 'diff-ableitung-funktionen-ableitungsfunktion', label: 'Ableitungsfunktion' },
-          { id: 'diff-ableitung-funktionen-grafisch', label: 'Grafisches Ableiten' },
-          { id: 'diff-ableitung-funktionen-regeln', label: 'Elementare Ableitungsregeln' },
-          { id: 'diff-ableitung-funktionen-hoehere', label: 'Höhere Ableitungen' },
-          { id: 'diff-ableitung-funktionen-geometrie', label: 'Ableitungsgeometrie' },
-        ],
-      },
-      {
-        id: 'diff-funktionsuntersuchungen',
-        label: 'Funktionsuntersuchungen',
-        children: [
-          { id: 'diff-funktionsuntersuchungen-eigenschaften', label: 'Eigenschaften von Funktionen' },
-          { id: 'diff-funktionsuntersuchungen-nullstellen', label: 'Nullstellen von Funktionen' },
-          { id: 'diff-funktionsuntersuchungen-monotonie', label: 'Monotonie und lokale Extrema' },
-          { id: 'diff-funktionsuntersuchungen-extrema', label: 'Bestimmung lokaler Extrema' },
-          { id: 'diff-funktionsuntersuchungen-wendepunkte', label: 'Krümmung und Wendepunkte' },
-        ],
-      },
-      {
-        id: 'diff-anwendungen',
-        label: 'Anwendungen',
-        children: [
-          { id: 'diff-anwendungen-optimierung', label: 'Optimierungsprobleme' },
-          { id: 'diff-anwendungen-bestimmung', label: 'Funktionsbestimmung' },
-          { id: 'diff-anwendungen-parameter', label: 'Funktionen mit Parametern' },
-        ],
-      },
-      {
-        id: 'diff-exponential',
-        label: 'Exponentialfunktionen',
-        children: [
-          { id: 'diff-exponential-prozesse', label: 'Exponentielle Prozesse' },
-          { id: 'diff-exponential-ableitung', label: 'Ableitung von Exponentialfunktionen' },
-          { id: 'diff-exponential-efunktion', label: 'e-Funktion und ln-Funktion' },
-          { id: 'diff-exponential-parameter', label: 'e-Funktion mit Parametern' },
-          { id: 'diff-exponential-halbwertszeit', label: 'Verdopplungs- und Halbwertszeit' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'integralrechnung',
-    label: 'Integralrechnung',
-  },
-  {
-    id: 'analytische-geometrie',
-    label: 'Analytische Geometrie',
-  },
-];
+interface SitemapTreeProps {
+  items: TreeItemType[];
+}
 
+
+function getExpandableIds(items: TreeItemType[]): string[] {
+  const ids: string[] = [];
+  function walk(items: TreeItemType[]) {
+    for (const item of items) {
+      if (item.children?.length) {
+        ids.push(item.id);
+        walk(item.children);
+      }
+    }
+  }
+  walk(items);
+  return ids;
+}
 
 function getItemsByDepth(items: TreeItemType[]): Map<number, string[]> {
   const result = new Map<number, string[]>();
@@ -132,8 +53,6 @@ function getItemsByDepth(items: TreeItemType[]): Map<number, string[]> {
   return result;
 }
 
-const ITEMS_BY_DEPTH = getItemsByDepth(SITEMAP_ITEMS);
-
 const DepthContext = React.createContext(0);
 
 const CHECKBOX_COLORS = ['primary', 'secondary', 'success', 'warning'] as const;
@@ -144,11 +63,19 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
 ) {
   const depth = React.useContext(DepthContext);
   const color = CHECKBOX_COLORS[depth % CHECKBOX_COLORS.length];
+  const item = useTreeItemModel<TreeItemType>(props.itemId);
+
+  const label = item?.url ? (
+    <Tooltip title={item.url} placement="right" enterDelay={500}>
+      <span>{props.label}</span>
+    </Tooltip>
+  ) : props.label;
 
   return (
     <DepthContext.Provider value={depth + 1}>
       <TreeItem
         {...props}
+        label={label}
         ref={ref}
         slotProps={
           {
@@ -166,11 +93,13 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
   );
 });
 
-export default function CheckboxSelection() {
+export default function SitemapTree({ items }: SitemapTreeProps) {
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
+  const defaultExpandedItems = React.useMemo(() => getExpandableIds(items), [items]);
+  const itemsByDepth = React.useMemo(() => getItemsByDepth(items), [items]);
 
   const handleDepthToggle = (depth: number) => {
-    const depthIds = ITEMS_BY_DEPTH.get(depth) ?? [];
+    const depthIds = itemsByDepth.get(depth) ?? [];
     const allSelected = depthIds.every(id => selectedItems.includes(id));
     if (allSelected) {
       setSelectedItems(prev => prev.filter(id => !depthIds.includes(id)));
@@ -183,12 +112,12 @@ export default function CheckboxSelection() {
     <Box sx={{ display: 'flex', flexDirection: 'column', height: 500, minWidth: 350 }}>
       <Box sx={{ flex: 1, overflow: 'auto' }}>
         <RichTreeView
-          defaultExpandedItems={['differentialrechnung', 'integralrechnung']}
+          defaultExpandedItems={defaultExpandedItems}
           checkboxSelection
           multiSelect={true}
           selectedItems={selectedItems}
           onSelectedItemsChange={(_event, ids) => setSelectedItems(ids)}
-          items={SITEMAP_ITEMS}
+          items={items}
           slots={{ item: CustomTreeItem }}
           itemChildrenIndentation={24}
           expansionTrigger="iconContainer"
@@ -204,9 +133,9 @@ export default function CheckboxSelection() {
           }}
         />
       </Box>
-      <Box sx={{ borderTop: 1, borderColor: 'divider', display: 'flex', pl: '30px' }}>
-        {Array.from(ITEMS_BY_DEPTH.keys()).sort().map(depth => {
-          const depthIds = ITEMS_BY_DEPTH.get(depth)!;
+      <Box sx={{ borderTop: 1, borderColor: 'divider', display: 'flex', pl: '30px'  }} alignItems="center">
+        {Array.from(itemsByDepth.keys()).sort().map(depth => {
+          const depthIds = itemsByDepth.get(depth)!;
           const selectedCount = depthIds.filter(id => selectedItems.includes(id)).length;
           const color = CHECKBOX_COLORS[depth % CHECKBOX_COLORS.length];
           return (
@@ -222,6 +151,12 @@ export default function CheckboxSelection() {
             />
           );
         })}
+        { /* add label describing the checkboxes */}
+        {/* <Box sx={{ ml: 1, color: 'text.secondary', fontSize: '0.875rem', fontFamily: 'Roboto, Helvetica, Arial, sans-serif' }}> */}
+        <Typography variant="body2" color="text.secondary" sx={{ ml: 1, mt: "2px" }}>
+          Alle Elemente einer Tiefe aus-/abwählen
+        </Typography>
+        {/* </Box> */}
       </Box>
     </Box>
   );

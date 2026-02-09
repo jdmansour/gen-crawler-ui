@@ -4,6 +4,7 @@ import json
 import logging
 import sqlite3
 from urllib.parse import urlparse
+import sys
 
 import openai
 import scrapy
@@ -30,6 +31,8 @@ class CustomItem(scrapy.Item):
     from_url = scrapy.Field()
     title = scrapy.Field()
     content = scrapy.Field()
+    # Distance from the crawl root, 0 = start page, 1 = linked from start page, etc.
+    depth = scrapy.Field()
 
 
 class HierarchyAnalysisItem(scrapy.Item):
@@ -78,7 +81,6 @@ class ExampleSpider(scrapy.Spider):
         self.dry_run = False
         self.spider_failed = False
         self.llm_model = ''
-        self.follow_links = False
 
         if crawler_id is None:
             log.info("No crawler_id provided, this is a dry run without "
@@ -93,6 +95,7 @@ class ExampleSpider(scrapy.Spider):
             log.info("Hierarchy inference is enabled for this spider.")
 
     def setup_llm_client(self):
+        log.info("Setting up LLM client for hierarchy inference")
         api_key = self.settings.get('GENERIC_CRAWLER_LLM_API_KEY', '')
         if not api_key:
             raise RuntimeError(
@@ -179,7 +182,7 @@ class ExampleSpider(scrapy.Spider):
         log.error("Spider %s encountered an error: %s", spider.name, failure)
         self.state_helper.update_spider_state(spider, 'FAILED')
 
-    def parse(self, response: Response, from_url=None):
+    def parse(self, response: Response, from_url=None, depth=0):
         """
             from_url: the url that linked to this page, None if it is the start page
             respose.request.url: the url of this page
@@ -223,6 +226,7 @@ class ExampleSpider(scrapy.Spider):
             item['job_id'] = self.state_helper.crawl_job_id
             item['request_url'] = response.request.url
             item['url'] = link.url
+            item['depth'] = depth + 1
             if from_url:
                 item['from_url'] = from_url
             log.info("Found link %s", link.url)
@@ -236,8 +240,10 @@ class ExampleSpider(scrapy.Spider):
 
             yield item
             if self.follow_links:
+                log.info("Following link %s", link.url)
                 yield scrapy.Request(
-                    link.url, callback=self.parse, cb_kwargs={'from_url': response.url})
+                    link.url, callback=self.parse,
+                    cb_kwargs={'from_url': response.url, 'depth': depth + 1})
                 # yield response.follow(link, self.parse)
 
         # # find all links on the page that are to the same origin
@@ -294,8 +300,21 @@ def extract_and_validate_json(response: str) -> dict:
 
 INFER_HIERARCHY_QUERY = """
 The following is the source code of a web page. Please check if the page includes
-breadcrumb navigation. If it does, please extract the breadcrumb navigation, and if possible CSS
-selectors to the navigation links, and return it in a structured format like follows:
+breadcrumb navigation. Please look for common patterns of breadcrumb navigation, such as a
+<nav> element with "breadcrumb" in the class name, or a list of links that are separated
+by "&gt;" or "/". If you do not find clear evidence of breadcrumb navigation, please return a
+negative answer. For example, navigation links in the header or footer that do not reflect the
+page hierarchy should not be considered breadcrumb navigation.
+
+If the page does include breadcrumbs, try to find CSS selectors to the breadcrumb container
+and the individual breadcrumb links.
+
+Please extract the breadcrumb links with title and url (if present). Make sure that the breadcrumb
+links you return match the selector you provided. Otherwise, the chanche is high that they are not
+actually breadcrumb links, but some other kind of navigation links. In that case, you must return
+`"breadcrumbs_found": false`.
+
+Return the results in a structured format like follows:
 
 {
     "breadcrumbs_found": true,

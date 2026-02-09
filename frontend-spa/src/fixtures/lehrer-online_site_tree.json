@@ -1,0 +1,563 @@
+[
+  {
+    "id": "root",
+    "label": "Startseite",
+    "url": "",
+    "children": [
+      {
+        "id": "unterricht-grundschule",
+        "label": "Grundschule",
+        "url": "/unterricht/grundschule",
+        "children": [
+          {
+            "id": "unterricht-grundschule-sachunterricht",
+            "label": "Sachunterricht",
+            "url": "/unterricht/grundschule/sachunterricht",
+            "children": [
+              {
+                "id": "unterricht-grundschule-sachunterricht-ernaehrung-und-gesundheit",
+                "label": "Ernährung und Gesundheit",
+                "url": "/unterricht/grundschule/sachunterricht/ernaehrung-und-gesundheit"
+              },
+              {
+                "id": "unterricht-grundschule-sachunterricht-computer-internet-co",
+                "label": "Computer, Internet & Co.",
+                "url": "/unterricht/grundschule/sachunterricht/computer-internet-co"
+              },
+              {
+                "id": "unterricht-grundschule-sachunterricht-sache-und-technik",
+                "label": "Sache und Technik",
+                "url": "/unterricht/grundschule/sachunterricht/sache-und-technik"
+              }
+            ]
+          },
+          {
+            "id": "unterricht-grundschule-faecheruebergreifend",
+            "label": "Fächerübergreifend",
+            "url": "/unterricht/grundschule/faecheruebergreifend"
+          }
+        ]
+      },
+      {
+        "id": "fokusthemen",
+        "label": "Unterrichtsmaterialien",
+        "url": "/fokusthemen",
+        "children": [
+          {
+            "id": "unterricht-sekundarstufen",
+            "label": "Sekundarstufen",
+            "url": "/unterricht/sekundarstufen",
+            "children": [
+              {
+                "id": "unterricht-sekundarstufen-naturwissenschaften",
+                "label": "Naturwissenschaften",
+                "url": "/unterricht/sekundarstufen/naturwissenschaften",
+                "children": [
+                  {
+                    "id": "unterricht-sekundarstufen-naturwissenschaften-astronomie",
+                    "label": "Astronomie",
+                    "url": "/unterricht/sekundarstufen/naturwissenschaften/astronomie"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-naturwissenschaften-physik",
+                    "label": "Physik",
+                    "url": "/unterricht/sekundarstufen/naturwissenschaften/physik"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-naturwissenschaften-mathematik",
+                    "label": "Mathematik",
+                    "url": "/unterricht/sekundarstufen/naturwissenschaften/mathematik"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-naturwissenschaften-chemie",
+                    "label": "Chemie",
+                    "url": "/unterricht/sekundarstufen/naturwissenschaften/chemie"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-naturwissenschaften-geographie",
+                    "label": "Geographie",
+                    "url": "/unterricht/sekundarstufen/naturwissenschaften/geographie"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-naturwissenschaften-informatik",
+                    "label": "Informatik",
+                    "url": "/unterricht/sekundarstufen/naturwissenschaften/informatik"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-naturwissenschaften-biologie--1",
+                    "label": "Biologie",
+                    "url": "/unterricht/sekundarstufen/naturwissenschaften/biologie"
+                  }
+                ]
+              },
+              {
+                "id": "unterricht-sekundarstufen-geisteswissenschaften",
+                "label": "Geistes- & Sozialwissenschaften",
+                "url": "/unterricht/sekundarstufen/geisteswissenschaften",
+                "children": [
+                  {
+                    "id": "unterricht-sekundarstufen-geisteswissenschaften-sport",
+                    "label": "Sport",
+                    "url": "/unterricht/sekundarstufen/geisteswissenschaften/sport"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-geisteswissenschaften-musik",
+                    "label": "Musik",
+                    "url": "/unterricht/sekundarstufen/geisteswissenschaften/musik"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-geisteswissenschaften-politik-sowi",
+                    "label": "Politik / SoWi",
+                    "url": "/unterricht/sekundarstufen/geisteswissenschaften/politik-sowi"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-geisteswissenschaften-religion-ethik",
+                    "label": "Religion / Ethik",
+                    "url": "/unterricht/sekundarstufen/geisteswissenschaften/religion-ethik"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-geisteswissenschaften-kunst",
+                    "label": "Kunst",
+                    "url": "/unterricht/sekundarstufen/geisteswissenschaften/kunst"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-geisteswissenschaften-deutsch",
+                    "label": "Deutsch",
+                    "url": "/unterricht/sekundarstufen/geisteswissenschaften/deutsch"
+                  },
+                  {
+                    "id": "unterricht-sekundarstufen-geisteswissenschaften-geschichte",
+                    "label": "Geschichte",
+                    "url": "/unterricht/sekundarstufen/geisteswissenschaften/geschichte"
+                  }
+                ]
+              },
+              {
+                "id": "unterricht-sekundarstufen-faecheruebergreifend",
+                "label": "Fächerübergreifend",
+                "url": "/unterricht/sekundarstufen/faecheruebergreifend",
+                "children": [
+                  {
+                    "id": "unterricht-sekundarstufen-faecheruebergreifend-unterrichtseinheit-ue-digitale-technik-im-alltag",
+                    "label": "Digitale Technik im Alltag",
+                    "url": "/unterricht/sekundarstufen/faecheruebergreifend/unterrichtseinheit/ue/digitale-technik-im-alltag"
+                  }
+                ]
+              },
+              {
+                "id": "unterricht-sekundarstufen-fremdsprachen",
+                "label": "Fremdsprachen",
+                "url": "/unterricht/sekundarstufen/fremdsprachen",
+                "children": [
+                  {
+                    "id": "unterricht-sekundarstufen-fremdsprachen-spanisch",
+                    "label": "Spanisch",
+                    "url": "/unterricht/sekundarstufen/fremdsprachen/spanisch",
+                    "children": [
+                      {
+                        "id": "unterricht-sekundarstufen-fremdsprachen-spanisch-unterrichtseinheit-ue-erklaervideos-im-spanisch-unterricht-selbst-erstellen-grammatik-lernen-durch-lehren",
+                        "label": "Erklärvideos im Spanisch-Unterricht selbst erstellen: Grammatik lernen durch Lehren",
+                        "url": "/unterricht/sekundarstufen/fremdsprachen/spanisch/unterrichtseinheit/ue/erklaervideos-im-spanisch-unterricht-selbst-erstellen-grammatik-lernen-durch-lehren"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "fokusthemen-berufs-und-arbeitswelt-berufsfeld-steuerberatung",
+            "label": "Berufsfeld Steuerberatung",
+            "url": "/fokusthemen/berufs-und-arbeitswelt/berufsfeld-steuerberatung",
+            "children": [
+              {
+                "id": "fokusthemen-berufs-und-arbeitswelt-berufsfeld-steuerberatung-berufseinstieg",
+                "label": "Berufseinstieg und Berufsalltag",
+                "url": "/fokusthemen/berufs-und-arbeitswelt/berufsfeld-steuerberatung/berufseinstieg"
+              }
+            ]
+          },
+          {
+            "id": "unterricht-berufsbildung",
+            "label": "Berufsbildung",
+            "url": "/unterricht/berufsbildung",
+            "children": [
+              {
+                "id": "unterricht-berufsbildung-gesundheit-medizin",
+                "label": "Gesundheit / Medizin",
+                "url": "/unterricht/berufsbildung/gesundheit-medizin",
+                "children": [
+                  {
+                    "id": "unterricht-berufsbildung-gesundheit-medizin-pflege-therapie-pharmazie",
+                    "label": "Pflege / Therapie / Pharmazie",
+                    "url": "/unterricht/berufsbildung/gesundheit-medizin/pflege-therapie-pharmazie",
+                    "children": [
+                      {
+                        "id": "unterricht-berufsbildung-gesundheit-medizin-pflege-therapie-pharmazie-unterrichtseinheit",
+                        "label": "Unterrichtseinheit",
+                        "url": "/unterricht/berufsbildung/gesundheit-medizin/pflege-therapie-pharmazie/unterrichtseinheit",
+                        "children": [
+                          {
+                            "id": "unterricht-berufsbildung-gesundheit-medizin-pflege-therapie-pharmazie-unterrichtseinheit-ue-beratung-in-der-pflege",
+                            "label": "Beratung in der Pflege",
+                            "url": "/unterricht/berufsbildung/gesundheit-medizin/pflege-therapie-pharmazie/unterrichtseinheit/ue/beratung-in-der-pflege"
+                          },
+                          {
+                            "id": "unterricht-berufsbildung-gesundheit-medizin-pflege-therapie-pharmazie-unterrichtseinheit-ue-wahrnehmung-und-beobachtung",
+                            "label": "Wahrnehmung und Beobachtung",
+                            "url": "/unterricht/berufsbildung/gesundheit-medizin/pflege-therapie-pharmazie/unterrichtseinheit/ue/wahrnehmung-und-beobachtung"
+                          },
+                          {
+                            "id": "unterricht-berufsbildung-gesundheit-medizin-pflege-therapie-pharmazie-unterrichtseinheit-ue-sturzprophylaxe",
+                            "label": "Sturzprophylaxe",
+                            "url": "/unterricht/berufsbildung/gesundheit-medizin/pflege-therapie-pharmazie/unterrichtseinheit/ue/sturzprophylaxe"
+                          },
+                          {
+                            "id": "unterricht-berufsbildung-gesundheit-medizin-pflege-therapie-pharmazie-unterrichtseinheit-ue-alter-und-altern",
+                            "label": "Alter und Altern",
+                            "url": "/unterricht/berufsbildung/gesundheit-medizin/pflege-therapie-pharmazie/unterrichtseinheit/ue/alter-und-altern"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "unterricht-berufsbildung-gesundheit-medizin-pflege-therapie-pharmazie-unterrichtseinheit-ue-thromboseprophylaxe",
+                        "label": "Thromboseprophylaxe",
+                        "url": "/unterricht/berufsbildung/gesundheit-medizin/pflege-therapie-pharmazie/unterrichtseinheit/ue/thromboseprophylaxe"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "unterricht-berufsbildung-wirtschaft",
+                "label": "Wirtschaft",
+                "url": "/unterricht/berufsbildung/wirtschaft",
+                "children": [
+                  {
+                    "id": "unterricht-berufsbildung-wirtschaft-wirtschaftsinformatik",
+                    "label": "Wirtschaftsinformatik",
+                    "url": "/unterricht/berufsbildung/wirtschaft/wirtschaftsinformatik",
+                    "children": [
+                      {
+                        "id": "unterricht-berufsbildung-wirtschaft-wirtschaftsinformatik-unterrichtseinheit-ue-von-der-mi-zur-ki-eine-einfuehrung-in-die-kuenstliche-intelligenz-in-sieben-lernrunden",
+                        "label": "Von der MI zur KI – eine Einführung in die Künstliche Intelligenz in sieben Lernrunden",
+                        "url": "/unterricht/berufsbildung/wirtschaft/wirtschaftsinformatik/unterrichtseinheit/ue/von-der-mi-zur-ki-eine-einfuehrung-in-die-kuenstliche-intelligenz-in-sieben-lernrunden"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "unterricht-berufsbildung-allgemeinbildung",
+                "label": "Allgemeinbildung",
+                "url": "/unterricht/berufsbildung/allgemeinbildung",
+                "children": [
+                  {
+                    "id": "unterricht-berufsbildung-allgemeinbildung-paedagogik",
+                    "label": "Pädagogik",
+                    "url": "/unterricht/berufsbildung/allgemeinbildung/paedagogik"
+                  },
+                  {
+                    "id": "unterricht-berufsbildung-allgemeinbildung-wiso-politik",
+                    "label": "WiSo / Politik",
+                    "url": "/unterricht/berufsbildung/allgemeinbildung/wiso-politik"
+                  }
+                ]
+              },
+              {
+                "id": "unterricht-berufsbildung-technik",
+                "label": "Technik",
+                "url": "/unterricht/berufsbildung/technik",
+                "children": [
+                  {
+                    "id": "unterricht-berufsbildung-technik-elektrotechnik",
+                    "label": "Elektrotechnik",
+                    "url": "/unterricht/berufsbildung/technik/elektrotechnik"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "unterricht--12",
+            "label": "Unterrichtsmaterialien",
+            "url": "/unterricht"
+          }
+        ]
+      },
+      {
+        "id": "unterricht-sekundarstufen2",
+        "label": "Sekundarstufen",
+        "url": "/unterricht/sekundarstufen"
+      },
+      {
+        "id": "unterricht-sekundarstufen-naturwissenschaften-biologie",
+        "label": "Unterrichtsmaterial Biologie Sekundarstufe",
+        "url": "https://www.lehrer-online.de/unterricht/sekundarstufen/naturwissenschaften/biologie"
+      },
+      {
+        "id": "unterricht--1",
+        "label": "Unterrichtsmaterialien",
+        "url": "/unterricht"
+      },
+      {
+        "id": "nutzungsbedingungen",
+        "label": "Nutzungsbedingungen",
+        "url": "/nutzungsbedingungen"
+      },
+      {
+        "id": "impressum",
+        "label": "Impressum",
+        "url": "/impressum"
+      },
+      {
+        "id": "aktuelles-aktuelle-nachrichten",
+        "label": "Bildungsnachrichten",
+        "url": "/aktuelles/aktuelle-nachrichten",
+        "children": [
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-legor-education-spiketm-prime-fuer-die-berufsorientierung",
+            "label": "LEGO Education SPIKE Prime für die Berufsorientierung",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/legor-education-spiketm-prime-fuer-die-berufsorientierung"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-innovatives-geschichtsprojekt-paulskirchen-room-tour-mit-louise-otto-peters",
+            "label": "Innovatives Geschichtsprojekt: Paulskirchen-Room-Tour mit Louise Otto-Peters",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/innovatives-geschichtsprojekt-paulskirchen-room-tour-mit-louise-otto-peters"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-mit-ich-und-meine-umwelt-den-eigenen-umgang-mit-energie-reflektieren",
+            "label": "Mit 'Ich und meine Umwelt' den eigenen Umgang mit Energie reflektieren",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/mit-ich-und-meine-umwelt-den-eigenen-umgang-mit-energie-reflektieren"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-vertretungsstunden-sinnvoll-nutzen",
+            "label": "Vertretungsstunden sinnvoll nutzen",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/vertretungsstunden-sinnvoll-nutzen"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-ernaehrungsbildung-in-der-grundschule-jetzt-viele-printmedien-guenstiger",
+            "label": "Ernährungsbildung in der Grundschule – jetzt viele Printmedien günstiger",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/ernaehrungsbildung-in-der-grundschule-jetzt-viele-printmedien-guenstiger"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-globales-lernen-und-engagement-fuer-kinderrechte",
+            "label": "Globales Lernen und Engagement für Kinderrechte",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/globales-lernen-und-engagement-fuer-kinderrechte"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-gut-vorbereitet-fuer-jede-vertretungsstunde",
+            "label": "Gut vorbereitet für jede Vertretungsstunde",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/gut-vorbereitet-fuer-jede-vertretungsstunde"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-lebenswelt-trifft-lehrplan",
+            "label": "Lebenswelt trifft Lehrplan",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/lebenswelt-trifft-lehrplan"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-ipad-macht-lernen-leichter",
+            "label": "iPad. Macht Lernen leichter.",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/ipad-macht-lernen-leichter"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-orientieren-informieren-entscheiden-neues-dossier-mit-materialien-zu-berufsorientierung-und-berufswahl",
+            "label": "Orientieren, informieren, entscheiden: Neues Dossier mit Materialien zu Berufsorientierung und Berufswahl",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/orientieren-informieren-entscheiden-neues-dossier-mit-materialien-zu-berufsorientierung-und-berufswahl"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-energie-macht-schule-unterstuetzt-mintmachtage",
+            "label": "Energie macht Schule unterstützt MINTmachtage 2025 der Stiftung Kinder forschen",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/energie-macht-schule-unterstuetzt-mintmachtage"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-podiumsdiskussion-auf-dem-forum-bildung-der-frankfurter-buchmesse",
+            "label": "Podiumsdiskussion auf dem Forum Bildung der Frankfurter Buchmesse:",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/podiumsdiskussion-auf-dem-forum-bildung-der-frankfurter-buchmesse"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-null-alkohol-viele-vorteile",
+            "label": "Null Alkohol – viele Vorteile …",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/null-alkohol-viele-vorteile"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-lehrer-online-akademie-erhaelt-comenius-edumedia-siegel",
+            "label": "Lehrer-Online Akademie erhält Comenius EduMedia-Siegel",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/lehrer-online-akademie-erhaelt-comenius-edumedia-siegel"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-online-podiumsdiskussion-politische-bildung-im-digitalen-zeitalter-ost-west-perspektiven-junger-menschen",
+            "label": "Online-Podiumsdiskussion: Politische Bildung im digitalen Zeitalter – Ost-West-Perspektiven junger Menschen",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/online-podiumsdiskussion-politische-bildung-im-digitalen-zeitalter-ost-west-perspektiven-junger-menschen"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-zwei-unterrichtseinheiten-mit-erneuerbaren-energien-im-fokus",
+            "label": "Zwei Unterrichtseinheiten mit erneuerbaren Energien im Fokus",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/zwei-unterrichtseinheiten-mit-erneuerbaren-energien-im-fokus"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-digitale-bildungswochen-2026",
+            "label": "Digitale Bildungswochen 2026",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/digitale-bildungswochen-2026"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-highlights-im-winter-auf-handwerk-macht-schule",
+            "label": "Highlights im Winter auf 'Handwerk macht Schule'",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/highlights-im-winter-auf-handwerk-macht-schule"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-power-to-x-nachhaltig-nie-wieder-keine-ahnung-mit-dem-wwf-und-energie-macht-schule",
+            "label": "Power-to-X: nachhaltig nie wieder keine Ahnung mit dem WWF und &quot;Energie macht Schule&quot;",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/power-to-x-nachhaltig-nie-wieder-keine-ahnung-mit-dem-wwf-und-energie-macht-schule"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-klimawandel-verschaerft-hunger-weltweit",
+            "label": "Klimawandel verschärft Hunger weltweit!",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/klimawandel-verschaerft-hunger-weltweit"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-digitale-schule-so-gelingt-der-wandel",
+            "label": "Digitale Schule: So gelingt der Wandel",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/digitale-schule-so-gelingt-der-wandel"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-infografiken-und-kurzbiografien-neue-lernsnacks-fuer-den-unterrichtseinstieg",
+            "label": "Infografiken und Kurzbiografien: Neue Lernsnacks für den Unterricht(seinstieg)",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/infografiken-und-kurzbiografien-neue-lernsnacks-fuer-den-unterrichtseinstieg"
+          },
+          {
+            "id": "aktuelles-aktuelle-nachrichten-news-na-wissen-aufladen-mit-der-unterrichtseinheit-elektromobilitaet-zukunft-schreibt-man-mit-e",
+            "label": "Wissen aufladen mit der Unterrichtseinheit &quot;Elektromobilität: Zukunft schreibt man mit E&quot;",
+            "url": "/aktuelles/aktuelle-nachrichten/news/na/wissen-aufladen-mit-der-unterrichtseinheit-elektromobilitaet-zukunft-schreibt-man-mit-e"
+          }
+        ]
+      },
+      {
+        "id": "unterricht-berufsbildung2",
+        "label": "Berufsbildung",
+        "url": "/unterricht/berufsbildung"
+      },
+      {
+        "id": "fortbildungen",
+        "label": "Fortbildungen",
+        "url": "/fortbildungen",
+        "children": [
+          {
+            "id": "fortbildungen-digitale-selbstlernkurse",
+            "label": "Digitale Selbstlernkurse",
+            "url": "/fortbildungen/digitale-selbstlernkurse"
+          },
+          {
+            "id": "fortbildungen-ueber-online-badges",
+            "label": "Über Online-Badges",
+            "url": "/fortbildungen/ueber-online-badges"
+          },
+          {
+            "id": "fortbildungen-faq-akademie",
+            "label": "FAQ Akademie",
+            "url": "/fortbildungen/faq-akademie"
+          },
+          {
+            "id": "fortbildungen-ueber-die-akademie",
+            "label": "Über die Akademie",
+            "url": "/fortbildungen/ueber-die-akademie"
+          }
+        ]
+      },
+      {
+        "id": "blog",
+        "label": "Blog",
+        "url": "/blog",
+        "children": [
+          {
+            "id": "blog-digitale-schule",
+            "label": "Blog: Digitale Schule",
+            "url": "/blog-digitale-schule"
+          }
+        ]
+      },
+      {
+        "id": "unterrichtseinheit-ue-elektromobilitaet-zukunft-schreibt-man-mit-e",
+        "label": "Elektromobilität: Zukunft schreibt man mit E",
+        "url": "/unterrichtseinheit/ue/elektromobilitaet-zukunft-schreibt-man-mit-e"
+      },
+      {
+        "id": "login-lehrer-online",
+        "label": "Login Lehr-er-Online",
+        "url": "/login-lehrer-online"
+      },
+      {
+        "id": "artikel-fa-arbeitsblatt-demografischer-wandel-auswirkungen-auf-die-gesellschaft",
+        "label": "Arbeitsblatt 'Demografischer Wandel - Auswirkungen auf die Gesellschaft'",
+        "url": "/artikel/fa/arbeitsblatt-demografischer-wandel-auswirkungen-auf-die-gesellschaft"
+      }
+    ]
+  },
+  {
+    "id": "root--1",
+    "label": "Startseite",
+    "url": "https://www.lehrer-online.de",
+    "children": [
+      {
+        "id": "unterricht",
+        "label": "Unterrichtsmaterialien",
+        "url": "https://www.lehrer-online.de/unterricht",
+        "children": [
+          {
+            "id": "unterricht-sekundarstufen--1",
+            "label": "Sekundarstufen",
+            "url": "https://www.lehrer-online.de/unterricht/sekundarstufen",
+            "children": [
+              {
+                "id": "unterricht-sekundarstufen-naturwissenschaften--1",
+                "label": "Naturwissenschaften",
+                "url": "https://www.lehrer-online.de/unterricht/sekundarstufen/naturwissenschaften"
+              },
+              {
+                "id": "unterricht-sekundarstufen-faecheruebergreifend--1",
+                "label": "Fächerübergreifend",
+                "url": "https://www.lehrer-online.de/unterricht/sekundarstufen/faecheruebergreifend",
+                "children": [
+                  {
+                    "id": "unterricht-sekundarstufen-faecheruebergreifend-arbeitsmaterial-am-interaktive-uebungen-zum-berufsfeld-steuerberatung",
+                    "label": "Interaktive Übungen zum Berufsfeld Steuerberatung",
+                    "url": "https://www.lehrer-online.de/unterricht/sekundarstufen/faecheruebergreifend/arbeitsmaterial/am/interaktive-uebungen-zum-berufsfeld-steuerberatung"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "fokusthemen--1",
+        "label": "Unterrichtsmaterialien",
+        "url": "https://www.lehrer-online.de/fokusthemen",
+        "children": [
+          {
+            "id": "unterricht-grundschule--1",
+            "label": "Grundschule",
+            "url": "https://www.lehrer-online.de/unterricht/grundschule",
+            "children": [
+              {
+                "id": "mein-konto-tarifverwaltung",
+                "label": "Kündigung",
+                "url": "https://www.lehrer-online.de/mein-konto/tarifverwaltung"
+              },
+              {
+                "id": "unterricht-grundschule-sprache",
+                "label": "Sprache",
+                "url": "https://www.lehrer-online.de/unterricht/grundschule/sprache"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "faq",
+        "label": "FAQ",
+        "url": "https://www.lehrer-online.de/faq"
+      }
+    ]
+  }
+]
