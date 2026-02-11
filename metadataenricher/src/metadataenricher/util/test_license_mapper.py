@@ -1,6 +1,6 @@
 import pytest
 
-from scraper.constants import Constants
+from .constants import Constants
 from .license_mapper import LicenseMapper
 
 

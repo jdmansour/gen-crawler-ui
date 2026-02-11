@@ -133,18 +133,26 @@ Hier folgt der Text:
         for key, val in url_data.items():
             log.info("%s: %r", key, str(val)[:100])
 
+
         # ToDo: validate "trafilatura"-fulltext-extraction from playwright
         # (compared to the html2text approach)
         # HTML extracted from the browser view
         playwright_html: str = url_data["html"] or ""
         # Main text extracted from browser view
         trafilatura_text: str = url_data["text"] or ""
+        return await self.parse_page_inner(
+            response_url=response_url,
+            playwright_html=playwright_html,
+            trafilatura_text=trafilatura_text
+        )
+
+    async def parse_page_inner(self, response_url: str, playwright_html: str, trafilatura_text: str):
         log.info("trafilatura_text: %s", str(trafilatura_text)[:100])
 
         text_html2text = self.manual_cleanup_text(playwright_html)
         log.info("Cleaned up text via html2text: %s", text_html2text[:100])
 
-        if trafilatura_meta_playwright := trafilatura.extract_metadata(playwright_html.encode()):
+        if trafilatura_meta_playwright := trafilatura.extract_metadata(playwright_html):
             trafilatura_meta = trafilatura_meta_playwright.as_dict()
         else:
             trafilatura_meta = {}
