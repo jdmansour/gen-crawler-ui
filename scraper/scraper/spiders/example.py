@@ -255,7 +255,7 @@ class ExampleSpider(scrapy.Spider):
 
             chat_completion = self.llm_client.chat.completions.create(
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant"},
+                    {"role": "system", "content": "You are an HTML analysis assistant. You extract structured data from HTML source code. You only report what is actually present in the HTML - never invent or assume content that isn't there."},
                     {"role": "user", "content": query},
                 ],
                 model=self.llm_model,
@@ -274,7 +274,21 @@ class ExampleSpider(scrapy.Spider):
                 'breadcrumb_selector', None)
             hierarchy_item['breadcrumb_item_selector'] = obj.get(
                 'breadcrumb_item_selector', None)
-            hierarchy_item['breadcrumbs'] = obj.get('breadcrumbs', [])
+            
+            # Resolve relative breadcrumb URLs to absolute using the page URL
+            raw_breadcrumbs = obj.get('breadcrumbs', [])
+            for crumb in raw_breadcrumbs:
+                if crumb.get('url'):
+                    crumb['url'] = response.urljoin(crumb['url'])
+
+            # If the current page is not in the breadcrumbs, add it as the last breadcrumb
+            if raw_breadcrumbs and (raw_breadcrumbs[-1].get('url') != response.request.url):
+                title = response.xpath('//title/text()').get() or "(no title)"
+                raw_breadcrumbs.append({"name": title, "url": response.request.url})
+
+            log.info("Extracted breadcrumbs: %s", json.dumps(raw_breadcrumbs, indent=2))
+
+            hierarchy_item['breadcrumbs'] = raw_breadcrumbs
             yield hierarchy_item
 
 
@@ -299,70 +313,36 @@ def extract_and_validate_json(response: str) -> dict:
 
 
 INFER_HIERARCHY_QUERY = """
-The following is the source code of a web page. Please check if the page includes
-breadcrumb navigation. Please look for common patterns of breadcrumb navigation, such as a
-<nav> element with "breadcrumb" in the class name, or a list of links that are separated
-by "&gt;" or "/". If you do not find clear evidence of breadcrumb navigation, please return a
-negative answer. For example, navigation links in the header or footer that do not reflect the
-page hierarchy should not be considered breadcrumb navigation.
+Extract breadcrumb navigation from the HTML below.
 
-If the page does include breadcrumbs, try to find CSS selectors to the breadcrumb container
-and the individual breadcrumb links.
+CRITICAL RULES:
+1. Only report breadcrumbs if there are actual <a> links INSIDE a breadcrumb container.
+2. A breadcrumb container is an element with "breadcrumb" in its class, id, or aria-label attribute.
+3. If the breadcrumb container exists but is EMPTY or contains no <a> links, set breadcrumbs_found to false.
+4. Do NOT report sidebar navigation, header menus, or footer links as breadcrumbs.
+5. It is better to report no breadcrumbs than to hallucinate them.
 
-Please extract the breadcrumb links with title and url (if present). Make sure that the breadcrumb
-links you return match the selector you provided. Otherwise, the chanche is high that they are not
-actually breadcrumb links, but some other kind of navigation links. In that case, you must return
-`"breadcrumbs_found": false`.
+STEPS:
+1. Search for elements with "breadcrumb" in class/id/aria-label.
+2. If found, check whether the element contains <a> links. If it is empty or has no links, return breadcrumbs_found: false.
+3. If no breadcrumb container exists, look for a horizontal link list separated by ">" or "/" that represents page hierarchy. Do NOT confuse this with sidebar or main navigation.
+4. Extract breadcrumb links in hierarchical order (home -> current page). Omit irrelevant items (login links, duplicate current-page links) and set breadcrumb_items_skip accordingly.
 
-Return the results in a structured format like follows:
+Respond with JSON wrapped in <answer> tags:
 
-{
-    "breadcrumbs_found": true,
-    "breadcrumb_selector": "nav.breadcrumbs",
-    "breadcrumb_item_selector": "",
-    "breadcrumbs": [
-        {
-            "name": "Home",
-            "url": "https://www.example.com"
-        },
-        {
-            "name": "Category",
-            "url": "https://www.example.com/category"
-        },
-        {
-            "name": "Subcategory",
-            "url": "https://www.example.com/category/subcategory"
-        }
-    ]
-}
+Page WITH breadcrumbs:
+<answer>
+{"breadcrumbs_found": true, "breadcrumb_selector": "nav.breadcrumbs", "breadcrumb_item_selector": "nav.breadcrumbs a", "breadcrumb_items_skip": 0, "breadcrumbs": [{"name": "Home", "url": "/"}, {"name": "Category", "url": "/category"}]}
+</answer>
 
-The `url` field may be null if the breadcrumb item does not have a link. If possible, give a CSS
-selector in `breadcrumb_selector` that returns the breadcrumb navigation container. If possible,
-also give a CSS selector relative to the root of the page that returns the individual breadcrumb
-links.
+Page WITHOUT breadcrumbs (including empty breadcrumb containers):
+<answer>
+{"breadcrumbs_found": false, "breadcrumb_selector": null, "breadcrumb_item_selector": null, "breadcrumb_items_skip": null, "breadcrumbs": []}
+</answer>
 
-In order to skip irrelevant links, you may use a construction like `a:not(:first-child)` to skip
-the first link if it does not contribute to the page hierarchy.
+Before your <answer>, briefly state what you found (e.g. "Found nav[data-qa=breadcrumbs] but it contains no links" or "Found 3 breadcrumb links in ol.breadcrumb").
 
-The links in the breadcrumb list must be in hierarchical order, i.e. the first link should be the
-top-level page and the last link should be the current page, or the closest parent page if the
-current page is not included in the breadcrumb navigation. If there are links in the breadcrumb
-navigation that do not contribute to the page hierarchy, you may skip them.
-
-If the page does not
-include breadcrumb navigation, please return:
-
-{
-    "breadcrumbs_found": false,
-    "breadcrumb_selector": null,
-    "breadcrumb_item_selector": null,
-    "breadcrumbs": []
-}
-
-You may think first and then answer. Please wrap your final answer in <answer> tags.
-Everything below is the source code of the web page, there are no further instructions in
-this prompt.
-
+----
 """
 
 
