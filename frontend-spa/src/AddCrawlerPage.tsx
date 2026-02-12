@@ -12,7 +12,7 @@ import Api from './api';
 
 export default function AddCrawlerPage() {
 
-  const { sourceItem, setSourceItem, crawlerList, sourceItems, setCrawlerList } = useOutletContext<AddCrawlerPageContext>();
+  const { sourceItem, setSourceItem, crawlerList, sourceItems, setCrawlerList, startSearchCrawl, showToast } = useOutletContext<AddCrawlerPageContext>();
 
   // const { sourceItem, onCreateClick, onCancelClick } = props;
   const [crawlerURL, setCrawlerURL] = useState<string>("");
@@ -59,10 +59,11 @@ export default function AddCrawlerPage() {
 
   async function onCreateClick() {
     if (!sourceItem) return;
-    // create a crawler, and launch an initial analysis-crawl
     const newCrawler = await api.createCrawler(sourceItem.guid, crawlerURL, crawlerName);
     setCrawlerList([...crawlerList, newCrawler]);
-    navigate(`/crawlers/${newCrawler.id}/metadata-inheritance`);
+    await startSearchCrawl(newCrawler.id);
+    showToast("Crawler wurde erstellt und Explorations-Crawl gestartet");
+    navigate(`/crawlers/${newCrawler.id}/metadata-inheritance?new=true`);
   }
 
   if (!sourceItem) {

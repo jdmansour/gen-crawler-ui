@@ -19,8 +19,9 @@ export type AddCrawlerPageContext = {
   setSourceItem: (source: SourceItem) => void;
   crawlerList: Crawler[];
   sourceItems: SourceItem[];
-  // onCreateClick: (source: SourceItem, crawlerURL: string, crawlerName: string) => void;
   setCrawlerList: (crawlers: Crawler[]) => void;
+  startSearchCrawl: (crawlerId: number) => Promise<CrawlJob>;
+  showToast: (message: string) => void;
 };
 
 export type MetadataInheritancePageContext = {
