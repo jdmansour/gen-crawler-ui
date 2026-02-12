@@ -418,22 +418,28 @@ wheels = [
 
 [[package]]
 name = "djangorestframework"
-version = "3.15.2"
-source = { git = "https://github.com/encode/django-rest-framework.git?rev=73cbb9cd4acd36f859d9f656b8f134c9d2a754f3#73cbb9cd4acd36f859d9f656b8f134c9d2a754f3" }
+version = "3.16.1"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8a/95/5376fe618646fde6899b3cdc85fd959716bb67542e273a76a80d9f326f27/djangorestframework-3.16.1.tar.gz", hash = "sha256:166809528b1aced0a17dc66c24492af18049f2c9420dbd0be29422029cfc3ff7", size = 1089735 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b0/ce/bf8b9d3f415be4ac5588545b5fcdbbb841977db1c1d923f7568eeabe1689/djangorestframework-3.16.1-py3-none-any.whl", hash = "sha256:33a59f47fb9c85ede792cbf88bde71893bcda0667bc573f784649521f1102cec", size = 1080442 },
 ]
 
 [[package]]
 name = "djangorestframework-stubs"
-version = "3.15.3"
-source = { git = "https://github.com/typeddjango/djangorestframework-stubs.git?rev=a844a898b7ef1c0b8c01b46eee2523f6327d45bd#a844a898b7ef1c0b8c01b46eee2523f6327d45bd" }
+version = "3.16.8"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django-stubs" },
-    { name = "requests" },
     { name = "types-pyyaml" },
-    { name = "types-requests" },
     { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/78/d5/87166a827833eb39703856ef957ca0fb4e9d15285331251186a2e738c20c/djangorestframework_stubs-3.16.8.tar.gz", hash = "sha256:f6d464b54fa2f929610e957446c04e6ac29558265418e0a2d9f653a4cdd410b5", size = 32312 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ea/e9/d9c363b08d07d975c21793fe821b2020dfd3627ac4ce19c5c12df94ce9d0/djangorestframework_stubs-3.16.8-py3-none-any.whl", hash = "sha256:c5bf61def0f330a071dd5f470f05710189d06c467b3f3e186b32c5a23d4952fb", size = 56517 },
 ]
 
 [[package]]
@@ -457,6 +463,7 @@ dependencies = [
     { name = "django-reverse-admin" },
     { name = "django-vite" },
     { name = "djangorestframework" },
+    { name = "djangorestframework-stubs" },
     { name = "gunicorn" },
     { name = "python-decouple" },
     { name = "redis" },
@@ -467,7 +474,6 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "django-types" },
-    { name = "djangorestframework-stubs" },
     { name = "mypy" },
     { name = "pip-chill" },
     { name = "pylint-django" },
@@ -482,7 +488,8 @@ requires-dist = [
     { name = "django-filter", specifier = "==24.2" },
     { name = "django-reverse-admin", specifier = "==2.9.6" },
     { name = "django-vite", specifier = "==3.0.4" },
-    { name = "djangorestframework", git = "https://github.com/encode/django-rest-framework.git?rev=73cbb9cd4acd36f859d9f656b8f134c9d2a754f3" },
+    { name = "djangorestframework", specifier = ">=3.16.1" },
+    { name = "djangorestframework-stubs", specifier = ">=3.16.8" },
     { name = "gunicorn", specifier = "==22.0.0" },
     { name = "python-decouple", specifier = "==3.8" },
     { name = "redis", specifier = "==5.1.1" },
@@ -493,7 +500,6 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "django-types", specifier = "==0.19.1" },
-    { name = "djangorestframework-stubs", git = "https://github.com/typeddjango/djangorestframework-stubs.git?rev=a844a898b7ef1c0b8c01b46eee2523f6327d45bd" },
     { name = "mypy", specifier = "==1.11.2" },
     { name = "pip-chill", specifier = "==1.0.3" },
     { name = "pylint-django", specifier = "==2.5.5" },
@@ -1093,18 +1099,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/7e/69/3c51b36d04da19b92f9e815be12753125bd8bc247ba0470a982e6979e71c/types_pyyaml-6.0.12.20250915.tar.gz", hash = "sha256:0f8b54a528c303f0e6f7165687dd33fafa81c807fcac23f632b63aa624ced1d3", size = 17522 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bd/e0/1eed384f02555dde685fff1a1ac805c1c7dcb6dd019c916fe659b1c1f9ec/types_pyyaml-6.0.12.20250915-py3-none-any.whl", hash = "sha256:e7d4d9e064e89a3b3cae120b4990cd370874d2bf12fa5f46c97018dd5d3c9ab6", size = 20338 },
-]
-
-[[package]]
-name = "types-requests"
-version = "2.32.4.20260107"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0f/f3/a0663907082280664d745929205a89d41dffb29e89a50f753af7d57d0a96/types_requests-2.32.4.20260107.tar.gz", hash = "sha256:018a11ac158f801bfa84857ddec1650750e393df8a004a8a9ae2a9bec6fcb24f", size = 23165 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1c/12/709ea261f2bf91ef0a26a9eed20f2623227a8ed85610c1e54c5805692ecb/types_requests-2.32.4.20260107-py3-none-any.whl", hash = "sha256:b703fe72f8ce5b31ef031264fe9395cac8f46a04661a79f7ed31a80fb308730d", size = 20676 },
 ]
 
 [[package]]

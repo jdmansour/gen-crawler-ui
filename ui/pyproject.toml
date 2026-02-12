@@ -13,7 +13,8 @@ dependencies = [
     "django-filter==24.2",
     "django-reverse-admin==2.9.6",
     "django-vite==3.0.4",
-    "djangorestframework",
+    "djangorestframework>=3.16.1",
+    "djangorestframework-stubs>=3.16.8",
     "gunicorn==22.0.0",
     "python-decouple==3.8",
     "redis==5.1.1",
@@ -28,16 +29,9 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["crawler_ui", "crawls"]
 
-[tool.uv.sources]
-# Includes support for Django 5.1+ LoginRequiredMiddleware not yet in a release.
-# Update this when a new djangorestframework release is made.
-djangorestframework = { git = "https://github.com/encode/django-rest-framework.git", rev = "73cbb9cd4acd36f859d9f656b8f134c9d2a754f3" }
-djangorestframework-stubs = { git = "https://github.com/typeddjango/djangorestframework-stubs.git", rev = "a844a898b7ef1c0b8c01b46eee2523f6327d45bd" }
-
 [dependency-groups]
 dev = [
     "django-types==0.19.1",
-    "djangorestframework-stubs",
     "mypy==1.11.2",
     "pip-chill==1.0.3",
     "pylint-django==2.5.5",
