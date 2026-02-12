@@ -9,6 +9,7 @@ __pycache__/
 /scraper/cache
 /scraper/database
 /scraper/logs
+/scraper/output
 /scrapyd/
 
 /metadataapi/cache
@@ -17,3 +18,5 @@ __pycache__/
 .mypy_cache/
 .pytest_cache/
 .venv/
+
+env*.sh
