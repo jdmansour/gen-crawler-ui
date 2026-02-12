@@ -185,6 +185,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
     <Stack direction="row" spacing={2} sx={{ marginTop: 2, marginBottom: 2, flexWrap: 'wrap' }} useFlexGap>
       <Button variant="outlined" color="primary" onClick={() => startSearchCrawl(crawler!.id)}>Crawler starten</Button>
       <Button variant="outlined" onClick={() => startContentCrawl(crawler!.id)}>Content Crawl starten</Button>
+      <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/metadata-inheritance`}>Metadatenvererbung</Button>
       <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/filters/`}>Filter bearbeiten</Button>
       <Button variant="outlined" component="a" href={api.getAdminUrl(crawler.id)}>Im Admin-Bereich anzeigen</Button>
       <Button variant="outlined" color="error" onClick={() => setConfirmDeleteOpen(true)}>Crawler löschen</Button>
