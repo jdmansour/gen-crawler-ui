@@ -1,7 +1,0 @@
-[MASTER]
-   load-plugins=pylint_django
-   django-settings-module=crawler_ui.settings
-
-; ignore too-many-ancestors because it's a false positive
-[TYPECHECK]
-   ignored-classes=too-many-ancestors

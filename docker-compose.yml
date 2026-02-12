@@ -14,8 +14,8 @@ services:
       - DB_PATH=/app/database/db.sqlite3
       - REDIS_URL=redis://redis:6379/0
     command: >
-      sh -c "python manage.py migrate &&
-             gunicorn crawler_ui.wsgi --bind 0.0.0.0:8000"
+      sh -c "uv run python manage.py migrate &&
+             uv run gunicorn crawler_ui.wsgi --bind 0.0.0.0:8000"
   metadataapi:
     image: jdmansour/generic-crawler-metadataapi:${DC_IMAGE_VERSION:-main}
     build:
