@@ -303,6 +303,16 @@ Hier folgt der Text:
                         technical_loader.add_value("duration", duration_seconds)
                 break
 
+        # Detect video from planet-schule:mediatypes meta tag (e.g. "video[Video]")
+        ps_mediatypes = selector_playwright.xpath(
+            '//meta[@name="planet-schule:mediatypes"]/@content').get()
+        if ps_mediatypes:
+            ps_types = [entry.split("[")[0] for entry in ps_mediatypes.split(",")]
+            if "video" in ps_types:
+                valuespace_loader.add_value(
+                    "learningResourceType",
+                    "http://w3id.org/openeduhub/vocabs/learningResourceType/video")
+
         # we might be able to extract author/publisher information from typical <meta> or <head>
         # fields in the DOM
         lom_loader.add_value("educational", educational_loader.load_item())

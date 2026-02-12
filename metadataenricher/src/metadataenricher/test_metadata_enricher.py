@@ -75,3 +75,34 @@ async def test_jsonld_video():
     assert item['valuespaces']['learningResourceType'][0] == LRT_VIDEO
     # duration is in seconds here
     assert item['lom']['technical']['duration'] == 189
+
+
+PLANET_SCHULE_VIDEO_DOCUMENT = """
+<html lang="de">
+<head>
+<title>Page title</title>
+<meta name="planet-schule:schoolsubjects" content="geschichte[Geschichte],medienkompetenz[Medienkompetenz],religion_ethik[Religion / Ethik],sachunterricht[Sachunterricht]">
+<meta name="planet-schule:schoolclasses" content="klasse04[4. Klasse],klasse05[5. Klasse],klasse06[6. Klasse],klasse07[7. Klasse],klasse08[8. Klasse],klasse09[9. Klasse],klasse10[10. Klasse]">
+<meta name="planet-schule:mediatypes" content="video[Video]">
+</head>
+<body>
+<p>Some content</p>
+</body>
+</html>
+"""
+
+async def test_planet_schule_video():
+    """ Check if we can detect a video based on the planet-schule:mediatypes meta tag. """
+
+    enricher = MetadataEnricher(ai_enabled=False)
+    settings = {}
+    enricher.setup(settings)
+
+    html = PLANET_SCHULE_VIDEO_DOCUMENT
+    html_bytes: bytes = html.encode()
+    trafilatura_text: str = trafilatura.extract(html_bytes) or ""
+    response_url = "https://example.com"
+    item = await enricher.parse_page_inner(response_url, html, trafilatura_text)
+
+    LRT_VIDEO = "http://w3id.org/openeduhub/vocabs/learningResourceType/video"
+    assert item['valuespaces']['learningResourceType'][0] == LRT_VIDEO
