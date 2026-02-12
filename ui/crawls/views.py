@@ -100,7 +100,10 @@ class CrawlerViewSet(viewsets.ModelViewSet):
             crawljob.state = 'ERROR'
             crawljob.save()
             return Response({'status': 'error', 'message': response.text}, status=500)
-        
+
+        crawljob.scrapy_job_id = response.json().get('jobid', '')
+        crawljob.save()
+
         serializer = CrawlJobSerializer(crawljob)
         return Response(serializer.data)
 
