@@ -176,6 +176,8 @@ export default function RootLayout() {
     breadcrumbs.push({ label: crawlerName || "-", url: `/crawlers/${crawlerId}` });
     if (step == "filters") {
       breadcrumbs.push({ label: "Filterregeln" });
+    } else if (step == "metadata-inheritance") {
+      breadcrumbs.push({ label: "Metadatenvererbung" });
     }
   }
 
