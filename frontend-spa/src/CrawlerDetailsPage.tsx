@@ -26,7 +26,7 @@ import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import { CrawlerDetailsContext, CrawlerDetailsPageContext } from "./RootContext";
 import { useStep } from "./steps";
 import Api from './api';
-import { Card, CardActions, CardContent, CardMedia, CircularProgress, Typography } from '@mui/material';
+import { Card, CardActionArea, CardActions, CardContent, CardMedia, CircularProgress, Typography } from '@mui/material';
 import AutoAwesome from '@mui/icons-material/AutoAwesome';
 import Explore from '@mui/icons-material/Explore';
 
@@ -47,6 +47,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
   const { crawlerList, sourceItems, deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob, liveUpdatesConnected, liveUpdatesError, setObservedCrawlerId, crawlerListLoaded } = useOutletContext<CrawlerDetailsPageContext & CrawlerDetailsContext>();
   const crawler = crawlerList.find(c => c.id === crawlerId);
   // const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
+  // const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item + "x");
   const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
   useEffect(() => {
     setObservedCrawlerId(crawlerId);
@@ -103,6 +104,8 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
     </div>;
   }
 
+  const sourceLink = sourceItem?.data?.content?.url || null;
+
   return <div style={{ overflowY: "scroll", padding: "0px 24px 24px 24px" }}>
     <h2 style={{ marginTop: 8 }}>Crawler-Details</h2>
 
@@ -137,6 +140,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
       <div>
         <Typography variant="body2" sx={{mb: 1}}>Verbundene Quelle:</Typography>
       <Card sx={{ maxWidth: 345, minWidth: 250 }}>
+        <CardActionArea href={sourceLink} disabled={!sourceItem}>
         <CardMedia
           sx={{ height: 140, }}
           image={sourceItem?.preview_url || sourcePreviewPic}
@@ -151,12 +155,13 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
             {sourceItem ? sourceItem.description : "Keine Quelle ausgewählt"}
           </Typography>
         </CardContent>
-        <CardActions>
+        </CardActionArea>
+        <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           {sourceItem ? <>
-            <Button size="small">Quelle ändern</Button>
-            <Button size="small">Details</Button>
+            <Button size="small" disabled>Quelle ändern</Button>
+            <Button size="small" href={sourceLink}>Details</Button>
           </> :
-            <Button size="small" onClick={() => alert("Quelle auswählen")}>Quelle auswählen</Button>
+            <Button size="small" disabled>Quelle auswählen</Button>
           }
         </CardActions>
       </Card>
