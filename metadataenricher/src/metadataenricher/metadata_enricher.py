@@ -2,6 +2,7 @@
 import datetime
 import json
 import logging
+import re
 from typing import Optional
 
 import html2text
@@ -22,7 +23,7 @@ from .zapi.api.kidra import (predict_subjects_kidra_predict_subjects_post,
                             topics_flat_topics_flat_post)
 
 from . import env
-from .items import (AiPromptItemLoader, BaseItemLoader, KIdraItemLoader,
+from .items import (AiPromptItemLoader, BaseItem, BaseItemLoader, KIdraItemLoader,
                      LicenseItemLoader, LomBaseItemloader,
                      LomClassificationItemLoader, LomEducationalItemLoader,
                      LomGeneralItemloader, LomLifecycleItemloader,
@@ -32,6 +33,19 @@ from .util.license_mapper import LicenseMapper
 from .web_tools import get_url_data
 
 log = logging.getLogger(__name__)
+
+
+def parse_iso8601_duration(duration: str) -> Optional[int]:
+    """Parse an ISO 8601 duration string (e.g. 'PT1H2M3S') into total seconds."""
+    m = re.match(r'^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$', duration)
+    if not m:
+        log.warning("Failed to parse ISO 8601 duration: %r", duration)
+        return None
+    hours = int(m.group(1) or 0)
+    minutes = int(m.group(2) or 0)
+    seconds = int(m.group(3) or 0)
+    return hours * 3600 + minutes * 60 + seconds
+
 
 class AuthenticationError(Exception):
     pass
@@ -124,7 +138,7 @@ Hier folgt der Text:
         log.info("GENERIC_CRAWLER_LLM_MODEL: %r", self.llm_model)
         self.llm_client = openai.OpenAI(api_key=api_key, base_url=base_url)
 
-    async def parse_page(self, response_url: str):
+    async def parse_page(self, response_url: str) -> Optional[BaseItem]:
         url_data = await get_url_data(response_url)
         if not url_data:
             log.warning("Playwright failed to fetch data for %s", response_url)
@@ -146,7 +160,7 @@ Hier folgt der Text:
             trafilatura_text=trafilatura_text
         )
 
-    async def parse_page_inner(self, response_url: str, playwright_html: str, trafilatura_text: str):
+    async def parse_page_inner(self, response_url: str, playwright_html: str, trafilatura_text: str) -> BaseItem:
         log.info("trafilatura_text: %s", str(trafilatura_text)[:100])
 
         text_html2text = self.manual_cleanup_text(playwright_html)
@@ -277,6 +291,18 @@ Hier folgt der Text:
         self.get_lifecycle_publisher(
             lom_loader=lom_loader, selector=selector_playwright, date=date)
 
+        # Extract JSON-LD VideoObject metadata
+        for obj in lrmi_objects:
+            if obj.get("@type") == "VideoObject":
+                valuespace_loader.add_value(
+                    "learningResourceType",
+                    "http://w3id.org/openeduhub/vocabs/learningResourceType/video")
+                if duration_iso := obj.get("duration"):
+                    duration_seconds = parse_iso8601_duration(duration_iso)
+                    if duration_seconds is not None:
+                        technical_loader.add_value("duration", duration_seconds)
+                break
+
         # we might be able to extract author/publisher information from typical <meta> or <head>
         # fields in the DOM
         lom_loader.add_value("educational", educational_loader.load_item())
@@ -307,7 +333,24 @@ Hier folgt der Text:
         # # attention: serlo URLs will break the getLRMI() Method because JSONBase cannot extract
         # the JSON-LD properly
         # # ToDo: maybe use the 'jmespath' Python package to retrieve this value more reliably
-        valuespace_loader.add_value("learningResourceType", getLRMI("learningResourceType"))
+        
+
+
+        # ccm:educationallearningresourcetype: http://w3id.org/openeduhub/vocabs/learningResourceType/video
+        # ccm:educationallearningresourcetype_DISPLAYNAME: Video
+
+        # ccm:oeh_lrt: http://w3id.org/openeduhub/vocabs/new_lrt/a0218a48-a008-4975-a62a-27b1a83d454f
+        # ccm:oeh_lrt_DISPLAYNAME: Erklärvideo und gefilmtes Experiment
+
+
+
+        # ccm:educationallearningresourcetype
+        valuespace_loader.add_value("learningResourceType", getLRMI("learningResourceType"))# # ccm:oeh_lrt
+        
+        # valuespace_loader.add_value("learningResourceType", "http://w3id.org/openeduhub/vocabs/learningResourceType/video")
+        # valuespace_loader.add_value("new_lrt", "http://w3id.org/openeduhub/vocabs/new_lrt/a0218a48-a008-4975-a62a-27b1a83d454f")
+
+
 
         # loading all nested ItemLoaders into our BaseItemLoader:
         base_loader.add_value("license", license_loader.load_item())
