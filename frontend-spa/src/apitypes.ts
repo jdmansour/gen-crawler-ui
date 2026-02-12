@@ -33,6 +33,7 @@ export type SourceItem = {
     id: number;
     guid: string;
     title: string;
+    description: string;
     created_at: string;
     updated_at: string;
     data: any;

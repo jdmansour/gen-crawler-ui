@@ -7,7 +7,7 @@ from crawls.models import Crawler, FilterRule, FilterSet, CrawlJob, SourceItem
 class SourceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = SourceItem
-        fields = ['id', 'guid', 'title', 'created_at', 'updated_at', 'data', 'preview_url']
+        fields = ['id', 'guid', 'title', 'description', 'created_at', 'updated_at', 'data', 'preview_url']
         read_only_fields = ['created_at', 'updated_at', 'preview_url']
 
 

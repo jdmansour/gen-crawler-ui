@@ -148,7 +148,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
               {sourceItem.title}
             </Typography>)}
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {sourceItem ? "Lorem Ipsum Dolor" : "Keine Quelle ausgewählt"}
+            {sourceItem ? sourceItem.description : "Keine Quelle ausgewählt"}
           </Typography>
         </CardContent>
         <CardActions>

@@ -99,6 +99,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': DB_PATH,
+        'OPTIONS': {
+            'init_command': 'PRAGMA foreign_keys=ON;',
+        },
     }
 }
 
