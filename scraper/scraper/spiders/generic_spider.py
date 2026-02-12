@@ -88,6 +88,15 @@ class GenericSpider(Spider):
         self.items_processed = 0
         self.spider_failed = False
         self.crawler_output_node: Optional[str] = None
+        self.dry_run = False
+
+        if crawler_id is None:
+            log.info("No crawler_id provided, this is a dry run without "
+                     "database updates or Redis status publishing.")
+            self.dry_run = True
+
+        if self.dry_run:
+            del self.custom_settings["ITEM_PIPELINES"]["scraper.pipelines_edusharing.EduSharingStorePipeline"]
 
         try:
             ai_enabled_bool = to_bool(ai_enabled)
@@ -96,7 +105,7 @@ class GenericSpider(Spider):
             raise
 
         self.enricher = MetadataEnricher(ai_enabled=ai_enabled_bool)
-        self.state_helper = StateHelper(False,
+        self.state_helper = StateHelper(self.dry_run,
             int(crawler_id) if crawler_id else None,
             int(crawl_job_id) if crawl_job_id else None)
 
@@ -118,49 +127,50 @@ class GenericSpider(Spider):
         self.state_helper.setup(self.settings)
 
         log.info("Filter set ID: %s", self.filter_set_id)
-        if not self.filter_set_id:
-            # TODO: think about how we can run the spider without a filter set, e.g. for testing
-            raise ValueError("filter_set_id is required to run the spider.")
-
         log.info("GENERIC_CRAWLER_DB_PATH: %s", self.settings.get('GENERIC_CRAWLER_DB_PATH'))
         log.info("DB_PATH: %s", self.settings.get('DB_PATH'))
         db_path = self.settings.get('GENERIC_CRAWLER_DB_PATH')
 
-        try:
-            connection = sqlite3.connect(db_path)
+        # If we have a filter set id, we can load URLs from the DB.
+        if self.filter_set_id is not None:
+            try:
+                connection = sqlite3.connect(db_path)
 
-            # Load URLs from the latest exploration crawl passing this filter set
-            matches = fetch_urls_passing_filterset(
-                connection, self.filter_set_id, limit=self.max_urls)
-            log.info("Adding %d URLs to start_urls", len(matches))
-            for row in matches:
-                self.start_urls.append(row.url)
+                # Load URLs from the latest exploration crawl passing this filter set
+                matches = fetch_urls_passing_filterset(
+                    connection, self.filter_set_id, limit=self.max_urls)
+                log.info("Adding %d URLs to start_urls", len(matches))
+                for row in matches:
+                    self.start_urls.append(row.url)
 
-            # get crawler_id from FilterSet
-            cursor = connection.cursor()
-            cursor.execute(
-                "SELECT crawler_id FROM crawls_filterset WHERE id=?", (self.filter_set_id,))
-            if row := cursor.fetchone():
-                self.state_helper.crawler_id = row[0]
-            else:
-                # Stop the crawl
-                log.error("No crawler_id found for filter_set_id %s", self.filter_set_id)
+                if not self.dry_run:
+                    # get crawler_id from FilterSet
+                    cursor = connection.cursor()
+                    cursor.execute(
+                        "SELECT crawler_id FROM crawls_filterset WHERE id=?", (self.filter_set_id,))
+                    if row := cursor.fetchone():
+                        self.state_helper.crawler_id = row[0]
+                    else:
+                        # Stop the crawl
+                        log.error("No crawler_id found for filter_set_id %s", self.filter_set_id)
+                        self.spider_failed = True
+                        raise CloseSpider(f"No crawler_id found for filter_set_id {self.filter_set_id}.")
+
+                    self.state_helper.spider_opened(spider, "", True, 'CONTENT')
+
+            except (sqlite3.Error, ValueError) as e:
+                log.error("Error while running crawler: %s", e)
                 self.spider_failed = True
-                raise CloseSpider(f"No crawler_id found for filter_set_id {self.filter_set_id}.")
-
-            self.state_helper.spider_opened(spider, "", True, 'CONTENT')
-
-        except (sqlite3.Error, ValueError) as e:
-            log.error("Error while running crawler: %s", e)
-            self.spider_failed = True
-            raise CloseSpider(f"Error while running crawler: {e}") from e
-
+                raise CloseSpider(f"Error while running crawler: {e}") from e
 
         self.enricher.setup(self.settings)
 
     def spider_closed(self, spider: GenericSpider):
         """ Called when the spider is closed. """
         log.info("Closed spider %s", spider.name)
+        if self.dry_run:
+            return
+
         if self.spider_failed:
             self.state_helper.update_spider_state(spider, 'FAILED')
         else:
