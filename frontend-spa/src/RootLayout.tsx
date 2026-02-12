@@ -161,9 +161,12 @@ export default function RootLayout() {
     breadcrumbs.push({ label: "Quelle auswählen", temporary: true });
   } else if (step == "add-crawler") {
     breadcrumbs.push({ label: "Crawler Details", temporary: true });
-  } else if (step == "metadata-inheritance" || step == "filter-crawls" || step == "crawler-details") {
+  } else if (step == "metadata-inheritance" || step == "filter-crawls" || step == "crawler-details" || step == "filters") {
     const crawlerName = crawlerList.find(c => c.id == crawlerId)?.name;
     breadcrumbs.push({ label: crawlerName || "-", url: `/crawlers/${crawlerId}` });
+    if (step == "filters") {
+      breadcrumbs.push({ label: "Filterregeln" });
+    }
   }
 
   useEffect(() => {
