@@ -53,6 +53,10 @@ export type UseStepContext = {
   setStep: (step: CrawlerDashboardStep) => void;
 };
 
+export type ToastContext = {
+  showToast: (message: string) => void;
+};
+
 export type FilterSetPageContext = {
   crawlerList: Crawler[];
   crawlerListLoaded: boolean;
@@ -66,7 +70,8 @@ export type RootContext =
   CrawlerDetailsPageContext &
   CrawlerDetailsContext &
   UseStepContext &
-  FilterSetPageContext;
+  FilterSetPageContext &
+  ToastContext;
 
 
 // export type RootContext = {

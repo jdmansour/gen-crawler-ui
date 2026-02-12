@@ -1,5 +1,5 @@
 // RootLayout.tsx
-import { createTheme, ThemeProvider } from "@mui/material";
+import { Alert, createTheme, Snackbar, ThemeProvider } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import Api from "./api.ts";
@@ -25,6 +25,13 @@ export default function RootLayout() {
 
   const [observedCrawlerId, setObservedCrawlerId] = useState<number | null>(null);
 
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastOpen, setToastOpen] = useState(false);
+  function showToast(message: string) {
+    setToastMessage(message);
+    setToastOpen(true);
+  }
 
   const [step, setStep] = useState<CrawlerDashboardStep>("dashboard");
   const params = useParams();
@@ -107,6 +114,7 @@ export default function RootLayout() {
   async function startSearchCrawl(crawlerId: number) {
     const crawlJob = await api.startCrawl(crawlerId);
     onCrawlJobAdded(crawlJob);
+    showToast("Explorations-Crawl wurde gestartet");
     return crawlJob;
   }
 
@@ -114,6 +122,7 @@ export default function RootLayout() {
     const crawlJob = await api.startContentCrawl(crawlerId);
     console.log("Started content crawl:", crawlJob);
     onCrawlJobAdded(crawlJob);
+    showToast("Content-Crawl wurde gestartet");
     return crawlJob;
   }
 
@@ -150,6 +159,7 @@ export default function RootLayout() {
     sourceItem: selectedSourceItem || undefined,
     setSourceItem: setSelectedSourceItem,
     setObservedCrawlerId,
+    showToast,
   };
 
   const breadcrumbs: Breadcrumb[] = [
@@ -207,7 +217,11 @@ export default function RootLayout() {
         <Breadcrumbs breadcrumbs={breadcrumbs} />
         <Outlet context={outletContext} />
       </SiteLayout>
-      {/* <footer>WLO Footer here</footer> */}
+      <Snackbar open={toastOpen} autoHideDuration={4000} onClose={() => setToastOpen(false)}>
+        <Alert onClose={() => setToastOpen(false)} severity="success" variant="filled">
+          {toastMessage}
+        </Alert>
+      </Snackbar>
     </div>
     </ThemeProvider>
   );
