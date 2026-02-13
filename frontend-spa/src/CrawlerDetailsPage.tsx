@@ -105,6 +105,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
   }
 
   const sourceLink = sourceItem?.data?.content?.url || null;
+  const genericCrawlerOutputUrl = 'https://repository.staging.openeduhub.net/edu-sharing/components/workspace?root=MY_FILES&id=42865b9a-ea22-4cbd-81e4-4bd49601f382&mainnav=true&displayType=0';
 
   return <div style={{ overflowY: "scroll", padding: "0px 24px 24px 24px" }}>
     <h2 style={{ marginTop: 8 }}>Crawler-Details</h2>
@@ -192,6 +193,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
       <Button variant="outlined" onClick={() => startContentCrawl(crawler!.id)}>Content Crawl starten</Button>
       <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/metadata-inheritance`}>Metadatenvererbung</Button>
       <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/filters/`}>Filter bearbeiten</Button>
+      <Button variant="outlined" component={Link} to={genericCrawlerOutputUrl}>Ergebnisse anzeigen</Button>
       <Button variant="outlined" component="a" href={api.getAdminUrl(crawler.id)}>Im Admin-Bereich anzeigen</Button>
       <Button variant="outlined" color="error" onClick={() => setConfirmDeleteOpen(true)}>Crawler löschen</Button>
     </Stack>
