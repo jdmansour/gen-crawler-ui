@@ -217,6 +217,10 @@ class ExampleSpider(scrapy.Spider):
         # If these are base urls, scrapy *should* fill in the correct
         # base url (https://weltderphysik.de)
         for link in self.link_extractor.extract_links(response):
+            if not self.crawler.crawling:
+                log.info("Crawl has been stopped, exiting")
+                return
+
             if get_origin(link.url) != request_origin:
                 # print(f"Skipping {link.url}")
                 log.info("Skipping %s", link.url)
