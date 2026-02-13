@@ -16,7 +16,7 @@ export default function FilterSetPage(props: { csrfToken: string }) {
   // type is a json dict
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
   const [evaluationResult, setEvaluationResult] = useState<EvaluateFiltersResult>({ id: 0, remaining_urls: 0, name: "", created_at: "", updated_at: "", rules: [] });
-  const { crawlerList, crawlerListLoaded } = useOutletContext<FilterSetPageContext>();
+  const { crawlerList, crawlerListLoaded, startContentCrawl } = useOutletContext<FilterSetPageContext>();
   // const crawlJobId = 14;  // TODO: make dynamic
   const { crawlerId } = useParams();
 
@@ -191,7 +191,7 @@ export default function FilterSetPage(props: { csrfToken: string }) {
   } else if (crawlJobId === undefined || crawlJobId === null) {
     content = <div>Fehler: Kein crawl job gefunden</div>;
   } else {
-    content = <FilterSetTable 
+    content = <FilterSetTable
       evaluationResult={evaluationResult}
       rowSelection={rowSelection}
       setRowSelection={setRowSelection}
@@ -200,6 +200,7 @@ export default function FilterSetPage(props: { csrfToken: string }) {
       doMoveRule={doMoveRule}
       doDeleteRule={doDeleteRule}
       evaluateFilters={evaluateFilters}
+      onStartContentCrawl={() => startContentCrawl(Number(crawlerId))}
     />
   }
   return (

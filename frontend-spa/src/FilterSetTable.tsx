@@ -23,9 +23,10 @@ export default function FilterSetTable(props: {
   doMoveRule: (draggedId: number, hoveredPosition: number) => Promise<void>,
   doDeleteRule: (id: number) => void,
   evaluateFilters: () => Promise<void>,
+  onStartContentCrawl: () => void,
 }) {
 
-  const { evaluationResult, rowSelection, setRowSelection, addRowWithDataAfter, updateFields, doMoveRule, doDeleteRule, evaluateFilters } = props;
+  const { evaluationResult, rowSelection, setRowSelection, addRowWithDataAfter, updateFields, doMoveRule, doDeleteRule, evaluateFilters, onStartContentCrawl } = props;
 
   const lastId = Math.max(...evaluationResult.rules.map(r => r.id), 0);
   const lastPosition = Math.max(...evaluationResult.rules.map(r => r.position), 0);
@@ -235,7 +236,7 @@ const table = useMaterialReactTable({
     <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
       <Button variant="outlined" sx={{ textTransform: 'none' }} onClick={() => table.setCreatingRow(true)}>Regel hinzufügen</Button>
       <Button variant='outlined' sx={{ textTransform: 'none' }} onClick={evaluateFilters}>Filter auswerten</Button>
-      <Button variant="contained" style={{ textTransform: 'none', marginLeft: 'auto' }}>Start content crawl</Button>
+      <Button variant="contained" style={{ textTransform: 'none', marginLeft: 'auto' }} onClick={onStartContentCrawl}>Start content crawl</Button>
     </Stack>
   </>;
 }

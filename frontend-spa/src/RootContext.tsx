@@ -61,6 +61,7 @@ export type ToastContext = {
 export type FilterSetPageContext = {
   crawlerList: Crawler[];
   crawlerListLoaded: boolean;
+  startContentCrawl: (crawlerId: number) => Promise<CrawlJob>;
 };
 
 export type RootContext =
