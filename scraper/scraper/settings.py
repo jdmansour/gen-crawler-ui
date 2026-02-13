@@ -20,15 +20,6 @@ BOT_NAME = "scraper"
 SPIDER_MODULES = ["scraper.spiders"]
 NEWSPIDER_MODULE = "scraper.spiders"
 
-# LOG_FILE = env.get("LOG_FILE", allow_null=True)
-# LOG_LEVEL = env.get("LOG_LEVEL", default="INFO")
-# LOG_FORMATTER = "scraper.custom_log_formatter.CustomLogFormatter"
-
-# configure_logging(settings={"LOG_FILE": LOG_FILE, "LOG_LEVEL": LOG_LEVEL, "LOG_FORMATTER": LOG_FORMATTER})
-
-# fixes Scrapy DeprecationWarning on startup (Scrapy v2.10+)
-# (see: https://docs.scrapy.org/en/latest/topics/request-response.html#request-fingerprinter-implementation):
-
 # Default behaviour for regular crawlers of non-license-controlled content
 # When set True, every item will have GROUP_EVERYONE attached in edu-sharing
 # When set False, no permissions are set at all, which can be helpful if you want to control them later (e.g. via inherition)
@@ -78,18 +69,6 @@ ROBOTSTXT_OBEY = True
 #    "Accept-Language": "en",
 #}
 
-# Enable or disable spider middlewares
-# See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
-#    "scraper.middlewares.ScraperSpiderMiddleware": 543,
-#}
-
-# Enable or disable downloader middlewares
-# See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    "scraper.middlewares.ScraperDownloaderMiddleware": 543,
-#}
-
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 EXTENSIONS = {
@@ -104,54 +83,6 @@ PERIODIC_LOG_DELTA = True
 PERIODIC_LOG_TIMING_ENABLED = True
 
 CLOSESPIDER_PAGECOUNT = int(env.get("CLOSESPIDER_PAGECOUNT", default="1000"))
-
-# Configure item pipelines
-# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-
-# ITEM_PIPELINES is set in the Scraper's custom_settings
-# ITEM_PIPELINES = {
-#     "scraper.pipelines.ScraperPipeline": 300,
-# }
-# storeMode = env.get("MODE", default="edu-sharing")
-# ITEM_PIPELINES = {
-#     "converter.pipelines.EduSharingCheckPipeline": 0,
-#     "converter.pipelines.FilterSparsePipeline": 25,
-#     "converter.pipelines.LOMFillupPipeline": 100,
-#     "converter.pipelines.NormLicensePipeline": 125,
-#     "converter.pipelines.NormLanguagePipeline": 150,
-#     "converter.pipelines.ConvertTimePipeline": 200,
-#     "converter.pipelines.ProcessValuespacePipeline": 250,
-#     "converter.pipelines.ProcessThumbnailPipeline": 300,
-# }
-# match storeMode:
-#     case "None" | None:
-#         ITEM_PIPELINES.update({"converter.pipelines.DummyPipeline": 1000})
-#     case "csv":
-#         ITEM_PIPELINES.update({"converter.pipelines.CSVStorePipeline": 1000})
-#     case "edu-sharing":
-#         ITEM_PIPELINES.update({"converter.pipelines.EduSharingStorePipeline": 1000})
-#     case "json":
-#         ITEM_PIPELINES.update({"converter.pipelines.JSONStorePipeline": 1000})
-#     case "jsonl":
-#         ITEM_PIPELINES.update(
-#             {
-#                 "converter.pipelines.JSONLinesStorePipelineRaw": 5,
-#                 "converter.pipelines.JSONLinesStorePipelineProcessed": 1000,
-#             }
-#         )
-#     case _:
-#         logging.info(
-#             f"MODE-value '{storeMode}' not recognized! Please check your '.env'-Settings! "
-#             f"Defaulting to MODE = 'edu-sharing'"
-#         )
-#         ITEM_PIPELINES.update({"converter.pipelines.EduSharingStorePipeline": 1000})
-
-# # add custom pipelines from the .env file, if any
-# ADDITIONAL_PIPELINES = env.get("CUSTOM_PIPELINES", True)
-# if ADDITIONAL_PIPELINES:
-#     for pipe in map(lambda p: p.split(":"), ADDITIONAL_PIPELINES.split(",")):
-#         logging.info("Enabling custom pipeline: " + pipe[0])
-#         ITEM_PIPELINES[pipe[0]] = int(pipe[1])
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

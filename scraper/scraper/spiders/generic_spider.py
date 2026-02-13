@@ -43,7 +43,6 @@ class GenericSpider(Spider):
             "scraper.pipelines_edusharing.ConvertTimePipeline": 200,
             "scraper.pipelines_edusharing.ProcessValuespacePipeline": 250,
             "scraper.pipelines_edusharing.ProcessThumbnailPipeline": 300,
-            "scraper.pipelines_edusharing.JSONStorePipeline": 1000,
             "scraper.pipelines_edusharing.EduSharingStorePipeline": 1000,
         }
     }

@@ -143,6 +143,7 @@ class StateHelper:
         """ Publishes progress update to Redis. """
         if self.redis_client:
             try:
+                # TODO: can we use items_processed from the exploration scraper instead of hitting the database every time? 
                 # Count crawled URLs for this job
                 connection = sqlite3.connect(self.settings.get('DB_PATH'))
                 cursor = connection.cursor()
