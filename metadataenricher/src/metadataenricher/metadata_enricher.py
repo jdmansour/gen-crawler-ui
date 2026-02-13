@@ -10,27 +10,23 @@ import httpx
 import openai
 import scrapy
 import trafilatura  # type: ignore
-from . import zapi
-from .zapi import api
-from .zapi.api import ai_text_prompts
-from .zapi.api.ai_text_prompts import prompt
-from .zapi import errors
-from .zapi import models
 from bs4 import BeautifulSoup
 from valuespace_converter.valuespaces import Valuespaces
-from .zapi.api.kidra import (predict_subjects_kidra_predict_subjects_post,
-                            text_stats_analyze_text_post,
-                            topics_flat_topics_flat_post)
 
-from . import env
-from .items import (AiPromptItemLoader, BaseItem, BaseItemLoader, KIdraItemLoader,
-                     LicenseItemLoader, LomBaseItemloader,
-                     LomClassificationItemLoader, LomEducationalItemLoader,
-                     LomGeneralItemloader, LomLifecycleItemloader,
-                     LomTechnicalItemLoader, PermissionItemLoader,
-                     ResponseItemLoader, ValuespaceItemLoader)
+from . import env, zapi
+from .items import (AiPromptItemLoader, BaseItem, BaseItemLoader,
+                    KIdraItemLoader, LicenseItemLoader, LomBaseItemloader,
+                    LomClassificationItemLoader, LomEducationalItemLoader,
+                    LomGeneralItemloader, LomLifecycleItemloader,
+                    LomTechnicalItemLoader, PermissionItemLoader,
+                    ResponseItemLoader, ValuespaceItemLoader)
 from .util.license_mapper import LicenseMapper
 from .web_tools import get_url_data
+from .zapi import errors, models
+from .zapi.api.ai_text_prompts import prompt as zapi_prompt
+from .zapi.api.kidra import (predict_subjects_kidra_predict_subjects_post,
+                             text_stats_analyze_text_post,
+                             topics_flat_topics_flat_post)
 
 log = logging.getLogger(__name__)
 
@@ -106,8 +102,6 @@ Hier folgt der Text:
             log.info(
                 "Starting generic_spider with MINIMAL settings. AI Services are DISABLED!")
 
-
-
     def setup(self, settings):
         self.is_setup = True
         self.settings = settings
@@ -131,7 +125,7 @@ Hier folgt der Text:
         if not self.llm_model:
             raise RuntimeError(
                 "No model set for LLM API. Please set GENERIC_CRAWLER_LLM_MODEL.")
-        
+
         log.info("Using LLM API with the following settings:")
         log.info("GENERIC_CRAWLER_LLM_API_KEY: <set>")
         log.info("GENERIC_CRAWLER_LLM_API_BASE_URL: %r", base_url)
@@ -146,7 +140,6 @@ Hier folgt der Text:
         log.info("Response from get_url_data:")
         for key, val in url_data.items():
             log.info("%s: %r", key, str(val)[:100])
-
 
         # ToDo: validate "trafilatura"-fulltext-extraction from playwright
         # (compared to the html2text approach)
@@ -244,12 +237,13 @@ Hier folgt der Text:
         general_loader.add_value("description", getLRMI("description"))
         general_loader.add_value("description", getLRMI("about"))
         general_loader.add_value("keyword", getLRMI("keywords"))
-        
+
         if self.ai_enabled:
             excerpt = text_html2text[:4000]
             # todo: turn this "inside out" - don't pass the loaders,
             # but return structured data and load it here
-            self.query_llm(excerpt, general_loader, base_loader, valuespace_loader)
+            self.query_llm(excerpt, general_loader,
+                           base_loader, valuespace_loader)
 
             kidra_loader.add_value(
                 "curriculum", self.zapi_get_curriculum(excerpt))
@@ -343,8 +337,6 @@ Hier folgt der Text:
         # # attention: serlo URLs will break the getLRMI() Method because JSONBase cannot extract
         # the JSON-LD properly
         # # ToDo: maybe use the 'jmespath' Python package to retrieve this value more reliably
-        
-
 
         # ccm:educationallearningresourcetype: http://w3id.org/openeduhub/vocabs/learningResourceType/video
         # ccm:educationallearningresourcetype_DISPLAYNAME: Video
@@ -352,15 +344,11 @@ Hier folgt der Text:
         # ccm:oeh_lrt: http://w3id.org/openeduhub/vocabs/new_lrt/a0218a48-a008-4975-a62a-27b1a83d454f
         # ccm:oeh_lrt_DISPLAYNAME: Erklärvideo und gefilmtes Experiment
 
-
-
         # ccm:educationallearningresourcetype
-        valuespace_loader.add_value("learningResourceType", getLRMI("learningResourceType"))# # ccm:oeh_lrt
-        
+        valuespace_loader.add_value("learningResourceType", getLRMI("learningResourceType"))  # ccm:oeh_lrt
+
         # valuespace_loader.add_value("learningResourceType", "http://w3id.org/openeduhub/vocabs/learningResourceType/video")
         # valuespace_loader.add_value("new_lrt", "http://w3id.org/openeduhub/vocabs/new_lrt/a0218a48-a008-4975-a62a-27b1a83d454f")
-
-
 
         # loading all nested ItemLoaders into our BaseItemLoader:
         base_loader.add_value("license", license_loader.load_item())
@@ -369,7 +357,7 @@ Hier folgt der Text:
         base_loader.add_value("response", response_loader.load_item())
 
         return base_loader.load_item()
-    
+
     def manual_cleanup_text(self, html_source: str) -> str:
         parsed_html = BeautifulSoup(html_source, features="lxml")
         for tag in self.clean_tags:
@@ -396,7 +384,6 @@ Hier folgt der Text:
         """ Return a stable hash to detect content changes (for future crawls). """
         # TODO: this is obviously not stable
         return f"{datetime.datetime.now().isoformat()}"
-    
 
     def get_lifecycle_publisher(self, lom_loader: LomBaseItemloader, selector: scrapy.Selector,
                                 date: Optional[str]):
@@ -434,14 +421,16 @@ Hier folgt der Text:
         """ Determines the curriculum topic (Lehrplanthema) using the z-API. """
         log.info("zapi_get_curriculum called")
 
-        data = zapi.models.TopicAssistantKeywordsData(text=text)
+        data = models.TopicAssistantKeywordsData(text=text)
         try:
-            result = topics_flat_topics_flat_post.sync(client=self.zapi_client, body=data)
-        except (zapi.errors.UnexpectedStatus, httpx.TimeoutException):
-            log.error("zapi_get_curriculum: Failed to get curriculum topics from z-API.", exc_info=True)
+            result = topics_flat_topics_flat_post.sync(
+                client=self.zapi_client, body=data)
+        except (errors.UnexpectedStatus, httpx.TimeoutException):
+            log.error(
+                "zapi_get_curriculum: Failed to get curriculum topics from z-API.", exc_info=True)
             return []
 
-        assert isinstance(result, zapi.models.TopicAssistantKeywordsResult)
+        assert isinstance(result, models.TopicAssistantKeywordsResult)
         log.info("zapi_get_curriculum result:")
         filtered = [t for t in result.topics or [] if t.label]
         topics = sorted(filtered, key=lambda t: t.weight, reverse=True)
@@ -461,25 +450,28 @@ Hier folgt der Text:
         """ Queries the z-API to get the text difficulty and reading time. """
 
         log.info("zapi_get_statistics called",)
-        data = zapi.models.InputData(
+        data = models.InputData(
             text=text, reading_speed=200, generate_embeddings=False)
         try:
-            result = text_stats_analyze_text_post.sync(client=self.zapi_client, body=data)
-        except (zapi.errors.UnexpectedStatus, httpx.TimeoutException):
+            result = text_stats_analyze_text_post.sync(
+                client=self.zapi_client, body=data)
+        except (errors.UnexpectedStatus, httpx.TimeoutException):
             log.error("zapi_get_statistics: Failed to get text statistics from z-API.", exc_info=True)
             return "", 0.0
         log.info("zapi_get_statistics result: %s", result)
-        
-        return result.classification, round(result.reading_time, 2)  # type: ignore
+
+        # type: ignore
+        return result.classification, round(result.reading_time, 2)
 
     def zapi_get_disciplines(self, text: str) -> list[str]:
         """ Gets the disciplines for a given text using the z-API. """
 
         log.info("zapi_get_disciplines called")
-        data = zapi.models.DisciplinesData(text=text)
+        data = models.DisciplinesData(text=text)
         try:
-            result = predict_subjects_kidra_predict_subjects_post.sync(client=self.zapi_client, body=data)
-        except (zapi.errors.UnexpectedStatus, httpx.TimeoutException):
+            result = predict_subjects_kidra_predict_subjects_post.sync(
+                client=self.zapi_client, body=data)
+        except (errors.UnexpectedStatus, httpx.TimeoutException):
             log.error("zapi_get_disciplines: Failed to get disciplines from z-API.", exc_info=True)
             return []
         log.info("zapi_get_disciplines result: %s", result)
@@ -496,7 +488,7 @@ Hier folgt der Text:
                   base_loader: BaseItemLoader, valuespace_loader: ValuespaceItemLoader):
         """ Performs the LLM queries for the given text, and fills the
             corresponding ItemLoaders. """
-        
+
         log.info("query_llm called")
 
         prompt = self.ALL_IN_ONE_PROMPT % ({'text': excerpt})
@@ -566,7 +558,6 @@ Hier folgt der Text:
         process_valuespaces("intendedEndUserRole", intended_end_user_role)
         process_valuespaces("new_lrt", new_lrt)
 
-
     def call_llm_inner(self, prompt: str) -> Optional[str]:
         if self.llm_client:
             try:
@@ -579,18 +570,17 @@ Hier folgt der Text:
                 log.error("LLM API request timed out.")
                 return None
             except openai.AuthenticationError as e:
-                raise AuthenticationError("LLM API authentication failed.") from e
+                raise AuthenticationError(
+                    "LLM API authentication failed.") from e
             # log.info("LLM API response: %s", chat_completion)
             return chat_completion.choices[0].message.content or ""
 
         # TODO: add error checking
-        api_result = zapi.api.ai_text_prompts.prompt.sync(
+        api_result = zapi_prompt.sync(
             client=self.zapi_client, body=prompt)
-        assert isinstance(api_result, zapi.models.TextPromptEntity)
+        assert isinstance(api_result, models.TextPromptEntity)
         if not api_result.responses:
             log.error(
                 "No valid response from AI service for prompt: %s", prompt)
             return None
         return api_result.responses[0].strip()
-    
-
