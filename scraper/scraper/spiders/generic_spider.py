@@ -217,8 +217,10 @@ class GenericSpider(Spider):
         if not self.hasChanged(response):
             return
 
-        assert isinstance(response, TextResponse)
-
+        if not isinstance(response, TextResponse):
+            log.warning("Response is not a TextResponse, but %s, skipping: %s", type(response), response.url)
+            return
+        
         # Respect robots meta tags
         robot_meta_tags: list[str] = response.xpath(
             "//meta[@name='robots']/@content").getall()
@@ -264,7 +266,9 @@ class GenericSpider(Spider):
             self.spider_failed = True
             raise CloseSpider(f"Playwright error: {e}") from e
 
-        # item["custom"]["generic_crawler_name"] = "test"
+        if not item:
+            log.warning("Could not extract metadata for %s", response.url)
+            return
 
         log.info("New URL processed:------------------------------------------")
         log.info(item)
