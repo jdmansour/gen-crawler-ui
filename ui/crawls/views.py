@@ -199,30 +199,25 @@ def crawler_status_stream(request, crawler_id):
             )
 
             while pubsub.subscribed:
-                # If there are pending events, use a short timeout so we can get to "yield event"
-                # and are not stuck waiting for new messages from Redis.
-                # If there are no events in the aggregator, then we can wait longer for new messages.
-                timeout = 0.1 if len(aggregator.events) > 0 else None
-                message = pubsub.handle_message(pubsub.parse_response(timeout=timeout, block=False))  # type: ignore
-                
-                # Sende alle gepufferten Events
+                # Always use a short timeout so we regularly check event_queue
+                # for events delivered by the aggregator's timer thread.
+                # Using timeout=None would block indefinitely in parse_response,
+                # preventing us from yielding aggregated events from event_queue.
+                message = pubsub.handle_message(pubsub.parse_response(timeout=0.5, block=False))  # type: ignore
+
+                # Yield all queued events from the aggregator
                 while event_queue:
                     event = event_queue.pop(0)
-                    log.info("Sending event from queue: %s", event)
                     yield event
-        
+
                 if message is None:
-                    log.info("Timeout")
                     continue
-                    
+
                 if message['type'] != 'message':
-                    log.info("Ignoring non-message type: %s", message['type'])
                     continue
 
                 try:
                     data = json.loads(message['data'].decode('utf-8'))
-                    log.info("Received Redis message: %s", data.get('type', 'unknown'))
-                    # Event über Aggregator verarbeiten
                     aggregator.add_event(data)
                 except (json.JSONDecodeError, UnicodeDecodeError) as e:
                     log.error("Error processing Redis message: %s", e)
