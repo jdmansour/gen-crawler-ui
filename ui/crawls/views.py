@@ -9,23 +9,22 @@ import time
 
 import redis
 import requests
-from aggregator import CallbackAggregator
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import StreamingHttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from aggregator import CallbackAggregator
 from crawls.fields_processor import FieldsProcessor
 from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
-from crawls.serializers import (CrawlerSerializer, FilterRuleSerializer,
-                                FilterSetSerializer, SourceItemSerializer, CrawlJobSerializer)
+from crawls.serializers import (CrawlerSerializer, CrawlJobSerializer,
+                                FilterRuleSerializer, FilterSetSerializer,
+                                SourceItemSerializer)
 
 log = logging.getLogger(__name__)
 
@@ -165,7 +164,9 @@ def crawler_status_stream(request, crawler_id):
     log.info("Request: %s", request)
     log.info("crawler_id: %s", crawler_id)
     log.info("Thread ID in request handler: %s", threading.get_ident())
-    crawler = get_object_or_404(Crawler, pk=crawler_id)
+    
+    # Raise 404 when crawler does not exist
+    get_object_or_404(Crawler, pk=crawler_id)
     
     # Get Redis connection from environment
     redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')

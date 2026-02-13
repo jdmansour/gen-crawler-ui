@@ -4,16 +4,15 @@ import json
 import logging
 import sqlite3
 from urllib.parse import urlparse
-import sys
 
 import openai
 import scrapy
 import scrapy.signals
 from scrapy.crawler import Crawler
 from scrapy.exceptions import CloseSpider
-from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
 from scrapy.http.response import Response
 from scrapy.http.response.text import TextResponse
+from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
 
 from .state_helper import StateHelper
 from .utils import check_db

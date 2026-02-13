@@ -393,18 +393,6 @@ wheels = [
 ]
 
 [[package]]
-name = "django-types"
-version = "0.19.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "types-psycopg2" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a1/6d/52b9bba1390645d1593152336dc1afbf1cbcfe1fcec78e3ed4eaee09f3ff/django_types-0.19.1.tar.gz", hash = "sha256:5ae7988612cf6fbc357b018bbc3b3a878b65e04275cc46e0d35d66a708daff12", size = 175769 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/25/cb/d088c67245a9d5759a08dbafb47e040ee436e06ee433a3cdc7f3233b3313/django_types-0.19.1-py3-none-any.whl", hash = "sha256:b3f529de17f6374d41ca67232aa01330c531bbbaa3ac4097896f31ac33c96c30", size = 370857 },
-]
-
-[[package]]
 name = "django-vite"
 version = "3.0.4"
 source = { registry = "https://pypi.org/simple" }
@@ -473,7 +461,6 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "django-types" },
     { name = "mypy" },
     { name = "pip-chill" },
     { name = "pylint-django" },
@@ -499,7 +486,6 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "django-types", specifier = "==0.19.1" },
     { name = "mypy", specifier = "==1.11.2" },
     { name = "pip-chill", specifier = "==1.0.3" },
     { name = "pylint-django", specifier = "==2.5.5" },
@@ -1081,15 +1067,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/13/0f/82716ed849bf7ea4984c21385597c949944f0f9b428b5710f79d0afc084d/twisted-25.5.0.tar.gz", hash = "sha256:1deb272358cb6be1e3e8fc6f9c8b36f78eb0fa7c2233d2dbe11ec6fee04ea316", size = 3545725 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/eb/66/ab7efd8941f0bc7b2bd555b0f0471bff77df4c88e0cc31120c82737fec77/twisted-25.5.0-py3-none-any.whl", hash = "sha256:8559f654d01a54a8c3efe66d533d43f383531ebf8d81d9f9ab4769d91ca15df7", size = 3204767 },
-]
-
-[[package]]
-name = "types-psycopg2"
-version = "2.9.21.20251012"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/9b/b3/2d09eaf35a084cffd329c584970a3fa07101ca465c13cad1576d7c392587/types_psycopg2-2.9.21.20251012.tar.gz", hash = "sha256:4cdafd38927da0cfde49804f39ab85afd9c6e9c492800e42f1f0c1a1b0312935", size = 26710 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ec/0c/05feaf8cb51159f2c0af04b871dab7e98a2f83a3622f5f216331d2dd924c/types_psycopg2-2.9.21.20251012-py3-none-any.whl", hash = "sha256:712bad5c423fe979e357edbf40a07ca40ef775d74043de72bd4544ca328cc57e", size = 24883 },
 ]
 
 [[package]]

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from django import forms
 from django.contrib import admin
@@ -30,7 +30,8 @@ class CrawlJobInline(admin.TabularInline):
     model = CrawlJob
     extra = 0
     fields = ['pk', 'crawl_type_display', 'start_url', 'follow_links', 'created_at', 'updated_at']
-    readonly_fields = ['pk', 'crawl_type_display', 'start_url', 'follow_links', 'created_at', 'updated_at']
+    readonly_fields = [
+        'pk', 'crawl_type_display', 'start_url', 'follow_links', 'created_at', 'updated_at']
     can_delete = False
     show_change_link = True
 
@@ -64,7 +65,7 @@ class CrawlerAdminForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit)
         filter_set = self.cleaned_data.get("filter_set")
-        self.fields["filter_set"].save_related(self.instance, filter_set)
+        self.fields["filter_set"].save_related(self.instance, filter_set) # pyright: ignore[reportAttributeAccessIssue]
 
         return instance
 
@@ -132,7 +133,8 @@ class FilterSetAdmin(admin.ModelAdmin):
         for formset in formsets:
             # check if this formset is for FilterRule
             if formset.model == FilterRule:
-                instances = formset.save(commit=False)
+                formset.save(commit=False)
+                # instances = formset.save(commit=False)
                 # for instance in instances:
                 #     instance.filter_set.evaluate()
                 #     break
@@ -170,7 +172,7 @@ class CrawlJobAdmin(admin.ModelAdmin):
 
     @display(description='# Filter Sets')
     def filter_sets_count(self, obj: AnnotatedCrawlJob) -> int:
-        return obj.filter_sets_count
+        return obj.filter_sets_count # pyright: ignore[reportAttributeAccessIssue]
 
     def get_queryset(self, request: HttpRequest) -> QuerySet:
         queryset = super().get_queryset(request)
