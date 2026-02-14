@@ -267,12 +267,13 @@ class CrawlJobViewSet(viewsets.ModelViewSet):
     def cancel(self, request, pk=None):
         """ Cancel this crawl job. Lives at
             http://127.0.0.1:8000/api/crawl_jobs/1/cancel/ """
-        
-        scrapy_job_id = self.get_object().scrapy_job_id
+
+        crawl_job = self.get_object()
+        scrapy_job_id = crawl_job.scrapy_job_id
         if not scrapy_job_id:
             message = f"Crawl job {pk} has no scrapy_job_id, cannot cancel."
             return Response({'status': 'error', 'message': message}, status=400)
-        
+
         url = settings.SCRAPYD_URL + "/cancel.json"
         parameters = {
             'project': 'scraper',
@@ -283,6 +284,10 @@ class CrawlJobViewSet(viewsets.ModelViewSet):
         log.info("Status code: %s", response.status_code)
         if response.status_code != 200:
             return Response({'status': 'error', 'message': response.text}, status=500)
+
+        # Update the crawl job state to CANCELED
+        crawl_job.state = CrawlJob.State.CANCELED
+        crawl_job.save()
 
         obj = response.json()
         return Response(obj)

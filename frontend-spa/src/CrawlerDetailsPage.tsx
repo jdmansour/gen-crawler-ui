@@ -234,7 +234,8 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
                     job.state?.toUpperCase() === 'RUNNING' ? 'primary' :
                       job.state?.toUpperCase() === 'COMPLETED' ? 'success' :
                         job.state?.toUpperCase() === 'FAILED' ? 'error' :
-                          'default'
+                          job.state?.toUpperCase() === 'CANCELED' ? 'warning' :
+                            'default'
                   }
                   size="small"
                 />

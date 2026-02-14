@@ -24,8 +24,10 @@ export default function FilterSetPage(props: { csrfToken: string }) {
 
   // // get crawler from crawlerList matching filterSetId
   // const crawler = crawlerList.find(c => c.filter_set_id === props.filterSetId);
-  // pick the crawl job with the latest updated_at
-  const explorationJobs = crawler?.crawl_jobs.filter(j => j.crawl_type === 'EXPLORATION');
+  // pick the crawl job with the latest updated_at from completed or canceled exploration jobs
+  const explorationJobs = crawler?.crawl_jobs.filter(
+    j => j.crawl_type === 'EXPLORATION' && (j.state === 'COMPLETED' || j.state === 'CANCELED')
+  );
   const crawlJob = explorationJobs?.length
     ? explorationJobs.reduce((latest, job) =>
         new Date(job.updated_at) > new Date(latest.updated_at) ? job : latest

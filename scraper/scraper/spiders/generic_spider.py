@@ -164,14 +164,19 @@ class GenericSpider(Spider):
 
         self.enricher.setup(self.settings)
 
-    def spider_closed(self, spider: GenericSpider):
+    def spider_closed(self, spider: GenericSpider, reason: str):
         """ Called when the spider is closed. """
-        log.info("Closed spider %s", spider.name)
+        log.info("Closed spider %s, reason: %s", spider.name, reason)
         if self.dry_run:
             return
 
+        spider_cancelled = reason in ('cancelled', 'shutdown')
+
+        # Set final state based on flags
         if self.spider_failed:
             self.state_helper.update_spider_state(spider, 'FAILED')
+        elif spider_cancelled:
+            self.state_helper.update_spider_state(spider, 'CANCELED')
         else:
             self.state_helper.update_spider_state(spider, 'COMPLETED')
 

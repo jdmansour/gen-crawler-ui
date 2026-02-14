@@ -79,6 +79,7 @@ class ExampleSpider(scrapy.Spider):
         self.infer_hierarchy = infer_hierarchy
         self.dry_run = False
         self.spider_failed = False
+        self.spider_canceled = False
         self.llm_model = ''
 
         if crawler_id is None:
@@ -150,14 +151,19 @@ class ExampleSpider(scrapy.Spider):
             self.spider_failed = True
             raise CloseSpider("Failed to initialize crawl job state") from e
 
-    def spider_closed(self, spider: ExampleSpider):
+    def spider_closed(self, spider: ExampleSpider, reason: str):
         """ Called when the spider is closed. """
-        log.info("Closed spider %s", spider.name)
+        log.info("Closed spider %s, reason: %s", spider.name, reason)
         if self.dry_run:
             return
 
+        spider_cancelled = reason in ('cancelled', 'shutdown')
+
+        # Check if the job was already canceled before overwriting the state
         if self.spider_failed:
             self.state_helper.update_spider_state(spider, 'FAILED')
+        elif spider_cancelled:
+            self.state_helper.update_spider_state(spider, 'CANCELED')
         else:
             self.state_helper.update_spider_state(spider, 'COMPLETED')
 

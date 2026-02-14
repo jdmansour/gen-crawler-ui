@@ -126,9 +126,9 @@ class StateHelper:
             "SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state IN ('RUNNING', 'PENDING') LIMIT 1", (self.crawler_id,))
         if cursor.fetchone():
             return 'EXPLORATION_RUNNING'
-        # no exploration crawl jobs completed?
+        # no exploration crawl jobs completed or canceled?
         cursor.execute(
-            "SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state='COMPLETED' LIMIT 1", (self.crawler_id,))
+            "SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state IN ('COMPLETED', 'CANCELED') LIMIT 1", (self.crawler_id,))
         if not cursor.fetchone():
             return 'EXPLORATION_REQUIRED'
         # any content crawl jobs running or pending?

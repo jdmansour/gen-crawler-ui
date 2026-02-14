@@ -62,7 +62,7 @@ class Crawler(models.Model):
         crawl_jobs = self.crawl_jobs.all()
         if crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
             return self.State.EXPLORATION_RUNNING
-        elif not crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state=CrawlJob.State.COMPLETED).exists():
+        elif not crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state__in=[CrawlJob.State.COMPLETED, CrawlJob.State.CANCELED]).exists():
             return self.State.EXPLORATION_REQUIRED
         elif crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.CONTENT, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
             return self.State.CONTENT_CRAWL_RUNNING
@@ -72,12 +72,13 @@ class Crawler(models.Model):
 class CrawlJob(models.Model):
     """ A crawl job contains a start URL and references to all crawled URLs. """
 
-    # Crawl job state: pending, running, completed, failed
+    # Crawl job state: pending, running, completed, failed, canceled
     class State(models.TextChoices):
         PENDING = 'PENDING', 'Pending'
         RUNNING = 'RUNNING', 'Running'
         COMPLETED = 'COMPLETED', 'Completed'
         FAILED = 'FAILED', 'Failed'
+        CANCELED = 'CANCELED', 'Canceled'
 
     class CrawlType(models.TextChoices):
         EXPLORATION = 'EXPLORATION', 'Exploration'
