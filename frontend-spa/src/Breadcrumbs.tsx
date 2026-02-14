@@ -15,7 +15,7 @@ export default function Breadcrumbs(props: { breadcrumbs: Array<Breadcrumb> }) {
       <ol className="wlo-breadcrumbs">
         {props.breadcrumbs.map((breadcrumb, index) => (
           <li key={index} className={breadcrumb.temporary ? "wlo-breadcrumbs-temporary" : ""} style={{display:"contents"}}>
-            {index > 0 && <ChevronRightIcon sx={{ fontSize: 24, mt: "-2px" }} />}
+            {index > 0 && <ChevronRightIcon sx={{ fontSize: 24, mt: "2px" }} />}
             <LinkOrSpan href={breadcrumb.url}>
               {index == 0 && (
                 <HomeIcon

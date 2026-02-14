@@ -16,7 +16,7 @@ const roundedTheme = createTheme({
     //     },
     // },
     typography: {
-        fontFamily: 'Montserrat, Arial, sans-serif',
+        fontFamily: 'Open Sans, Arial, sans-serif',
         fontWeightRegular: 500,
     },
     components: {

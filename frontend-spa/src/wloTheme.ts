@@ -12,7 +12,7 @@ export const wloThemeData: ThemeOptions = {
   },
   typography: {
     h6: {
-        fontFamily: "Montserrat, sans-serif",
+        fontFamily: "Open Sans, sans-serif",
     },
   },
   components: {
@@ -25,7 +25,7 @@ export const wloThemeData: ThemeOptions = {
               style: { 
                 borderRadius: 20,
                 textTransform: "none",
-                fontFamily: "Montserrat, sans-serif",
+                fontFamily: "Open Sans, sans-serif",
                 fontWeight: 600,
                 fontSize: "15.5px",
                 padding: "2px 29px",
@@ -36,7 +36,7 @@ export const wloThemeData: ThemeOptions = {
               style: { 
                 borderRadius: 20,
                 textTransform: "none",
-                fontFamily: "Montserrat, sans-serif",
+                fontFamily: "Open Sans, sans-serif",
                 fontWeight: 600,
                 fontSize: "15.5px",
                 padding: "2px 29px",
