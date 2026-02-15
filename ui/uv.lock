@@ -464,7 +464,9 @@ dev = [
     { name = "mypy" },
     { name = "pip-chill" },
     { name = "pylint-django" },
+    { name = "pylint-pytest" },
     { name = "pytest" },
+    { name = "pytest-django" },
 ]
 
 [package.metadata]
@@ -489,7 +491,9 @@ dev = [
     { name = "mypy", specifier = "==1.11.2" },
     { name = "pip-chill", specifier = "==1.0.3" },
     { name = "pylint-django", specifier = "==2.5.5" },
+    { name = "pylint-pytest", specifier = ">=1.1.7" },
     { name = "pytest", specifier = "==8.2.2" },
+    { name = "pytest-django", specifier = ">=4.12.0" },
 ]
 
 [[package]]
@@ -874,6 +878,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pylint-pytest"
+version = "1.1.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pylint" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/aa/6e/36a916bfd251d4901ef9f5ddfece3b0e113f9109de29d962c6ea6b53cc17/pylint-pytest-1.1.7.tar.gz", hash = "sha256:7a38be02c014eb6d98791eb978e79ed292f1904d3a518289c6d7ac4fb4122e98", size = 12768 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/98/1a/549ecc83f626f1b99b31c7123523555c262c8678260336b0a6eb6382732e/pylint_pytest-1.1.7-py3-none-any.whl", hash = "sha256:5d687a2f4b17e85654fc2a8f04944761efb11cb15dc46d008f420c377b149151", size = 10750 },
+]
+
+[[package]]
 name = "pyopenssl"
 version = "25.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -905,6 +922,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a6/58/e993ca5357553c966b9e73cb3475d9c935fe9488746e13ebdf9b80fae508/pytest-8.2.2.tar.gz", hash = "sha256:de4bb8104e201939ccdc688b27a89a7be2079b22e2bd2b07f806b6ba71117977", size = 1427980 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4e/e7/81ebdd666d3bff6670d27349b5053605d83d55548e6bd5711f3b0ae7dd23/pytest-8.2.2-py3-none-any.whl", hash = "sha256:c434598117762e2bd304e526244f67bf66bbd7b5d6cf22138be51ff661980343", size = 339873 },
+]
+
+[[package]]
+name = "pytest-django"
+version = "4.12.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/13/2b/db9a193df89e5660137f5428063bcc2ced7ad790003b26974adf5c5ceb3b/pytest_django-4.12.0.tar.gz", hash = "sha256:df94ec819a83c8979c8f6de13d9cdfbe76e8c21d39473cfe2b40c9fc9be3c758", size = 91156 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/83/a5/41d091f697c09609e7ef1d5d61925494e0454ebf51de7de05f0f0a728f1d/pytest_django-4.12.0-py3-none-any.whl", hash = "sha256:3ff300c49f8350ba2953b90297d23bf5f589db69545f56f1ec5f8cff5da83e85", size = 26123 },
 ]
 
 [[package]]
