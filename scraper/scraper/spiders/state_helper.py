@@ -104,39 +104,43 @@ class StateHelper:
             log.error("Error updating crawl job state: %s", e)
 
     def recalc_crawler_state(self) -> str:
-        # Replicate this logic in plain SQL:
-        # crawl_jobs = self.crawl_jobs.all()
-        # if crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
-        #     return self.State.EXPLORATION_RUNNING
-        # elif not crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state=CrawlJob.State.COMPLETED).exists():
-        #     return self.State.EXPLORATION_REQUIRED
-        # elif crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.CONTENT, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
-        #     return self.State.CONTENT_CRAWL_RUNNING
-        # else:
-        #     return self.State.READY_FOR_CONTENT_CRAWL
+        """Recalculate the crawler state from crawl job states in the database."""
         log.info("Recalculating crawler state for crawler_id %d", self.crawler_id)
 
         db_path = self.settings.get('DB_PATH')
         connection = sqlite3.connect(db_path)
         cursor = connection.cursor()
         # any exploration crawl jobs running or pending?
-        # cursor.execute("SELECT COUNT(*) FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state IN ('RUNNING', 'PENDING')", (self.crawler_id,))
-        # instead of counting, we can just check for existence, which should be faster
         cursor.execute(
             "SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state IN ('RUNNING', 'PENDING') LIMIT 1", (self.crawler_id,))
         if cursor.fetchone():
+            connection.close()
             return 'EXPLORATION_RUNNING'
         # no exploration crawl jobs completed or canceled?
         cursor.execute(
             "SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' AND state IN ('COMPLETED', 'CANCELED') LIMIT 1", (self.crawler_id,))
         if not cursor.fetchone():
+            # check if latest exploration job failed
+            cursor.execute(
+                "SELECT state FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='EXPLORATION' ORDER BY created_at DESC LIMIT 1", (self.crawler_id,))
+            row = cursor.fetchone()
+            connection.close()
+            if row and row[0] == 'FAILED':
+                return 'EXPLORATION_REQUIRED_JOB_FAILED'
             return 'EXPLORATION_REQUIRED'
         # any content crawl jobs running or pending?
         cursor.execute(
             "SELECT 1 FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='CONTENT' AND state IN ('RUNNING', 'PENDING') LIMIT 1", (self.crawler_id,))
         if cursor.fetchone():
+            connection.close()
             return 'CONTENT_CRAWL_RUNNING'
-        # else ready for content crawl
+        # check if latest content job failed
+        cursor.execute(
+            "SELECT state FROM crawls_crawljob WHERE crawler_id=? AND crawl_type='CONTENT' ORDER BY created_at DESC LIMIT 1", (self.crawler_id,))
+        row = cursor.fetchone()
+        connection.close()
+        if row and row[0] == 'FAILED':
+            return 'READY_FOR_CONTENT_CRAWL_JOB_FAILED'
         return 'READY_FOR_CONTENT_CRAWL'
 
     def publish_progress_update(self, current_url: str):

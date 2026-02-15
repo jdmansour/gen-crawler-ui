@@ -51,23 +51,47 @@ class Crawler(models.Model):
     
     class State(models.TextChoices):
         EXPLORATION_REQUIRED = 'EXPLORATION_REQUIRED', 'Exploration Required'
+        EXPLORATION_REQUIRED_JOB_FAILED = 'EXPLORATION_REQUIRED_JOB_FAILED', 'Exploration Required (Job Failed)'
         EXPLORATION_RUNNING = 'EXPLORATION_RUNNING', 'Exploration Running'
         READY_FOR_CONTENT_CRAWL = 'READY_FOR_CONTENT_CRAWL', 'Ready for Content Crawl'
+        READY_FOR_CONTENT_CRAWL_JOB_FAILED = 'READY_FOR_CONTENT_CRAWL_JOB_FAILED', 'Ready for Content Crawl (Job Failed)'
         CONTENT_CRAWL_RUNNING = 'CONTENT_CRAWL_RUNNING', 'Content Crawl Running'
 
-    # TODO: recalculate this when a dynamic update of a crawl job is sent to the client.
-    # Where do we do that best?
+    class SimpleState(models.TextChoices):
+        DRAFT = 'draft', 'Draft'
+        RUNNING = 'running', 'Running'
+        IDLE = 'idle', 'Idle'
+        ERROR = 'error', 'Error'
+
+    STATE_TO_SIMPLE_STATE = {
+        'EXPLORATION_REQUIRED': 'draft',
+        'EXPLORATION_REQUIRED_JOB_FAILED': 'error',
+        'EXPLORATION_RUNNING': 'running',
+        'READY_FOR_CONTENT_CRAWL': 'idle',
+        'READY_FOR_CONTENT_CRAWL_JOB_FAILED': 'error',
+        'CONTENT_CRAWL_RUNNING': 'running',
+    }
+
     def state(self) -> str:
         """ Returns the current state of the crawler based on its crawl jobs. """
         crawl_jobs = self.crawl_jobs.all()
         if crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
             return self.State.EXPLORATION_RUNNING
-        elif not crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state__in=[CrawlJob.State.COMPLETED, CrawlJob.State.CANCELED]).exists():
+        if not crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state__in=[CrawlJob.State.COMPLETED, CrawlJob.State.CANCELED]).exists():
+            latest = crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION).order_by('-created_at').first()
+            if latest and latest.state == CrawlJob.State.FAILED:
+                return self.State.EXPLORATION_REQUIRED_JOB_FAILED
             return self.State.EXPLORATION_REQUIRED
-        elif crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.CONTENT, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
+        if crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.CONTENT, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
             return self.State.CONTENT_CRAWL_RUNNING
-        else:
-            return self.State.READY_FOR_CONTENT_CRAWL
+        latest_content = crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.CONTENT).order_by('-created_at').first()
+        if latest_content and latest_content.state == CrawlJob.State.FAILED:
+            return self.State.READY_FOR_CONTENT_CRAWL_JOB_FAILED
+        return self.State.READY_FOR_CONTENT_CRAWL
+
+    def simple_state(self) -> str:
+        """ Returns a simplified state for UI display. """
+        return self.STATE_TO_SIMPLE_STATE[self.state()]
 
 class CrawlJob(models.Model):
     """ A crawl job contains a start URL and references to all crawled URLs. """

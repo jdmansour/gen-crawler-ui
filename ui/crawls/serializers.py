@@ -26,8 +26,8 @@ class CrawlerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crawler
         fields = ['id', 'url', 'filter_set_id', 'filter_set_url', 'name', 'start_url', 'source_item',
-                  'created_at', 'updated_at', 'inherited_fields', 'state', 'crawl_jobs']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'state', 'crawl_jobs']
+                  'created_at', 'updated_at', 'inherited_fields', 'state', 'simple_state', 'crawl_jobs']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'state', 'simple_state', 'crawl_jobs']
         depth = 1
 
     crawl_jobs = CrawlJobSerializer(many=True, read_only=True)
