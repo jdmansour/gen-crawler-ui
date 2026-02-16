@@ -26,7 +26,7 @@ export default function FilterSetPage(props: { csrfToken: string }) {
   // const crawler = crawlerList.find(c => c.filter_set_id === props.filterSetId);
   // pick the crawl job with the latest updated_at from completed or canceled exploration jobs
   const explorationJobs = crawler?.crawl_jobs.filter(
-    j => j.crawl_type === 'EXPLORATION' && (j.state === 'COMPLETED' || j.state === 'CANCELED')
+    j => j.crawl_type === 'EXPLORATION' && (j.state === 'COMPLETED' || j.state === 'CANCELED' || j.state === 'RUNNING')
   );
   const crawlJob = explorationJobs?.length
     ? explorationJobs.reduce((latest, job) =>
