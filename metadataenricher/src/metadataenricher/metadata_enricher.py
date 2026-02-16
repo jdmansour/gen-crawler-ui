@@ -236,6 +236,7 @@ Hier folgt der Text:
         general_loader.add_xpath("language", '//meta[@property="og:locale"]/@content')
         general_loader.add_value("description", getLRMI("description"))
         general_loader.add_value("description", getLRMI("about"))
+        general_loader.add_xpath("keyword", '//meta[@name="keywords"]/@content', re=r'[^,;\s]+')
         general_loader.add_value("keyword", getLRMI("keywords"))
 
         if self.ai_enabled:

@@ -77,6 +77,49 @@ async def test_jsonld_video():
     assert item['lom']['technical']['duration'] == 189
 
 
+
+META_TAGS_DOCUMENT = """
+<html lang="de">
+<head>
+<title>Page title</title>
+<meta name="keywords" content="keyword1, keyword2, keyword3">
+<meta name="description" content="This is a sample description.">
+</head>
+<body>
+<p>Some content</p>
+</body>
+</html>
+"""
+
+async def test_reads_keywords_from_meta():
+    enricher = MetadataEnricher(ai_enabled=False)
+    settings = {}
+    enricher.setup(settings)
+
+    html = META_TAGS_DOCUMENT
+    html_bytes: bytes = html.encode()
+    trafilatura_text: str = trafilatura.extract(html_bytes) or ""
+
+    response_url = "https://example.com"
+    item = await enricher.parse_page_inner(response_url, html, trafilatura_text)
+
+    assert item['lom']['general']['keyword'] == ["keyword1", "keyword2", "keyword3"]
+
+async def test_reads_description_from_meta():
+    enricher = MetadataEnricher(ai_enabled=False)
+    settings = {}
+    enricher.setup(settings)
+
+    html = META_TAGS_DOCUMENT
+    html_bytes: bytes = html.encode()
+    trafilatura_text: str = trafilatura.extract(html_bytes) or ""
+
+    response_url = "https://example.com"
+    item = await enricher.parse_page_inner(response_url, html, trafilatura_text)
+
+    assert item['lom']['general']['description'] == "This is a sample description."
+
+
 PLANET_SCHULE_VIDEO_DOCUMENT = """
 <html lang="de">
 <head>
