@@ -182,8 +182,10 @@ const table = useMaterialReactTable({
     getRowId: (originalRow) => String(originalRow.id),
     muiTableBodyRowProps: ({ row, staticRowIndex, table }) => ({
       // single click to select row
-      onClick: (event) =>
-        getMRT_RowSelectionHandler({ row, staticRowIndex, table })(event), //import this helper function from material-react-table
+      onClick: (event) => {
+        if (row.id === 'mrt-row-create') return;
+        getMRT_RowSelectionHandler({ row, staticRowIndex, table })(event);
+      },
     }),
     muiTableBodyProps: {
       sx: {
