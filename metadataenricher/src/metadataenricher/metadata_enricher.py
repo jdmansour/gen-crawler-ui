@@ -89,6 +89,7 @@ Hier folgt der Text:
         self.is_setup = False
         self.ai_enabled = ai_enabled
         self.valuespaces = Valuespaces()
+        self.inherited_fields = {}
         if self.ai_enabled:
             log.info("Starting generic_spider with ai_enabled flag!")
             self.zapi_client = zapi.AuthenticatedClient(
@@ -131,6 +132,10 @@ Hier folgt der Text:
         log.info("GENERIC_CRAWLER_LLM_API_BASE_URL: %r", base_url)
         log.info("GENERIC_CRAWLER_LLM_MODEL: %r", self.llm_model)
         self.llm_client = openai.OpenAI(api_key=api_key, base_url=base_url)
+
+    def set_inherited_fields(self, inherited_fields: dict):
+        self.inherited_fields = inherited_fields
+        log.info("Inherited fields set for enricher: %s", inherited_fields)
 
     async def parse_page(self, response_url: str) -> Optional[BaseItem]:
         url_data = await get_url_data(response_url)
@@ -329,6 +334,11 @@ Hier folgt der Text:
         # Todo: does this deal with multiple authors correctly?
         license_loader.add_xpath("author", '//meta[@name="author"]/@content')
         # trafilatura offers a license detection feature as part of its "extract_metadata()"-method
+
+        # Metadata inheritance
+        if 'virtual:licenseurl' in self.inherited_fields:
+            log.info("Adding inherited license URL: %s", self.inherited_fields['virtual:licenseurl'])
+            license_loader.add_value("url", self.inherited_fields['virtual:licenseurl'])
 
         if trafilatura_license_detected := trafilatura_meta.get("license"):
             license_mapper = LicenseMapper()

@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import datetime
 import logging
+import json
 import sqlite3
 from typing import Optional
 
+import httpx
 import playwright.async_api
 import scrapy.signals
 from metadataenricher import metadata_enricher
@@ -172,14 +174,18 @@ class GenericSpider(Spider):
 
         if self.crawler_id is not None:
             # get inherited metadata
+            source_item = None
+            inherited_fields = []
             try:
                 connection = sqlite3.connect(db_path)
                 cursor = connection.cursor()
                 cursor.execute(
-                    "SELECT inherited_fields FROM crawls_crawler WHERE id=?", (self.crawler_id,))
+                    "SELECT inherited_fields, source_item FROM crawls_crawler WHERE id=?", (self.crawler_id,))
                 if row := cursor.fetchone():
-                    inherited_fields = row[0]
+                    inherited_fields_json = row[0]
+                    source_item = row[1]
                     # self.enricher.set_inherited_fields(inherited_fields)
+                    inherited_fields = json.loads(inherited_fields_json) if inherited_fields_json else []
                     log.info("Set inherited fields for enricher: %s", inherited_fields)
                 else:
                     log.warning("No inherited fields found for crawler_id %s", self.crawler_id)
@@ -187,6 +193,29 @@ class GenericSpider(Spider):
                 log.error("Error while fetching inherited fields: %s", e)
                 self.spider_failed = True
                 raise CloseSpider(f"Error while fetching inherited fields: {e}") from e
+            
+            if source_item:
+                EDU_SHARING_BASE_URL = spider.settings.get("EDU_SHARING_BASE_URL").rstrip("/")
+                res = httpx.get(f"{EDU_SHARING_BASE_URL}/rest/node/v1/nodes/-home-/{source_item}/metadata", params={'propertyFilter': '-all-'})
+                metadata = res.json()
+                properties = metadata['node']['properties']
+                inherited_fields_data = {}
+                for field in inherited_fields:
+                    if field == "license":
+                        # special case:
+                        # commonlicense_key = properties.get("ccm:commonlicense_key", [None])[0]
+                        # commonlicense_cc_version = properties.get("ccm:commonlicense_cc_version", [None])[0]
+                        # log.info("Inherited field 'license': commonlicense_key=%s, commonlicense_cc_version=%s", commonlicense_key, commonlicense_cc_version)
+                        licenseurl = properties.get("virtual:licenseurl", [None])[0]
+                        log.info("Inherited field 'license': licenseurl=%s", licenseurl)
+                        inherited_fields_data['virtual:licenseurl'] = licenseurl
+                        continue
+                    if value := properties.get(field, [None])[0]:
+                        log.info("Inherited field '%s': %s", field, value)
+                        inherited_fields_data[field] = value
+                    else:
+                        log.warning("Inherited field '%s' not found in source item metadata", field)
+                self.enricher.set_inherited_fields(inherited_fields_data)
 
         self.enricher.setup(self.settings)
 
