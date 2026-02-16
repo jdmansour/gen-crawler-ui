@@ -237,7 +237,7 @@ Hier folgt der Text:
         general_loader.add_value("description", getLRMI("description"))
         general_loader.add_value("description", getLRMI("about"))
         general_loader.add_xpath("keyword", '//meta[@name="keywords"]/@content', re=r'[^,;\s]+')
-        general_loader.add_value("keyword", getLRMI("keywords"))
+        # general_loader.add_value("keyword", getLRMI("keywords"))
 
         if self.ai_enabled:
             excerpt = text_html2text[:4000]
@@ -262,6 +262,26 @@ Hier folgt der Text:
             if trafilatura_title := trafilatura_meta.get("title"):
                 general_loader.replace_value("title", trafilatura_title)
 
+        # Extract JSON-LD VideoObject metadata
+        for obj in lrmi_objects:
+            obj_type = obj.get("@type")
+            if obj_type == "VideoObject":
+                valuespace_loader.add_value(
+                    "learningResourceType",
+                    "http://w3id.org/openeduhub/vocabs/learningResourceType/video")
+                if duration_iso := obj.get("duration"):
+                    duration_seconds = parse_iso8601_duration(duration_iso)
+                    if duration_seconds is not None:
+                        technical_loader.add_value("duration", duration_seconds)
+                break
+            elif obj_type == "Article":
+                # load keywords from JSON-LD Article objects as well, since they often contain more specific keywords than the general webpage metadata
+                if article_keywords := obj.get("keywords"):
+                    print("Article keywords from JSON-LD:", repr(article_keywords))
+                    general_loader.add_value("keyword", article_keywords, re=r'[^,;\s]+')
+                    # debug: what is in general_loader.keyword?
+                    print("general_loader.keyword after adding Article keywords:", general_loader.get_collected_values("keyword"))
+
         lom_loader.add_value("general", general_loader.load_item())
 
         technical_loader.add_value("format", getLRMI("fileFormat"))
@@ -285,18 +305,6 @@ Hier folgt der Text:
 
         self.get_lifecycle_publisher(
             lom_loader=lom_loader, selector=selector_playwright, date=date)
-
-        # Extract JSON-LD VideoObject metadata
-        for obj in lrmi_objects:
-            if obj.get("@type") == "VideoObject":
-                valuespace_loader.add_value(
-                    "learningResourceType",
-                    "http://w3id.org/openeduhub/vocabs/learningResourceType/video")
-                if duration_iso := obj.get("duration"):
-                    duration_seconds = parse_iso8601_duration(duration_iso)
-                    if duration_seconds is not None:
-                        technical_loader.add_value("duration", duration_seconds)
-                break
 
         # Detect video from planet-schule:mediatypes meta tag (e.g. "video[Video]")
         ps_mediatypes = selector_playwright.xpath(
