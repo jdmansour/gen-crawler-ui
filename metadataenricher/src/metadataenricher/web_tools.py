@@ -1,4 +1,7 @@
+import base64
 import logging
+import socket
+import urllib.parse
 from asyncio import Semaphore
 from typing import TypedDict
 
@@ -74,6 +77,22 @@ _sem_playwright: Semaphore = Semaphore(10)
 # configuration accordingly! (e.g., by increasing the MAX_CONCURRENT_SESSIONS and MAX_QUEUE_LENGTH configuration
 # settings, see: https://www.browserless.io/docs/docker)
 
+
+def replace_host_with_ip(cdp_endpoint: str) -> str:
+    "Parses a URL and replaces the hostname with its IP address."
+    parsed = urllib.parse.urlparse(cdp_endpoint)
+    host = parsed.hostname or "localhost"
+    port = parsed.port
+    path = parsed.path
+    try:
+        ip_address = socket.gethostbyname(host)
+    except Exception as e:
+        log.error("Failed to resolve host %s: %s", host, e)
+        raise
+
+    return f"{parsed.scheme}://{ip_address}:{port}{path}"
+
+
 async def get_url_data(url: str) -> UrlDataDict | None:
     # Ignore URLs that look like binary files.
     # Note that this does not detect the case when a problematic MIME type is served
@@ -87,18 +106,42 @@ async def get_url_data(url: str) -> UrlDataDict | None:
     # https://playwright.dev/python/docs/api/class-browsertype#browser-type-connect-over-cdp
     async with _sem_playwright:
         async with async_playwright() as p:
-            log.debug("Fetching data with Playwright")
-            ws_endpoint = env.get("PLAYWRIGHT_WS_ENDPOINT") + "/chrome/playwright"
-            browser = await p.chromium.connect(ws_endpoint)
-            browser = await browser.new_context(java_script_enabled=True)
-            log.debug("  browser.new_page()")
-            page = await browser.new_page()
-            log.debug("  page.goto(url=%r)", url)
+            log.info("Fetching URL with Playwright: %s", url)
+            cdp_endpoint = env.get("PLAYWRIGHT_CDP_ENDPOINT")
+            log.info("PLAYWRIGHT_CDP_ENDPOINT: %s", cdp_endpoint)
+
+            # Chrome does not allow connections if a host header is sent which is not
+            # localhost or an IP address. Passing headers to connect_over_cdp doesn't
+            # seem to work, so we resolve the IP address here.
+            cdp_endpoint = replace_host_with_ip(cdp_endpoint)
+            log.info("CDP endpoint with resolved IP: %s", cdp_endpoint)
+
+            browser = await p.chromium.connect_over_cdp(cdp_endpoint)
+            # Use the default browser context so extensions (uBlock, ISDCAC) are active
+            context = browser.contexts[0]
+            page = await context.new_page()
             await page.goto(url, wait_until="load", timeout=90000)
             # waits for a website to fire the DOMContentLoaded event or for a timeout of 90s
             # since waiting for 'networkidle' seems to cause timeouts
             html = await page.content()
-            screenshot_bytes = await page.screenshot()
+
+            # Use CDP to capture a 2x retina screenshot.
+            # Playwright's page.screenshot() ignores CDP emulation overrides
+            # on the default browser context, so we use raw CDP calls instead.
+            cdp = await context.new_cdp_session(page)
+            await cdp.send("Emulation.setDeviceMetricsOverride", {
+                "width": 1280,
+                "height": 800,
+                "deviceScaleFactor": 2,
+                "mobile": False,
+            })
+            result = await cdp.send("Page.captureScreenshot", {
+                "format": "png",
+                "captureBeyondViewport": False,
+            })
+            screenshot_bytes = base64.b64decode(result["data"])
+            await cdp.detach()
+
             # ToDo: HAR / cookies
             #  if we are able to replicate the Splash response with all its fields,
             #  we could save traffic/requests that are currently still being handled by Splash

@@ -352,6 +352,7 @@ class ProcessThumbnailPipeline(BasicPipeline):
         # if screenshot_bytes is provided (the crawler has already a binary representation of the image,
         # the pipeline will convert/scale the given image
         if "screenshot_bytes" in item:
+            log.info("screenshot_bytes provided by crawler, using it to create thumbnail without additional HTTP request")
             # in case we are already using playwright in a spider, we can skip one additional HTTP Request by
             # accessing the (temporary available) "screenshot_bytes"-field
             img = Image.open(BytesIO(item["screenshot_bytes"]))
@@ -360,6 +361,7 @@ class ProcessThumbnailPipeline(BasicPipeline):
             # Therefore, we delete it after we're done with processing it
             del item["screenshot_bytes"]
         elif "thumbnail" in item:
+            log.info("Thumbnail URL provided by crawler, trying to download it: %s", item["thumbnail"])
             # a thumbnail (url) was provided within the item -> we will try to fetch it from the url
             url: str = item["thumbnail"]
             time_start: datetime = datetime.datetime.now()
@@ -424,7 +426,8 @@ class ProcessThumbnailPipeline(BasicPipeline):
                 "location" in item["lom"]["technical"]
                 and len(item["lom"]["technical"]["location"]) > 0
         ):
-            playwright_websocket_endpoint: str | None = env.get("PLAYWRIGHT_WS_ENDPOINT")
+            log.info("No thumbnail URL provided by crawler, trying to use the location as thumbnail URL: %s", item["lom"]["technical"]["location"][0])
+            playwright_websocket_endpoint: str | None = env.get("PLAYWRIGHT_CDP_ENDPOINT")
             if (playwright_websocket_endpoint):
                 # we're using Playwright to take a website screenshot if:
                 # - the spider explicitly defined Playwright in its 'custom_settings'-dict
