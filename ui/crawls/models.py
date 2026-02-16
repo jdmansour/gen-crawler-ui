@@ -93,6 +93,13 @@ class Crawler(models.Model):
         """ Returns a simplified state for UI display. """
         return self.STATE_TO_SIMPLE_STATE[self.state()]
 
+    def ensure_filter_set(self) -> FilterSet:
+        """Return the existing FilterSet or create one."""
+        try:
+            return self.filter_set
+        except FilterSet.DoesNotExist:
+            return FilterSet.objects.create(name=self.name, crawler=self)
+
 class CrawlJob(models.Model):
     """ A crawl job contains a start URL and references to all crawled URLs. """
 

@@ -31,9 +31,19 @@ class CrawlerSerializer(serializers.ModelSerializer):
         depth = 1
 
     crawl_jobs = CrawlJobSerializer(many=True, read_only=True)
-    filter_set_id = serializers.ReadOnlyField(source='filter_set.id')
-    filter_set_url = serializers.HyperlinkedRelatedField(
-        view_name='filterset-detail', read_only=True, source='filter_set')
+    filter_set_id = serializers.SerializerMethodField()
+    filter_set_url = serializers.SerializerMethodField()
+
+    def get_filter_set_id(self, obj: Crawler):
+        return obj.ensure_filter_set().id
+
+    def get_filter_set_url(self, obj: Crawler):
+        fs = obj.ensure_filter_set()
+        request = self.context.get('request')
+        if request is None:
+            return None
+        from rest_framework.reverse import reverse
+        return reverse('filterset-detail', kwargs={'pk': fs.pk}, request=request)
     
 
 class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
