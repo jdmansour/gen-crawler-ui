@@ -49,7 +49,8 @@ class GenericSpider(Spider):
 
     def __init__(self, urltocrawl:str="", ai_enabled:str="True",
                  max_urls:str="3", filter_set_id:str="",
-                 crawler_id:str|None=None, crawl_job_id:str|None=None, **kwargs):
+                 crawler_id:str|None=None, crawl_job_id:str|None=None,
+                 dry_run:str|None=None, **kwargs):
         EduSharing.resetVersion = True
         super().__init__(**kwargs)
 
@@ -59,6 +60,9 @@ class GenericSpider(Spider):
         log.info("  ai_enabled: %r", ai_enabled)
         log.info("  max_urls: %r", max_urls)
         log.info("  filter_set_id: %r", filter_set_id)
+        log.info("  crawler_id: %r", crawler_id)
+        log.info("  crawl_job_id: %r", crawl_job_id)
+        log.info("  dry_run: %r", dry_run)
         log.info("  kwargs: %r", kwargs)
         log.info("scraper module: %r", scraper)
         log.info("__file__: %r", __file__)
@@ -87,11 +91,15 @@ class GenericSpider(Spider):
         self.items_processed = 0
         self.spider_failed = False
         self.crawler_output_node: Optional[str] = None
-        self.dry_run = False
+        self.dry_run = False if dry_run is None else to_bool(dry_run)
 
         if crawler_id is None:
             log.info("No crawler_id provided, this is a dry run without "
                      "database updates or Redis status publishing.")
+            # dry_run=(unset) or dry_run=True is OK, but dry_run=False is not
+            if dry_run is not None and to_bool(dry_run) == False:
+                log.error("Error: If no crawler_id is provided, dry_run=False is not allowed.")
+                raise ValueError("Invalid arguments: If no crawler_id is provided, dry_run=False is not allowed.")
             self.dry_run = True
 
         if self.dry_run:
@@ -161,6 +169,24 @@ class GenericSpider(Spider):
                 log.error("Error while running crawler: %s", e)
                 self.spider_failed = True
                 raise CloseSpider(f"Error while running crawler: {e}") from e
+
+        if self.crawler_id is not None:
+            # get inherited metadata
+            try:
+                connection = sqlite3.connect(db_path)
+                cursor = connection.cursor()
+                cursor.execute(
+                    "SELECT inherited_fields FROM crawls_crawler WHERE id=?", (self.crawler_id,))
+                if row := cursor.fetchone():
+                    inherited_fields = row[0]
+                    # self.enricher.set_inherited_fields(inherited_fields)
+                    log.info("Set inherited fields for enricher: %s", inherited_fields)
+                else:
+                    log.warning("No inherited fields found for crawler_id %s", self.crawler_id)
+            except (sqlite3.Error, ValueError) as e:
+                log.error("Error while fetching inherited fields: %s", e)
+                self.spider_failed = True
+                raise CloseSpider(f"Error while fetching inherited fields: {e}") from e
 
         self.enricher.setup(self.settings)
 
