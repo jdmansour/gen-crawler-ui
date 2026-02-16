@@ -2,6 +2,7 @@ import asyncio
 import base64
 import json
 import logging
+import os.path
 import pprint
 import time
 import uuid
@@ -769,12 +770,7 @@ class EduSharing:
                 else:
                     log.info("Detected edu-sharing bulk api with version " + version_str)
                 if env.get_bool("EDU_SHARING_PERMISSION_CONTROL", False, True) is True:
-                    EduSharing.groupCache = list(
-                        map(
-                            lambda x: x["authorityName"],
-                            EduSharing.iamApi.search_groups(EduSharingConstants.HOME, "", max_items=1000000)["groups"],
-                        )
-                    )
+                    EduSharing.groupCache = get_edusharing_groups()
                     log.debug("Built up edu-sharing group cache: {}".format(EduSharing.groupCache))
                     return
                 else:
@@ -861,3 +857,31 @@ class EduSharing:
         # EduSharing.spiderNodes[spider.name] = src
         # return src
         return None
+
+def get_edusharing_groups():
+    # return list(
+    #     map(
+    #         lambda x: x["authorityName"],
+    #         EduSharing.iamApi.search_groups(EduSharingConstants.HOME, "", max_items=1000000)["groups"],
+    #     )
+    # )
+    cache_file = "cache/edusharing_groups.json"
+    if os.path.exists(cache_file):
+        timespan = 60 * 60 * 24
+        if time.time() < os.path.getmtime(cache_file) + timespan:
+            log.info("Using cached edu-sharing groups")
+            with open(cache_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        else:
+            log.info("Cached edu-sharing groups are outdated, fetching new groups from API...")
+
+    log.info("Fetching edu-sharing groups from API...")
+    groups = EduSharing.iamApi.search_groups(EduSharingConstants.HOME, "", max_items=1000000)["groups"]
+    group_names = [group["authorityName"] for group in groups]
+
+    # Saving to cache
+    os.makedirs("cache", exist_ok=True)
+    with open(cache_file, "w", encoding="utf-8") as f:
+        json.dump(group_names, f)
+
+    return group_names
