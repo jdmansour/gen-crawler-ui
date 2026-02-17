@@ -1,6 +1,9 @@
+import AutoAwesome from '@mui/icons-material/AutoAwesome';
 import Cancel from '@mui/icons-material/Cancel';
 import Delete from '@mui/icons-material/Delete';
+import Explore from '@mui/icons-material/Explore';
 import MoreVertOutlined from "@mui/icons-material/MoreVertOutlined";
+import { CircularProgress, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -20,15 +23,12 @@ import { Stack } from '@mui/system';
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { Link, useOutletContext, useParams } from "react-router-dom";
+import Api from './api';
 import { Crawler, CrawlJob, SourceItem } from "./apitypes";
-import sourcePreviewPic from "./assets/source-preview.jpg";
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import { CrawlerDetailsContext, CrawlerDetailsPageContext } from "./RootContext";
+import SourceCard from './SourceCard';
 import { useStep } from "./steps";
-import Api from './api';
-import { Card, CardActionArea, CardActions, CardContent, CardMedia, CircularProgress, Typography } from '@mui/material';
-import AutoAwesome from '@mui/icons-material/AutoAwesome';
-import Explore from '@mui/icons-material/Explore';
 
 
 export default function CrawlerDetailsPage() {
@@ -104,7 +104,6 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
     </div>;
   }
 
-  const sourceLink = sourceItem?.data?.content?.url || null;
   const genericCrawlerOutputUrl = 'https://repository.staging.openeduhub.net/edu-sharing/components/workspace?root=MY_FILES&id=42865b9a-ea22-4cbd-81e4-4bd49601f382&mainnav=true&displayType=0';
 
   return <div style={{ overflowY: "scroll", padding: "0px 24px 24px 24px" }}>
@@ -140,32 +139,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
 
       <div>
         <Typography variant="body2" sx={{mb: 1}}>Verbundene Quelle:</Typography>
-      <Card sx={{ maxWidth: 345, minWidth: 250 }}>
-        <CardActionArea href={sourceLink} disabled={!sourceItem}>
-        <CardMedia
-          sx={{ height: 140, }}
-          image={sourceItem?.preview_url || sourcePreviewPic}
-          title="Vorschau"
-        />
-        <CardContent>
-          {sourceItem && (
-            <Typography gutterBottom variant="h5" component="div">
-              {sourceItem.title}
-            </Typography>)}
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {sourceItem ? sourceItem.description : "Keine Quelle ausgewählt"}
-          </Typography>
-        </CardContent>
-        </CardActionArea>
-        <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          {sourceItem ? <>
-            <Button size="small" disabled>Quelle ändern</Button>
-            <Button size="small" href={sourceLink}>Details</Button>
-          </> :
-            <Button size="small" disabled>Quelle auswählen</Button>
-          }
-        </CardActions>
-      </Card>
+        <SourceCard sourceItem={sourceItem} />
       </div>
     </Stack>
 
@@ -285,6 +259,8 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
 
   </div>;
 }
+
+
 
 // Gets the scrapy log URL for a crawl job
 function logUrl(crawlJob: CrawlJob | null): string {
