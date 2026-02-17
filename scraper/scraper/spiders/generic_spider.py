@@ -94,6 +94,7 @@ class GenericSpider(Spider):
         self.spider_failed = False
         self.crawler_output_node: Optional[str] = None
         self.dry_run = False if dry_run is None else to_bool(dry_run)
+        self.crawler_name: Optional[str] = None  # set in spider_opened
 
         if crawler_id is None:
             log.info("No crawler_id provided, this is a dry run without "
@@ -180,10 +181,11 @@ class GenericSpider(Spider):
                 connection = sqlite3.connect(db_path)
                 cursor = connection.cursor()
                 cursor.execute(
-                    "SELECT inherited_fields, source_item FROM crawls_crawler WHERE id=?", (self.crawler_id,))
+                    "SELECT inherited_fields, source_item, name FROM crawls_crawler WHERE id=?", (self.crawler_id,))
                 if row := cursor.fetchone():
                     inherited_fields_json = row[0]
                     source_item = row[1]
+                    self.crawler_name = row[2]
                     # self.enricher.set_inherited_fields(inherited_fields)
                     inherited_fields = json.loads(inherited_fields_json) if inherited_fields_json else []
                     log.info("Set inherited fields for enricher: %s", inherited_fields)
@@ -328,6 +330,11 @@ class GenericSpider(Spider):
         if not item:
             log.warning("Could not extract metadata for %s", response.url)
             return
+
+        # set ccm:replicationsourceorigin
+        # get crawler name from database
+        if self.crawler_name:
+            item['origin'] = self.crawler_name
 
         log.info("New URL processed:------------------------------------------")
         log.info(item)
