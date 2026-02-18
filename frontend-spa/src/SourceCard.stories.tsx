@@ -4,6 +4,7 @@ import sourceItem from './fixtures/testSourceItem.json';
 
 const meta = {
   component: SourceCard,
+  tags: ['autodocs'],
 } satisfies Meta<typeof SourceCard>;
 
 export default meta;
@@ -16,3 +17,9 @@ export const Default: Story = {
   }
 };
 
+export const Horizontal: Story = {
+  args: {
+    sourceItem: sourceItem,
+    orientation: "horizontal",
+  }
+};

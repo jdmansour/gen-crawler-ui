@@ -109,7 +109,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
   return <div style={{ overflowY: "scroll", padding: "0px 24px 24px 24px" }}>
     <h2 style={{ marginTop: 8 }}>Crawler-Details</h2>
 
-    <Stack direction="row" alignItems="top" gap={2} sx={{ mb: 2 }}>
+    <Stack direction="row" alignItems="top" gap={2} sx={{ mb: 2, alignItems: 'flex-start', flexWrap: 'wrap' }} useFlexGap>
 
       <div>
         <Typography variant="body2" sx={{mb: 1}}>Crawler-Einstellungen:</Typography>
@@ -137,10 +137,11 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
         </Stack>
       </div>
 
-      <div>
+      <div style={{  flexBasis: 500, flexShrink: 1, flexGrow: 1  }}>
         <Typography variant="body2" sx={{mb: 1}}>Verbundene Quelle:</Typography>
-        <SourceCard sourceItem={sourceItem} />
+        <SourceCard sourceItem={sourceItem} orientation='horizontal' />
       </div>
+
     </Stack>
 
     <h3>Debug</h3>
