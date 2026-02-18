@@ -121,6 +121,14 @@ export default class Api {
         return data;
     }
 
+    async getSourceItem(guid: string): Promise<SourceItem> {
+        const response = await fetch(`${this.baseUrl}/source_items/${guid}/`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch source item ${guid}: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+    }
+
     // TODO: check return type
     async getInheritableFields(sourceItemGuid: string): Promise<{fields: WloFieldInfo[]; groups: GroupInfo[]}> {
         const response = await fetch(`${this.baseUrl}/source_items/${sourceItemGuid}/inheritable_fields`);

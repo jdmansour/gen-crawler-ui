@@ -13,7 +13,7 @@ export default function SourceCard(props: { sourceItem?: SourceItem, orientation
   const { sourceItem } = props;
   const sourceLink = sourceItem?.data?.content?.url || null;
   if (props.orientation === "horizontal") {
-    return <Card sx={{ maxWidth: 600, flexBasis: 500, display: 'flex', flexShrink: 1, flexGrow: 1, flexDirection: 'row', alignItems: 'stretch', gap: 0 }}>
+    return <Card sx={{ maxWidth: 600, maxHeight: 220, flexBasis: 500, display: 'flex', flexShrink: 1, flexGrow: 1, flexDirection: 'row', alignItems: 'stretch', gap: 0 }}>
       <CardMedia
         sx={{ minWidth: 200, flexGrow: 0 }}
         image={sourceItem?.preview_url || sourcePreviewPic}
