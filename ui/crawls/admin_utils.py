@@ -1,6 +1,5 @@
 
 
-from django import forms
 from django.contrib import admin
 from django.contrib.admin.widgets import (RelatedFieldWidgetWrapper)
 from django.db.models.base import Model
@@ -20,14 +19,6 @@ class ReverseModelChoiceField(ModelChoiceField):
             can_add_related=True, can_change_related=True, can_view_related=True)
 
     def validate(self, value: FilterSet | None) -> None:
-        """ Ensure that the selected FilterSet is not already used by another Crawler. """
-        
-        if value and value.crawler is not None:
-            raise forms.ValidationError(
-                f"FilterSet '{value}' is already used by crawler '{value.crawler}'. "
-                "Each FilterSet can only be associated with one crawler."
-            )
-
         return super().validate(value)
 
     def save_related(self, instance: Crawler, filter_set: FilterSet) -> None:

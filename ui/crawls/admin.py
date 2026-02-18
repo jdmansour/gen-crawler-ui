@@ -62,6 +62,15 @@ class CrawlerAdminForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["filter_set"].initial = getattr(self.instance, "filter_set", None)
 
+    def clean_filter_set(self):
+        filter_set = self.cleaned_data.get("filter_set")
+        if filter_set and filter_set.crawler is not None and filter_set.crawler != self.instance:
+            raise forms.ValidationError(
+                f"FilterSet '{filter_set}' is already used by crawler '{filter_set.crawler}'. "
+                "Each FilterSet can only be associated with one crawler."
+            )
+        return filter_set
+
     def save(self, commit=True):
         instance = super().save(commit)
         filter_set = self.cleaned_data.get("filter_set")
