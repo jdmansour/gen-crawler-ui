@@ -7,3 +7,4 @@ logs/
 .venv/
 .mypy_cache/
 __pycache__
+frontend-spa/node_modules/

@@ -1,7 +1,9 @@
 services:
   web:
     image: jdmansour/generic-crawler-web:${DC_IMAGE_VERSION:-main}
-    build: ui
+    build:
+      context: .
+      dockerfile: web.Dockerfile
     ports:
       - "8000:8000"
     volumes:
