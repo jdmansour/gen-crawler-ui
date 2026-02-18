@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import sqlite3
-from urllib.parse import urlparse
+from urllib.parse import urldefrag, urlparse
 
 import openai
 import scrapy
@@ -231,27 +231,29 @@ class ExampleSpider(scrapy.Spider):
                 log.info("Skipping %s", link.url)
                 # print(f"Origin is {get_origin(link.url)}, request origin is {request_origin}")
                 continue
+            # Remove #fragment part of URL
+            url = urldefrag(link.url).url
             item = CustomItem()
             item['job_id'] = self.state_helper.crawl_job_id
             item['request_url'] = response.request.url
-            item['url'] = link.url
+            item['url'] = url
             item['depth'] = depth + 1
             if from_url:
                 item['from_url'] = from_url
-            log.info("Found link %s", link.url)
+            log.info("Found link %s", url)
 
             # Track processed items for progress updates
             self.items_processed += 1
 
             # Send progress update every 10 items
             if self.items_processed % 10 == 0:
-                self.state_helper.publish_progress_update(link.url)
+                self.state_helper.publish_progress_update(url)
 
             yield item
             if self.follow_links:
-                log.info("Following link %s", link.url)
+                log.info("Following link %s", url)
                 yield scrapy.Request(
-                    link.url, callback=self.parse,
+                    url, callback=self.parse,
                     cb_kwargs={'from_url': response.url, 'depth': depth + 1})
                 # yield response.follow(link, self.parse)
 
