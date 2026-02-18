@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import HomeIcon from "./assets/icons/home.svg?react";
-import PathSeparator from "./assets/icons/pathseparator.svg?react";
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import "./Breadcrumbs.css";
 
 export type Breadcrumb = {
@@ -14,8 +14,8 @@ export default function Breadcrumbs(props: { breadcrumbs: Array<Breadcrumb> }) {
     <nav>
       <ol className="wlo-breadcrumbs">
         {props.breadcrumbs.map((breadcrumb, index) => (
-          <li key={index} className={breadcrumb.temporary ? "wlo-breadcrumbs-temporary" : ""}>
-            {index > 0 && <PathSeparator />}
+          <li key={index} className={breadcrumb.temporary ? "wlo-breadcrumbs-temporary" : ""} style={{display:"contents"}}>
+            {index > 0 && <ChevronRightIcon sx={{ fontSize: 24, mt: "2px" }} />}
             <LinkOrSpan href={breadcrumb.url}>
               {index == 0 && (
                 <HomeIcon

@@ -75,16 +75,15 @@ class BaseAggregator:
             if not self.events:
                 log.info("  No events to send")
                 return
-            aggregated_event = self.coalesce_events(self.events)
+            coalesced = self.coalesce_events(self.events)
             self.events = []
-            # if self.max_wait_timer:
-            #     self.max_wait_timer.cancel()
             if self.timer and self.timer.is_alive():
                 self.timer.cancel()
             if self.max_wait_timer and self.max_wait_timer.is_alive():
                 self.max_wait_timer.cancel()
-        log.info("  Sending aggregated event: %s", aggregated_event)
-        self.send_event(aggregated_event)
+        for event in coalesced:
+            log.info("  Sending coalesced event: %s", event)
+            self.send_event(event)
 
         #self.timer = None
 
@@ -93,6 +92,7 @@ class BaseAggregator:
         raise NotImplementedError("send_event must be implemented by subclasses")
 
     def coalesce_events(self, events):
+        """Return a list of coalesced events. Must be implemented by subclasses."""
         raise NotImplementedError("coalesce_events must be implemented by subclasses")
 
 
@@ -107,6 +107,22 @@ class CallbackAggregator(BaseAggregator):
             self.callback(event)
 
     def coalesce_events(self, events):
-        print("Coalescing events:", len(events))
-        # just return the last one
-        return events[-1] if events else None
+        """Coalesce events, keeping the latest event per unique key.
+
+        For crawl_job_update events, the key is the crawl_job id (so updates
+        for different jobs are never dropped). For other event types, the key
+        is just the type string. This ensures we deduplicate frequent updates
+        for the *same* job while never silently dropping updates for a
+        different job.
+        """
+        if not events:
+            return []
+        # Keep last event per unique key, preserving insertion order
+        merged = {}
+        for event in events:
+            if event.get('type') == 'crawl_job_update':
+                key = ('crawl_job_update', event.get('crawl_job', {}).get('id'))
+            else:
+                key = (event.get('type'),)
+            merged[key] = event
+        return list(merged.values())

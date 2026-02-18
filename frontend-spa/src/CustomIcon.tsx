@@ -1,4 +1,5 @@
 import AccessibilityNewOutlined from '@mui/icons-material/AccessibilityNewOutlined';
+import CheckCircleOutlined from '@mui/icons-material/CheckCircleOutlined';
 import CopyrightOutlined from '@mui/icons-material/CopyrightOutlined';
 import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
 import DoneAllOutlined from '@mui/icons-material/DoneAllOutlined';
@@ -19,7 +20,8 @@ export type NamedIcon =
     | "error"
     | "edit"
     | "pending"
-    | "stop";
+    | "stop"
+    | "check_circle";
 
 export function CustomIcon(props: { iconName: NamedIcon|undefined; }) {
     switch (props.iconName) {
@@ -43,6 +45,8 @@ export function CustomIcon(props: { iconName: NamedIcon|undefined; }) {
             return <PendingOutlined />;
         case "stop":
             return <FrontHandOutlined />;
+        case "check_circle":
+            return <CheckCircleOutlined />;
         default:
             return <></>;
     }

@@ -5,15 +5,54 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        box-sizing: border-box;
+      }
+      #error-message {
+        display: none;
+      }
+      wlo-gen-crawler {
+        min-height: 0;
+        flex: 1;
+        border: 10px solid blue;
+        box-sizing: border-box;
+      }
+      header {
+        padding: 0 20px;
+      }
+    </style>
   </head>
   <body>
-    <script type="module" src="/src/elements/Button.tsx"></script>
-    <script type="module" src="/src/elements/wlo-gen-crawler.tsx"></script>
-    <wlo-button label="Hello World"></wlo-button>
-    <wlo-button label="Hello World" default></wlo-button>
-    <p>This should not be styled:</p>
-    <button class="wlo-button">Hello World</button>
-    <hr />
+    <script type="module" src="dist/index.js"></script>
+    <div class="container">
+      <header>
+      <h1>Test Component Page</h1>
+      <div id="error-message">
+        <p>Error: Cannot load JS module from file:// protocol. In order to test the
+        webcomponent, please load this file via a web server. For example:</p>
+        <code>
+          cd frontend-spa<br />
+          npx vite serve
+        </code>
+        <p>Then this file is available under
+          <a href="http://localhost:5174/test_component.html">http://localhost:5174/test_component.html</a>
+          (port may vary).</p>
+      </div>
+    </header>
     <wlo-gen-crawler base-path="test_component.html"/>
+    </div>
+    <script>
+      // check if the location is file, if so then we can't load the module
+      if (location.protocol === 'file:') {
+        document.getElementById('error-message').style.display = 'block';
+      }
+    </script>
   </body>
 </html>

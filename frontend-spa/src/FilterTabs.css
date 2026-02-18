@@ -4,10 +4,6 @@
   --wlo-filtertabs-indicator-height: 5px;
 }
 
-.wlo-filtertabs-menu {
-  /* display: flex; */
-}
-
 .wlo-filtertabs ul {
   list-style: none;
   display: flex;
@@ -17,7 +13,7 @@
   margin: 0;
 
   color: #163e76;
-  font-family: Montserrat;
+  font-family: "Open Sans", sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;

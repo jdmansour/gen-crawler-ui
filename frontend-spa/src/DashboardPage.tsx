@@ -11,23 +11,23 @@ import "./App.css";
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import FilterTabs, { TabInfo } from "./FilterTabs";
 import ListView from "./ListView";
-import { CrawlerDetailsPageContext, DashboardPageContext } from "./RootContext";
-import { Crawler, CrawlerStatus } from "./apitypes";
+import { CrawlerDetailsContext, CrawlerDetailsPageContext, DashboardPageContext } from "./RootContext";
+import { Crawler, SimpleState } from "./apitypes";
 import { useStep } from "./steps";
 import { CrawlerDetails } from './CrawlerDetailsPage';
 import { createPortal } from 'react-dom';
+import Skeleton from '@mui/material/Skeleton';
+import { Stack } from '@mui/material';
 
-const crawlerStateLabels: { [key in CrawlerStatus]: string } = {
+const simpleStateLabels: { [key in SimpleState]: string } = {
   draft: "Entwurf",
-  pending: "Gecrawlt",
-  stopped: "Gestoppt",
+  running: "Läuft",
+  idle: "Bereit",
   error: "Fehler",
-  published: "Im Prüfbuffet",
 };
 
 export default function DashboardPage() {
-  // todo: move delete function up to context
-  const { crawlerList = [], setCrawlerList, setSidebarVisible } = useOutletContext<DashboardPageContext>();
+  const { crawlerList = [], setSidebarVisible, setObservedCrawlerId, crawlerListLoaded } = useOutletContext<DashboardPageContext>();
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
 
@@ -39,7 +39,8 @@ export default function DashboardPage() {
   const [selectedCrawlerId, setSelectedCrawlerId] = useState<number | null>(null);
 
   // for the sidebar
-  const { sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = useOutletContext<CrawlerDetailsPageContext>();
+  const { sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
+  const { deleteCrawler } = useOutletContext<CrawlerDetailsContext>();
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, crawlerId: number) => {
     setAnchorEl(event.currentTarget);
@@ -56,10 +57,9 @@ export default function DashboardPage() {
   const tabs = [
     { tag: "all", label: "Alle" },
     { tag: "draft", label: "Entwurf", icon: "edit" },
-    { tag: "pending", label: "Gecrawlt", icon: "pending" },
-    { tag: "stopped", label: "Gestoppt", icon: "stop" },
+    { tag: "running", label: "Läuft", icon: "pending" },
+    { tag: "idle", label: "Bereit", icon: "check_circle" },
     { tag: "error", label: "Fehler", icon: "error" },
-    { tag: "published", label: "Im Prüfbuffet", icon: "error" },
   ] as TabInfo[];
 
   const filterState = tabs[activeTab].tag;
@@ -67,22 +67,8 @@ export default function DashboardPage() {
     if (filterState == "all") {
       return true;
     }
-    return crawler.status == filterState;
+    return crawler.simple_state == filterState;
   });
-
-  async function deleteCrawler(crawlerId: number) {
-    // Delete crawler
-    const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
-        method: "DELETE",
-    });
-    if (response.ok) {
-        setCrawlerList(crawlerList => crawlerList.filter(c => c.id !== crawlerId));
-    } else {
-        console.error("Failed to delete crawler:", response.status, response.statusText);
-    }
-    // redirect to dashboard or another page after deletion
-    navigate("/");
-}
 
   const sidebarOutlet = document.getElementById("sidebar-outlet");
 
@@ -93,8 +79,15 @@ export default function DashboardPage() {
         selectedTab={activeTab}
         onTabClick={(index) => setActiveTab(index)}
       />
-      <div style={{ overflowY: "overlay", flex: 1, marginTop: "-20px", paddingTop: "20px", marginBottom: "-20px", paddingBottom: "20px", paddingLeft: "40px", paddingRight: "40px"}}>
-        <ListView style={{ width: "100%", boxSizing: "border-box" }}>
+      <div style={{ overflowY: "auto", flex: 1, marginTop: "-20px", paddingTop: "20px", marginBottom: "-20px", paddingBottom: "20px", paddingLeft: "40px", paddingRight: "40px"}}>
+        {!crawlerListLoaded && <div>
+          <Stack spacing={1}>
+            {[...Array(10)].map((_, index) => (
+              <Skeleton key={index} variant="rounded" width="100%" height={80} animation="wave" />
+            ))}
+          </Stack>
+        </div>}
+        <ListView style={{ width: "100%", boxSizing: "border-box", display: crawlerListLoaded ? "table" : "none" }}>
           <tr key="add">
             <td colSpan={4} className="action-cell">
               <button className="wlo-button" onClick={() => {
@@ -108,6 +101,7 @@ export default function DashboardPage() {
             <CrawlerTableRow key={info.id} info={info} menuOpen={menuOpen} handleMenuClick={handleMenuClick}
               onClick={() => {
                 setSelectedCrawlerId(info.id);
+                setObservedCrawlerId(info.id);
                 setSidebarVisible(true);
               }}/>
           ))}
@@ -159,10 +153,6 @@ export default function DashboardPage() {
           crawlerId={selectedCrawlerId}
           crawlerList={crawlerList}
           sourceItems={sourceItems}
-          onCrawlJobAdded={onCrawlJobAdded}
-          onCrawlJobDeleted={onCrawlJobDeleted}
-          onCrawlJobLiveUpdate={onCrawlJobLiveUpdate}
-          onCrawlerDeleted={onCrawlerDeleted}
         />), sidebarOutlet))}
     </>
   );
@@ -182,7 +172,7 @@ function CrawlerTableRow(props: {
       </td>
       <td>
         <div className="inline-title">Status</div>
-        <CrawlerStateLabel state={props.info.status || "error"} />
+        <CrawlerStateLabel state={props.info.simple_state} />
       </td>
       <td>
         <div className="inline-title">zuletzt aktualisiert</div>
@@ -207,11 +197,11 @@ function CrawlerTableRow(props: {
   );
 }
 
-function CrawlerStateLabel(props: { state: CrawlerStatus }) {
+function CrawlerStateLabel(props: { state: SimpleState }) {
   return (
     <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
       {props.state == "error" && <ErrorOutlineOutlined sx={{ color: "#ec4a70", fontSize: "1.2em" }} />}
-      {crawlerStateLabels[props.state]}
+      {simpleStateLabels[props.state]}
     </span>
   );
 }

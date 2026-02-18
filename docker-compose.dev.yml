@@ -3,16 +3,13 @@ services:
     volumes:
       - ./ui:/app/ui
       - ./database:/app/database
-      - ./frontend:/app/frontend
     environment:
       DJANGO_VITE_DEV_MODE: ${DJANGO_VITE_DEV_MODE:-false}
       # DJANGO_VITE_DEV_SERVER_HOST: localhost
-      # (uv not used at the moment)
-      # UV_LINK_MODE: copy
-      # # place it outside of /app so we don't clash with the
-      # # venv on the host
-      # UV_PROJECT_ENVIRONMENT: /app/.venv
-    command: "python manage.py runserver 0.0.0.0:8000"
+      UV_LINK_MODE: copy
+      # Place venv outside /app/ui so the host volume mount doesn't shadow it
+      UV_PROJECT_ENVIRONMENT: /app/.venv
+    command: ["uv", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
   # vite-dev:
   # ...
   metadataapi:
@@ -25,3 +22,8 @@ services:
       UV_LINK_MODE: copy
       UV_PROJECT_ENVIRONMENT: /app/.venv
     command: ["uv", "run", "fastapi", "dev", "main.py", "--port", "8081", "--host", "0.0.0.0"]
+  scrapyd:
+    volumes:
+      - ./metadataenricher:/workdir/metadataenricher
+      - ./valuespace-converter:/workdir/valuespace-converter
+      - ./scraper/edu_sharing_client:/workdir/app/edu_sharing_client

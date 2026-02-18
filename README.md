@@ -1,15 +1,15 @@
 # gen-crawler-ui
 
-Experimental frontend for the WLO generic crawler
+Generic crawler for WLO
 
 ![Screenshot of the UI](./docs/images/frontend.png)
 
 This consists of several parts:
-- 📁 frontend: Part of the frontend written in React / Typescript
+- 📁 frontend-ui: Frontend written in React / Typescript
 - 📁 metaddataapi: A tiny server providing an API for the browser plugin
 - 📁 metadataenricher: A library containing the logic to extract metadata
 - 📁 scraper: Two scrapy crawlers, one to get a sitemap, and one to extract metadata
-- 📁 ui: An application to control the generic crawler, based on Django
+- 📁 ui: REST API and Backend, based on Django
 
 
 ```mermaid
@@ -97,7 +97,7 @@ It also provides an admin interface to view the crawl jobs:
 While the Django app is running, open a new terminal and run:
 
 ```bash
-cd ui/frontend
+cd frontend-spa
 npm install  # first run only
 npm run dev
 ```
@@ -118,8 +118,36 @@ DJANGO_VITE_DEV_MODE=False gunicorn crawler_ui.wsgi
 In this mode, if you make changes to the frontend, you have to rebuild it manually:
 
 ```bash
-cd frontend
+cd frontend-spa
 npm run build
 cd ../ui
 python manage.py collectstatic
+```
+
+## Web Component
+
+To build the generic crawler web component:
+
+```bash
+cd frontend-spa
+npx vite build --mode library
+# output in dist/
+```
+
+To test the web component:
+
+```bash
+cd frontend-spa
+npx vite serve
+```
+
+Now you can view it at http://localhost:5174/test_component.html .
+
+The component can be used as follows:
+
+```html
+<script type="module" src="dist/index.js"></script>
+<!-- base-path is the URL root which is used by the component for routing.
+     Every URL below this is assumed to route to the component.  -->
+<wlo-gen-crawler base-path="test_component.html"/>
 ```

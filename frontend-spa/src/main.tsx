@@ -9,12 +9,13 @@ import SelectSourcePage from "./SelectSourcePage.tsx";
 import MetadataInheritancePage from "./MetadataInheritancePage.tsx";
 import CrawlerDetailsPage from "./CrawlerDetailsPage.tsx";
 import FilterSetPage from "./FilterSetPage.tsx";
+import WloFakeHeader from "./WloFakeHeader.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  // <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route element={<RootLayout />} >
+        <Route element={<><WloFakeHeader /><RootLayout /></>} >
           <Route index element={<DashboardPage />} />
           <Route path="select-source" element={<SelectSourcePage />} />
           <Route path="add-crawler" element={<AddCrawlerPage />} />
@@ -24,5 +25,5 @@ createRoot(document.getElementById("root")!).render(
         </Route>
       </Routes>
     </BrowserRouter>
-  </StrictMode>,
+  // </StrictMode>
 );

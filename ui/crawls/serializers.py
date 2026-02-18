@@ -7,7 +7,7 @@ from crawls.models import Crawler, FilterRule, FilterSet, CrawlJob, SourceItem
 class SourceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = SourceItem
-        fields = ['id', 'guid', 'title', 'created_at', 'updated_at', 'data', 'preview_url']
+        fields = ['id', 'guid', 'title', 'description', 'created_at', 'updated_at', 'data', 'preview_url']
         read_only_fields = ['created_at', 'updated_at', 'preview_url']
 
 
@@ -26,14 +26,24 @@ class CrawlerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crawler
         fields = ['id', 'url', 'filter_set_id', 'filter_set_url', 'name', 'start_url', 'source_item',
-                  'created_at', 'updated_at', 'inherited_fields', 'crawl_jobs']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'crawl_jobs']
+                  'created_at', 'updated_at', 'inherited_fields', 'state', 'simple_state', 'crawl_jobs']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'state', 'simple_state', 'crawl_jobs']
         depth = 1
 
     crawl_jobs = CrawlJobSerializer(many=True, read_only=True)
-    filter_set_id = serializers.ReadOnlyField(source='filter_set.id')
-    filter_set_url = serializers.HyperlinkedRelatedField(
-        view_name='filterset-detail', read_only=True, source='filter_set')
+    filter_set_id = serializers.SerializerMethodField()
+    filter_set_url = serializers.SerializerMethodField()
+
+    def get_filter_set_id(self, obj: Crawler):
+        return obj.ensure_filter_set().id
+
+    def get_filter_set_url(self, obj: Crawler):
+        fs = obj.ensure_filter_set()
+        request = self.context.get('request')
+        if request is None:
+            return None
+        from rest_framework.reverse import reverse
+        return reverse('filterset-detail', kwargs={'pk': fs.pk}, request=request)
     
 
 class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
@@ -47,10 +57,10 @@ class FilterRuleSerializer(serializers.HyperlinkedModelSerializer):
     cumulative_count = serializers.ReadOnlyField()
 
     # if position is updated, call move_to on the FilterRule
-    def update(self, instance, validated_data):
+    def update(self, instance: FilterRule, validated_data: dict):
         if 'count' in validated_data:
             validated_data.pop('count')
-        if '+' in validated_data:
+        if 'position' in validated_data:
             instance.move_to(validated_data['position'])
             validated_data.pop('position')
         return super().update(instance, validated_data)

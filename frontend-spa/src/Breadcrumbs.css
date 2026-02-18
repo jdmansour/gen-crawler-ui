@@ -1,6 +1,7 @@
 .wlo-breadcrumbs {
   list-style: none;
   display: flex;
+  flex-direction: row;;
   /* align-items: center;
     align-content: center; */
 
@@ -12,8 +13,8 @@
   text-wrap: nowrap;
 
   color: #163e76;
-  font-family: Montserrat;
-  font-size: 24px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 19.2px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
@@ -32,7 +33,7 @@
 
 .wlo-breadcrumbs li svg {
   /* padding: 10px; */
-  padding: 0px 12px;
+  padding: 0px 4px;
 }
 
 .wlo-breadcrumbs-temporary {

@@ -2,35 +2,49 @@
 import datetime
 import json
 import logging
+import re
 from typing import Optional
 
+import html2text
 import httpx
 import openai
 import scrapy
 import trafilatura  # type: ignore
-from . import zapi
-from .zapi import api
-from .zapi.api import ai_text_prompts
-from .zapi.api.ai_text_prompts import prompt
-from .zapi import errors
-from .zapi import models
 from bs4 import BeautifulSoup
 from valuespace_converter.valuespaces import Valuespaces
-from .zapi.api.kidra import (predict_subjects_kidra_predict_subjects_post,
-                            text_stats_analyze_text_post,
-                            topics_flat_topics_flat_post)
 
-from . import env
-from .items import (AiPromptItemLoader, BaseItemLoader, KIdraItemLoader,
-                     LicenseItemLoader, LomBaseItemloader,
-                     LomClassificationItemLoader, LomEducationalItemLoader,
-                     LomGeneralItemloader, LomLifecycleItemloader,
-                     LomTechnicalItemLoader, PermissionItemLoader,
-                     ResponseItemLoader, ValuespaceItemLoader)
+from . import env, zapi
+from .items import (AiPromptItemLoader, BaseItem, BaseItemLoader,
+                    KIdraItemLoader, LicenseItemLoader, LomBaseItemloader,
+                    LomClassificationItemLoader, LomEducationalItemLoader,
+                    LomGeneralItemloader, LomLifecycleItemloader,
+                    LomTechnicalItemLoader, PermissionItemLoader,
+                    ResponseItemLoader, ValuespaceItemLoader)
 from .util.license_mapper import LicenseMapper
-from .web_tools import WebEngine, WebTools
+from .web_tools import get_url_data
+from .zapi import errors, models
+from .zapi.api.ai_text_prompts import prompt as zapi_prompt
+from .zapi.api.kidra import (predict_subjects_kidra_predict_subjects_post,
+                             text_stats_analyze_text_post,
+                             topics_flat_topics_flat_post)
 
 log = logging.getLogger(__name__)
+
+
+def parse_iso8601_duration(duration: str) -> Optional[int]:
+    """Parse an ISO 8601 duration string (e.g. 'PT1H2M3S') into total seconds."""
+    m = re.match(r'^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$', duration)
+    if not m:
+        log.warning("Failed to parse ISO 8601 duration: %r", duration)
+        return None
+    hours = int(m.group(1) or 0)
+    minutes = int(m.group(2) or 0)
+    seconds = int(m.group(3) or 0)
+    return hours * 3600 + minutes * 60 + seconds
+
+
+class AuthenticationError(Exception):
+    pass
 
 
 class MetadataEnricher:
@@ -75,6 +89,7 @@ Hier folgt der Text:
         self.is_setup = False
         self.ai_enabled = ai_enabled
         self.valuespaces = Valuespaces()
+        self.inherited_fields = {}
         if self.ai_enabled:
             log.info("Starting generic_spider with ai_enabled flag!")
             self.zapi_client = zapi.AuthenticatedClient(
@@ -87,8 +102,6 @@ Hier folgt der Text:
         else:
             log.info(
                 "Starting generic_spider with MINIMAL settings. AI Services are DISABLED!")
-
-
 
     def setup(self, settings):
         self.is_setup = True
@@ -113,19 +126,23 @@ Hier folgt der Text:
         if not self.llm_model:
             raise RuntimeError(
                 "No model set for LLM API. Please set GENERIC_CRAWLER_LLM_MODEL.")
-        
+
         log.info("Using LLM API with the following settings:")
         log.info("GENERIC_CRAWLER_LLM_API_KEY: <set>")
         log.info("GENERIC_CRAWLER_LLM_API_BASE_URL: %r", base_url)
         log.info("GENERIC_CRAWLER_LLM_MODEL: %r", self.llm_model)
         self.llm_client = openai.OpenAI(api_key=api_key, base_url=base_url)
 
-    async def parse_page(self, response_url: str):
-        url_data = await WebTools.getUrlData(response_url, engine=WebEngine.Playwright)
+    def set_inherited_fields(self, inherited_fields: dict):
+        self.inherited_fields = inherited_fields
+        log.info("Inherited fields set for enricher: %s", inherited_fields)
+
+    async def parse_page(self, response_url: str) -> Optional[BaseItem]:
+        url_data = await get_url_data(response_url)
         if not url_data:
             log.warning("Playwright failed to fetch data for %s", response_url)
             return
-        log.info("Response from WebTools.getUrlData:")
+        log.info("Response from get_url_data:")
         for key, val in url_data.items():
             log.info("%s: %r", key, str(val)[:100])
 
@@ -135,12 +152,19 @@ Hier folgt der Text:
         playwright_html: str = url_data["html"] or ""
         # Main text extracted from browser view
         trafilatura_text: str = url_data["text"] or ""
+        return await self.parse_page_inner(
+            response_url=response_url,
+            playwright_html=playwright_html,
+            trafilatura_text=trafilatura_text
+        )
+
+    async def parse_page_inner(self, response_url: str, playwright_html: str, trafilatura_text: str) -> BaseItem:
         log.info("trafilatura_text: %s", str(trafilatura_text)[:100])
 
         text_html2text = self.manual_cleanup_text(playwright_html)
         log.info("Cleaned up text via html2text: %s", text_html2text[:100])
 
-        if trafilatura_meta_playwright := trafilatura.extract_metadata(playwright_html.encode()):
+        if trafilatura_meta_playwright := trafilatura.extract_metadata(playwright_html):
             trafilatura_meta = trafilatura_meta_playwright.as_dict()
         else:
             trafilatura_meta = {}
@@ -217,13 +241,15 @@ Hier folgt der Text:
         general_loader.add_xpath("language", '//meta[@property="og:locale"]/@content')
         general_loader.add_value("description", getLRMI("description"))
         general_loader.add_value("description", getLRMI("about"))
-        general_loader.add_value("keyword", getLRMI("keywords"))
-        
+        general_loader.add_xpath("keyword", '//meta[@name="keywords"]/@content', re=r'[^,;\s]+')
+        # general_loader.add_value("keyword", getLRMI("keywords"))
+
         if self.ai_enabled:
             excerpt = text_html2text[:4000]
             # todo: turn this "inside out" - don't pass the loaders,
             # but return structured data and load it here
-            self.query_llm(excerpt, general_loader, base_loader, valuespace_loader)
+            self.query_llm(excerpt, general_loader,
+                           base_loader, valuespace_loader)
 
             kidra_loader.add_value(
                 "curriculum", self.zapi_get_curriculum(excerpt))
@@ -240,6 +266,26 @@ Hier folgt der Text:
                     "description", trafilatura_description)
             if trafilatura_title := trafilatura_meta.get("title"):
                 general_loader.replace_value("title", trafilatura_title)
+
+        # Extract JSON-LD VideoObject metadata
+        for obj in lrmi_objects:
+            obj_type = obj.get("@type")
+            if obj_type == "VideoObject":
+                valuespace_loader.add_value(
+                    "learningResourceType",
+                    "http://w3id.org/openeduhub/vocabs/learningResourceType/video")
+                if duration_iso := obj.get("duration"):
+                    duration_seconds = parse_iso8601_duration(duration_iso)
+                    if duration_seconds is not None:
+                        technical_loader.add_value("duration", duration_seconds)
+                break
+            elif obj_type == "Article":
+                # load keywords from JSON-LD Article objects as well, since they often contain more specific keywords than the general webpage metadata
+                if article_keywords := obj.get("keywords"):
+                    print("Article keywords from JSON-LD:", repr(article_keywords))
+                    general_loader.add_value("keyword", article_keywords, re=r'[^,;\s]+')
+                    # debug: what is in general_loader.keyword?
+                    print("general_loader.keyword after adding Article keywords:", general_loader.get_collected_values("keyword"))
 
         lom_loader.add_value("general", general_loader.load_item())
 
@@ -265,6 +311,16 @@ Hier folgt der Text:
         self.get_lifecycle_publisher(
             lom_loader=lom_loader, selector=selector_playwright, date=date)
 
+        # Detect video from planet-schule:mediatypes meta tag (e.g. "video[Video]")
+        ps_mediatypes = selector_playwright.xpath(
+            '//meta[@name="planet-schule:mediatypes"]/@content').get()
+        if ps_mediatypes:
+            ps_types = [entry.split("[")[0] for entry in ps_mediatypes.split(",")]
+            if "video" in ps_types:
+                valuespace_loader.add_value(
+                    "learningResourceType",
+                    "http://w3id.org/openeduhub/vocabs/learningResourceType/video")
+
         # we might be able to extract author/publisher information from typical <meta> or <head>
         # fields in the DOM
         lom_loader.add_value("educational", educational_loader.load_item())
@@ -278,6 +334,11 @@ Hier folgt der Text:
         # Todo: does this deal with multiple authors correctly?
         license_loader.add_xpath("author", '//meta[@name="author"]/@content')
         # trafilatura offers a license detection feature as part of its "extract_metadata()"-method
+
+        # Metadata inheritance
+        if 'virtual:licenseurl' in self.inherited_fields:
+            log.info("Adding inherited license URL: %s", self.inherited_fields['virtual:licenseurl'])
+            license_loader.add_value("url", self.inherited_fields['virtual:licenseurl'])
 
         if trafilatura_license_detected := trafilatura_meta.get("license"):
             license_mapper = LicenseMapper()
@@ -295,7 +356,18 @@ Hier folgt der Text:
         # # attention: serlo URLs will break the getLRMI() Method because JSONBase cannot extract
         # the JSON-LD properly
         # # ToDo: maybe use the 'jmespath' Python package to retrieve this value more reliably
-        valuespace_loader.add_value("learningResourceType", getLRMI("learningResourceType"))
+
+        # ccm:educationallearningresourcetype: http://w3id.org/openeduhub/vocabs/learningResourceType/video
+        # ccm:educationallearningresourcetype_DISPLAYNAME: Video
+
+        # ccm:oeh_lrt: http://w3id.org/openeduhub/vocabs/new_lrt/a0218a48-a008-4975-a62a-27b1a83d454f
+        # ccm:oeh_lrt_DISPLAYNAME: Erklärvideo und gefilmtes Experiment
+
+        # ccm:educationallearningresourcetype
+        valuespace_loader.add_value("learningResourceType", getLRMI("learningResourceType"))  # ccm:oeh_lrt
+
+        # valuespace_loader.add_value("learningResourceType", "http://w3id.org/openeduhub/vocabs/learningResourceType/video")
+        # valuespace_loader.add_value("new_lrt", "http://w3id.org/openeduhub/vocabs/new_lrt/a0218a48-a008-4975-a62a-27b1a83d454f")
 
         # loading all nested ItemLoaders into our BaseItemLoader:
         base_loader.add_value("license", license_loader.load_item())
@@ -304,7 +376,7 @@ Hier folgt der Text:
         base_loader.add_value("response", response_loader.load_item())
 
         return base_loader.load_item()
-    
+
     def manual_cleanup_text(self, html_source: str) -> str:
         parsed_html = BeautifulSoup(html_source, features="lxml")
         for tag in self.clean_tags:
@@ -317,7 +389,10 @@ Hier folgt der Text:
         for t in crawler_ignore:
             t.clear()
         html = parsed_html.prettify()
-        return WebTools.html2Text(html)
+        h = html2text.HTML2Text()
+        h.ignore_links = True
+        h.ignore_images = True
+        return h.handle(html)
 
     def get_id(self, response_url: str) -> str:
         """ Return a stable identifier (URI) of the crawled item """
@@ -328,7 +403,6 @@ Hier folgt der Text:
         """ Return a stable hash to detect content changes (for future crawls). """
         # TODO: this is obviously not stable
         return f"{datetime.datetime.now().isoformat()}"
-    
 
     def get_lifecycle_publisher(self, lom_loader: LomBaseItemloader, selector: scrapy.Selector,
                                 date: Optional[str]):
@@ -366,14 +440,16 @@ Hier folgt der Text:
         """ Determines the curriculum topic (Lehrplanthema) using the z-API. """
         log.info("zapi_get_curriculum called")
 
-        data = zapi.models.TopicAssistantKeywordsData(text=text)
+        data = models.TopicAssistantKeywordsData(text=text)
         try:
-            result = topics_flat_topics_flat_post.sync(client=self.zapi_client, body=data)
-        except (zapi.errors.UnexpectedStatus, httpx.TimeoutException):
-            log.error("zapi_get_curriculum: Failed to get curriculum topics from z-API.", exc_info=True)
+            result = topics_flat_topics_flat_post.sync(
+                client=self.zapi_client, body=data)
+        except (errors.UnexpectedStatus, httpx.TimeoutException):
+            log.error(
+                "zapi_get_curriculum: Failed to get curriculum topics from z-API.", exc_info=True)
             return []
 
-        assert isinstance(result, zapi.models.TopicAssistantKeywordsResult)
+        assert isinstance(result, models.TopicAssistantKeywordsResult)
         log.info("zapi_get_curriculum result:")
         filtered = [t for t in result.topics or [] if t.label]
         topics = sorted(filtered, key=lambda t: t.weight, reverse=True)
@@ -393,25 +469,28 @@ Hier folgt der Text:
         """ Queries the z-API to get the text difficulty and reading time. """
 
         log.info("zapi_get_statistics called",)
-        data = zapi.models.InputData(
+        data = models.InputData(
             text=text, reading_speed=200, generate_embeddings=False)
         try:
-            result = text_stats_analyze_text_post.sync(client=self.zapi_client, body=data)
-        except (zapi.errors.UnexpectedStatus, httpx.TimeoutException):
+            result = text_stats_analyze_text_post.sync(
+                client=self.zapi_client, body=data)
+        except (errors.UnexpectedStatus, httpx.TimeoutException):
             log.error("zapi_get_statistics: Failed to get text statistics from z-API.", exc_info=True)
             return "", 0.0
         log.info("zapi_get_statistics result: %s", result)
-        
-        return result.classification, round(result.reading_time, 2)  # type: ignore
+
+        # type: ignore
+        return result.classification, round(result.reading_time, 2)
 
     def zapi_get_disciplines(self, text: str) -> list[str]:
         """ Gets the disciplines for a given text using the z-API. """
 
         log.info("zapi_get_disciplines called")
-        data = zapi.models.DisciplinesData(text=text)
+        data = models.DisciplinesData(text=text)
         try:
-            result = predict_subjects_kidra_predict_subjects_post.sync(client=self.zapi_client, body=data)
-        except (zapi.errors.UnexpectedStatus, httpx.TimeoutException):
+            result = predict_subjects_kidra_predict_subjects_post.sync(
+                client=self.zapi_client, body=data)
+        except (errors.UnexpectedStatus, httpx.TimeoutException):
             log.error("zapi_get_disciplines: Failed to get disciplines from z-API.", exc_info=True)
             return []
         log.info("zapi_get_disciplines result: %s", result)
@@ -428,7 +507,7 @@ Hier folgt der Text:
                   base_loader: BaseItemLoader, valuespace_loader: ValuespaceItemLoader):
         """ Performs the LLM queries for the given text, and fills the
             corresponding ItemLoaders. """
-        
+
         log.info("query_llm called")
 
         prompt = self.ALL_IN_ONE_PROMPT % ({'text': excerpt})
@@ -498,7 +577,6 @@ Hier folgt der Text:
         process_valuespaces("intendedEndUserRole", intended_end_user_role)
         process_valuespaces("new_lrt", new_lrt)
 
-
     def call_llm_inner(self, prompt: str) -> Optional[str]:
         if self.llm_client:
             try:
@@ -510,17 +588,18 @@ Hier folgt der Text:
             except openai.APITimeoutError:
                 log.error("LLM API request timed out.")
                 return None
+            except openai.AuthenticationError as e:
+                raise AuthenticationError(
+                    "LLM API authentication failed.") from e
             # log.info("LLM API response: %s", chat_completion)
             return chat_completion.choices[0].message.content or ""
 
         # TODO: add error checking
-        api_result = zapi.api.ai_text_prompts.prompt.sync(
+        api_result = zapi_prompt.sync(
             client=self.zapi_client, body=prompt)
-        assert isinstance(api_result, zapi.models.TextPromptEntity)
+        assert isinstance(api_result, models.TextPromptEntity)
         if not api_result.responses:
             log.error(
                 "No valid response from AI service for prompt: %s", prompt)
             return None
         return api_result.responses[0].strip()
-    
-

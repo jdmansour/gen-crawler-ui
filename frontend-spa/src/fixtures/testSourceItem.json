@@ -1,0 +1,352 @@
+{
+  "id": 1,
+  "guid": "6bafa756-8149-4b27-8c07-0bfff253318b",
+  "title": "Klexikon (Quellen-Datensatz Testobjekt)",
+  "description": "Das freie Internet-Lexikon Klexikon ist ein Wiki mit kindgerechten Inhalten und Ansprache für die Altersgruppe von etwa 6-12 Jahren.\n\n(TestObjekt - Kopie des Quellen-Datensatzes auf Prod: https://redaktion.openeduhub.net/edu-sharing/components/render/0a504542-b202-4835-9b64-196c99814226 )",
+  "created_at": "2025-10-29T10:33:13.441378Z",
+  "updated_at": "2026-02-12T09:43:53.559619Z",
+  "data": {
+    "ref": {
+      "repo": "local",
+      "id": "6bafa756-8149-4b27-8c07-0bfff253318b",
+      "archived": false,
+      "isHomeRepo": true
+    },
+    "parent": {
+      "repo": "local",
+      "id": "b079daeb-0b23-4d94-87ce-b6fd8aca975b",
+      "archived": false,
+      "isHomeRepo": true
+    },
+    "nodeLTIDeepLink": null,
+    "remote": null,
+    "type": "ccm:io",
+    "aspects": [
+      "ccm:tracking",
+      "cm:metadataset",
+      "cclom:technical",
+      "cm:versionable",
+      "ccm:published",
+      "cclom:schema",
+      "sys:localized",
+      "cclom:general",
+      "cclom:meta-metadata",
+      "ccm:commonlicenses",
+      "cclom:lifecycle",
+      "ccm:eduscope",
+      "ccm:oeh",
+      "cclom:rights",
+      "ccm:lomreplication",
+      "ccm:licenses",
+      "cm:thumbnailed",
+      "ccm:basemetadata",
+      "ccm:usageaspect",
+      "sys:referenceable",
+      "ccm:educontext",
+      "ccm:oeh_crawler_data",
+      "ccm:iometadata",
+      "cm:auditable"
+    ],
+    "name": "Klexikon  das Kinderlexikon",
+    "title": "Klexikon (Quellen-Datensatz Testobjekt)",
+    "metadataset": "mds_oeh",
+    "repositoryType": "ALFRESCO",
+    "createdAt": "2024-01-24T12:10:21Z",
+    "createdBy": {
+      "firstName": null,
+      "lastName": null,
+      "mailbox": null,
+      "profile": null
+    },
+    "modifiedAt": "2024-01-24T12:31:34Z",
+    "modifiedBy": {
+      "firstName": null,
+      "lastName": null,
+      "mailbox": null,
+      "profile": null
+    },
+    "access": [
+      "Read",
+      "ReadPreview",
+      "ReadAll",
+      "Comment",
+      "Embed",
+      "Feedback",
+      "RateRead",
+      "DownloadContent",
+      "AddChildren",
+      "ReadPermissions",
+      "ChangePermissions",
+      "ReadChildren",
+      "DeleteChildren",
+      "Write",
+      "Delete",
+      "CCPublish"
+    ],
+    "accessEffective": null,
+    "downloadUrl": null,
+    "properties": {
+      "ccm:price_DISPLAYNAME": [
+        "nein"
+      ],
+      "ccm:original": [
+        "6bafa756-8149-4b27-8c07-0bfff253318b"
+      ],
+      "cm:created": [
+        "1706098221583"
+      ],
+      "cclom:version": [
+        "1.3"
+      ],
+      "ccm:tracking_views": [
+        "43"
+      ],
+      "cclom:general_language": [
+        "de_DE"
+      ],
+      "sys:node-uuid": [
+        "6bafa756-8149-4b27-8c07-0bfff253318b"
+      ],
+      "virtual:oeh_path": [
+        "00abdb05-6c96-4604-831c-b9846eae7d2d",
+        "c73dd8be-e520-42bb-b6f1-f989714d09fc",
+        "b079daeb-0b23-4d94-87ce-b6fd8aca975b"
+      ],
+      "ccm:userdefined_preview": [
+        "{size=111022, contentId=6918843, mimetype=image/png, locale=de_DE_, encoding=UTF-8}"
+      ],
+      "ccm:taxonid_DISPLAYNAME": [
+        "Allgemein",
+        "Deutsch"
+      ],
+      "ccm:educationaltypicalagerange_from": [
+        "6"
+      ],
+      "ccm:educationalcontext_DISPLAYNAME": [
+        "Primarstufe",
+        "Sekundarstufe I"
+      ],
+      "ccm:general_identifier_DISPLAYNAME": [
+        "null"
+      ],
+      "ccm:oeh_languageTarget": [
+        "de"
+      ],
+      "ccm:oeh_lrt_aggregated": [
+        "http://w3id.org/openeduhub/vocabs/new_lrt_aggregated/2e678af3-1026-4171-b88e-3b3a915d1673"
+      ],
+      "ccm:oeh_lrt_aggregated_DISPLAYNAME": [
+        "Quelle"
+      ],
+      "sys:locale": [
+        "de_DE_"
+      ],
+      "ccm:oeh_quality_login": [
+        "1"
+      ],
+      "ccm:location_status": [
+        "200"
+      ],
+      "ccm:educationalintendedenduserrole_DISPLAYNAME": [
+        "Lerner/in",
+        "Eltern"
+      ],
+      "cclom:title": [
+        "Klexikon (Quellen-Datensatz Testobjekt)"
+      ],
+      "ccm:linktype": [
+        "USER_GENERATED"
+      ],
+      "ccm:lifecyclecontributer_author": [
+        "BEGIN:VCARD\nORG:Zentrale für Unterrichtsmedien im Internet e. V.\nN:;\nTITLE:\nX-ES-LOM-CONTRIBUTE-DATE:\nVERSION:3.0\nEND:VCARD"
+      ],
+      "sys:store-protocol": [
+        "workspace"
+      ],
+      "sys:store-identifier": [
+        "SpacesStore"
+      ],
+      "ccm:oeh_languageTarget_DISPLAYNAME": [
+        "Deutsch"
+      ],
+      "cclom:general_language_DISPLAYNAME": [
+        "Deutsch (Deutschland)"
+      ],
+      "ccm:version_comment": [
+        "METADATA_UPDATE"
+      ],
+      "ccm:oeh_lrt_DISPLAYNAME": [
+        "Lexikon oder Enzyklopädie",
+        "Quelle"
+      ],
+      "ccm:create_version": [
+        "true"
+      ],
+      "ccm:author_freetext": [
+        ""
+      ],
+      "ccm:oeh_quality_protection_of_minors_DISPLAYNAME": [
+        "Nein - unauffällig"
+      ],
+      "sys:node-dbid": [
+        "8281010"
+      ],
+      "ccm:wwwurl": [
+        "https://klexikon.zum.de/wiki/Klexikon:Willkommen_im_Klexikon"
+      ],
+      "cm:edu_metadataset": [
+        "mds_oeh"
+      ],
+      "cm:creator": [
+        "admin"
+      ],
+      "cm:autoVersion": [
+        "false"
+      ],
+      "cm:versionLabel": [
+        "1.3"
+      ],
+      "ccm:oeh_lrt": [
+        "http://w3id.org/openeduhub/vocabs/new_lrt/9f40cd56-8def-46cc-a21b-63d9557dc93d",
+        "http://w3id.org/openeduhub/vocabs/new_lrt/3869b453-d3c1-4b34-8f25-9127e9d68766"
+      ],
+      "ccm:commonlicense_cc_version": [
+        "3.0"
+      ],
+      "ccm:oeh_crawler_data_inherit": [
+        "ccm:containsAdvertisement",
+        "ccm:oeh_quality_login",
+        "ccm:oeh_quality_protection_of_minors",
+        "ccm:taxonid",
+        "cclom:general_keyword"
+      ],
+      "cm:created_LONG": [
+        "1706098221583"
+      ],
+      "virtual:primaryparent_nodeid": [
+        "b079daeb-0b23-4d94-87ce-b6fd8aca975b"
+      ],
+      "ccm:oeh_quality_login_DISPLAYNAME": [
+        "Ohne Login zugänglich"
+      ],
+      "cclom:general_description": [
+        "Das freie Internet-Lexikon Klexikon ist ein Wiki mit kindgerechten Inhalten und Ansprache für die Altersgruppe von etwa 6-12 Jahren.\n\n(TestObjekt - Kopie des Quellen-Datensatzes auf Prod: https://redaktion.openeduhub.net/edu-sharing/components/render/0a504542-b202-4835-9b64-196c99814226 )"
+      ],
+      "cm:modified": [
+        "1706099494326"
+      ],
+      "cm:edu_forcemetadataset": [
+        "false"
+      ],
+      "ccm:taxonid": [
+        "http://w3id.org/openeduhub/vocabs/discipline/720",
+        "http://w3id.org/openeduhub/vocabs/discipline/120"
+      ],
+      "cm:modifier": [
+        "admin"
+      ],
+      "cm:autoVersionOnUpdateProps": [
+        "false"
+      ],
+      "cclom:location": [
+        "ccrep://local/6bafa756-8149-4b27-8c07-0bfff253318b"
+      ],
+      "ccm:educationalintendedenduserrole": [
+        "http://w3id.org/openeduhub/vocabs/intendedEndUserRole/learner",
+        "http://w3id.org/openeduhub/vocabs/intendedEndUserRole/parent"
+      ],
+      "ccm:educationalcontext": [
+        "http://w3id.org/openeduhub/vocabs/educationalContext/grundschule",
+        "http://w3id.org/openeduhub/vocabs/educationalContext/sekundarstufe_1"
+      ],
+      "ccm:educontextname": [
+        "redaktion-oeh"
+      ],
+      "cm:modified_LONG": [
+        "1706099494326"
+      ],
+      "ccm:questionsallowed": [
+        "true"
+      ],
+      "cm:automaticUpdate": [
+        "true"
+      ],
+      "cm:name": [
+        "Klexikon  das Kinderlexikon"
+      ],
+      "ccm:price": [
+        "http://w3id.org/openeduhub/vocabs/price/no"
+      ],
+      "cm:initialVersion": [
+        "false"
+      ],
+      "ccm:oeh_quality_protection_of_minors": [
+        "0"
+      ],
+      "ccm:general_identifier": [
+        "zum_klexikon_spider"
+      ],
+      "cclom:general_keyword": [
+        "Kinderlexikon",
+        "Lexikon"
+      ],
+      "ccm:commonlicense_key": [
+        "CC_BY_SA"
+      ],
+      "ccm:educationaltypicalagerange_to": [
+        "12"
+      ]
+    },
+    "mimetype": null,
+    "mediatype": "link",
+    "size": null,
+    "preview": {
+      "url": "https://repository.staging.openeduhub.net/edu-sharing/preview?nodeId=6bafa756-8149-4b27-8c07-0bfff253318b&storeProtocol=workspace&storeId=SpacesStore&dontcache=1761734900324",
+      "width": null,
+      "height": null,
+      "type": "TYPE_USERDEFINED",
+      "mimetype": "image/jpeg",
+      "data": "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",
+      "isIcon": false,
+      "isGenerated": false
+    },
+    "content": {
+      "url": "https://repository.staging.openeduhub.net/edu-sharing/components/render/6bafa756-8149-4b27-8c07-0bfff253318b",
+      "originalUrl": null,
+      "hash": null,
+      "version": null
+    },
+    "iconURL": "https://repository.staging.openeduhub.net/edu-sharing/themes/default/images/common/mime-types/svg/link.svg",
+    "license": {
+      "icon": "https://repository.staging.openeduhub.net/edu-sharing/ccimages/licenses/cc-by-sa.svg",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0/deed.de"
+    },
+    "collection": null,
+    "owner": null,
+    "commentCount": 0,
+    "rating": {
+      "overall": {
+        "sum": 0,
+        "count": 0,
+        "rating": 0
+      },
+      "affiliation": {},
+      "user": 0
+    },
+    "usedInCollections": [],
+    "relations": null,
+    "contributors": [
+      {
+        "property": "ccm:lifecyclecontributer_author",
+        "firstname": "",
+        "lastname": "",
+        "email": null,
+        "vcard": "BEGIN:VCARD\nORG:Zentrale für Unterrichtsmedien im Internet e. V.\nN:;\nTITLE:\nX-ES-LOM-CONTRIBUTE-DATE:\nVERSION:3.0\nEND:VCARD",
+        "org": "Zentrale für Unterrichtsmedien im Internet e. V."
+      }
+    ],
+    "isDirectory": false,
+    "isPublic": true
+  },
+  "preview_url": "https://repository.staging.openeduhub.net/edu-sharing/preview?nodeId=6bafa756-8149-4b27-8c07-0bfff253318b&storeProtocol=workspace&storeId=SpacesStore&dontcache=1761734900324"
+}

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from django import forms
 from django.contrib import admin
@@ -29,10 +29,17 @@ class SourceItemAdmin(admin.ModelAdmin):
 class CrawlJobInline(admin.TabularInline):
     model = CrawlJob
     extra = 0
-    fields = ['pk', 'start_url', 'follow_links', 'created_at', 'updated_at']
-    readonly_fields = ['pk', 'start_url', 'follow_links', 'created_at', 'updated_at']
+    fields = ['pk', 'crawl_type_display', 'start_url', 'follow_links', 'created_at', 'updated_at']
+    readonly_fields = [
+        'pk', 'crawl_type_display', 'start_url', 'follow_links', 'created_at', 'updated_at']
     can_delete = False
     show_change_link = True
+
+    @display(description='Type')
+    def crawl_type_display(self, obj: CrawlJob) -> str:
+        if obj.crawl_type == CrawlJob.CrawlType.EXPLORATION:
+            return '🧭 Exploration'
+        return '🪄 Content'
 
 
 class FilterSetInline(admin.TabularInline):
@@ -55,10 +62,19 @@ class CrawlerAdminForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["filter_set"].initial = getattr(self.instance, "filter_set", None)
 
+    def clean_filter_set(self):
+        filter_set = self.cleaned_data.get("filter_set")
+        if filter_set and filter_set.crawler is not None and filter_set.crawler != self.instance:
+            raise forms.ValidationError(
+                f"FilterSet '{filter_set}' is already used by crawler '{filter_set.crawler}'. "
+                "Each FilterSet can only be associated with one crawler."
+            )
+        return filter_set
+
     def save(self, commit=True):
         instance = super().save(commit)
         filter_set = self.cleaned_data.get("filter_set")
-        self.fields["filter_set"].save_related(self.instance, filter_set)
+        self.fields["filter_set"].save_related(self.instance, filter_set) # pyright: ignore[reportAttributeAccessIssue]
 
         return instance
 
@@ -126,18 +142,19 @@ class FilterSetAdmin(admin.ModelAdmin):
         for formset in formsets:
             # check if this formset is for FilterRule
             if formset.model == FilterRule:
-                instances = formset.save(commit=False)
+                formset.save(commit=False)
+                # instances = formset.save(commit=False)
                 # for instance in instances:
                 #     instance.filter_set.evaluate()
                 #     break
 
 
 class CrawlJobAdmin(admin.ModelAdmin):
-    list_display = ['start_url', 'follow_links', 'created_at',
+    list_display = ['start_url', 'crawl_type', 'follow_links', 'created_at',
                     'updated_at', 'crawled_urls_count']
-    fields = ['start_url', 'follow_links',
+    fields = ['start_url', 'crawl_type', 'follow_links',
               'created_at', 'updated_at', 'crawled_urls', 'crawler', 'scrapy_job_id']
-    readonly_fields = ['created_at', 'updated_at', 'crawled_urls', 'crawler']
+    readonly_fields = ['created_at', 'crawl_type', 'follow_links', 'updated_at', 'crawled_urls', 'crawler']
     date_hierarchy = 'created_at'
 
     class AnnotatedCrawlJob(CrawlJob):
@@ -164,7 +181,7 @@ class CrawlJobAdmin(admin.ModelAdmin):
 
     @display(description='# Filter Sets')
     def filter_sets_count(self, obj: AnnotatedCrawlJob) -> int:
-        return obj.filter_sets_count
+        return obj.filter_sets_count # pyright: ignore[reportAttributeAccessIssue]
 
     def get_queryset(self, request: HttpRequest) -> QuerySet:
         queryset = super().get_queryset(request)

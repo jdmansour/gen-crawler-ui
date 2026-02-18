@@ -1,11 +1,12 @@
 import { Crawler, CrawlJob, SourceItem } from "./apitypes";
-import { SSEData } from "./hooks/useSSE";
 import { CrawlerDashboardStep } from "./steps";
 
 export type DashboardPageContext = {
   crawlerList: Crawler[];
   setCrawlerList: (crawlers: Crawler[] | ((prev: Crawler[]) => Crawler[])) => void;
   setSidebarVisible: (visible: boolean) => void;
+  setObservedCrawlerId: (crawlerId: number | null) => void;
+  crawlerListLoaded: boolean;
 };
 
 export type SelectSourcePageContext = {
@@ -18,8 +19,9 @@ export type AddCrawlerPageContext = {
   setSourceItem: (source: SourceItem) => void;
   crawlerList: Crawler[];
   sourceItems: SourceItem[];
-  // onCreateClick: (source: SourceItem, crawlerURL: string, crawlerName: string) => void;
   setCrawlerList: (crawlers: Crawler[]) => void;
+  startSearchCrawl: (crawlerId: number) => Promise<CrawlJob>;
+  showToast: (message: string) => void;
 };
 
 export type MetadataInheritancePageContext = {
@@ -33,18 +35,33 @@ export type CrawlerDetailsPageContext = {
   crawlerList: Crawler[];
   setCrawlerList: (crawlers: Crawler[] | ((prev: Crawler[]) => Crawler[])) => void;
   onCrawlJobAdded: (newJob: CrawlJob) => void;
-  onCrawlJobDeleted: (crawlJobId: number) => void;
-  onCrawlJobLiveUpdate: (sseData: SSEData) => void;
   onCrawlerDeleted: (crawlerId: number) => void;
+};
+
+export type CrawlerDetailsContext = {
+  deleteCrawler: (crawlerId: number) => Promise<void>;
+  startSearchCrawl: (crawlerId: number) => Promise<CrawlJob>;
+  startContentCrawl: (crawlerId: number) => Promise<CrawlJob>;
+  cancelCrawlJob: (crawlJobId: number) => Promise<void>;
+  deleteCrawlJob: (crawlJobId: number) => Promise<void>;
+  setObservedCrawlerId: (crawlerId: number | null) => void;
+  liveUpdatesConnected: boolean;
+  liveUpdatesError: string | null;
+  crawlerListLoaded: boolean;
 };
 
 export type UseStepContext = {
   setStep: (step: CrawlerDashboardStep) => void;
 };
 
+export type ToastContext = {
+  showToast: (message: string) => void;
+};
+
 export type FilterSetPageContext = {
   crawlerList: Crawler[];
   crawlerListLoaded: boolean;
+  startContentCrawl: (crawlerId: number) => Promise<CrawlJob>;
 };
 
 export type RootContext =
@@ -53,8 +70,10 @@ export type RootContext =
   AddCrawlerPageContext &
   MetadataInheritancePageContext &
   CrawlerDetailsPageContext &
+  CrawlerDetailsContext &
   UseStepContext &
-  FilterSetPageContext;
+  FilterSetPageContext &
+  ToastContext;
 
 
 // export type RootContext = {

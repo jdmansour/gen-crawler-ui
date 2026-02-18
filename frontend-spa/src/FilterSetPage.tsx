@@ -16,7 +16,7 @@ export default function FilterSetPage(props: { csrfToken: string }) {
   // type is a json dict
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
   const [evaluationResult, setEvaluationResult] = useState<EvaluateFiltersResult>({ id: 0, remaining_urls: 0, name: "", created_at: "", updated_at: "", rules: [] });
-  const { crawlerList, crawlerListLoaded } = useOutletContext<FilterSetPageContext>();
+  const { crawlerList, crawlerListLoaded, startContentCrawl } = useOutletContext<FilterSetPageContext>();
   // const crawlJobId = 14;  // TODO: make dynamic
   const { crawlerId } = useParams();
 
@@ -24,10 +24,15 @@ export default function FilterSetPage(props: { csrfToken: string }) {
 
   // // get crawler from crawlerList matching filterSetId
   // const crawler = crawlerList.find(c => c.filter_set_id === props.filterSetId);
-  // pick the crawl job with the latest updated_at
-  const crawlJob = crawler?.crawl_jobs.reduce((latest, job) => {
-    return new Date(job.updated_at) > new Date(latest.updated_at) ? job : latest;
-  }, crawler.crawl_jobs[0]);
+  // pick the crawl job with the latest updated_at from completed or canceled exploration jobs
+  const explorationJobs = crawler?.crawl_jobs.filter(
+    j => j.crawl_type === 'EXPLORATION' && (j.state === 'COMPLETED' || j.state === 'CANCELED' || j.state === 'RUNNING')
+  );
+  const crawlJob = explorationJobs?.length
+    ? explorationJobs.reduce((latest, job) =>
+        new Date(job.updated_at) > new Date(latest.updated_at) ? job : latest
+      )
+    : undefined;
 
   // todo: handle case where crawler or crawlJob is undefined
   const crawlJobId = crawlJob?.id;
@@ -159,9 +164,16 @@ export default function FilterSetPage(props: { csrfToken: string }) {
         'X-CSRFToken': props.csrfToken,
       },
     });
-    const data = await response.json();
-    console.log("delete response: ", data);
-    setEvaluationResult({ ...evaluationResult, rules: evaluationResult.rules.filter((rule) => rule.id !== id) });
+    if (!response.ok) {
+      console.error("Failed to delete rule", id);
+      return;
+    }
+    setEvaluationResult(prev => ({ ...prev, rules: prev.rules.filter((rule) => rule.id !== id) }));
+    setRowSelection(prev => {
+      const next = { ...prev };
+      delete next[String(id)];
+      return next;
+    });
   }
 
   const selectedFilterRule = useMemo(() => {
@@ -181,7 +193,7 @@ export default function FilterSetPage(props: { csrfToken: string }) {
   } else if (crawlJobId === undefined || crawlJobId === null) {
     content = <div>Fehler: Kein crawl job gefunden</div>;
   } else {
-    content = <FilterSetTable 
+    content = <FilterSetTable
       evaluationResult={evaluationResult}
       rowSelection={rowSelection}
       setRowSelection={setRowSelection}
@@ -190,6 +202,7 @@ export default function FilterSetPage(props: { csrfToken: string }) {
       doMoveRule={doMoveRule}
       doDeleteRule={doDeleteRule}
       evaluateFilters={evaluateFilters}
+      onStartContentCrawl={() => startContentCrawl(Number(crawlerId))}
     />
   }
   return (

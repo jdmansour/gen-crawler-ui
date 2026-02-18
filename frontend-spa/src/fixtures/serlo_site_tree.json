@@ -1,0 +1,3716 @@
+[
+  {
+    "id": "root",
+    "label": "Home",
+    "url": "https://de.serlo.org",
+    "children": [
+      {
+        "id": "informatik",
+        "label": "Informatik",
+        "url": "https://de.serlo.org/informatik",
+        "children": [
+          {
+            "id": "informatik-162149-theoretische-informatik",
+            "label": "Theoretische Informatik",
+            "url": "https://de.serlo.org/informatik/162149/theoretische-informatik",
+            "children": [
+              {
+                "id": "informatik-184932-zahlensysteme",
+                "label": "Zahlensysteme",
+                "url": "https://de.serlo.org/informatik/184932/zahlensysteme",
+                "children": [
+                  {
+                    "id": "informatik-181058-binaersystem",
+                    "label": "Binärsystem - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/informatik/181058/binaersystem"
+                  },
+                  {
+                    "id": "informatik-181135-hybridsysteme",
+                    "label": "Hybridsysteme - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/informatik/181135/hybridsysteme"
+                  },
+                  {
+                    "id": "informatik-181056-oktalsystem",
+                    "label": "Oktalsystem - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/informatik/181056/oktalsystem"
+                  },
+                  {
+                    "id": "informatik-174955-zahlensysteme",
+                    "label": "Zahlensysteme  - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/informatik/174955/zahlensysteme"
+                  },
+                  {
+                    "id": "informatik-187487-roemische-zahlen",
+                    "label": "Römische  Zahlen - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/informatik/187487/roemische-zahlen"
+                  },
+                  {
+                    "id": "informatik-186051-hexadezimalsystem",
+                    "label": "Hexadezimalsystem - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/informatik/186051/hexadezimalsystem"
+                  },
+                  {
+                    "id": "informatik-180887-stellenwertsysteme",
+                    "label": "Stellenwertsysteme - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/informatik/180887/stellenwertsysteme"
+                  },
+                  {
+                    "id": "informatik-184941-aufgaben-zu-zahlensystemen",
+                    "label": "Aufgaben zu Zahlensystemen",
+                    "url": "https://de.serlo.org/informatik/184941/aufgaben-zu-zahlensystemen",
+                    "children": [
+                      {
+                        "id": "informatik-191096-aufgabengruppe",
+                        "label": "Aufgaben zu Zahlensystemen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/informatik/191096/aufgabengruppe"
+                      },
+                      {
+                        "id": "informatik-190905-aufgabengruppe",
+                        "label": "Aufgaben zu Zahlensystemen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/informatik/190905/aufgabengruppe"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "informatik-75211-baustelle",
+            "label": "Baustelle",
+            "url": "https://de.serlo.org/informatik/75211/baustelle",
+            "children": [
+              {
+                "id": "informatik-85855-alphanumerische-codes",
+                "label": "Alphanumerische Codes",
+                "url": "https://de.serlo.org/informatik/85855/alphanumerische-codes"
+              },
+              {
+                "id": "informatik-85858-graphische-codes",
+                "label": "Graphische Codes",
+                "url": "https://de.serlo.org/informatik/85858/graphische-codes"
+              }
+            ]
+          },
+          {
+            "id": "informatik-47899-informatik",
+            "label": "Informatik",
+            "url": "https://de.serlo.org/informatik/47899/informatik",
+            "children": [
+              {
+                "id": "serlo-49982-mitmachen-in-informatik",
+                "label": "Mitmachen in Informatik - lernen mit Serlo!",
+                "url": "https://de.serlo.org/serlo/49982/mitmachen-in-informatik"
+              }
+            ]
+          },
+          {
+            "id": "informatik-76682-informatik-mensch-und-gesellschaft",
+            "label": "Informatik, Mensch und Gesellschaft",
+            "url": "https://de.serlo.org/informatik/76682/informatik-mensch-und-gesellschaft",
+            "children": [
+              {
+                "id": "informatik-191577-wie-funktioniert-das-internet",
+                "label": "Wie funktioniert das Internet? – Grundlagen & Übungen",
+                "url": "https://de.serlo.org/informatik/191577/wie-funktioniert-das-internet",
+                "children": [
+                  {
+                    "id": "informatik-245006-client",
+                    "label": "Client - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/informatik/245006/client"
+                  }
+                ]
+              },
+              {
+                "id": "informatik-65055-datenschutz",
+                "label": "Datenschutz – Grundlagen & Übungen",
+                "url": "https://de.serlo.org/informatik/65055/datenschutz"
+              },
+              {
+                "id": "informatik-198771-chancen-und-risiken-digitaler-kommunikation",
+                "label": "Chancen und Risiken digitaler Kommunikation – Themenbereich",
+                "url": "https://de.serlo.org/informatik/198771/chancen-und-risiken-digitaler-kommunikation"
+              },
+              {
+                "id": "informatik-155948-big-data-einfach-erklaert",
+                "label": "Big Data – einfach erklärt – Grundlagen & Übungen",
+                "url": "https://de.serlo.org/informatik/155948/big-data-einfach-erklaert"
+              }
+            ]
+          },
+          {
+            "id": "informatik-76683-werkzeuge-und-methoden",
+            "label": "Werkzeuge und Methoden – Grundlagen & Übungen",
+            "url": "https://de.serlo.org/informatik/76683/werkzeuge-und-methoden",
+            "children": [
+              {
+                "id": "informatik-76684-praesentation",
+                "label": "Präsentation – Grundlagen & Übungen",
+                "url": "https://de.serlo.org/informatik/76684/praesentation"
+              },
+              {
+                "id": "informatik-70053-robot-karol",
+                "label": "Robot Karol – Grundlagen & Übungen",
+                "url": "https://de.serlo.org/informatik/70053/robot-karol"
+              },
+              {
+                "id": "informatik-76866-open-roberta",
+                "label": "Open Roberta – Grundlagen & Übungen",
+                "url": "https://de.serlo.org/informatik/76866/open-roberta"
+              },
+              {
+                "id": "informatik-226587-versionskontrolle-mit-git",
+                "label": "Versionskontrolle mit Git – Grundlagen & Übungen",
+                "url": "https://de.serlo.org/informatik/226587/versionskontrolle-mit-git"
+              }
+            ]
+          },
+          {
+            "id": "informatik-60396-gymnasium",
+            "label": "Gymnasium",
+            "url": "https://de.serlo.org/informatik/60396/gymnasium",
+            "children": [
+              {
+                "id": "informatik-60398-klasse-6",
+                "label": "Klasse 6 – Grundlagen & Übungen",
+                "url": "https://de.serlo.org/informatik/60398/klasse-6",
+                "children": [
+                  {
+                    "id": "informatik-238251-informationsdarstellung-mit-grafik-text-und-multimediadokumenten",
+                    "label": "Informationsdarstellung mit Grafik-, Text- und Multimediadokumenten",
+                    "url": "https://de.serlo.org/informatik/238251/informationsdarstellung-mit-grafik-text-und-multimediadokumenten",
+                    "children": [
+                      {
+                        "id": "informatik-60400-textdokumente",
+                        "label": "Textdokumente – Grundlagen & Übungen",
+                        "url": "https://de.serlo.org/informatik/60400/textdokumente",
+                        "children": [
+                          {
+                            "id": "informatik-67075-aufgaben-zur-informationsdarstellung-mit-textdokumenten",
+                            "label": "Aufgaben zur Informationsdarstellung mit Textdokumenten",
+                            "url": "https://de.serlo.org/informatik/67075/aufgaben-zur-informationsdarstellung-mit-textdokumenten"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "informatik-60399-grafikdokumente",
+                        "label": "Grafikdokumente",
+                        "url": "https://de.serlo.org/informatik/60399/grafikdokumente",
+                        "children": [
+                          {
+                            "id": "informatik-60403-aufgaben-zur-informationsdarstellung-mit-grafikdokumenten",
+                            "label": "Aufgaben zur Informationsdarstellung mit Grafikdokumenten",
+                            "url": "https://de.serlo.org/informatik/60403/aufgaben-zur-informationsdarstellung-mit-grafikdokumenten"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "informatik-161381-klasse-9",
+                "label": "Klasse 9",
+                "url": "https://de.serlo.org/informatik/161381/klasse-9",
+                "children": [
+                  {
+                    "id": "informatik-161388-datenmodellierung-und-datenbanksysteme",
+                    "label": "Datenmodellierung und Datenbanksysteme",
+                    "url": "https://de.serlo.org/informatik/161388/datenmodellierung-und-datenbanksysteme",
+                    "children": [
+                      {
+                        "id": "informatik-161391-sql",
+                        "label": "SQL – Grundlagen & Übungen",
+                        "url": "https://de.serlo.org/informatik/161391/sql"
+                      },
+                      {
+                        "id": "informatik-161392-sicherheit-in-datenbanksystemen",
+                        "label": "Sicherheit in Datenbanksystemen – Grundlagen & Übungen",
+                        "url": "https://de.serlo.org/informatik/161392/sicherheit-in-datenbanksystemen"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "informatik-60395-bayern",
+            "label": "Bayern",
+            "url": "https://de.serlo.org/informatik/60395/bayern"
+          },
+          {
+            "id": "informatik-57628-daten-und-informationen",
+            "label": "Daten und Informationen – Grundlagen & Übungen",
+            "url": "https://de.serlo.org/informatik/57628/daten-und-informationen"
+          }
+        ]
+      },
+      {
+        "id": "category",
+        "label": "Category",
+        "url": "https://de.serlo.org/category",
+        "children": [
+          {
+            "id": "chemie",
+            "label": "Chemie Startseite  - lernen mit Serlo!",
+            "url": "https://de.serlo.org/chemie",
+            "children": [
+              {
+                "id": "chemie-155709-grundlagen",
+                "label": "Grundlagen",
+                "url": "https://de.serlo.org/chemie/155709/grundlagen",
+                "children": [
+                  {
+                    "id": "chemie-158240-das-periodensystem-der-elemente",
+                    "label": "Das Periodensystem der Elemente",
+                    "url": "https://de.serlo.org/chemie/158240/das-periodensystem-der-elemente",
+                    "children": [
+                      {
+                        "id": "chemie-152324-das-periodensystem-der-elemente",
+                        "label": "Das Periodensystem der Elemente - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/chemie/152324/das-periodensystem-der-elemente"
+                      },
+                      {
+                        "id": "chemie-160616-halogene-x",
+                        "label": "Halogene (x) - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/chemie/160616/halogene-x"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "chemie-155714-grundlagenbegriffe",
+                    "label": "Grundlagenbegriffe",
+                    "url": "https://de.serlo.org/chemie/155714/grundlagenbegriffe",
+                    "children": [
+                      {
+                        "id": "chemie-157206-wertigkeiten-x",
+                        "label": "Wertigkeiten (x) - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/chemie/157206/wertigkeiten-x"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "chemie-155743-stoffmenge",
+                "label": "Stoffmenge ",
+                "url": "https://de.serlo.org/chemie/155743/stoffmenge",
+                "children": [
+                  {
+                    "id": "chemie-155745-stoffmenge-und-mol",
+                    "label": "Stoffmenge und Mol",
+                    "url": "https://de.serlo.org/chemie/155745/stoffmenge-und-mol",
+                    "children": [
+                      {
+                        "id": "chemie-127479-das-molare-volumen",
+                        "label": "Das molare Volumen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/chemie/127479/das-molare-volumen"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "chemie-18887-organische-chemie",
+                "label": "Organische Chemie",
+                "url": "https://de.serlo.org/chemie/18887/organische-chemie",
+                "children": [
+                  {
+                    "id": "chemie-155780-alkane-alkene-alkine",
+                    "label": "Alkane, Alkene, Alkine",
+                    "url": "https://de.serlo.org/chemie/155780/alkane-alkene-alkine",
+                    "children": [
+                      {
+                        "id": "chemie-155791-aufgaben-zu-alkanen-alkenen-und-alkinen",
+                        "label": "Aufgaben zu Alkanen, Alkenen und Alkinen",
+                        "url": "https://de.serlo.org/chemie/155791/aufgaben-zu-alkanen-alkenen-und-alkinen",
+                        "children": [
+                          {
+                            "id": "chemie-308900-aufgabe",
+                            "label": "Aufgaben zu Alkanen, Alkenen und Alkinen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/chemie/308900/aufgabe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "chemie-77809-alkene",
+                        "label": "Alkene - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/chemie/77809/alkene"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "chemie-184033-experimentieren-in-der-chemie",
+                "label": "Experimentieren in der Chemie",
+                "url": "https://de.serlo.org/chemie/184033/experimentieren-in-der-chemie",
+                "children": [
+                  {
+                    "id": "chemie-184060-experimente-fuer-zuhause",
+                    "label": "Experimente für Zuhause – Grundlagen & Übungen",
+                    "url": "https://de.serlo.org/chemie/184060/experimente-fuer-zuhause"
+                  }
+                ]
+              },
+              {
+                "id": "chemie-135390-baustelle-chemie",
+                "label": "Baustelle Chemie",
+                "url": "https://de.serlo.org/chemie/135390/baustelle-chemie",
+                "children": [
+                  {
+                    "id": "chemie-214832-der-farbkreis",
+                    "label": "Der Farbkreis - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/chemie/214832/der-farbkreis"
+                  }
+                ]
+              },
+              {
+                "id": "chemie-203233-elektrochemie",
+                "label": "Elektrochemie",
+                "url": "https://de.serlo.org/chemie/203233/elektrochemie",
+                "children": [
+                  {
+                    "id": "chemie-145927-redox-reaktion-aufstellen-und-ausgleichen",
+                    "label": "RedOx-Reaktion Aufstellen und Ausgleichen",
+                    "url": "https://de.serlo.org/chemie/145927/redox-reaktion-aufstellen-und-ausgleichen"
+                  },
+                  {
+                    "id": "chemie-245236-aufgaben-zur-redox-reaktion",
+                    "label": "Aufgaben zur RedOx-Reaktion",
+                    "url": "https://de.serlo.org/chemie/245236/aufgaben-zur-redox-reaktion",
+                    "children": [
+                      {
+                        "id": "chemie-279786-aufgabe",
+                        "label": "Aufgaben zur RedOx-Reaktion - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/chemie/279786/aufgabe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "chemie-154812-oxidation",
+                    "label": "Oxidation",
+                    "url": "https://de.serlo.org/chemie/154812/oxidation"
+                  },
+                  {
+                    "id": "chemie-157600-redox-reaktion",
+                    "label": "RedOx-Reaktion - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/chemie/157600/redox-reaktion"
+                  },
+                  {
+                    "id": "chemie-152323-die-oxidationszahl-die-oxidationsstufe",
+                    "label": "Die Oxidationszahl, die Oxidationsstufe - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/chemie/152323/die-oxidationszahl-die-oxidationsstufe"
+                  }
+                ]
+              },
+              {
+                "id": "chemie-127658-vertiefungskurs-redox",
+                "label": "Vertiefungskurs - RedOx",
+                "url": "https://de.serlo.org/chemie/127658/vertiefungskurs-redox"
+              }
+            ]
+          },
+          {
+            "id": "mathe-248480-stochastik-teil-b-aufgabengruppe-2",
+            "label": "Stochastik, Teil B, Aufgabengruppe 2",
+            "url": "https://de.serlo.org/mathe/248480/stochastik-teil-b-aufgabengruppe-2"
+          },
+          {
+            "id": "mathe-231499-geometrie-teil-b-aufgabengruppe-2",
+            "label": "Mathe Abiturprüfungen mit Lösung",
+            "url": "https://de.serlo.org/mathe/231499/geometrie-teil-b-aufgabengruppe-2"
+          },
+          {
+            "id": "mathe-248472-analysis-teil-a-aufgabengruppe-2",
+            "label": "Mathe Abiturprüfungen mit Lösung",
+            "url": "https://de.serlo.org/mathe/248472/analysis-teil-a-aufgabengruppe-2",
+            "children": [
+              {
+                "id": "mathe-248590-aufgabengruppe",
+                "label": "Analysis, Teil A, Aufgabengruppe 2 - lernen mit Serlo!",
+                "url": "https://de.serlo.org/mathe/248590/aufgabengruppe"
+              }
+            ]
+          },
+          {
+            "id": "mathe-55114-geraden-im-dreidimensionalen-raum",
+            "label": "Geraden im dreidimensionalen Raum",
+            "url": "https://de.serlo.org/mathe/55114/geraden-im-dreidimensionalen-raum"
+          },
+          {
+            "id": "mathe-250986-aufgabengruppe",
+            "label": "Aufgaben zu Potenz- und Wurzelfunktionen  - lernen mit Serlo!",
+            "url": "https://de.serlo.org/mathe/250986/aufgabengruppe"
+          },
+          {
+            "id": "mathe-35632-umrechnen-von-metern-zentimetern-kilometern-einheitentabelle",
+            "label": "Umrechnen von Metern, Zentimetern, Kilometern - Einheitentabelle - lernen mit Serlo!",
+            "url": "https://de.serlo.org/mathe/35632/umrechnen-von-metern-zentimetern-kilometern-einheitentabelle"
+          },
+          {
+            "id": "mathe-24384-aufgaben-zum-umrechnen-von-flaecheneinheiten",
+            "label": "Aufgaben zum Umrechnen von Flächeneinheiten",
+            "url": "https://de.serlo.org/mathe/24384/aufgaben-zum-umrechnen-von-flaecheneinheiten",
+            "children": [
+              {
+                "id": "mathe-75400-aufgabe",
+                "label": "Aufgaben zum Umrechnen von Flächeneinheiten - lernen mit Serlo!",
+                "url": "https://de.serlo.org/mathe/75400/aufgabe"
+              },
+              {
+                "id": "mathe-112787-aufgabe",
+                "label": "Aufgaben zum Umrechnen von Flächeneinheiten - lernen mit Serlo!",
+                "url": "https://de.serlo.org/mathe/112787/aufgabe"
+              },
+              {
+                "id": "mathe-8081-aufgabengruppe",
+                "label": "Aufgaben zum Umrechnen von Flächeneinheiten - lernen mit Serlo!",
+                "url": "https://de.serlo.org/mathe/8081/aufgabengruppe"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "nachhaltigkeit",
+        "label": "Nachhaltigkeit",
+        "url": "https://de.serlo.org/nachhaltigkeit",
+        "children": [
+          {
+            "id": "nachhaltigkeit-102789-plastik",
+            "label": "Plastik",
+            "url": "https://de.serlo.org/nachhaltigkeit/102789/plastik",
+            "children": [
+              {
+                "id": "nachhaltigkeit-182823-leben-ohne-plastik",
+                "label": "Leben ohne Plastik?",
+                "url": "https://de.serlo.org/nachhaltigkeit/182823/leben-ohne-plastik",
+                "children": [
+                  {
+                    "id": "nachhaltigkeit-136866-die-minimalismus-challenge-worauf-kann-ich-verzichten",
+                    "label": "Die Minimalismus-Challenge: Worauf kann ich verzichten?",
+                    "url": "https://de.serlo.org/nachhaltigkeit/136866/die-minimalismus-challenge-worauf-kann-ich-verzichten"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mathe",
+        "label": "Mathe",
+        "url": "https://de.serlo.org/mathe",
+        "children": [
+          {
+            "id": "mathe-1385-zahlen-und-groessen",
+            "label": "Zahlen und Größen",
+            "url": "https://de.serlo.org/mathe/1385/zahlen-und-groessen",
+            "children": [
+              {
+                "id": "mathe-1377-prozent-und-zinsrechnung",
+                "label": "Prozent- und Zinsrechnung",
+                "url": "https://de.serlo.org/mathe/1377/prozent-und-zinsrechnung",
+                "children": [
+                  {
+                    "id": "mathe-2193-prozentrechnung-mittels-formeln",
+                    "label": "Prozentrechnung mittels Formeln",
+                    "url": "https://de.serlo.org/mathe/2193/prozentrechnung-mittels-formeln"
+                  },
+                  {
+                    "id": "mathe-38454-aufgaben-zur-prozentdarstellung",
+                    "label": "Aufgaben zur Prozentdarstellung",
+                    "url": "https://de.serlo.org/mathe/38454/aufgaben-zur-prozentdarstellung",
+                    "children": [
+                      {
+                        "id": "mathe-36925-aufgabe",
+                        "label": "Aufgaben zur Prozentdarstellung - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/36925/aufgabe"
+                      },
+                      {
+                        "id": "mathe-37011-aufgabengruppe",
+                        "label": "Aufgaben zur Prozentdarstellung - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/37011/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-39589-aufgabengruppe",
+                        "label": "Aufgaben zur Prozentdarstellung - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/39589/aufgabengruppe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-174158-sachaufgaben-zur-prozentrechnung-bereich-wirtschaft",
+                    "label": "Sachaufgaben zur Prozentrechnung - Bereich Wirtschaft",
+                    "url": "https://de.serlo.org/mathe/174158/sachaufgaben-zur-prozentrechnung-bereich-wirtschaft",
+                    "children": [
+                      {
+                        "id": "mathe-8173-aufgabe",
+                        "label": "Aufgaben zum Grundwert, Prozentwert und Prozentsatz - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/8173/aufgabe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-23869-aufgaben-zur-prozentrechnung",
+                    "label": "Aufgaben zur Prozentrechnung",
+                    "url": "https://de.serlo.org/mathe/23869/aufgaben-zur-prozentrechnung",
+                    "children": [
+                      {
+                        "id": "mathe-214020-aufgabengruppe",
+                        "label": "Aufgaben zur Prozentrechnung - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/214020/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-4649-aufgabe",
+                        "label": "Aufgaben zur Prozentrechnung - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/4649/aufgabe"
+                      },
+                      {
+                        "id": "mathe-8261-aufgabe",
+                        "label": "Aufgaben zur Prozentrechnung - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/8261/aufgabe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1849-zinsrechnung",
+                    "label": "Zinsrechnung - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1849/zinsrechnung"
+                  },
+                  {
+                    "id": "mathe-36753-einfuehrung-des-prozentzeichens-und-seiner-umrechnung",
+                    "label": "Einführung des Prozentzeichens und seiner Umrechnung",
+                    "url": "https://de.serlo.org/mathe/36753/einfuehrung-des-prozentzeichens-und-seiner-umrechnung"
+                  },
+                  {
+                    "id": "mathe-37054-prozent-und-prozentpunkte",
+                    "label": "Prozent und Prozentpunkte - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/37054/prozent-und-prozentpunkte"
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1389-bruchrechnen-und-dezimalzahlen",
+                "label": "Bruchrechnen und Dezimalzahlen",
+                "url": "https://de.serlo.org/mathe/1389/bruchrechnen-und-dezimalzahlen",
+                "children": [
+                  {
+                    "id": "mathe-24279-brueche",
+                    "label": "Brüche",
+                    "url": "https://de.serlo.org/mathe/24279/brueche",
+                    "children": [
+                      {
+                        "id": "mathe-1657-was-ist-ein-bruch",
+                        "label": "Was ist ein Bruch? - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1657/was-ist-ein-bruch"
+                      },
+                      {
+                        "id": "mathe-25771-aufgaben-zum-kuerzen-von-bruechen",
+                        "label": "Aufgaben zum Kürzen von Brüchen",
+                        "url": "https://de.serlo.org/mathe/25771/aufgaben-zum-kuerzen-von-bruechen",
+                        "children": [
+                          {
+                            "id": "mathe-20342-aufgabe",
+                            "label": "Aufgaben zum Kürzen von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/20342/aufgabe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-25776-aufgaben-zum-erweitern-von-bruechen",
+                        "label": "Aufgaben zum Erweitern von Brüchen",
+                        "url": "https://de.serlo.org/mathe/25776/aufgaben-zum-erweitern-von-bruechen"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1360-dezimalbrueche",
+                    "label": "Dezimalbrüche",
+                    "url": "https://de.serlo.org/mathe/1360/dezimalbrueche",
+                    "children": [
+                      {
+                        "id": "mathe-27823-dezimalbruch",
+                        "label": "Dezimalbruch - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/27823/dezimalbruch"
+                      },
+                      {
+                        "id": "mathe-27801-addition-und-subtraktion-von-dezimalbruechen",
+                        "label": "Addition und Subtraktion von Dezimalbrüchen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/27801/addition-und-subtraktion-von-dezimalbruechen"
+                      },
+                      {
+                        "id": "mathe-25111-aufgaben-zur-addition-und-subtraktion-von-dezimalbruechen",
+                        "label": "Aufgaben zur Addition und Subtraktion von Dezimalbrüchen",
+                        "url": "https://de.serlo.org/mathe/25111/aufgaben-zur-addition-und-subtraktion-von-dezimalbruechen",
+                        "children": [
+                          {
+                            "id": "mathe-21157-aufgabengruppe",
+                            "label": "Aufgaben zur Addition und Subtraktion von Dezimalbrüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/21157/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-21093-aufgabengruppe",
+                            "label": "Aufgaben zur Addition und Subtraktion von Dezimalbrüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/21093/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-20933-aufgabengruppe",
+                            "label": "Aufgaben zur Addition und Subtraktion von Dezimalbrüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/20933/aufgabengruppe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-27802-multiplikation-von-dezimalbruechen",
+                        "label": "Multiplikation von Dezimalbrüchen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/27802/multiplikation-von-dezimalbruechen"
+                      },
+                      {
+                        "id": "mathe-28507-aufgaben-zum-vergleich-von-dezimalbruechen",
+                        "label": "Aufgaben zum Vergleich von Dezimalbrüchen",
+                        "url": "https://de.serlo.org/mathe/28507/aufgaben-zum-vergleich-von-dezimalbruechen",
+                        "children": [
+                          {
+                            "id": "mathe-27947-aufgabengruppe",
+                            "label": "Aufgaben zum Vergleich von Dezimalbrüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/27947/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1296-rechnen-mit-bruechen",
+                    "label": "Rechnen mit Brüchen",
+                    "url": "https://de.serlo.org/mathe/1296/rechnen-mit-bruechen",
+                    "children": [
+                      {
+                        "id": "mathe-1545-brueche-potenzieren",
+                        "label": "Brüche potenzieren - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1545/brueche-potenzieren"
+                      },
+                      {
+                        "id": "mathe-25770-aufgaben-zur-multiplikation-von-bruechen",
+                        "label": "Aufgaben zur Multiplikation von Brühen",
+                        "url": "https://de.serlo.org/mathe/25770/aufgaben-zur-multiplikation-von-bruechen",
+                        "children": [
+                          {
+                            "id": "mathe-88621-aufgabe",
+                            "label": "Aufgaben zur Multiplikation von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/88621/aufgabe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-25769-aufgaben-zur-addition-und-subtraktion-von-bruechen",
+                        "label": "Aufgaben zur Addition und Subtraktion von Brüchen",
+                        "url": "https://de.serlo.org/mathe/25769/aufgaben-zur-addition-und-subtraktion-von-bruechen",
+                        "children": [
+                          {
+                            "id": "mathe-218176-aufgabengruppe",
+                            "label": "Aufgaben zur Addition und Subtraktion von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/218176/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-218165-aufgabengruppe",
+                            "label": "Aufgaben zur Addition und Subtraktion von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/218165/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-9927-aufgabe",
+                            "label": "Aufgaben zur Addition und Subtraktion von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/9927/aufgabe"
+                          },
+                          {
+                            "id": "mathe-7955-aufgabengruppe",
+                            "label": "Aufgaben zur Addition und Subtraktion von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/7955/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-9543-aufgabengruppe",
+                            "label": "Aufgaben zur Addition und Subtraktion von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/9543/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-5053-aufgabengruppe",
+                            "label": "Aufgaben zur Addition und Subtraktion von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/5053/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-236813-aufgabengruppe",
+                            "label": "Aufgaben zur Addition und Subtraktion von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/236813/aufgabengruppe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-20314-rechnen-mit-bruechen",
+                        "label": "Rechnen mit Brüchen",
+                        "url": "https://de.serlo.org/mathe/20314/rechnen-mit-bruechen"
+                      },
+                      {
+                        "id": "mathe-25799-aufgaben-zur-division-von-bruechen",
+                        "label": "Aufgaben zur Division von Brüchen",
+                        "url": "https://de.serlo.org/mathe/25799/aufgaben-zur-division-von-bruechen",
+                        "children": [
+                          {
+                            "id": "mathe-8001-aufgabengruppe",
+                            "label": "Aufgaben zur Division von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/8001/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-4411-aufgabengruppe",
+                            "label": "Aufgaben zur Division von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/4411/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-9623-aufgabengruppe",
+                            "label": "Aufgaben zur Division von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/9623/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-237881-aufgabengruppe",
+                            "label": "Aufgaben zur Division von Brüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/237881/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1299-umformen-von-bruechen-in-dezimalbrueche",
+                    "label": "Umformen von Brüchen in Dezimalbrüche",
+                    "url": "https://de.serlo.org/mathe/1299/umformen-von-bruechen-in-dezimalbrueche",
+                    "children": [
+                      {
+                        "id": "mathe-28295-umrechnen-von-bruechen-in-dezimalzahlen",
+                        "label": "Umrechnen von Brüchen in Dezimalzahlen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/28295/umrechnen-von-bruechen-in-dezimalzahlen"
+                      },
+                      {
+                        "id": "mathe-25113-aufgaben-zum-umwandeln-von-bruechen-und-dezimalbruechen",
+                        "label": "Aufgaben zum Umwandeln von Brüchen und Dezimalbrüchen",
+                        "url": "https://de.serlo.org/mathe/25113/aufgaben-zum-umwandeln-von-bruechen-und-dezimalbruechen",
+                        "children": [
+                          {
+                            "id": "mathe-132165-aufgabengruppe",
+                            "label": "Aufgaben zum Umwandeln von Brüchen und Dezimalbrüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/132165/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-241244-aufgabengruppe",
+                            "label": "Aufgaben zum Umwandeln von Brüchen und Dezimalbrüchen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/241244/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1299-umrechnen-von-bruechen-in-dezimalbrueche",
+                    "label": "Umformen von Brünchen in Dezimalbrünche",
+                    "url": "https://de.serlo.org/mathe/1299/umrechnen-von-bruechen-in-dezimalbrueche",
+                    "children": [
+                      {
+                        "id": "mathe-27800-umrechnen-von-bruch-und-dezimalzahl",
+                        "label": "Umrechnen von Bruch und Dezimalzahl - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/27800/umrechnen-von-bruch-und-dezimalzahl"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1386-grundrechenarten",
+                "label": "Grundrechenarten",
+                "url": "https://de.serlo.org/mathe/1386/grundrechenarten",
+                "children": [
+                  {
+                    "id": "mathe-1388-rechnen-mit-ganzen-zahlen",
+                    "label": "Rechnen mit ganzen Zahlen",
+                    "url": "https://de.serlo.org/mathe/1388/rechnen-mit-ganzen-zahlen",
+                    "children": [
+                      {
+                        "id": "mathe-62148-aufgaben-zum-addieren-und-subtrahieren-von-ganzen-zahlen",
+                        "label": "Aufgaben zum Addieren und Subtrahieren von ganzen Zahlen",
+                        "url": "https://de.serlo.org/mathe/62148/aufgaben-zum-addieren-und-subtrahieren-von-ganzen-zahlen",
+                        "children": [
+                          {
+                            "id": "mathe-62068-aufgabengruppe",
+                            "label": "Aufgaben zur Addition und Subtraktion ganzer Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/62068/aufgabengruppe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-62546-addition-und-subtraktion-ganzer-zahlen",
+                        "label": "Addition und Subtraktion ganzer Zahlen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/62546/addition-und-subtraktion-ganzer-zahlen"
+                      },
+                      {
+                        "id": "mathe-62045-rechnen-mit-ganzen-zahlen",
+                        "label": "Rechnen mit ganzen Zahlen",
+                        "url": "https://de.serlo.org/mathe/62045/rechnen-mit-ganzen-zahlen"
+                      },
+                      {
+                        "id": "mathe-62559-multiplikation-und-division-ganzer-zahlen",
+                        "label": "Multiplikation und Division ganzer Zahlen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/62559/multiplikation-und-division-ganzer-zahlen"
+                      },
+                      {
+                        "id": "mathe-62149-aufgaben-zu-allen-grundrechenarten-mit-ganzen-zahlen",
+                        "label": "Aufgaben zu allen Grundrechenarten mit ganzen Zahlen",
+                        "url": "https://de.serlo.org/mathe/62149/aufgaben-zu-allen-grundrechenarten-mit-ganzen-zahlen",
+                        "children": [
+                          {
+                            "id": "mathe-206848-aufgabengruppe",
+                            "label": "Aufgaben zu allen Grundrechenarten mit ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/206848/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-206838-aufgabengruppe",
+                            "label": "Aufgaben zu allen Grundrechenarten mit ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/206838/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-5023-aufgabe",
+                            "label": "Aufgaben zu allen Grundrechenarten mit ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/5023/aufgabe"
+                          },
+                          {
+                            "id": "mathe-205214-aufgabengruppe",
+                            "label": "Aufgaben zu allen Grundrechenarten mit ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/205214/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-7295-aufgabengruppe",
+                            "label": "Gemischte Aufgaben zu ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/7295/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-62675-aufgabengruppe",
+                            "label": "Gemischte Aufgaben zu ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/62675/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-7209-aufgabe",
+                            "label": "Aufgaben zu allen Grundrechenarten mit ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/7209/aufgabe"
+                          },
+                          {
+                            "id": "mathe-7243-aufgabengruppe",
+                            "label": "Aufgaben zu allen Grundrechenarten mit ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/7243/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1295-division",
+                    "label": "Division",
+                    "url": "https://de.serlo.org/mathe/1295/division",
+                    "children": [
+                      {
+                        "id": "mathe-234735-teilbarkeit",
+                        "label": "Teilbarkeit - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/234735/teilbarkeit"
+                      },
+                      {
+                        "id": "mathe-54618-schriftliche-division",
+                        "label": "Schriftliche Division - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/54618/schriftliche-division"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1292-addition",
+                    "label": "Addition",
+                    "url": "https://de.serlo.org/mathe/1292/addition",
+                    "children": [
+                      {
+                        "id": "mathe-2153-schriftliche-addition",
+                        "label": "Schriftliche Addition - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2153/schriftliche-addition"
+                      },
+                      {
+                        "id": "mathe-153072-rechengesetze-fuer-die-addition",
+                        "label": "Rechengesetze für die Addition - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/153072/rechengesetze-fuer-die-addition"
+                      },
+                      {
+                        "id": "mathe-97589-aufgaben-zur-schriftlichen-addition-natuerlicher-zahlen",
+                        "label": "Aufgaben zur schriftlichen Addition natürlicher Zahlen",
+                        "url": "https://de.serlo.org/mathe/97589/aufgaben-zur-schriftlichen-addition-natuerlicher-zahlen"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1294-multiplikation",
+                    "label": "Multiplikation",
+                    "url": "https://de.serlo.org/mathe/1294/multiplikation",
+                    "children": [
+                      {
+                        "id": "mathe-54829-schriftliche-multiplikation",
+                        "label": "Schriftliche Multiplikation - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/54829/schriftliche-multiplikation"
+                      },
+                      {
+                        "id": "mathe-55603-rechentricks-und-vorteile",
+                        "label": "Rechentricks und -vorteile - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/55603/rechentricks-und-vorteile"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1293-subtraktion",
+                "label": "Subtraktion",
+                "url": "https://de.serlo.org/mathe/1293/subtraktion",
+                "children": [
+                  {
+                    "id": "mathe-25674-aufgaben-zur-subtraktion",
+                    "label": "Aufgaben zur Subtraktion",
+                    "url": "https://de.serlo.org/mathe/25674/aufgaben-zur-subtraktion",
+                    "children": [
+                      {
+                        "id": "mathe-77262-aufgabe",
+                        "label": "Aufgaben zur Subtraktion - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/77262/aufgabe"
+                      },
+                      {
+                        "id": "mathe-97306-aufgabe",
+                        "label": "Aufgaben zur Subtraktion - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/97306/aufgabe"
+                      },
+                      {
+                        "id": "mathe-77830-aufgabe",
+                        "label": "Aufgaben zur Subtraktion - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/77830/aufgabe"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-23871-zahlenmengen-rechenausdruecke-und-allgemeine-rechengesetze",
+                "label": "Zahlenmengen, Rechenausdrücke und allgemeine Rechengesetze",
+                "url": "https://de.serlo.org/mathe/23871/zahlenmengen-rechenausdruecke-und-allgemeine-rechengesetze",
+                "children": [
+                  {
+                    "id": "mathe-23873-rechentermbezeichnungen",
+                    "label": "Rechentermbezeichnungen",
+                    "url": "https://de.serlo.org/mathe/23873/rechentermbezeichnungen",
+                    "children": [
+                      {
+                        "id": "mathe-2111-termbeschreibungen",
+                        "label": "Termbeschreibungen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2111/termbeschreibungen"
+                      },
+                      {
+                        "id": "mathe-50884-terme-gliedern",
+                        "label": "Terme gliedern - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/50884/terme-gliedern"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-23875-teiler-und-primzahlen",
+                "label": "Teiler und Primzahlen",
+                "url": "https://de.serlo.org/mathe/23875/teiler-und-primzahlen",
+                "children": [
+                  {
+                    "id": "mathe-1341-teiler-und-vielfache",
+                    "label": "Teiler und Vielfache",
+                    "url": "https://de.serlo.org/mathe/1341/teiler-und-vielfache",
+                    "children": [
+                      {
+                        "id": "mathe-1497-kleinstes-gemeinsames-vielfaches",
+                        "label": "Kleinstes gemeinsames Vielfaches - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1497/kleinstes-gemeinsames-vielfaches"
+                      },
+                      {
+                        "id": "mathe-107913-teilbarkeitsregeln-und-zahlenmengen",
+                        "label": "Teilbarkeitsregeln (und Zahlenmengen) - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/107913/teilbarkeitsregeln-und-zahlenmengen"
+                      },
+                      {
+                        "id": "mathe-1819-teilerfremd",
+                        "label": "Teilerfremd - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1819/teilerfremd"
+                      },
+                      {
+                        "id": "mathe-2065-euklidischer-algorithmus",
+                        "label": "Euklidischer Algorithmus - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2065/euklidischer-algorithmus"
+                      },
+                      {
+                        "id": "mathe-150454-aufgaben-zur-teilermenge",
+                        "label": "Aufgaben zur Teilermenge",
+                        "url": "https://de.serlo.org/mathe/150454/aufgaben-zur-teilermenge",
+                        "children": [
+                          {
+                            "id": "mathe-151992-aufgabe",
+                            "label": "Aufgaben zur Teilermenge - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/151992/aufgabe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1379-primzahlen-und-primfaktorzerlegung",
+                    "label": "Primzahlen und Primfaktorzerlegung",
+                    "url": "https://de.serlo.org/mathe/1379/primzahlen-und-primfaktorzerlegung",
+                    "children": [
+                      {
+                        "id": "mathe-1767-primzahlen",
+                        "label": "Primzahlen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1767/primzahlen"
+                      },
+                      {
+                        "id": "mathe-96712-das-sieb-des-eratosthenes",
+                        "label": "Das Sieb des Eratosthenes - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/96712/das-sieb-des-eratosthenes"
+                      },
+                      {
+                        "id": "mathe-25778-aufgaben-zur-primfaktorzerlegung",
+                        "label": "Aufgaben zur Primfaktorzerlegung",
+                        "url": "https://de.serlo.org/mathe/25778/aufgaben-zur-primfaktorzerlegung"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-23872-zahlen",
+                "label": "Zahlen",
+                "url": "https://de.serlo.org/mathe/23872/zahlen",
+                "children": [
+                  {
+                    "id": "mathe-1351-zahlenmengen-und-zahlengerade",
+                    "label": "Zahlenmengen und Zahlengerade",
+                    "url": "https://de.serlo.org/mathe/1351/zahlenmengen-und-zahlengerade",
+                    "children": [
+                      {
+                        "id": "mathe-61682-ganze-zahlen",
+                        "label": "Ganze Zahlen",
+                        "url": "https://de.serlo.org/mathe/61682/ganze-zahlen"
+                      },
+                      {
+                        "id": "mathe-55999-natuerliche-zahlen",
+                        "label": "Natürliche Zahlen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/55999/natuerliche-zahlen"
+                      },
+                      {
+                        "id": "mathe-56099-ganze-zahlen",
+                        "label": "Ganze Zahlen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/56099/ganze-zahlen"
+                      },
+                      {
+                        "id": "mathe-62547-vorzeichen-und-gegenzahl",
+                        "label": "Vorzeichen und Gegenzahl - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/62547/vorzeichen-und-gegenzahl"
+                      },
+                      {
+                        "id": "mathe-62414-aufgaben-zum-groessenvergleich-von-ganzen-zahlen",
+                        "label": "Aufgaben zum Größenvergleich von ganzen Zahlen",
+                        "url": "https://de.serlo.org/mathe/62414/aufgaben-zum-groessenvergleich-von-ganzen-zahlen",
+                        "children": [
+                          {
+                            "id": "mathe-137399-aufgabengruppe",
+                            "label": "Aufgaben zum Größenvergleich von ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/137399/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-137397-aufgabengruppe",
+                            "label": "Aufgaben zum Größenvergleich von ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/137397/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-62417-aufgabengruppe",
+                            "label": "Aufgaben zum Größenvergleich von ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/62417/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-61832-aufgabengruppe",
+                            "label": "Aufgaben zum Größenvergleich von ganzen Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/61832/aufgabengruppe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-84842-reelle-zahlen",
+                        "label": "Reelle Zahlen ",
+                        "url": "https://de.serlo.org/mathe/84842/reelle-zahlen"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1350-grosse-zahlen",
+                    "label": "Große Zahlen",
+                    "url": "https://de.serlo.org/mathe/1350/grosse-zahlen",
+                    "children": [
+                      {
+                        "id": "mathe-1885-potenzschreibweise-grosser-und-kleiner-zahlen",
+                        "label": "Potenzschreibweise großer und kleiner Zahlen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1885/potenzschreibweise-grosser-und-kleiner-zahlen"
+                      },
+                      {
+                        "id": "mathe-25120-aufgaben-zum-runden-und-abschaetzen-natuerlicher-zahlen",
+                        "label": "Aufgaben zum Runden und Abschätzen natürlicher Zahlen",
+                        "url": "https://de.serlo.org/mathe/25120/aufgaben-zum-runden-und-abschaetzen-natuerlicher-zahlen",
+                        "children": [
+                          {
+                            "id": "mathe-6375-aufgabe",
+                            "label": "Aufgaben zum Runden und Abschätzen natürlicher Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/6375/aufgabe"
+                          },
+                          {
+                            "id": "mathe-6411-aufgabe",
+                            "label": "Aufgaben zum Runden und Abschätzen natürlicher Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/6411/aufgabe"
+                          },
+                          {
+                            "id": "mathe-6453-aufgabe",
+                            "label": "Aufgaben zum Runden und Abschätzen natürlicher Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/6453/aufgabe"
+                          },
+                          {
+                            "id": "mathe-6383-aufgabengruppe",
+                            "label": "Aufgaben zum Runden und Abschätzen natürlicher Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/6383/aufgabengruppe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-25120-aufgaben-zum-runden-und-abschätzen-natürlicher-zahlen",
+                        "label": "Aufgaben zum Runden und Abschätzen natürlicher Zahlen",
+                        "url": "https://de.serlo.org/mathe/25120/aufgaben-zum-runden-und-abschätzen-natürlicher-zahlen",
+                        "children": [
+                          {
+                            "id": "mathe-6461-aufgabe",
+                            "label": "Aufgaben zum Runden und Abschätzen natürlicher Zahlen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/6461/aufgabe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-25117-aufgaben-zu-zahlwoertern-und-zur-potenzschreibweise",
+                        "label": "Aufgaben zu Zahlwörtern und zur Potenzschreibweise",
+                        "url": "https://de.serlo.org/mathe/25117/aufgaben-zu-zahlwoertern-und-zur-potenzschreibweise",
+                        "children": [
+                          {
+                            "id": "mathe-10381-aufgabe",
+                            "label": "Aufgaben zu Zahlwörtern und zur Potenzschreibweise - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/10381/aufgabe"
+                          },
+                          {
+                            "id": "mathe-10377-aufgabe",
+                            "label": "Aufgaben zu Zahlwörtern und zur Potenzschreibweise - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/10377/aufgabe"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1363-groessen-und-einheiten",
+                "label": "Größen und Einheiten",
+                "url": "https://de.serlo.org/mathe/1363/groessen-und-einheiten",
+                "children": [
+                  {
+                    "id": "mathe-26430-gemischte-sachaufgaben-zu-groessen-und-einheiten",
+                    "label": "Gemischte Sachaufgaben zu Größen und Einheiten",
+                    "url": "https://de.serlo.org/mathe/26430/gemischte-sachaufgaben-zu-groessen-und-einheiten",
+                    "children": [
+                      {
+                        "id": "mathe-7911-aufgabe",
+                        "label": "Gemischte Sachaufgaben zu Größen und Einheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/7911/aufgabe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-71315-rechnen-mit-einheiten",
+                    "label": "Rechnen mit Einheiten - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/71315/rechnen-mit-einheiten"
+                  },
+                  {
+                    "id": "mathe-1673-flaecheneinheiten",
+                    "label": "Flächeneinheiten - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1673/flaecheneinheiten"
+                  },
+                  {
+                    "id": "mathe-145421-einheiten",
+                    "label": "Einheiten",
+                    "url": "https://de.serlo.org/mathe/145421/einheiten"
+                  },
+                  {
+                    "id": "mathe-1787-temperatureinheiten",
+                    "label": "Temperatureinheiten - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1787/temperatureinheiten"
+                  },
+                  {
+                    "id": "mathe-24386-aufgaben-zum-umrechnen-von-volumeneinheiten",
+                    "label": "Aufgaben zum Umrechnen von Volumeneinheiten",
+                    "url": "https://de.serlo.org/mathe/24386/aufgaben-zum-umrechnen-von-volumeneinheiten",
+                    "children": [
+                      {
+                        "id": "mathe-71061-aufgabengruppe",
+                        "label": "Aufgaben zum Umrechnen von Volumeneinheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/71061/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-15453-aufgabengruppe",
+                        "label": "Aufgaben zum Umrechnen von Volumeneinheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/15453/aufgabengruppe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-36268-massstab",
+                    "label": "Maßstab - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/36268/massstab"
+                  },
+                  {
+                    "id": "mathe-26429-gemischte-aufgaben-zum-umrechnen-von-einheiten",
+                    "label": "Gemischte Aufgaben zum Umrechnen von Einheiten",
+                    "url": "https://de.serlo.org/mathe/26429/gemischte-aufgaben-zum-umrechnen-von-einheiten",
+                    "children": [
+                      {
+                        "id": "mathe-6329-aufgabengruppe",
+                        "label": "Gemischte Aufgaben zum Umrechnen von Einheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/6329/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-7633-aufgabengruppe",
+                        "label": "Gemischte Aufgaben zum Umrechnen von Einheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/7633/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-7427-aufgabengruppe",
+                        "label": "Gemischte Aufgaben zum Umrechnen von Einheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/7427/aufgabengruppe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24365-aufgaben-zum-umrechnen-von-geldeinheiten",
+                    "label": "Aufgaben zum Umrechnen von Geldeinheiten",
+                    "url": "https://de.serlo.org/mathe/24365/aufgaben-zum-umrechnen-von-geldeinheiten",
+                    "children": [
+                      {
+                        "id": "mathe-75162-aufgabengruppe",
+                        "label": "Aufgaben zum Umrechnen von Geldeinheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/75162/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-36269-aufgabengruppe",
+                        "label": "Aufgaben zum Umrechnen von Geldeinheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/36269/aufgabengruppe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-26431-aufgaben-zum-thema-massstab",
+                    "label": "Aufgaben zum Thema Maßstab",
+                    "url": "https://de.serlo.org/mathe/26431/aufgaben-zum-thema-massstab",
+                    "children": [
+                      {
+                        "id": "mathe-264418-aufgabe",
+                        "label": "Aufgaben zum Thema Maßstab - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/264418/aufgabe"
+                      },
+                      {
+                        "id": "mathe-36656-aufgabe",
+                        "label": "Aufgaben zum Thema Maßstab - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/36656/aufgabe"
+                      },
+                      {
+                        "id": "mathe-36674-aufgabe",
+                        "label": "Aufgaben zum Thema Maßstab - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/36674/aufgabe"
+                      },
+                      {
+                        "id": "mathe-36634-aufgabe",
+                        "label": "Aufgaben zum Thema Maßstab - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/36634/aufgabe"
+                      },
+                      {
+                        "id": "mathe-36647-aufgabe",
+                        "label": "Aufgaben zum Thema Maßstab - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/36647/aufgabe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24361-aufgaben-zum-umrechnen-von-zeiteinheiten",
+                    "label": "Aufgaben zum Umrechnen von Zeiteinheiten",
+                    "url": "https://de.serlo.org/mathe/24361/aufgaben-zum-umrechnen-von-zeiteinheiten",
+                    "children": [
+                      {
+                        "id": "mathe-225610-aufgabe",
+                        "label": "Aufgaben zum Umrechnen von Zeiteinheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/225610/aufgabe"
+                      },
+                      {
+                        "id": "mathe-225909-aufgabe",
+                        "label": "Aufgaben zum Umrechnen von Zeiteinheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/225909/aufgabe"
+                      },
+                      {
+                        "id": "mathe-226034-aufgabe",
+                        "label": "Aufgaben zum Umrechnen von Zeiteinheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/226034/aufgabe"
+                      },
+                      {
+                        "id": "mathe-225407-aufgabengruppe",
+                        "label": "Aufgaben zum Umrechnen von Zeiteinheiten - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/225407/aufgabengruppe"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-23876-quersumme-durchschnitt-und-betrag",
+                "label": "Quersumme, Durchschnitt und Betrag",
+                "url": "https://de.serlo.org/mathe/23876/quersumme-durchschnitt-und-betrag",
+                "children": [
+                  {
+                    "id": "mathe-1481-durchschnitt",
+                    "label": "Durchschnitt",
+                    "url": "https://de.serlo.org/mathe/1481/durchschnitt",
+                    "children": [
+                      {
+                        "id": "mathe-1887-durchschnitt-berechnen",
+                        "label": "Durchschnitt berechnen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1887/durchschnitt-berechnen"
+                      },
+                      {
+                        "id": "mathe-26428-aufgaben-zur-berechnung-des-durchschnitts",
+                        "label": "Aufgaben zur Berechnung des Durchschnitts",
+                        "url": "https://de.serlo.org/mathe/26428/aufgaben-zur-berechnung-des-durchschnitts"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1346-proportionalitaet-und-dreisatz",
+                "label": "Proportionalität und Dreisatz",
+                "url": "https://de.serlo.org/mathe/1346/proportionalitaet-und-dreisatz",
+                "children": [
+                  {
+                    "id": "mathe-1837-rechnen-mit-proportionalitaeten",
+                    "label": "Rechnen mit Proportionalitäten - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1837/rechnen-mit-proportionalitaeten"
+                  },
+                  {
+                    "id": "mathe-1771-direkte-proportionalitaet",
+                    "label": "Direkte Proportionalität - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1771/direkte-proportionalitaet"
+                  },
+                  {
+                    "id": "mathe-215074-dreisatz-bei-indirekter-proportionalitaet",
+                    "label": "Dreisatz bei indirekter Proportionalität - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/215074/dreisatz-bei-indirekter-proportionalitaet"
+                  },
+                  {
+                    "id": "mathe-196516-direkte-und-indirekte-proportionalitaet",
+                    "label": "Direkte und indirekte Proportionalität",
+                    "url": "https://de.serlo.org/mathe/196516/direkte-und-indirekte-proportionalitaet"
+                  },
+                  {
+                    "id": "mathe-24367-aufgaben-zur-direkten-proportionalitaet",
+                    "label": "Aufgaben zur direkten Proportionalität",
+                    "url": "https://de.serlo.org/mathe/24367/aufgaben-zur-direkten-proportionalitaet",
+                    "children": [
+                      {
+                        "id": "mathe-193178-aufgabe",
+                        "label": "Aufgaben zur direkten Proportionalität - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/193178/aufgabe"
+                      },
+                      {
+                        "id": "mathe-207740-aufgabengruppe",
+                        "label": "Aufgaben zur direkten Proportionalität - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/207740/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-10351-aufgabe",
+                        "label": "Aufgaben zur direkten Proportionalität - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/10351/aufgabe"
+                      },
+                      {
+                        "id": "mathe-273814-aufgabe",
+                        "label": "Aufgaben zur direkten Proportionalität - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/273814/aufgabe"
+                      },
+                      {
+                        "id": "mathe-10355-aufgabe",
+                        "label": "Aufgaben zur direkten Proportionalität - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/10355/aufgabe"
+                      },
+                      {
+                        "id": "mathe-58625-aufgabe",
+                        "label": "Aufgaben zur direkten Proportionalität - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/58625/aufgabe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24369-gemischte-aufgaben-zu-proportionalitaet-und-dreisatz",
+                    "label": "Gemischte Aufgaben zu Proportionalität und Dreisatz",
+                    "url": "https://de.serlo.org/mathe/24369/gemischte-aufgaben-zu-proportionalitaet-und-dreisatz",
+                    "children": [
+                      {
+                        "id": "mathe-10369-aufgabe",
+                        "label": "Gemischte Aufgaben zu Proportionalität und Dreisatz - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/10369/aufgabe"
+                      },
+                      {
+                        "id": "mathe-207552-aufgabengruppe",
+                        "label": "Gemischte Aufgaben zu Proportionalität und Dreisatz - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/207552/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-207490-aufgabengruppe",
+                        "label": "Gemischte Aufgaben zu Proportionalität und Dreisatz - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/207490/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-207553-aufgabengruppe",
+                        "label": "Gemischte Aufgaben zu Proportionalität und Dreisatz - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/207553/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-9259-aufgabe",
+                        "label": "Gemischte Aufgaben zu Proportionalität und Dreisatz - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/9259/aufgabe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24368-aufgaben-zur-indirekten-proportionalitaet",
+                    "label": "Aufgaben zur indirekten Proportionalität",
+                    "url": "https://de.serlo.org/mathe/24368/aufgaben-zur-indirekten-proportionalitaet",
+                    "children": [
+                      {
+                        "id": "mathe-13717-aufgabengruppe",
+                        "label": "Aufgaben zur indirekten Proportionalität - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/13717/aufgabengruppe"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-24142-sonstiges",
+                "label": "Sonstiges",
+                "url": "https://de.serlo.org/mathe/24142/sonstiges",
+                "children": [
+                  {
+                    "id": "mathe-245698-zahlensysteme",
+                    "label": "Zahlensysteme",
+                    "url": "https://de.serlo.org/mathe/245698/zahlensysteme",
+                    "children": [
+                      {
+                        "id": "mathe-2091-zahlensysteme",
+                        "label": "Zahlensysteme - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2091/zahlensysteme"
+                      },
+                      {
+                        "id": "mathe-28903-stellenwertsysteme",
+                        "label": "Stellenwertsysteme - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/28903/stellenwertsysteme"
+                      },
+                      {
+                        "id": "mathe-97552-hexadezimalsystem",
+                        "label": "Hexadezimalsystem - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/97552/hexadezimalsystem"
+                      },
+                      {
+                        "id": "mathe-244638-stellenwerttafel",
+                        "label": "Stellenwerttafel - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/244638/stellenwerttafel"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-129708-kongruenz-von-zahlen",
+                    "label": "Kongruenz von Zahlen  - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/129708/kongruenz-von-zahlen"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "mathe-1289-funktionen",
+            "label": "Funktionen",
+            "url": "https://de.serlo.org/mathe/1289/funktionen",
+            "children": [
+              {
+                "id": "mathe-1304-ableitung-von-funktionen",
+                "label": "Ableitung von Funktionen ",
+                "url": "https://de.serlo.org/mathe/1304/ableitung-von-funktionen",
+                "children": [
+                  {
+                    "id": "mathe-24677-ableitung-allgemein",
+                    "label": "Ableitung allgemein",
+                    "url": "https://de.serlo.org/mathe/24677/ableitung-allgemein",
+                    "children": [
+                      {
+                        "id": "mathe-1795-ableitung",
+                        "label": "Ableitung - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1795/ableitung"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1448-tangente-und-normale",
+                    "label": "Tangente und Normale ",
+                    "url": "https://de.serlo.org/mathe/1448/tangente-und-normale",
+                    "children": [
+                      {
+                        "id": "mathe-1789-normale",
+                        "label": "Normale - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1789/normale"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1303-wichtige-funktionstypen-und-ihre-eigenschaften",
+                "label": "Wichtige Funktionstypen und ihre Eigenschaften",
+                "url": "https://de.serlo.org/mathe/1303/wichtige-funktionstypen-und-ihre-eigenschaften",
+                "children": [
+                  {
+                    "id": "mathe-1450-trigonometrische-funktionen",
+                    "label": "Trigonometrische Funktionen – Grundlagen & Übungen",
+                    "url": "https://de.serlo.org/mathe/1450/trigonometrische-funktionen",
+                    "children": [
+                      {
+                        "id": "mathe-1909-sinusfunktion-und-kosinusfunktion",
+                        "label": "Sinusfunktion und Kosinusfunktion - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1909/sinusfunktion-und-kosinusfunktion"
+                      },
+                      {
+                        "id": "mathe-1569-amplitude-und-ruhelage-der-trigonometrischen-funktionen",
+                        "label": "Amplitude und Ruhelage der trigonometrischen Funktionen",
+                        "url": "https://de.serlo.org/mathe/1569/amplitude-und-ruhelage-der-trigonometrischen-funktionen"
+                      },
+                      {
+                        "id": "mathe-53031-beziehungen-trigonometrischer-funktionen",
+                        "label": "Beziehungen trigonometrischer Funktionen",
+                        "url": "https://de.serlo.org/mathe/53031/beziehungen-trigonometrischer-funktionen"
+                      },
+                      {
+                        "id": "mathe-2149-zusammenhang-zwischen-kreisbewegung-und-sinus-und-kosinusfunktion",
+                        "label": "Zusammenhang zwischen Kreisbewegung und Sinus- und Kosinusfunktion - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2149/zusammenhang-zwischen-kreisbewegung-und-sinus-und-kosinusfunktion"
+                      },
+                      {
+                        "id": "mathe-53246-warum-ist-die-ableitung-vom-sinus-der-kosinus",
+                        "label": "Warum ist die Ableitung vom Sinus der Kosinus? - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/53246/warum-ist-die-ableitung-vom-sinus-der-kosinus"
+                      },
+                      {
+                        "id": "mathe-26404-gemischte-aufgaben-zu-trigonometrischen-funktionen",
+                        "label": "Gemischte Aufgaben zu trigonometrischen Funktionen",
+                        "url": "https://de.serlo.org/mathe/26404/gemischte-aufgaben-zu-trigonometrischen-funktionen",
+                        "children": [
+                          {
+                            "id": "mathe-54056-aufgabe",
+                            "label": "Gemischte Aufgaben zu trigonometrischen Funktionen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/54056/aufgabe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-54054-aufgaben-zum-verschieben-und-strecken-trigonometrischer-funktionen",
+                        "label": "Aufgaben zum Verschieben und Strecken trigonometrischer Funktionen",
+                        "url": "https://de.serlo.org/mathe/54054/aufgaben-zum-verschieben-und-strecken-trigonometrischer-funktionen"
+                      },
+                      {
+                        "id": "mathe-46011-sinus-kosinus-und-tangensfunktion",
+                        "label": "Sinus-, Kosinus- und Tangensfunktion - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/46011/sinus-kosinus-und-tangensfunktion"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1324-exponential-und-logarithmusfunktion",
+                    "label": "Exponential- und Logarithmusfunktion",
+                    "url": "https://de.serlo.org/mathe/1324/exponential-und-logarithmusfunktion",
+                    "children": [
+                      {
+                        "id": "mathe-2143-exponentialfunktion",
+                        "label": "Exponentialfunktion - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2143/exponentialfunktion"
+                      },
+                      {
+                        "id": "mathe-79675-gemischte-aufgaben-zur-e-und-ln-funktion",
+                        "label": "Gemischte Aufgaben zur e- und ln-Funktion",
+                        "url": "https://de.serlo.org/mathe/79675/gemischte-aufgaben-zur-e-und-ln-funktion",
+                        "children": [
+                          {
+                            "id": "mathe-269429-aufgabe",
+                            "label": "Gemischte Aufgaben zur e- und ln-Funktion - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/269429/aufgabe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24662-gebrochen-rationale-funktionen",
+                    "label": "Gebrochen-rationale Funktionen",
+                    "url": "https://de.serlo.org/mathe/24662/gebrochen-rationale-funktionen",
+                    "children": [
+                      {
+                        "id": "mathe-1741-gebrochen-rationale-funktionen",
+                        "label": "Gebrochen-rationale Funktionen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1741/gebrochen-rationale-funktionen"
+                      },
+                      {
+                        "id": "mathe-1529-hebbare-definitionsluecke",
+                        "label": "Hebbare Definitionslücke - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1529/hebbare-definitionsluecke"
+                      },
+                      {
+                        "id": "mathe-185542-verschiebungen-streckungen-und-stauchungen-von-hyperbeln",
+                        "label": "Verschiebungen, Streckungen und Stauchungen von Hyperbeln",
+                        "url": "https://de.serlo.org/mathe/185542/verschiebungen-streckungen-und-stauchungen-von-hyperbeln"
+                      },
+                      {
+                        "id": "mathe-181412-die-standard-hyperbel-bzw-die-funktion-y1x",
+                        "label": "Die Standard-Hyperbel bzw. die Funktion y=1/x - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/181412/die-standard-hyperbel-bzw-die-funktion-y1x"
+                      },
+                      {
+                        "id": "mathe-187453-aufgaben-zu-einfachen-gebrochen-rationalen-funktionen",
+                        "label": "Aufgaben zu einfachen gebrochen-rationalen Funktionen",
+                        "url": "https://de.serlo.org/mathe/187453/aufgaben-zu-einfachen-gebrochen-rationalen-funktionen",
+                        "children": [
+                          {
+                            "id": "mathe-182494-aufgabengruppe",
+                            "label": "Aufgaben zu Graph und Asymptoten gebrochen-rationaler Funktionen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/182494/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-182271-aufgabengruppe",
+                            "label": "Aufgaben zu Definitionsmenge, Achsenschnittpunkten und Einfluss der Parameter - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/182271/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-183738-aufgabengruppe",
+                            "label": "Aufgaben zu Graph und Asymptoten gebrochen-rationaler Funktionen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/183738/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-181644-aufgabengruppe",
+                            "label": "Aufgaben zu Graph und Asymptoten gebrochen-rationaler Funktionen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/181644/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-182424-aufgabengruppe",
+                            "label": "Aufgaben zu Definitionsmenge, Achsenschnittpunkten und Einfluss der Parameter - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/182424/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-183855-aufgabengruppe",
+                            "label": "Aufgaben zu Definitionsmenge, Achsenschnittpunkten und Einfluss der Parameter - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/183855/aufgabengruppe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-182151-aufgabengruppe",
+                        "label": "Aufgaben zu Graph und Asymptoten gebrochen-rationaler Funktionen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/182151/aufgabengruppe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1327-lineare-funktionen-geraden",
+                    "label": "Lineare Funktionen - Geraden",
+                    "url": "https://de.serlo.org/mathe/1327/lineare-funktionen-geraden",
+                    "children": [
+                      {
+                        "id": "mathe-2051-gerade-im-koordinatensystem",
+                        "label": "Gerade im Koordinatensystem - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2051/gerade-im-koordinatensystem"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1305-gemischte-aufgaben-zum-ableiten-von-funktionen",
+                "label": "Gemischte Aufgaben zum Ableiten von Funktionen",
+                "url": "https://de.serlo.org/mathe/1305/gemischte-aufgaben-zum-ableiten-von-funktionen",
+                "children": [
+                  {
+                    "id": "mathe-26408-gemischte-aufgaben-zum-ableiten-von-funktionen",
+                    "label": "Gemischte Aufgaben zum Ableiten von Funktionen",
+                    "url": "https://de.serlo.org/mathe/26408/gemischte-aufgaben-zum-ableiten-von-funktionen",
+                    "children": [
+                      {
+                        "id": "mathe-277263-aufgabe",
+                        "label": "Gemischte Aufgaben zum Ableiten von Funktionen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/277263/aufgabe"
+                      },
+                      {
+                        "id": "mathe-105730-aufgabengruppe",
+                        "label": "Gemischte Aufgaben zum Ableiten von Funktionen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/105730/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-58666-aufgabengruppe",
+                        "label": "Gemischte Aufgaben zum Ableiten von Funktionen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/58666/aufgabengruppe"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1306-stammfunktion-integral-und-flaechenberechnung",
+                "label": "Stammfunktion, Integral und Flächenberechnung",
+                "url": "https://de.serlo.org/mathe/1306/stammfunktion-integral-und-flaechenberechnung",
+                "children": [
+                  {
+                    "id": "mathe-21399-spezielle-methoden-zum-finden-einer-stammfunktion",
+                    "label": "Spezielle Methoden zum Finden einer Stammfunktion",
+                    "url": "https://de.serlo.org/mathe/21399/spezielle-methoden-zum-finden-einer-stammfunktion",
+                    "children": [
+                      {
+                        "id": "mathe-1813-integration-durch-substitution",
+                        "label": "Integration durch Substitution - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1813/integration-durch-substitution"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1323-integrale",
+                    "label": "Integrale",
+                    "url": "https://de.serlo.org/mathe/1323/integrale",
+                    "children": [
+                      {
+                        "id": "mathe-2045-integralfunktion",
+                        "label": "Integralfunktion  - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2045/integralfunktion"
+                      },
+                      {
+                        "id": "mathe-26099-aufgaben-zu-integralen",
+                        "label": "Aufgaben zu Integralen",
+                        "url": "https://de.serlo.org/mathe/26099/aufgaben-zu-integralen",
+                        "children": [
+                          {
+                            "id": "mathe-309536-aufgabe",
+                            "label": "Aufgaben zu Integralen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/309536/aufgabe"
+                          },
+                          {
+                            "id": "mathe-309534-aufgabengruppe",
+                            "label": "Aufgaben zu Integralen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/309534/aufgabengruppe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-309404-mittelwertberechnung-mithilfe-eines-integrals",
+                        "label": "Mittelwertberechnung mithilfe eines Integrals - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/309404/mittelwertberechnung-mithilfe-eines-integrals"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1302-funktionsbegriff",
+                "label": "Funktionsbegriff",
+                "url": "https://de.serlo.org/mathe/1302/funktionsbegriff",
+                "children": [
+                  {
+                    "id": "mathe-174848-wichtige-grundbegriffe-zu-funktionen",
+                    "label": "Wichtige Grundbegriffe zu Funktionen – Grundlagen & Übungen",
+                    "url": "https://de.serlo.org/mathe/174848/wichtige-grundbegriffe-zu-funktionen"
+                  },
+                  {
+                    "id": "mathe-1415-funktionen-und-relationen",
+                    "label": "Funktionen und Relationen",
+                    "url": "https://de.serlo.org/mathe/1415/funktionen-und-relationen",
+                    "children": [
+                      {
+                        "id": "mathe-1843-graph-einer-funktion",
+                        "label": "Graph einer Funktion - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1843/graph-einer-funktion"
+                      },
+                      {
+                        "id": "mathe-42380-wertetabelle",
+                        "label": "Wertetabelle - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/42380/wertetabelle"
+                      },
+                      {
+                        "id": "mathe-26394-aufgaben-zu-funktionen-und-relationen",
+                        "label": "Aufgaben zu Funktionen und Relationen",
+                        "url": "https://de.serlo.org/mathe/26394/aufgaben-zu-funktionen-und-relationen",
+                        "children": [
+                          {
+                            "id": "mathe-245841-aufgabengruppe",
+                            "label": "Aufgaben zu Funktionen und Relationen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/245841/aufgabengruppe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-1823-term",
+                        "label": "Term - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1823/term"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1492-schnittpunkte-von-graphen",
+                    "label": "Schnittpunkte von Graphen",
+                    "url": "https://de.serlo.org/mathe/1492/schnittpunkte-von-graphen",
+                    "children": [
+                      {
+                        "id": "mathe-2199-schnittpunkt-zweier-funktionen",
+                        "label": "Schnittpunkt zweier Funktionen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2199/schnittpunkt-zweier-funktionen"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24243-funktionsgraphen-veraendern",
+                    "label": "Funktionsgraphen verändern",
+                    "url": "https://de.serlo.org/mathe/24243/funktionsgraphen-veraendern",
+                    "children": [
+                      {
+                        "id": "mathe-1861-funktionsgraphen-verschieben",
+                        "label": "Funktionsgraphen verschieben - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1861/funktionsgraphen-verschieben"
+                      },
+                      {
+                        "id": "mathe-1859-funktionsgraphen-stauchen-und-strecken",
+                        "label": "Funktionsgraphen stauchen und strecken - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1859/funktionsgraphen-stauchen-und-strecken"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1373-kurvendiskussion",
+                "label": "Kurvendiskussion",
+                "url": "https://de.serlo.org/mathe/1373/kurvendiskussion",
+                "children": [
+                  {
+                    "id": "mathe-1374-grenzwerte-und-asymptoten",
+                    "label": "Grenzwerte und Asymptoten",
+                    "url": "https://de.serlo.org/mathe/1374/grenzwerte-und-asymptoten",
+                    "children": [
+                      {
+                        "id": "mathe-1615-berechnung-der-asymptote-bei-gebrochen-rationalen-funktionen",
+                        "label": "Berechnung der Asymptote bei gebrochen-rationalen Funktionen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1615/berechnung-der-asymptote-bei-gebrochen-rationalen-funktionen"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-17132-grenzwerte-stetigkeit-und-differenzierbarkeit",
+                "label": "Grenzwerte, Stetigkeit und Differenzierbarkeit",
+                "url": "https://de.serlo.org/mathe/17132/grenzwerte-stetigkeit-und-differenzierbarkeit",
+                "children": [
+                  {
+                    "id": "mathe-24670-stetigkeit",
+                    "label": "Stetigkeit",
+                    "url": "https://de.serlo.org/mathe/24670/stetigkeit",
+                    "children": [
+                      {
+                        "id": "mathe-1597-stetigkeit",
+                        "label": "Stetigkeit - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1597/stetigkeit"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24672-differenzierbarkeit",
+                    "label": "Differenzierbarkeit",
+                    "url": "https://de.serlo.org/mathe/24672/differenzierbarkeit",
+                    "children": [
+                      {
+                        "id": "mathe-18529-differentialquotient",
+                        "label": "Differentialquotient - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/18529/differentialquotient"
+                      },
+                      {
+                        "id": "mathe-91321-aufgaben-zum-differenzen-und-differentialquotient",
+                        "label": "Aufgaben zum Differenzen- und Differentialquotient",
+                        "url": "https://de.serlo.org/mathe/91321/aufgaben-zum-differenzen-und-differentialquotient"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24669-grenzwert",
+                    "label": "Grenzwert",
+                    "url": "https://de.serlo.org/mathe/24669/grenzwert",
+                    "children": [
+                      {
+                        "id": "mathe-1853-grenzwert-bestimmen",
+                        "label": "Grenzwert bestimmen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1853/grenzwert-bestimmen"
+                      },
+                      {
+                        "id": "mathe-84261-aufgaben-zum-verstaendnis-des-grenzwertbegriffs",
+                        "label": "Aufgaben zum Verständnis des Grenzwertbegriffs",
+                        "url": "https://de.serlo.org/mathe/84261/aufgaben-zum-verstaendnis-des-grenzwertbegriffs",
+                        "children": [
+                          {
+                            "id": "mathe-84262-aufgabengruppe",
+                            "label": "Aufgaben zum Verständnis des Grenzwertbegriffs - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/84262/aufgabengruppe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-1689-regel-von-lhospital",
+                        "label": "Regel von L'Hospital - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1689/regel-von-lhospital"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1443-potenz-und-wurzelfunktionen",
+                "label": "Potenz- und Wurzelfunktionen",
+                "url": "https://de.serlo.org/mathe/1443/potenz-und-wurzelfunktionen",
+                "children": [
+                  {
+                    "id": "mathe-26402-aufgaben-zu-potenz-und-wurzelfunktionen",
+                    "label": "Aufgaben zu Potenz- und Wurzelfunktionen",
+                    "url": "https://de.serlo.org/mathe/26402/aufgaben-zu-potenz-und-wurzelfunktionen",
+                    "children": [
+                      {
+                        "id": "mathe-11093-aufgabe",
+                        "label": "Aufgaben zu Potenz- und Wurzelfunktionen  - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/11093/aufgabe"
+                      },
+                      {
+                        "id": "mathe-251347-aufgabengruppe",
+                        "label": "Aufgaben zu Potenz- und Wurzelfunktionen  - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/251347/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-260856-aufgabengruppe",
+                        "label": "Aufgaben zu Potenz- und Wurzelfunktionen  - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/260856/aufgabengruppe"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1348-quadratische-funktionen-parabeln",
+                "label": "Quadratische Funktionen - Parabeln",
+                "url": "https://de.serlo.org/mathe/1348/quadratische-funktionen-parabeln",
+                "children": [
+                  {
+                    "id": "mathe-1411-funktionsterm-einer-quadratischen-funktion",
+                    "label": "Funktionsterm einer quadratischen Funktion",
+                    "url": "https://de.serlo.org/mathe/1411/funktionsterm-einer-quadratischen-funktion",
+                    "children": [
+                      {
+                        "id": "mathe-2073-allgemeine-form-und-scheitelform-einer-quadratischen-funktion",
+                        "label": "Allgemeine Form und Scheitelform einer quadratischen Funktion - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2073/allgemeine-form-und-scheitelform-einer-quadratischen-funktion"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1355-definitionsmenge",
+                "label": "Definitionsmenge",
+                "url": "https://de.serlo.org/mathe/1355/definitionsmenge",
+                "children": [
+                  {
+                    "id": "mathe-125394-definitionsbereich-bestimmen",
+                    "label": "Definitionsbereich bestimmen",
+                    "url": "https://de.serlo.org/mathe/125394/definitionsbereich-bestimmen#125411"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "mathe-1288-geometrie",
+            "label": "Geometrie",
+            "url": "https://de.serlo.org/mathe/1288/geometrie",
+            "children": [
+              {
+                "id": "mathe-1413-analytische-geometrie",
+                "label": "Analytische Geometrie – Grundlagen & Übungen",
+                "url": "https://de.serlo.org/mathe/1413/analytische-geometrie",
+                "children": [
+                  {
+                    "id": "mathe-1468-kreise-und-kugeln",
+                    "label": "Kreise und Kugeln",
+                    "url": "https://de.serlo.org/mathe/1468/kreise-und-kugeln",
+                    "children": [
+                      {
+                        "id": "mathe-224867-kugeln-in-der-analytischen-geometrie",
+                        "label": "Kugeln in der analytischen Geometrie - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/224867/kugeln-in-der-analytischen-geometrie"
+                      },
+                      {
+                        "id": "mathe-228799-zwei-kugeln-mit-gemeinsamen-aeusseren-beruehrpunkt",
+                        "label": "Zwei Kugeln mit gemeinsamen äußeren Berührpunkt - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/228799/zwei-kugeln-mit-gemeinsamen-aeusseren-beruehrpunkt"
+                      },
+                      {
+                        "id": "mathe-229014-zwei-kugeln-mit-gemeinsamen-inneren-beruehrpunkt",
+                        "label": "Zwei Kugeln mit gemeinsamen inneren Berührpunkt - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/229014/zwei-kugeln-mit-gemeinsamen-inneren-beruehrpunkt"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1469-flaechen-und-volumenberechnung",
+                    "label": "Flächen- und Volumenberechnung",
+                    "url": "https://de.serlo.org/mathe/1469/flaechen-und-volumenberechnung",
+                    "children": [
+                      {
+                        "id": "mathe-1477-flaechenberechnung-in-der-analytischen-geometrie",
+                        "label": "Flächenberechnung in der analytischen Geometrie",
+                        "url": "https://de.serlo.org/mathe/1477/flaechenberechnung-in-der-analytischen-geometrie",
+                        "children": [
+                          {
+                            "id": "mathe-2019-determinanten-berechnen",
+                            "label": "Determinanten berechnen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/2019/determinanten-berechnen"
+                          },
+                          {
+                            "id": "mathe-1979-flaecheninhalte-und-volumen-im-kartesischen-koordinatensystem",
+                            "label": "Flächeninhalte  und Volumen im kartesischen Koordinatensystem - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/1979/flaecheninhalte-und-volumen-im-kartesischen-koordinatensystem"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-1476-volumenberechnung-in-der-analytischen-geometrie",
+                        "label": "Volumenberechnung in der analytischen Geometrie",
+                        "url": "https://de.serlo.org/mathe/1476/volumenberechnung-in-der-analytischen-geometrie",
+                        "children": [
+                          {
+                            "id": "mathe-2099-volumenberechnung-in-der-analytischen-geometrie",
+                            "label": "Volumenberechnung in der analytischen Geometrie  - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/2099/volumenberechnung-in-der-analytischen-geometrie"
+                          },
+                          {
+                            "id": "mathe-30692-aufgaben-zur-volumenberechnung",
+                            "label": "Aufgaben zur Volumenberechnung",
+                            "url": "https://de.serlo.org/mathe/30692/aufgaben-zur-volumenberechnung",
+                            "children": [
+                              {
+                                "id": "mathe-72915-aufgabengruppe",
+                                "label": "Aufgaben zur Volumenberechnung  - lernen mit Serlo!",
+                                "url": "https://de.serlo.org/mathe/72915/aufgabengruppe"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-24442-grundbegriffe-der-vektorrechnung",
+                "label": "Grundbegriffe der Vektorrechnung",
+                "url": "https://de.serlo.org/mathe/24442/grundbegriffe-der-vektorrechnung",
+                "children": [
+                  {
+                    "id": "mathe-24439-vektorbegriff",
+                    "label": "Vektorbegriff",
+                    "url": "https://de.serlo.org/mathe/24439/vektorbegriff",
+                    "children": [
+                      {
+                        "id": "mathe-1573-vektor",
+                        "label": "Vektor - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1573/vektor"
+                      },
+                      {
+                        "id": "mathe-177622-gegenvektor",
+                        "label": "Gegenvektor - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/177622/gegenvektor"
+                      },
+                      {
+                        "id": "mathe-169848-ortsvektoren-und-ihre-darstellung",
+                        "label": "Ortsvektoren und ihre Darstellung - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/169848/ortsvektoren-und-ihre-darstellung"
+                      },
+                      {
+                        "id": "mathe-169845-ortsunabhaengigkeit-von-vektoren",
+                        "label": "Ortsunabhängigkeit von Vektoren - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/169845/ortsunabhaengigkeit-von-vektoren"
+                      },
+                      {
+                        "id": "mathe-1775-vektor-zwischen-zwei-punkten-berechnen",
+                        "label": "Vektor zwischen zwei Punkten berechnen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1775/vektor-zwischen-zwei-punkten-berechnen"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1454-grundbegriffe",
+                "label": "Grundbegriffe",
+                "url": "https://de.serlo.org/mathe/1454/grundbegriffe",
+                "children": [
+                  {
+                    "id": "mathe-24498-symmetrie",
+                    "label": "Symmetrie",
+                    "url": "https://de.serlo.org/mathe/24498/symmetrie",
+                    "children": [
+                      {
+                        "id": "mathe-35721-punktsymmetrie",
+                        "label": "Punktsymmetrie - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/35721/punktsymmetrie"
+                      },
+                      {
+                        "id": "mathe-1645-symmetrie",
+                        "label": "Symmetrie - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1645/symmetrie"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1358-punkte-im-koordinatensystem",
+                    "label": "Punkte im Koordinatensystem",
+                    "url": "https://de.serlo.org/mathe/1358/punkte-im-koordinatensystem",
+                    "children": [
+                      {
+                        "id": "mathe-2043-zeichnen-im-3d-koordinatensystem",
+                        "label": "Zeichnen im 3D-Koordinatensystem - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2043/zeichnen-im-3d-koordinatensystem"
+                      },
+                      {
+                        "id": "mathe-60009-aufgaben-zur-berechnung-von-laengen-im-koordinatensystem",
+                        "label": "Aufgaben zur Berechnung von Längen im Koordinatensystem",
+                        "url": "https://de.serlo.org/mathe/60009/aufgaben-zur-berechnung-von-laengen-im-koordinatensystem",
+                        "children": [
+                          {
+                            "id": "mathe-42418-aufgabengruppe",
+                            "label": "Aufgaben zur Berechnung von Längen im Koordinatensystem - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/42418/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-24518-tangenten-und-sekanten-am-kreis",
+                "label": "Tangenten und Sekanten am Kreis",
+                "url": "https://de.serlo.org/mathe/24518/tangenten-und-sekanten-am-kreis",
+                "children": [
+                  {
+                    "id": "mathe-1647-tangente-an-kreis",
+                    "label": "Tangente an Kreis - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1647/tangente-an-kreis"
+                  },
+                  {
+                    "id": "mathe-36443-tangente-an-kreis-konstruieren",
+                    "label": "Tangente an Kreis konstruieren - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/36443/tangente-an-kreis-konstruieren"
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1381-satzgruppe-des-pythagoras",
+                "label": "Satzgruppe des Pythagoras",
+                "url": "https://de.serlo.org/mathe/1381/satzgruppe-des-pythagoras",
+                "children": [
+                  {
+                    "id": "mathe-1541-hypotenuse",
+                    "label": "Hypotenuse - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1541/hypotenuse"
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1394-dreiecke-vierecke-kreise-und-andere-ebene-figuren",
+                "label": "Dreiecke, Vierecke, Kreise und andere ebene Figuren",
+                "url": "https://de.serlo.org/mathe/1394/dreiecke-vierecke-kreise-und-andere-ebene-figuren",
+                "children": [
+                  {
+                    "id": "mathe-24375-beliebige-n-ecke",
+                    "label": "Beliebige n-Ecke",
+                    "url": "https://de.serlo.org/mathe/24375/beliebige-n-ecke",
+                    "children": [
+                      {
+                        "id": "mathe-2031-diagonale",
+                        "label": "Diagonale - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2031/diagonale"
+                      },
+                      {
+                        "id": "mathe-2103-regulaere-vielecke",
+                        "label": "Reguläre Vielecke - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2103/regulaere-vielecke"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1338-kreise-und-kreisteile",
+                    "label": "Kreise und Kreisteile",
+                    "url": "https://de.serlo.org/mathe/1338/kreise-und-kreisteile",
+                    "children": [
+                      {
+                        "id": "mathe-36264-vertiefung-zum-kreissektor",
+                        "label": "Vertiefung zum Kreissektor - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/36264/vertiefung-zum-kreissektor"
+                      },
+                      {
+                        "id": "mathe-276459-kreisumfang-und-kreisflaeche",
+                        "label": "Kreisumfang und Kreisfläche",
+                        "url": "https://de.serlo.org/mathe/276459/kreisumfang-und-kreisflaeche"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24396-flaechen-umfangsberechnung-und-anderes-zu-ebenen-figuren",
+                    "label": "Flächen-, Umfangsberechnung und anderes zu ebenen Figuren",
+                    "url": "https://de.serlo.org/mathe/24396/flaechen-umfangsberechnung-und-anderes-zu-ebenen-figuren",
+                    "children": [
+                      {
+                        "id": "mathe-36520-flaechenformeln-ebener-figuren",
+                        "label": "Flächenformeln ebener Figuren - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/36520/flaechenformeln-ebener-figuren"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1336-dreieck",
+                "label": "Dreieck",
+                "url": "https://de.serlo.org/mathe/1336/dreieck",
+                "children": [
+                  {
+                    "id": "mathe-23766-besondere-linien-und-punkte-im-dreieck",
+                    "label": "Besondere Linien und Punkte im Dreieck",
+                    "url": "https://de.serlo.org/mathe/23766/besondere-linien-und-punkte-im-dreieck",
+                    "children": [
+                      {
+                        "id": "mathe-1919-inkreis-eines-dreiecks",
+                        "label": "Inkreis eines Dreiecks - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1919/inkreis-eines-dreiecks"
+                      },
+                      {
+                        "id": "mathe-1915-schwerpunkt",
+                        "label": "Schwerpunkt - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1915/schwerpunkt"
+                      },
+                      {
+                        "id": "mathe-1921-hoehe-eines-dreiecks",
+                        "label": "Höhe eines Dreiecks - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1921/hoehe-eines-dreiecks"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24370-dreieck-allgemein-und-besondere-dreiecke",
+                    "label": "Dreieck allgemein und besondere Dreiecke",
+                    "url": "https://de.serlo.org/mathe/24370/dreieck-allgemein-und-besondere-dreiecke",
+                    "children": [
+                      {
+                        "id": "mathe-35663-besondere-dreiecke",
+                        "label": "Besondere Dreiecke - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/35663/besondere-dreiecke"
+                      },
+                      {
+                        "id": "mathe-1873-winkelsumme-im-dreieck",
+                        "label": "Winkelsumme im Dreieck - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1873/winkelsumme-im-dreieck"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24389-dreiecksflaeche-berechnen",
+                    "label": "Dreiecksfläche berechnen",
+                    "url": "https://de.serlo.org/mathe/24389/dreiecksflaeche-berechnen",
+                    "children": [
+                      {
+                        "id": "mathe-36708-flaecheninhalt-eines-dreiecks-aus-grundlinie-und-hoehe-berechnen-herleitung",
+                        "label": "Flächeninhalt eines Dreiecks aus Grundlinie und Höhe berechnen (Herleitung) - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/36708/flaecheninhalt-eines-dreiecks-aus-grundlinie-und-hoehe-berechnen-herleitung"
+                      },
+                      {
+                        "id": "mathe-2021-flaecheninhalt-eines-dreiecks-im-koordinatensystem",
+                        "label": "Flächeninhalt eines Dreiecks im Koordinatensystem - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2021/flaecheninhalt-eines-dreiecks-im-koordinatensystem"
+                      },
+                      {
+                        "id": "mathe-24390-aufgaben-zur-flaechenberechnung-von-dreiecken-im-koordinatensystem",
+                        "label": "Aufgaben zur Flächenberechnung von Dreiecken im Koordinatensystem",
+                        "url": "https://de.serlo.org/mathe/24390/aufgaben-zur-flaechenberechnung-von-dreiecken-im-koordinatensystem",
+                        "children": [
+                          {
+                            "id": "mathe-101812-aufgabe",
+                            "label": "Aufgaben zur Flächenberechnung von Dreiecken im Koordinatensystem - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/101812/aufgabe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1382-kongruente-und-aehnliche-dreiecke",
+                    "label": "Kongruente und ähnliche Dreiecke",
+                    "url": "https://de.serlo.org/mathe/1382/kongruente-und-aehnliche-dreiecke",
+                    "children": [
+                      {
+                        "id": "mathe-1925-kongruenz",
+                        "label": "Kongruenz - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1925/kongruenz"
+                      },
+                      {
+                        "id": "mathe-167486-aufgaben-zu-kongruenz-und-aehnlichkeit-von-dreiecken",
+                        "label": "Aufgaben zu Kongruenz und Ähnlichkeit von Dreiecken",
+                        "url": "https://de.serlo.org/mathe/167486/aufgaben-zu-kongruenz-und-aehnlichkeit-von-dreiecken"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1337-viereck",
+                "label": "Viereck",
+                "url": "https://de.serlo.org/mathe/1337/viereck",
+                "children": [
+                  {
+                    "id": "mathe-71703-beziehungen-zwischen-vierecken",
+                    "label": "Beziehungen zwischen Vierecken",
+                    "url": "https://de.serlo.org/mathe/71703/beziehungen-zwischen-vierecken",
+                    "children": [
+                      {
+                        "id": "mathe-105174-system-der-vierecke",
+                        "label": "System der Vierecke - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/105174/system-der-vierecke"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24378-parallelogramm-raute-drachenviereck-und-trapez",
+                    "label": "Parallelogramm, Raute, Drachenviereck und Trapez",
+                    "url": "https://de.serlo.org/mathe/24378/parallelogramm-raute-drachenviereck-und-trapez",
+                    "children": [
+                      {
+                        "id": "mathe-24394-aufgaben-zum-trapez",
+                        "label": "Aufgaben zum Trapez",
+                        "url": "https://de.serlo.org/mathe/24394/aufgaben-zum-trapez",
+                        "children": [
+                          {
+                            "id": "mathe-121021-aufgabengruppe",
+                            "label": "Aufgaben zum Trapez - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/121021/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-70879-aufgabengruppe",
+                            "label": "Aufgaben zum Trapez - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/70879/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1357-winkel",
+                "label": "Winkel",
+                "url": "https://de.serlo.org/mathe/1357/winkel",
+                "children": [
+                  {
+                    "id": "mathe-25381-aufgaben-zum-thema-winkel",
+                    "label": "Aufgaben zum Thema Winkel",
+                    "url": "https://de.serlo.org/mathe/25381/aufgaben-zum-thema-winkel",
+                    "children": [
+                      {
+                        "id": "mathe-20870-aufgabengruppe",
+                        "label": "Aufgaben zum Thema Winkel - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/20870/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-20700-aufgabengruppe",
+                        "label": "Aufgaben zum Thema Winkel - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/20700/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-14591-aufgabe",
+                        "label": "Aufgaben zum Thema Winkel - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/14591/aufgabe"
+                      },
+                      {
+                        "id": "mathe-20782-aufgabengruppe",
+                        "label": "Aufgaben zum Thema Winkel - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/20782/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-10125-aufgabe",
+                        "label": "Aufgaben zum Thema Winkel - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/10125/aufgabe"
+                      },
+                      {
+                        "id": "mathe-10097-aufgabengruppe",
+                        "label": "Aufgaben zum Thema Winkel - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/10097/aufgabengruppe"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-45795-berechnung-der-abbildungen-mit-matrizen",
+                "label": "Berechnung der Abbildungen mit Matrizen",
+                "url": "https://de.serlo.org/mathe/45795/berechnung-der-abbildungen-mit-matrizen",
+                "children": [
+                  {
+                    "id": "mathe-24414-zentrische-streckung-abbildungsgleichung",
+                    "label": "Zentrische Streckung: Abbildungsgleichung",
+                    "url": "https://de.serlo.org/mathe/24414/zentrische-streckung-abbildungsgleichung",
+                    "children": [
+                      {
+                        "id": "mathe-1931-zentrische-streckung-abbildungsgleichung",
+                        "label": "Zentrische Streckung (Abbildungsgleichung) - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1931/zentrische-streckung-abbildungsgleichung"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-45800-allgemeines",
+                    "label": "Allgemeines",
+                    "url": "https://de.serlo.org/mathe/45800/allgemeines",
+                    "children": [
+                      {
+                        "id": "mathe-45183-aufgaben-zur-matrix-vektor-multiplikation",
+                        "label": "Aufgaben zur Matrix-Vektor-Multiplikation",
+                        "url": "https://de.serlo.org/mathe/45183/aufgaben-zur-matrix-vektor-multiplikation",
+                        "children": [
+                          {
+                            "id": "mathe-43685-aufgabengruppe",
+                            "label": "Aufgaben zur Matrix-Vektor-Multiplikation - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/43685/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-24443-methoden-der-vektorrechnung",
+                "label": "Methoden der Vektorrechnung",
+                "url": "https://de.serlo.org/mathe/24443/methoden-der-vektorrechnung",
+                "children": [
+                  {
+                    "id": "mathe-1434-lineare-unabhaengigkeit",
+                    "label": "Lineare Unabhängigkeit",
+                    "url": "https://de.serlo.org/mathe/1434/lineare-unabhaengigkeit",
+                    "children": [
+                      {
+                        "id": "mathe-1665-lineare-unabhaengigkeit",
+                        "label": "Lineare (Un)abhängigkeit - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1665/lineare-unabhaengigkeit"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1460-lagebeziehung-von-punkten-geraden-und-ebenen",
+                "label": "Lagebeziehung von Punkten, Geraden und Ebenen",
+                "url": "https://de.serlo.org/mathe/1460/lagebeziehung-von-punkten-geraden-und-ebenen",
+                "children": [
+                  {
+                    "id": "mathe-1419-lagebeziehung-zweier-geraden",
+                    "label": "Lagebeziehung zweier Geraden",
+                    "url": "https://de.serlo.org/mathe/1419/lagebeziehung-zweier-geraden",
+                    "children": [
+                      {
+                        "id": "mathe-2127-verschiedene-lagebeziehungen-inzidenzen",
+                        "label": "Verschiedene Lagebeziehungen (Inzidenzen) - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2127/verschiedene-lagebeziehungen-inzidenzen"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1449-sinus-kosinus-und-tangens-am-einheitskreis",
+                "label": "Sinus, Kosinus und Tangens am Einheitskreis",
+                "url": "https://de.serlo.org/mathe/1449/sinus-kosinus-und-tangens-am-einheitskreis",
+                "children": [
+                  {
+                    "id": "mathe-1961-trigonometrie-am-einheitskreis",
+                    "label": "Trigonometrie am Einheitskreis - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1961/trigonometrie-am-einheitskreis"
+                  },
+                  {
+                    "id": "mathe-55637-einheitskreis",
+                    "label": "Einheitskreis - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/55637/einheitskreis"
+                  },
+                  {
+                    "id": "mathe-30679-aufgaben-zum-sinus-und-kosinus-am-einheitskreis",
+                    "label": "Aufgaben zum Sinus und Kosinus am Einheitskreis",
+                    "url": "https://de.serlo.org/mathe/30679/aufgaben-zum-sinus-und-kosinus-am-einheitskreis",
+                    "children": [
+                      {
+                        "id": "mathe-55674-aufgabengruppe",
+                        "label": "Aufgaben zum Sinus und Kosinus am Einheitskreis  - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/55674/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-257741-aufgabengruppe",
+                        "label": "Aufgaben zum Sinus und Kosinus am Einheitskreis  - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/257741/aufgabengruppe"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1383-sinus-kosinus-und-tangens",
+                "label": "Sinus, Kosinus und Tangens",
+                "url": "https://de.serlo.org/mathe/1383/sinus-kosinus-und-tangens"
+              },
+              {
+                "id": "mathe-1300-raeumliche-figuren",
+                "label": "Räumliche Figuren",
+                "url": "https://de.serlo.org/mathe/1300/raeumliche-figuren",
+                "children": [
+                  {
+                    "id": "mathe-60730-wichtige-grundkoerper",
+                    "label": "Wichtige Grundkörper",
+                    "url": "https://de.serlo.org/mathe/60730/wichtige-grundkoerper",
+                    "children": [
+                      {
+                        "id": "mathe-1629-pyramide",
+                        "label": "Pyramide - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1629/pyramide"
+                      },
+                      {
+                        "id": "mathe-1625-prisma",
+                        "label": "Prisma - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1625/prisma"
+                      },
+                      {
+                        "id": "mathe-1555-zylinder",
+                        "label": "Zylinder",
+                        "url": "https://de.serlo.org/mathe/1555/zylinder"
+                      },
+                      {
+                        "id": "mathe-36160-wuerfel-kubus",
+                        "label": "Würfel (Kubus) - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/36160/wuerfel-kubus"
+                      },
+                      {
+                        "id": "mathe-24430-aufgaben-zum-quader",
+                        "label": "Aufgaben zum Quader",
+                        "url": "https://de.serlo.org/mathe/24430/aufgaben-zum-quader",
+                        "children": [
+                          {
+                            "id": "mathe-36227-aufgabe",
+                            "label": "Aufgaben zum Quader - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/36227/aufgabe"
+                          },
+                          {
+                            "id": "mathe-180980-aufgabe",
+                            "label": "Aufgaben zum Quader - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/180980/aufgabe"
+                          },
+                          {
+                            "id": "mathe-142928-aufgabe",
+                            "label": "Aufgaben zum Quader - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/142928/aufgabe"
+                          },
+                          {
+                            "id": "mathe-293590-aufgabengruppe",
+                            "label": "Aufgaben zum Quader - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/293590/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24435-schraegbilder-und-koerpernetze",
+                    "label": "Schrägbilder und Körpernetze",
+                    "url": "https://de.serlo.org/mathe/24435/schraegbilder-und-koerpernetze",
+                    "children": [
+                      {
+                        "id": "mathe-35621-koerpernetze",
+                        "label": "Körpernetze  - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/35621/koerpernetze"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-24429-volumenberechnung",
+                    "label": "Volumenberechnung",
+                    "url": "https://de.serlo.org/mathe/24429/volumenberechnung",
+                    "children": [
+                      {
+                        "id": "mathe-58818-aufgaben-zur-berechnung-des-volumens-zusammengesetzter-koerper",
+                        "label": "Aufgaben zur Berechnung des Volumens zusammengesetzter Körper",
+                        "url": "https://de.serlo.org/mathe/58818/aufgaben-zur-berechnung-des-volumens-zusammengesetzter-koerper",
+                        "children": [
+                          {
+                            "id": "mathe-81036-aufgabe",
+                            "label": "Aufgaben zur Berechnung des Volumens zusammengesetzter Körper - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/81036/aufgabe"
+                          },
+                          {
+                            "id": "mathe-134700-aufgabe",
+                            "label": "Aufgaben zur Berechnung des Volumens zusammengesetzter Körper - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/134700/aufgabe"
+                          },
+                          {
+                            "id": "mathe-56051-aufgabe",
+                            "label": "Aufgaben zur Berechnung des Volumens zusammengesetzter Körper - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/56051/aufgabe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-131901-rauminhalt-von-wuerfel-und-quader",
+                        "label": "Rauminhalt von Würfel und Quader",
+                        "url": "https://de.serlo.org/mathe/131901/rauminhalt-von-wuerfel-und-quader"
+                      },
+                      {
+                        "id": "mathe-70951-aufgaben-zum-umrechnen-von-volumeneinheiten",
+                        "label": "Aufgaben zum Umrechnen von Volumeneinheiten",
+                        "url": "https://de.serlo.org/mathe/70951/aufgaben-zum-umrechnen-von-volumeneinheiten"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "mathe-201593-fos-bos",
+            "label": "FOS &amp; BOS",
+            "url": "https://de.serlo.org/mathe/201593/fos-bos",
+            "children": [
+              {
+                "id": "mathe-16033-fos-bos-nicht-technisch",
+                "label": "FOS BOS - nicht technisch",
+                "url": "https://de.serlo.org/mathe/16033/fos-bos-nicht-technisch",
+                "children": [
+                  {
+                    "id": "mathe-91253-fachgebundene-hochschulreife",
+                    "label": "Fachgebundene Hochschulreife – Grundlagen & Übungen",
+                    "url": "https://de.serlo.org/mathe/91253/fachgebundene-hochschulreife"
+                  },
+                  {
+                    "id": "mathe-91252-fachhochschulreife",
+                    "label": "Fachhochschulreife – Grundlagen & Übungen",
+                    "url": "https://de.serlo.org/mathe/91252/fachhochschulreife",
+                    "children": [
+                      {
+                        "id": "mathe-186715-2018",
+                        "label": "2018 – Grundlagen & Übungen",
+                        "url": "https://de.serlo.org/mathe/186715/2018"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "mathe-1390-terme-und-gleichungen",
+            "label": "Terme und Gleichungen",
+            "url": "https://de.serlo.org/mathe/1390/terme-und-gleichungen",
+            "children": [
+              {
+                "id": "mathe-1371-gleichungen",
+                "label": "Gleichungen – Grundlagen & Übungen",
+                "url": "https://de.serlo.org/mathe/1371/gleichungen",
+                "children": [
+                  {
+                    "id": "mathe-1396-quadratische-gleichungen",
+                    "label": "Quadratische Gleichungen",
+                    "url": "https://de.serlo.org/mathe/1396/quadratische-gleichungen",
+                    "children": [
+                      {
+                        "id": "mathe-1607-satz-von-vieta",
+                        "label": "Satz von Vieta - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1607/satz-von-vieta"
+                      },
+                      {
+                        "id": "mathe-26259-aufgaben-zu-quadratischen-gleichungen",
+                        "label": "Aufgaben zu quadratischen Gleichungen",
+                        "url": "https://de.serlo.org/mathe/26259/aufgaben-zu-quadratischen-gleichungen",
+                        "children": [
+                          {
+                            "id": "mathe-14897-aufgabengruppe",
+                            "label": "Aufgaben zu quadratischen Gleichungen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/14897/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-15253-aufgabengruppe",
+                            "label": "Aufgaben zu quadratischen Gleichungen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/15253/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-222927-aufgabengruppe",
+                            "label": "Aufgaben zu quadratischen Gleichungen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/222927/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-221599-aufgabengruppe",
+                            "label": "Aufgaben zu quadratischen Gleichungen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/221599/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-220810-aufgabengruppe",
+                            "label": "Aufgaben zu quadratischen Gleichungen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/220810/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-220766-aufgabengruppe",
+                            "label": "Aufgaben zu quadratischen Gleichungen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/220766/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-220995-aufgabengruppe",
+                            "label": "Aufgaben zu quadratischen Gleichungen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/220995/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-220742-aufgabengruppe",
+                            "label": "Aufgaben zu quadratischen Gleichungen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/220742/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1403-bruchgleichungen",
+                    "label": "Bruchgleichungen",
+                    "url": "https://de.serlo.org/mathe/1403/bruchgleichungen",
+                    "children": [
+                      {
+                        "id": "mathe-26260-gemischte-aufgaben-zu-bruchgleichungen",
+                        "label": "Gemischte Aufgaben zu Bruchgleichungen",
+                        "url": "https://de.serlo.org/mathe/26260/gemischte-aufgaben-zu-bruchgleichungen",
+                        "children": [
+                          {
+                            "id": "mathe-5477-aufgabe",
+                            "label": "Gemischte Aufgaben zu Bruchgleichungen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/5477/aufgabe"
+                          },
+                          {
+                            "id": "mathe-103723-aufgabe",
+                            "label": "Gemischte Aufgaben zu Bruchgleichungen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/103723/aufgabe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-47773-bruchgleichung",
+                        "label": "Bruchgleichung - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/47773/bruchgleichung"
+                      },
+                      {
+                        "id": "mathe-1851-bruchgleichungen-loesen",
+                        "label": "Bruchgleichungen lösen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1851/bruchgleichungen-loesen"
+                      },
+                      {
+                        "id": "mathe-59282-aufgaben-zu-bruchgleichungen-die-auf-quadratische-gleichungen-fuehren",
+                        "label": "Aufgaben zu Bruchgleichungen, die auf quadratische Gleichungen führen",
+                        "url": "https://de.serlo.org/mathe/59282/aufgaben-zu-bruchgleichungen-die-auf-quadratische-gleichungen-fuehren",
+                        "children": [
+                          {
+                            "id": "mathe-5813-aufgabengruppe",
+                            "label": "Aufgaben zu Bruchgleichungen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/5813/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1335-gleichungssysteme",
+                "label": "Gleichungssysteme",
+                "url": "https://de.serlo.org/mathe/1335/gleichungssysteme",
+                "children": [
+                  {
+                    "id": "mathe-72113-aufgaben-zum-graphischen-loesen-von-gleichungssystemen",
+                    "label": "Aufgaben zum graphischen Lösen von Gleichungssystemen",
+                    "url": "https://de.serlo.org/mathe/72113/aufgaben-zum-graphischen-loesen-von-gleichungssystemen",
+                    "children": [
+                      {
+                        "id": "mathe-72115-aufgabe",
+                        "label": "Aufgaben zum graphischen Lösen von Gleichungssystemen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/72115/aufgabe"
+                      },
+                      {
+                        "id": "mathe-72135-aufgabengruppe",
+                        "label": "Aufgaben zum graphischen Lösen von Gleichungssystemen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/72135/aufgabengruppe"
+                      },
+                      {
+                        "id": "mathe-178390-aufgabengruppe",
+                        "label": "Aufgaben zum graphischen Lösen von Gleichungssystemen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/178390/aufgabengruppe"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1749-lineares-gleichungssystem",
+                    "label": "Lineares Gleichungssystem - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1749/lineares-gleichungssystem"
+                  },
+                  {
+                    "id": "mathe-1581-gaussverfahren",
+                    "label": "Gaußverfahren - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1581/gaussverfahren"
+                  },
+                  {
+                    "id": "mathe-72174-einfuehrung-in-lineare-gleichungssysteme-teil-2",
+                    "label": "Einführung in lineare Gleichungssysteme - Teil 2",
+                    "url": "https://de.serlo.org/mathe/72174/einfuehrung-in-lineare-gleichungssysteme-teil-2"
+                  },
+                  {
+                    "id": "mathe-72471-anwendungsaufgaben-zu-gleichungssystemen",
+                    "label": "Anwendungsaufgaben zu Gleichungssystemen",
+                    "url": "https://de.serlo.org/mathe/72471/anwendungsaufgaben-zu-gleichungssystemen"
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1331-terme-und-variablen",
+                "label": "Terme und Variablen",
+                "url": "https://de.serlo.org/mathe/1331/terme-und-variablen",
+                "children": [
+                  {
+                    "id": "mathe-1485-terme-allgemein",
+                    "label": "Terme allgemein",
+                    "url": "https://de.serlo.org/mathe/1485/terme-allgemein",
+                    "children": [
+                      {
+                        "id": "mathe-1416-termbegriff-und-belegung-von-termvariablen",
+                        "label": "Termbegriff und Belegung von Termvariablen – Themenbereich",
+                        "url": "https://de.serlo.org/mathe/1416/termbegriff-und-belegung-von-termvariablen"
+                      },
+                      {
+                        "id": "mathe-1345-terme-aufstellen",
+                        "label": "Terme aufstellen – Grundlagen & Übungen",
+                        "url": "https://de.serlo.org/mathe/1345/terme-aufstellen",
+                        "children": [
+                          {
+                            "id": "mathe-185183-aufgabengruppe",
+                            "label": "Terme aufstellen - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/185183/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1333-binomische-formeln",
+                    "label": "Binomische Formeln",
+                    "url": "https://de.serlo.org/mathe/1333/binomische-formeln",
+                    "children": [
+                      {
+                        "id": "mathe-1499-binomische-formeln",
+                        "label": "Binomische Formeln - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1499/binomische-formeln"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1484-quadratische-ergaenzung",
+                    "label": "Quadratische Ergänzung",
+                    "url": "https://de.serlo.org/mathe/1484/quadratische-ergaenzung",
+                    "children": [
+                      {
+                        "id": "mathe-1631-quadratische-ergaenzung",
+                        "label": "Quadratische Ergänzung - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1631/quadratische-ergaenzung"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1375-zusammenfassen-ausmultiplizieren-faktorisieren",
+                    "label": "Zusammenfassen, Ausmultiplizieren, Faktorisieren",
+                    "url": "https://de.serlo.org/mathe/1375/zusammenfassen-ausmultiplizieren-faktorisieren",
+                    "children": [
+                      {
+                        "id": "mathe-135559-zusammenfassen-von-termen",
+                        "label": "Zusammenfassen von Termen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/135559/zusammenfassen-von-termen"
+                      },
+                      {
+                        "id": "mathe-177820-terme-vereinfachen",
+                        "label": "Terme vereinfachen",
+                        "url": "https://de.serlo.org/mathe/177820/terme-vereinfachen"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1392-bruchterme",
+                    "label": "Bruchterme",
+                    "url": "https://de.serlo.org/mathe/1392/bruchterme",
+                    "children": [
+                      {
+                        "id": "mathe-99597-hauptnenner-mit-variablen",
+                        "label": "Hauptnenner mit Variablen - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/99597/hauptnenner-mit-variablen"
+                      },
+                      {
+                        "id": "mathe-187184-bruchterme-durch-kuerzen-vereinfachen",
+                        "label": "Bruchterme durch Kürzen vereinfachen",
+                        "url": "https://de.serlo.org/mathe/187184/bruchterme-durch-kuerzen-vereinfachen"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1329-wurzeln",
+                "label": "Wurzeln",
+                "url": "https://de.serlo.org/mathe/1329/wurzeln",
+                "children": [
+                  {
+                    "id": "mathe-23673-quadratwurzeln",
+                    "label": "Quadratwurzeln",
+                    "url": "https://de.serlo.org/mathe/23673/quadratwurzeln",
+                    "children": [
+                      {
+                        "id": "mathe-83733-quadratwurzeln",
+                        "label": "Quadratwurzeln",
+                        "url": "https://de.serlo.org/mathe/83733/quadratwurzeln"
+                      },
+                      {
+                        "id": "mathe-84096-berechnungen-von-wurzeln",
+                        "label": "Berechnungen von Wurzeln",
+                        "url": "https://de.serlo.org/mathe/84096/berechnungen-von-wurzeln"
+                      },
+                      {
+                        "id": "mathe-25481-rechen-und-verstaendnisaufgaben-zur-quadratwurzel",
+                        "label": "Rechen- und Verständnisaufgaben zur Quadratwurzel",
+                        "url": "https://de.serlo.org/mathe/25481/rechen-und-verstaendnisaufgaben-zur-quadratwurzel"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-23675-beliebige-n-te-wurzeln",
+                    "label": "Beliebige n-te Wurzeln",
+                    "url": "https://de.serlo.org/mathe/23675/beliebige-n-te-wurzeln",
+                    "children": [
+                      {
+                        "id": "mathe-1933-hoehere-wurzel",
+                        "label": "Höhere Wurzel - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1933/hoehere-wurzel"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1328-potenzen-wurzeln-und-logarithmen",
+                "label": "Potenzen, Wurzeln und Logarithmen",
+                "url": "https://de.serlo.org/mathe/1328/potenzen-wurzeln-und-logarithmen",
+                "children": [
+                  {
+                    "id": "mathe-1420-potenzen",
+                    "label": "Potenzen",
+                    "url": "https://de.serlo.org/mathe/1420/potenzen",
+                    "children": [
+                      {
+                        "id": "mathe-1867-potenzgesetze",
+                        "label": "Potenzgesetze - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1867/potenzgesetze"
+                      },
+                      {
+                        "id": "mathe-162011-negative-exponenten",
+                        "label": "Negative Exponenten",
+                        "url": "https://de.serlo.org/mathe/162011/negative-exponenten#162013"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "mathe-16042-gymnasium",
+            "label": "Gymnasium",
+            "url": "https://de.serlo.org/mathe/16042/gymnasium",
+            "children": [
+              {
+                "id": "mathe-20852-abiturpruefungen-bayern-mathematik-mit-loesungen",
+                "label": "Abiturprüfungen Bayern - Mathematik mit Lösungen",
+                "url": "https://de.serlo.org/mathe/20852/abiturpruefungen-bayern-mathematik-mit-loesungen",
+                "children": [
+                  {
+                    "id": "mathe-231486-mathematik-abitur-bayern-2021",
+                    "label": "Mathe Abiturprüfungen mit Lösung",
+                    "url": "https://de.serlo.org/mathe/231486/mathematik-abitur-bayern-2021"
+                  },
+                  {
+                    "id": "mathe-309887-mathematik-abitur-bayern-2024",
+                    "label": "Mathe Abiturprüfungen mit Lösung",
+                    "url": "https://de.serlo.org/mathe/309887/mathematik-abitur-bayern-2024"
+                  },
+                  {
+                    "id": "mathe-248460-mathematik-abitur-bayern-2022",
+                    "label": "Mathematik Abitur Bayern 2022",
+                    "url": "https://de.serlo.org/mathe/248460/mathematik-abitur-bayern-2022",
+                    "children": [
+                      {
+                        "id": "mathe-248482-geometrie-teil-b-aufgabengruppe-2",
+                        "label": "Mathe Abiturprüfungen mit Lösung",
+                        "url": "https://de.serlo.org/mathe/248482/geometrie-teil-b-aufgabengruppe-2"
+                      },
+                      {
+                        "id": "mathe-248476-geometrie-teil-a-aufgabengruppe-2",
+                        "label": "Mathe Abiturprüfungen mit Lösung",
+                        "url": "https://de.serlo.org/mathe/248476/geometrie-teil-a-aufgabengruppe-2"
+                      },
+                      {
+                        "id": "mathe-248481-geometrie-teil-b-aufgabengruppe-1",
+                        "label": "Mathe Abiturprüfungen mit Lösung",
+                        "url": "https://de.serlo.org/mathe/248481/geometrie-teil-b-aufgabengruppe-1"
+                      },
+                      {
+                        "id": "mathe-248475-geometrie-teil-a-aufgabengruppe-1",
+                        "label": "Geometrie, Teil A, Aufgabengruppe 1 – Grundlagen & Übungen",
+                        "url": "https://de.serlo.org/mathe/248475/geometrie-teil-a-aufgabengruppe-1"
+                      },
+                      {
+                        "id": "mathe-248473-stochastik-teil-a-aufgabengruppe-1",
+                        "label": "Stochastik, Teil A, Aufgabengruppe 1 – Grundlagen & Übungen",
+                        "url": "https://de.serlo.org/mathe/248473/stochastik-teil-a-aufgabengruppe-1"
+                      },
+                      {
+                        "id": "mathe-248462-analysis-teil-a-aufgabengruppe-1",
+                        "label": "Mathe Abiturprüfungen mit Lösung",
+                        "url": "https://de.serlo.org/mathe/248462/analysis-teil-a-aufgabengruppe-1",
+                        "children": [
+                          {
+                            "id": "mathe-248520-aufgabengruppe",
+                            "label": "Analysis, Teil A, Aufgabengruppe 1 - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/248520/aufgabengruppe"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "mathe-248478-analysis-teil-b-aufgabengruppe-2",
+                        "label": "Analysis, Teil B, Aufgabengruppe 2",
+                        "url": "https://de.serlo.org/mathe/248478/analysis-teil-b-aufgabengruppe-2",
+                        "children": [
+                          {
+                            "id": "mathe-295771-aufgabengruppe",
+                            "label": "Analysis, Teil B, Aufgabengruppe 2 - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/295771/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-250409-aufgabengruppe",
+                            "label": "Analysis, Teil B, Aufgabengruppe 2 - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/250409/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-248477-analysis-teil-b-aufgabengruppe-1",
+                    "label": "Mathematik Abitur Bayern 2022",
+                    "url": "https://de.serlo.org/mathe/248477/analysis-teil-b-aufgabengruppe-1"
+                  }
+                ]
+              },
+              {
+                "id": "mathe-16102-klasse-9",
+                "label": "Klasse 9",
+                "url": "https://de.serlo.org/mathe/16102/klasse-9",
+                "children": [
+                  {
+                    "id": "mathe-16125-lineare-gleichungssysteme",
+                    "label": "Lineare Gleichungssysteme",
+                    "url": "https://de.serlo.org/mathe/16125/lineare-gleichungssysteme",
+                    "children": [
+                      {
+                        "id": "mathe-78897-aufgaben-zu-linearen-gleichungssystemen",
+                        "label": "Aufgaben zu linearen Gleichungssystemen – Themenbereich",
+                        "url": "https://de.serlo.org/mathe/78897/aufgaben-zu-linearen-gleichungssystemen"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-16067-klasse-6",
+                "label": "Klasse 6",
+                "url": "https://de.serlo.org/mathe/16067/klasse-6",
+                "children": [
+                  {
+                    "id": "mathe-16097-quader-und-andere-koerper",
+                    "label": "Quader und andere Körper",
+                    "url": "https://de.serlo.org/mathe/16097/quader-und-andere-koerper",
+                    "children": [
+                      {
+                        "id": "mathe-55221-aufgaben-zum-quader",
+                        "label": "Aufgaben zum Quader – Grundlagen & Übungen",
+                        "url": "https://de.serlo.org/mathe/55221/aufgaben-zum-quader"
+                      },
+                      {
+                        "id": "mathe-81035-aufgaben-zum-volumen-zusammengesetzter-koerper",
+                        "label": "Aufgaben zum Volumen zusammengesetzter Körper",
+                        "url": "https://de.serlo.org/mathe/81035/aufgaben-zum-volumen-zusammengesetzter-koerper"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-16082-bruchteile-und-bruchzahlen",
+                    "label": "Bruchteile und Bruchzahlen  – Grundlagen & Übungen",
+                    "url": "https://de.serlo.org/mathe/16082/bruchteile-und-bruchzahlen",
+                    "children": [
+                      {
+                        "id": "mathe-34494-aufgaben-zur-bruechen-auf-der-zahlengeraden",
+                        "label": "Aufgaben zur Brüchen auf der Zahlengeraden – Themenbereich",
+                        "url": "https://de.serlo.org/mathe/34494/aufgaben-zur-bruechen-auf-der-zahlengeraden"
+                      },
+                      {
+                        "id": "mathe-34493-aufgaben-zum-erweitern-und-kuerzen",
+                        "label": "Aufgaben zum Erweitern und Kürzen – Grundlagen & Übungen",
+                        "url": "https://de.serlo.org/mathe/34493/aufgaben-zum-erweitern-und-kuerzen"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-16101-prozentrechnung-und-diagramme",
+                    "label": "Prozentrechnung und Diagramme – Grundlagen & Übungen",
+                    "url": "https://de.serlo.org/mathe/16101/prozentrechnung-und-diagramme"
+                  },
+                  {
+                    "id": "mathe-16087-relative-haeufigkeit",
+                    "label": "Relative Häufigkeit",
+                    "url": "https://de.serlo.org/mathe/16087/relative-haeufigkeit",
+                    "children": [
+                      {
+                        "id": "mathe-34497-aufgaben-zu-zufallsexperimenten-und-zur-relativen-haeufigkeit",
+                        "label": "Aufgaben zu Zufallsexperimenten und zur relativen Häufigkeit",
+                        "url": "https://de.serlo.org/mathe/34497/aufgaben-zu-zufallsexperimenten-und-zur-relativen-haeufigkeit"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-16095-dreiecke-und-daraus-zusammengesetzte-figuren",
+                    "label": "Dreiecke und daraus zusammengesetzte Figuren",
+                    "url": "https://de.serlo.org/mathe/16095/dreiecke-und-daraus-zusammengesetzte-figuren",
+                    "children": [
+                      {
+                        "id": "mathe-81258-aufgaben-zur-flaechenberechnung-von-dreiecken",
+                        "label": "Aufgaben zur Flächenberechnung von Dreiecken – Themenbereich",
+                        "url": "https://de.serlo.org/mathe/81258/aufgaben-zur-flaechenberechnung-von-dreiecken"
+                      },
+                      {
+                        "id": "mathe-81259-aufgaben-zur-flaechenberechnung-von-parallelogrammen",
+                        "label": "Aufgaben zur Flächenberechnung von Parallelogrammen",
+                        "url": "https://de.serlo.org/mathe/81259/aufgaben-zur-flaechenberechnung-von-parallelogrammen"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-16089-rationale-zahlen",
+                    "label": "Rationale Zahlen",
+                    "url": "https://de.serlo.org/mathe/16089/rationale-zahlen",
+                    "children": [
+                      {
+                        "id": "mathe-81064-aufgaben-zum-vergleichen-und-ordnen-von-bruechen",
+                        "label": "Aufgaben zum Vergleichen und Ordnen von Brüchen",
+                        "url": "https://de.serlo.org/mathe/81064/aufgaben-zum-vergleichen-und-ordnen-von-bruechen"
+                      },
+                      {
+                        "id": "mathe-81063-aufgaben-zum-kuerzen-und-erweitern-von-bruechen",
+                        "label": "Aufgaben zum Kürzen und Erweitern von Brüchen",
+                        "url": "https://de.serlo.org/mathe/81063/aufgaben-zum-kuerzen-und-erweitern-von-bruechen"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "mathe-248479-stochastik-teil-b-aufgabengruppe-1",
+            "label": "Stochastik, Teil B, Aufgabengruppe 1 – Grundlagen & Übungen",
+            "url": "https://de.serlo.org/mathe/248479/stochastik-teil-b-aufgabengruppe-1"
+          },
+          {
+            "id": "mathe-1290-stochastik",
+            "label": "Stochastik",
+            "url": "https://de.serlo.org/mathe/1290/stochastik",
+            "children": [
+              {
+                "id": "mathe-1344-kombinatorik",
+                "label": "Kombinatorik",
+                "url": "https://de.serlo.org/mathe/1344/kombinatorik",
+                "children": [
+                  {
+                    "id": "mathe-1751-kombinatorik",
+                    "label": "Kombinatorik - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1751/kombinatorik"
+                  }
+                ]
+              },
+              {
+                "id": "mathe-1313-grundbegriffe-und-methoden",
+                "label": "Grundbegriffe und Methoden",
+                "url": "https://de.serlo.org/mathe/1313/grundbegriffe-und-methoden",
+                "children": [
+                  {
+                    "id": "mathe-1315-ereignisse",
+                    "label": "Ereignisse",
+                    "url": "https://de.serlo.org/mathe/1315/ereignisse",
+                    "children": [
+                      {
+                        "id": "mathe-1691-gegenereignis",
+                        "label": "Gegenereignis - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1691/gegenereignis"
+                      },
+                      {
+                        "id": "mathe-25615-aufgaben-zum-thema-ereignisse",
+                        "label": "Aufgaben zum Thema Ereignisse",
+                        "url": "https://de.serlo.org/mathe/25615/aufgaben-zum-thema-ereignisse",
+                        "children": [
+                          {
+                            "id": "mathe-308607-aufgabengruppe",
+                            "label": "Aufgaben zum Thema Ereignisse - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/308607/aufgabengruppe"
+                          },
+                          {
+                            "id": "mathe-265348-aufgabengruppe",
+                            "label": "Aufgaben zum Thema Ereignisse - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/265348/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1314-ergebnisraeume",
+                    "label": "Ergebnisräume",
+                    "url": "https://de.serlo.org/mathe/1314/ergebnisraeume",
+                    "children": [
+                      {
+                        "id": "mathe-1501-ergebnismenge",
+                        "label": "Ergebnismenge - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1501/ergebnismenge"
+                      },
+                      {
+                        "id": "mathe-25614-aufgaben-zum-thema-ergebnisraum-oder-ergebnismenge",
+                        "label": "Aufgaben zum Thema Ergebnisraum oder Ergebnismenge",
+                        "url": "https://de.serlo.org/mathe/25614/aufgaben-zum-thema-ergebnisraum-oder-ergebnismenge",
+                        "children": [
+                          {
+                            "id": "mathe-276368-aufgabengruppe",
+                            "label": "Aufgaben zum Thema Ergebnisraum oder Ergebnismenge - lernen mit Serlo!",
+                            "url": "https://de.serlo.org/mathe/276368/aufgabengruppe"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "mathe-1399-baumdiagramm-und-vierfeldertafel",
+                    "label": "Baumdiagramm und Vierfeldertafel",
+                    "url": "https://de.serlo.org/mathe/1399/baumdiagramm-und-vierfeldertafel",
+                    "children": [
+                      {
+                        "id": "mathe-189811-pfadregeln",
+                        "label": "Pfadregeln - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/189811/pfadregeln"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-22779-relative-haeufigkeit-und-wahrscheinlichkeit",
+                "label": "Relative Häufigkeit und Wahrscheinlichkeit",
+                "url": "https://de.serlo.org/mathe/22779/relative-haeufigkeit-und-wahrscheinlichkeit",
+                "children": [
+                  {
+                    "id": "mathe-1503-relative-haeufigkeit",
+                    "label": "Relative Häufigkeit - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1503/relative-haeufigkeit"
+                  },
+                  {
+                    "id": "mathe-1753-wahrscheinlichkeit",
+                    "label": "Wahrscheinlichkeit - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1753/wahrscheinlichkeit"
+                  },
+                  {
+                    "id": "mathe-25627-aufgaben-zum-thema-laplace-experiment",
+                    "label": "Aufgaben zum Thema Laplace-Experiment",
+                    "url": "https://de.serlo.org/mathe/25627/aufgaben-zum-thema-laplace-experiment",
+                    "children": [
+                      {
+                        "id": "mathe-5343-aufgabengruppe",
+                        "label": "Aufgaben zum Thema Laplace-Experiment - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/5343/aufgabengruppe"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-22778-daten-und-datendarstellung",
+                "label": "Daten und Datendarstellung",
+                "url": "https://de.serlo.org/mathe/22778/daten-und-datendarstellung",
+                "children": [
+                  {
+                    "id": "mathe-22834-daten-und-kenngroessen",
+                    "label": "Daten und Kenngrößen",
+                    "url": "https://de.serlo.org/mathe/22834/daten-und-kenngroessen",
+                    "children": [
+                      {
+                        "id": "mathe-24549-aufgaben-zum-arithmetischen-mittel",
+                        "label": "Aufgaben zum arithmetischen Mittel",
+                        "url": "https://de.serlo.org/mathe/24549/aufgaben-zum-arithmetischen-mittel"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "mathe-1397-sonstiges",
+            "label": "Sonstiges",
+            "url": "https://de.serlo.org/mathe/1397/sonstiges",
+            "children": [
+              {
+                "id": "mathe-1440-mengenlehre-und-logik",
+                "label": "Mengenlehre und Logik",
+                "url": "https://de.serlo.org/mathe/1440/mengenlehre-und-logik",
+                "children": [
+                  {
+                    "id": "mathe-1479-mengenlehre",
+                    "label": "Mengenlehre",
+                    "url": "https://de.serlo.org/mathe/1479/mengenlehre",
+                    "children": [
+                      {
+                        "id": "mathe-1981-menge",
+                        "label": "Menge - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/1981/menge"
+                      },
+                      {
+                        "id": "mathe-2089-partition-einer-menge",
+                        "label": "Partition einer Menge - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/2089/partition-einer-menge"
+                      },
+                      {
+                        "id": "mathe-2085-verknuepfungen-von-mengen",
+                        "label": "Verknüpfungen von Mengen",
+                        "url": "https://de.serlo.org/mathe/2085/verknuepfungen-von-mengen"
+                      },
+                      {
+                        "id": "mathe-25779-aufgaben-zum-kartesischen-produkt-von-mengen",
+                        "label": "Aufgaben zum kartesischen Produkt von Mengen",
+                        "url": "https://de.serlo.org/mathe/25779/aufgaben-zum-kartesischen-produkt-von-mengen"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "mathe-24714-weiterfuehrendes",
+                "label": "Weiterführendes",
+                "url": "https://de.serlo.org/mathe/24714/weiterfuehrendes",
+                "children": [
+                  {
+                    "id": "mathe-2009-matrizen",
+                    "label": "Matrizen - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/2009/matrizen"
+                  },
+                  {
+                    "id": "mathe-1723-pascalsches-dreieck",
+                    "label": "Pascalsches Dreieck - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/1723/pascalsches-dreieck"
+                  }
+                ]
+              },
+              {
+                "id": "mathe-7-artikel-und-videos-aus-serlo-1",
+                "label": "Artikel und Videos aus Serlo 1 – Grundlagen & Übungen",
+                "url": "https://de.serlo.org/mathe/7/artikel-und-videos-aus-serlo-1"
+              },
+              {
+                "id": "mathe-25107-zum-testen",
+                "label": "Zum Testen",
+                "url": "https://de.serlo.org/mathe/25107/zum-testen",
+                "children": [
+                  {
+                    "id": "mathe-41763-runden",
+                    "label": "Runden - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/41763/runden"
+                  },
+                  {
+                    "id": "mathe-82475-aufgabe",
+                    "label": "Zum Testen - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/mathe/82475/aufgabe"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "mathe-16030-deutschland",
+            "label": "Deutschland",
+            "url": "https://de.serlo.org/mathe/16030/deutschland",
+            "children": [
+              {
+                "id": "mathe-148069-serlo-lehrplan",
+                "label": "Serlo-Lehrplan",
+                "url": "https://de.serlo.org/mathe/148069/serlo-lehrplan",
+                "children": [
+                  {
+                    "id": "mathe-148070-5-klasse",
+                    "label": "5. Klasse",
+                    "url": "https://de.serlo.org/mathe/148070/5-klasse",
+                    "children": [
+                      {
+                        "id": "mathe-148096-geometrische-grundbegriffe",
+                        "label": "Geometrische Grundbegriffe – Grundlagen & Übungen",
+                        "url": "https://de.serlo.org/mathe/148096/geometrische-grundbegriffe"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "mathe-30023-gemischte-aufgaben-zur-mengenlehre",
+            "label": "Gemischte Aufgaben zur Mengenlehre",
+            "url": "https://de.serlo.org/mathe/30023/gemischte-aufgaben-zur-mengenlehre"
+          },
+          {
+            "id": "mathe-16157-realschule",
+            "label": "Realschule",
+            "url": "https://de.serlo.org/mathe/16157/realschule",
+            "children": [
+              {
+                "id": "mathe-16229-zweig-i",
+                "label": "Zweig I",
+                "url": "https://de.serlo.org/mathe/16229/zweig-i",
+                "children": [
+                  {
+                    "id": "mathe-16251-abbildungen-im-koordinatensystem",
+                    "label": "Abbildungen im Koordinatensystem",
+                    "url": "https://de.serlo.org/mathe/16251/abbildungen-im-koordinatensystem",
+                    "children": [
+                      {
+                        "id": "mathe-43681-aufgaben-zur-matrix-vektor-multiplikation",
+                        "label": "Aufgaben zur Matrix-Vektor-Multiplikation – Themenbereich",
+                        "url": "https://de.serlo.org/mathe/43681/aufgaben-zur-matrix-vektor-multiplikation"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "mathe-26409-aufgabengruppe",
+            "label": "Aufgaben zur Bestimmung von Definitionsmengen",
+            "url": "https://de.serlo.org/mathe/26409/aufgabengruppe",
+            "children": [
+              {
+                "id": "mathe-6531-aufgabengruppe",
+                "label": "Aufgaben zur Bestimmung von Definitionsmengen  - lernen mit Serlo!",
+                "url": "https://de.serlo.org/mathe/6531/aufgabengruppe"
+              }
+            ]
+          },
+          {
+            "id": "mathe-1385-zahlen-und-größern",
+            "label": "Zahlen und Größern",
+            "url": "https://de.serlo.org/mathe/1385/zahlen-und-größern"
+          },
+          {
+            "id": "mathe-75678-quali-abschlusspruefungen-mathematik-mit-loesung",
+            "label": "Quali Abschlussprüfungen - Mathematik mit Lösung",
+            "url": "https://de.serlo.org/mathe/75678/quali-abschlusspruefungen-mathematik-mit-loesung",
+            "children": [
+              {
+                "id": "mathe-77847-2015",
+                "label": "2015",
+                "url": "https://de.serlo.org/mathe/77847/2015",
+                "children": [
+                  {
+                    "id": "mathe-77848-teil-a",
+                    "label": "Teil A",
+                    "url": "https://de.serlo.org/mathe/77848/teil-a",
+                    "children": [
+                      {
+                        "id": "mathe-77889-aufgabe",
+                        "label": "Teil A - lernen mit Serlo!",
+                        "url": "https://de.serlo.org/mathe/77889/aufgabe"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "root--1",
+        "label": "Serlo – Die freie Lernplattform",
+        "url": "https://de.serlo.org#content"
+      },
+      {
+        "id": "biologie",
+        "label": "Biologie",
+        "url": "https://de.serlo.org/biologie",
+        "children": [
+          {
+            "id": "biologie-64169-zellbiologie",
+            "label": "Zellbiologie",
+            "url": "https://de.serlo.org/biologie/64169/zellbiologie",
+            "children": [
+              {
+                "id": "biologie-77626-prozesse",
+                "label": "Prozesse",
+                "url": "https://de.serlo.org/biologie/77626/prozesse",
+                "children": [
+                  {
+                    "id": "biologie-77078-stofftransport-durch-biomembranen",
+                    "label": "Stofftransport durch Biomembranen - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/biologie/77078/stofftransport-durch-biomembranen"
+                  }
+                ]
+              },
+              {
+                "id": "biologie-70946-zelltypen",
+                "label": "Zelltypen",
+                "url": "https://de.serlo.org/biologie/70946/zelltypen",
+                "children": [
+                  {
+                    "id": "biologie-71631-tierische-zelle",
+                    "label": "Tierische Zelle - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/biologie/71631/tierische-zelle"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "biologie-23399-genetik-und-gentechnik",
+            "label": "Genetik und Gentechnik",
+            "url": "https://de.serlo.org/biologie/23399/genetik-und-gentechnik",
+            "children": [
+              {
+                "id": "biologie-29554-molekulargenetik",
+                "label": "Molekulargenetik",
+                "url": "https://de.serlo.org/biologie/29554/molekulargenetik",
+                "children": [
+                  {
+                    "id": "biologie-83786-transkription-1-schritt-der-proteinbiosynthese",
+                    "label": "Transkription - 1. Schritt der Proteinbiosynthese - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/biologie/83786/transkription-1-schritt-der-proteinbiosynthese"
+                  },
+                  {
+                    "id": "biologie-70696-proteine-aufbau-und-funktion",
+                    "label": "Proteine - Aufbau und Funktion - lernen mit Serlo!",
+                    "url": "https://de.serlo.org/biologie/70696/proteine-aufbau-und-funktion"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "root-106081-faecher-im-aufbau",
+    "label": "Fächer im Aufbau",
+    "url": "https://de.serlo.org/root/106081/faecher-im-aufbau",
+    "children": [
+      {
+        "id": "musik-167849-musik",
+        "label": "Musik – Grundlagen & Übungen",
+        "url": "https://de.serlo.org/musik/167849/musik"
+      },
+      {
+        "id": "deutsch-als-zweit-und-fremdsprache-112723-deutsch-als-zweit-und-fremdsprache",
+        "label": "Deutsch als Zweit- und Fremdsprache",
+        "url": "https://de.serlo.org/deutsch-als-zweit-und-fremdsprache/112723/deutsch-als-zweit-und-fremdsprache",
+        "children": [
+          {
+            "id": "deutsch-als-zweit-und-fremdsprache-268646-deutsch-als-fremdsprache-grammatik",
+            "label": "Deutsch als Fremdsprache - Grammatik – Grundlagen & Übungen",
+            "url": "https://de.serlo.org/deutsch-als-zweit-und-fremdsprache/268646/deutsch-als-fremdsprache-grammatik"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mathe-1571-stammfunktion-finden",
+    "label": "Stammfunktion finden - lernen mit Serlo!",
+    "url": "https://de.serlo.org/mathe/1571/stammfunktion-finden"
+  },
+  {
+    "id": "49982-mitmachen-in-informatik",
+    "label": "Bei Serlo-Informatik mitarbeiten",
+    "url": "https://de.serlo.org/49982/mitmachen-in-informatik"
+  },
+  {
+    "id": "75274-programmieren-lernen",
+    "label": "Programmieren lernen",
+    "url": "https://de.serlo.org/75274/programmieren-lernen",
+    "children": [
+      {
+        "id": "serlo-75274-programmieren-lernen",
+        "label": "Programmieren lernen - lernen mit Serlo!",
+        "url": "https://de.serlo.org/serlo/75274/programmieren-lernen"
+      }
+    ]
+  }
+]

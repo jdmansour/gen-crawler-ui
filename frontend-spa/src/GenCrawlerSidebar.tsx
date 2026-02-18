@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Router, Routes, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FilterCrawlsIcon from "./assets/icons/filter-crawls.svg?react";
 import MetadataInheritanceIcon from "./assets/icons/metadata-inheritance.svg?react";
 import RobotIcon from "./assets/icons/robot.svg?react";

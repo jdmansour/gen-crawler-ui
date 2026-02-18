@@ -14,8 +14,8 @@ services:
       - DB_PATH=/app/database/db.sqlite3
       - REDIS_URL=redis://redis:6379/0
     command: >
-      sh -c "python manage.py migrate &&
-             gunicorn crawler_ui.wsgi --bind 0.0.0.0:8000"
+      sh -c "uv run python manage.py migrate &&
+             uv run gunicorn crawler_ui.wsgi --bind 0.0.0.0:8000"
   metadataapi:
     image: jdmansour/generic-crawler-metadataapi:${DC_IMAGE_VERSION:-main}
     build:
@@ -24,10 +24,9 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - headless_chrome
+      - browser
     environment:
-      - "PLAYWRIGHT_WS_ENDPOINT=ws://headless_chrome:3000"
-      - "SPLASH_URL=http://splash:8050"
+      - "PLAYWRIGHT_CDP_ENDPOINT=http://browser:9222"
       - "Z_API_KEY=${Z_API_KEY?}"
       - "GENERIC_CRAWLER_USE_LLM_API=${GENERIC_CRAWLER_USE_LLM_API?}"
       - "GENERIC_CRAWLER_LLM_API_KEY=${GENERIC_CRAWLER_LLM_API_KEY?}"
@@ -47,15 +46,16 @@ services:
       - "./database:/app/database"
       - "./scrapyd:/var/lib/scrapyd"
     depends_on:
-      - headless_chrome
+      # - headless_chrome
+      - browser
       - redis
     environment:
       - DB_PATH=/app/database/db.sqlite3
       - GENERIC_CRAWLER_DB_PATH=/app/database/db.sqlite3
       - REDIS_URL=redis://redis:6379/0
       # For the generic crawler
-      - "PLAYWRIGHT_WS_ENDPOINT=ws://headless_chrome:3000"
-      - "SPLASH_URL=http://splash:8050"
+      # - "PLAYWRIGHT_WS_ENDPOINT=ws://headless_chrome:3000"
+      - "PLAYWRIGHT_CDP_ENDPOINT=http://browser:9222"
       # optional keyword args, e.g. cleanrun=true
       - "ARGS=${ARGS}"
       - "MODE=edu-sharing"
@@ -77,16 +77,24 @@ services:
     volumes:
       - redis_data:/data
 
-  headless_chrome:
-    image: ghcr.io/browserless/chrome@sha256:88ad4d675814dc8c3e5cfaa79bccec2253c7ef04abfa6a55ecc4d605090ff954
-    platform: linux/amd64
+  # headless_chrome:
+  #   image: ghcr.io/browserless/chrome@sha256:88ad4d675814dc8c3e5cfaa79bccec2253c7ef04abfa6a55ecc4d605090ff954
+  #   platform: linux/amd64
+  #   restart: always
+  #   environment:
+  #     - TIMEOUT=60000
+  #   ports:
+  #     - "127.0.0.1:3000:3000"
+  #   # networks:
+  #   #   - scrapy
+
+  browser:
+    build:
+      context: browser
+      dockerfile: browser.Dockerfile
     restart: always
-    environment:
-      - TIMEOUT=60000
     ports:
-      - "127.0.0.1:3000:3000"
-    # networks:
-    #   - scrapy
+      - "127.0.0.1:9222:9222"
 
 volumes:
   redis_data:

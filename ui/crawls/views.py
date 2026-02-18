@@ -6,30 +6,25 @@ import logging
 import os
 import threading
 import time
-from typing import Any, Optional
 
 import redis
 import requests
-from aggregator import CallbackAggregator
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import StreamingHttpResponse
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
-from django.views.generic import CreateView, DetailView, FormView, ListView
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from aggregator import CallbackAggregator
 from crawls.fields_processor import FieldsProcessor
-from crawls.forms import StartCrawlForm
 from crawls.models import Crawler, CrawlJob, FilterRule, FilterSet, SourceItem
-from crawls.serializers import (CrawlerSerializer, FilterRuleSerializer,
-                                FilterSetSerializer, SourceItemSerializer, CrawlJobSerializer)
+from crawls.serializers import (CrawlerSerializer, CrawlJobSerializer,
+                                FilterRuleSerializer, FilterSetSerializer,
+                                SourceItemSerializer)
 
 log = logging.getLogger(__name__)
 
@@ -80,6 +75,7 @@ class CrawlerViewSet(viewsets.ModelViewSet):
             follow_links=True,
             crawler=obj,
             state='PENDING',
+            crawl_type='EXPLORATION',
         )
         crawljob.save()
         print("Created CrawlJob:", crawljob)
@@ -103,7 +99,10 @@ class CrawlerViewSet(viewsets.ModelViewSet):
             crawljob.state = 'ERROR'
             crawljob.save()
             return Response({'status': 'error', 'message': response.text}, status=500)
-        
+
+        crawljob.scrapy_job_id = response.json().get('jobid', '')
+        crawljob.save()
+
         serializer = CrawlJobSerializer(crawljob)
         return Response(serializer.data)
 
@@ -113,24 +112,44 @@ class CrawlerViewSet(viewsets.ModelViewSet):
         """ Starts a content crawl for this crawler's filter set. Lives at
             http://127.0.0.1:8000/api/crawlers/<pk>/start_content_crawl/ """
         crawler = self.get_object()
-        filter_set = crawler.filter_set
+
+        # create crawl job object
+        crawljob = CrawlJob.objects.create(
+            start_url=crawler.start_url,  # not used in content crawl
+            follow_links=True,  # not used in content crawl
+            crawler=crawler,
+            state='PENDING',
+            crawl_type='CONTENT',
+        )
+        crawljob.save()
+        print("Created CrawlJob:", crawljob)
+
         parameters = {
             'project': 'scraper',
             'spider': 'generic_spider',
-            'filter_set_id': str(filter_set.id),
+            'filter_set_id': str(crawler.filter_set.id),
+            'crawler_id': str(crawler.id),
+            'crawl_job_id': str(crawljob.id),
         }
 
-        url = settings.SCRAPYD_URL + "/schedule.json"
-        try:
-            response = requests.post(url, data=parameters, timeout=5)
-        except requests.exceptions.RequestException as e:
-            return Response({'status': 'error', 'message': str(e)}, status=500)
+        ## TODO: implement the other path in generic_spider.py where we start a crawl and pass filter_set_id!!!
 
+        url = settings.SCRAPYD_URL + "/schedule.json"
+        response = requests.post(url, data=parameters, timeout=5)
+        log.info("Response: %s", response.text)
+        log.info("Status code: %s", response.status_code)
         if response.status_code != 200:
+            crawljob.state = 'ERROR'
+            crawljob.save()
             return Response({'status': 'error', 'message': response.text}, status=500)
-        else:
-            obj = response.json()
-            return Response(obj)
+        # Respone is like:
+        # {"node_name": "8cc425300b18", "status": "ok", "jobid": "03d1f0d8fb8211f0aff70242ac120004"}
+        # Set the correct scrapy_job_id on the crawljob, so the frontend can refer to it
+        crawljob.scrapy_job_id = response.json().get('jobid', '')
+        crawljob.save()
+
+        serializer = CrawlJobSerializer(crawljob)
+        return Response(serializer.data)
 
 
 @csrf_exempt
@@ -145,7 +164,9 @@ def crawler_status_stream(request, crawler_id):
     log.info("Request: %s", request)
     log.info("crawler_id: %s", crawler_id)
     log.info("Thread ID in request handler: %s", threading.get_ident())
-    crawler = get_object_or_404(Crawler, pk=crawler_id)
+    
+    # Raise 404 when crawler does not exist
+    get_object_or_404(Crawler, pk=crawler_id)
     
     # Get Redis connection from environment
     redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
@@ -179,30 +200,25 @@ def crawler_status_stream(request, crawler_id):
             )
 
             while pubsub.subscribed:
-                # If there are pending events, use a short timeout so we can get to "yield event"
-                # and are not stuck waiting for new messages from Redis.
-                # If there are no events in the aggregator, then we can wait longer for new messages.
-                timeout = 0.1 if len(aggregator.events) > 0 else None
-                message = pubsub.handle_message(pubsub.parse_response(timeout=timeout, block=False))  # type: ignore
-                
-                # Sende alle gepufferten Events
+                # Always use a short timeout so we regularly check event_queue
+                # for events delivered by the aggregator's timer thread.
+                # Using timeout=None would block indefinitely in parse_response,
+                # preventing us from yielding aggregated events from event_queue.
+                message = pubsub.handle_message(pubsub.parse_response(timeout=0.5, block=False))  # type: ignore
+
+                # Yield all queued events from the aggregator
                 while event_queue:
                     event = event_queue.pop(0)
-                    log.info("Sending event from queue: %s", event)
                     yield event
-        
+
                 if message is None:
-                    log.info("Timeout")
                     continue
-                    
+
                 if message['type'] != 'message':
-                    log.info("Ignoring non-message type: %s", message['type'])
                     continue
 
                 try:
                     data = json.loads(message['data'].decode('utf-8'))
-                    log.info("Received Redis message: %s", data.get('type', 'unknown'))
-                    # Event über Aggregator verarbeiten
                     aggregator.add_event(data)
                 except (json.JSONDecodeError, UnicodeDecodeError) as e:
                     log.error("Error processing Redis message: %s", e)
@@ -251,12 +267,13 @@ class CrawlJobViewSet(viewsets.ModelViewSet):
     def cancel(self, request, pk=None):
         """ Cancel this crawl job. Lives at
             http://127.0.0.1:8000/api/crawl_jobs/1/cancel/ """
-        
-        scrapy_job_id = self.get_object().scrapy_job_id
+
+        crawl_job = self.get_object()
+        scrapy_job_id = crawl_job.scrapy_job_id
         if not scrapy_job_id:
             message = f"Crawl job {pk} has no scrapy_job_id, cannot cancel."
             return Response({'status': 'error', 'message': message}, status=400)
-        
+
         url = settings.SCRAPYD_URL + "/cancel.json"
         parameters = {
             'project': 'scraper',
@@ -267,6 +284,10 @@ class CrawlJobViewSet(viewsets.ModelViewSet):
         log.info("Status code: %s", response.status_code)
         if response.status_code != 200:
             return Response({'status': 'error', 'message': response.text}, status=500)
+
+        # Update the crawl job state to CANCELED
+        crawl_job.state = CrawlJob.State.CANCELED
+        crawl_job.save()
 
         obj = response.json()
         return Response(obj)
@@ -373,61 +394,6 @@ class FilterRuleViewSet(viewsets.ModelViewSet):
         return Response(result)
 
 
-class CrawlsListView(ListView):
-    model = CrawlJob
-    template_name = 'crawls_list.html'
-    context_object_name = 'crawls'
-
-    def get_queryset(self):
-        return CrawlJob.objects.all().order_by('-created_at')
-
-
-class CrawlDetailView(DetailView):
-    model = CrawlJob
-    template_name = 'crawl_detail.html'
-    context_object_name = 'crawl'
-
-
-class FilterSetDetailView(DetailView):
-    model = FilterSet
-    template_name = 'filterset_detail.html'
-    context_object_name = 'filterset'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-
-class FilterSetCreateView(CreateView):
-    model = FilterSet
-    fields = ['name', 'crawl_job']
-    template_name = 'filterset_create.html'
-    # success_url = '/crawls/'
-    object: Optional[FilterSet]
-
-    def get_success_url(self) -> str:
-        # return the new filter set's detail page
-        assert self.object is not None
-        return reverse_lazy('filter_details', kwargs={'pk': self.object.pk})
-
-    # get crawl job id from URL
-    def get_initial(self) -> dict[str, Any]:
-        initial = super().get_initial().copy()
-        # get crawl_job_id from GET parameters
-        crawl_job_id = self.request.GET.get('crawl_job_id')
-        # Raise error if crawl_job_id is not provided
-        if crawl_job_id is None:
-            raise ValueError("crawl_job_id is required")
-        initial['crawl_job'] = crawl_job_id
-        return initial
-
-    # run code on successful form submission
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.info(self.request, 'Filter set created')
-        return response
-
-
 class HealthViewSet(viewsets.ViewSet):
     """ Provides the API under /api/health/ """
 
@@ -436,79 +402,4 @@ class HealthViewSet(viewsets.ViewSet):
     def list(self, request):
         """ Return health status. """
         return Response({'status': 'ok'})
-
-
-class StartCrawlFormView(FormView):
-    """ Start a new crawl job. """
-
-    template_name = 'start_crawl.html'
-    form_class = StartCrawlForm
-    success_url = '/crawls/'
-
-    def form_valid(self, form: StartCrawlForm):
-        start_url = form.cleaned_data['start_url']
-        follow_links = form.cleaned_data['follow_links']
-        parameters = {
-            'project': 'scraper',
-            'spider': 'example',
-            'start_url': start_url,
-            'follow_links': follow_links,
-        }
-        # get SCRAPYD_URL from settings
-        url = settings.SCRAPYD_URL + "/schedule.json"
-        response = requests.post(url, data=parameters, timeout=5)
-        log.info("Response: %s", response.text)
-        log.info("Status code: %s", response.status_code)
-
-        if response.status_code != 200:
-            messages.error(self.request, f"Error starting crawl: {response.text}")
-            return super().form_invalid(form)
-
-        obj = response.json()
-        # response can be something like:
-        # {"status": "error", "message": "spider 'generic_spider' not found"}
-        if obj.get('status') == 'error':
-            messages.error(self.request, f"Error starting crawl: {obj.get('message')}")
-        else:
-            messages.info(self.request, f"Crawl of '{start_url}' started")
-
-        return super().form_valid(form)
-
-
-@require_POST
-def start_content_crawl(request, pk):
-    """ Starts a content crawl for a certain filter set. """
-    filter_set = FilterSet.objects.get(pk=pk)
-    start_url = filter_set.crawl_job.start_url
-    # follow_links = filter_set.crawl_job.follow_links
-    # TODO: a filter set is always linked to a crawl job. Maybe we want to make it so
-    # that we can reuse a filter set for multiple jobs?
-    parameters = {
-        'project': 'scraper',
-        'spider': 'generic_spider',
-        'filter_set_id': str(pk),
-    }
-
-    url = settings.SCRAPYD_URL + "/schedule.json"
-    try:
-        response = requests.post(url, data=parameters, timeout=5)
-    except requests.exceptions.RequestException as e:
-        messages.error(request, f"Error starting content crawl: {e}")
-        return redirect('filter_details', pk=pk)
-    print(response.status_code)
-    print(response.text)
-
-    if response.status_code != 200:
-        messages.error(request, f"Error starting content crawl: {response.text}")
-    else:
-        obj = response.json()
-        # response can be something like:
-        # {"status": "error", "message": "spider 'generic_spider' not found"}
-        if obj.get('status') == 'error':
-            messages.error(request, f"Error starting content crawl: {obj.get('message')}")
-        else:
-            messages.info(request, f"Content crawl of '{start_url}' started")
-
-    # redirect back to the filter set detail page
-    return redirect('filter_details', pk=pk)
 

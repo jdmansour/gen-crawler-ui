@@ -7,11 +7,11 @@ import { CustomIcon, NamedIcon } from './CustomIcon';
 
 export default function MdsEditor(props: {
     title: string | React.ReactNode;
-    icon?: NamedIcon | React.ReactNode;
+    icon?: NamedIcon | React.ReactElement;
     children?: React.ReactNode;
 }) {
 
-    const icon = props.icon ? (typeof props.icon !== 'string' ?
+  const icon = props.icon ? (typeof props.icon === 'string' ?
     <CustomIcon iconName={props.icon} /> : props.icon) : <RobotIcon style={{ width: 32, height: 32 }} />;
 
   return (

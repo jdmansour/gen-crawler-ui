@@ -2,6 +2,7 @@ import asyncio
 import base64
 import json
 import logging
+import os.path
 import pprint
 import time
 import uuid
@@ -696,10 +697,12 @@ class EduSharing:
             # inserting items is controlled with a Semaphore, otherwise we'd get PoolTimeout Exceptions when there's a
             # temporary burst of items that need to be inserted
             node = self.sync_node(spider, "ccm:io", self.transform_item(uuid, spider, item))
+            log.info("In insert_item, got node: %s", pprint.pformat(node))
             self.set_node_permissions(node["ref"]["id"], item)
             await self.set_node_preview(node["ref"]["id"], item)
             if not await self.set_node_binary_data(node["ref"]["id"], item):
                 await self.set_node_text(node["ref"]["id"], item)
+            return node
 
     async def update_item(self, spider, uuid, item):
         await self.insert_item(spider, uuid, item)
@@ -767,12 +770,7 @@ class EduSharing:
                 else:
                     log.info("Detected edu-sharing bulk api with version " + version_str)
                 if env.get_bool("EDU_SHARING_PERMISSION_CONTROL", False, True) is True:
-                    EduSharing.groupCache = list(
-                        map(
-                            lambda x: x["authorityName"],
-                            EduSharing.iamApi.search_groups(EduSharingConstants.HOME, "", max_items=1000000)["groups"],
-                        )
-                    )
+                    EduSharing.groupCache = get_edusharing_groups()
                     log.debug("Built up edu-sharing group cache: {}".format(EduSharing.groupCache))
                     return
                 else:
@@ -859,3 +857,31 @@ class EduSharing:
         # EduSharing.spiderNodes[spider.name] = src
         # return src
         return None
+
+def get_edusharing_groups():
+    # return list(
+    #     map(
+    #         lambda x: x["authorityName"],
+    #         EduSharing.iamApi.search_groups(EduSharingConstants.HOME, "", max_items=1000000)["groups"],
+    #     )
+    # )
+    cache_file = "cache/edusharing_groups.json"
+    if os.path.exists(cache_file):
+        timespan = 60 * 60 * 24
+        if time.time() < os.path.getmtime(cache_file) + timespan:
+            log.info("Using cached edu-sharing groups")
+            with open(cache_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        else:
+            log.info("Cached edu-sharing groups are outdated, fetching new groups from API...")
+
+    log.info("Fetching edu-sharing groups from API...")
+    groups = EduSharing.iamApi.search_groups(EduSharingConstants.HOME, "", max_items=1000000)["groups"]
+    group_names = [group["authorityName"] for group in groups]
+
+    # Saving to cache
+    os.makedirs("cache", exist_ok=True)
+    with open(cache_file, "w", encoding="utf-8") as f:
+        json.dump(group_names, f)
+
+    return group_names

@@ -23,14 +23,15 @@ export default function FilterSetTable(props: {
   doMoveRule: (draggedId: number, hoveredPosition: number) => Promise<void>,
   doDeleteRule: (id: number) => void,
   evaluateFilters: () => Promise<void>,
+  onStartContentCrawl: () => void,
 }) {
 
-  const { evaluationResult, rowSelection, setRowSelection, addRowWithDataAfter, updateFields, doMoveRule, doDeleteRule, evaluateFilters } = props;
+  const { evaluationResult, rowSelection, setRowSelection, addRowWithDataAfter, updateFields, doMoveRule, doDeleteRule, evaluateFilters, onStartContentCrawl } = props;
 
   const lastId = Math.max(...evaluationResult.rules.map(r => r.id), 0);
   const lastPosition = Math.max(...evaluationResult.rules.map(r => r.position), 0);
 
-  const sortedRows = evaluationResult.rules.sort((a, b) => a.position - b.position)
+  const sortedRows = [...evaluationResult.rules].sort((a, b) => a.position - b.position)
   const lastRow: Rule = {
     'id': -1,
     'position': lastPosition + 1,
@@ -47,30 +48,29 @@ export default function FilterSetTable(props: {
       header: 'URL-Muster',
       size: 300,
       enableEditing: (row) => row.original.id !== -1,
-      muiEditTextFieldProps: ({ column, row, table }) => ({
+      muiEditTextFieldProps: ({ row, table }) => ({
         variant: "standard",
         fullWidth: true,
         slotProps: {
           input: { sx: { fontSize: 'inherit', m: -0, height: 22, marginTop: "2px", marginBottom: "-2px" } }
         },
-        onBlur: async (event) => {
-          // table.setEditingCell(null) is called automatically onBlur internally
-          console.log("onBlur called");
-          console.log('table.getState().creatingRow', table.getState().creatingRow);
-          // TODO: this is broken and needs fixing!
-          if (table.getState().creatingRow) {
-            console.log("Submitting new row");
-            const data = await addRowWithDataAfter(lastId, { rule: event.target.value });
-            console.log("data returned from addRowWithDataAfter", data);
-
-            row._valuesCache[column.id] = event.target.value;
-            row._valuesCache['id'] = data.id;
-            row._valuesCache['count'] = data.count;
-            row._valuesCache['cumulative_count'] = data.cumulative_count;
-            table.setCreatingRow(row);
-          } else {
-            updateFields(row.original.id, { rule: event.target.value });
+        onKeyDown: async (event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            if (table.getState().creatingRow) {
+              await addRowWithDataAfter(lastId, { rule: (event.target as HTMLInputElement).value });
+              table.setCreatingRow(null);
+            } else {
+              (event.target as HTMLInputElement).blur();
+            }
           }
+        },
+        onBlur: async (event) => {
+          if (table.getState().creatingRow) {
+            // Don't save on blur during row creation — onCreatingRowSave handles it
+            return;
+          }
+          updateFields(row.original.id, { rule: event.target.value });
         },
         // Make double click work properly: Don't select the whole text, but only the word under the cursor
         onDoubleClick: (event) => event.stopPropagation(),
@@ -182,8 +182,10 @@ const table = useMaterialReactTable({
     getRowId: (originalRow) => String(originalRow.id),
     muiTableBodyRowProps: ({ row, staticRowIndex, table }) => ({
       // single click to select row
-      onClick: (event) =>
-        getMRT_RowSelectionHandler({ row, staticRowIndex, table })(event), //import this helper function from material-react-table
+      onClick: (event) => {
+        if (row.id === 'mrt-row-create') return;
+        getMRT_RowSelectionHandler({ row, staticRowIndex, table })(event);
+      },
     }),
     muiTableBodyProps: {
       sx: {
@@ -210,9 +212,8 @@ const table = useMaterialReactTable({
     positionToolbarAlertBanner: 'none',
     createDisplayMode: 'row',
     positionCreatingRow: rows.length-1,
-    onCreatingRowSave: ({ row, table, values }) => {
-      console.log("Creating row", { row, table, values });
-      addRowWithDataAfter(lastId, values);
+    onCreatingRowSave: async ({ table, values }) => {
+      await addRowWithDataAfter(lastId, values);
       table.setCreatingRow(null);
     },
     enableStickyHeader: true,
@@ -237,7 +238,7 @@ const table = useMaterialReactTable({
     <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
       <Button variant="outlined" sx={{ textTransform: 'none' }} onClick={() => table.setCreatingRow(true)}>Regel hinzufügen</Button>
       <Button variant='outlined' sx={{ textTransform: 'none' }} onClick={evaluateFilters}>Filter auswerten</Button>
-      <Button variant="contained" style={{ textTransform: 'none', marginLeft: 'auto' }}>Start content crawl</Button>
+      <Button variant="contained" style={{ textTransform: 'none', marginLeft: 'auto' }} onClick={onStartContentCrawl}>Start content crawl</Button>
     </Stack>
   </>;
 }

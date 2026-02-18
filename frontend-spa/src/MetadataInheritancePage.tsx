@@ -3,7 +3,7 @@ import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Grid from "@mui/system/Grid";
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import MdsEditor from "./MdsEditor";
 import { MetadataInheritancePageContext } from "./RootContext";
 import WloFieldGroupSet from "./WloFieldGroupSet";
@@ -15,6 +15,8 @@ export default function MetadataInheritancePage() {
   const { crawlerList } = useOutletContext<MetadataInheritancePageContext>();
   const navigate = useNavigate();
   const params = useParams();
+  const [searchParams] = useSearchParams();
+  const isNewCrawler = searchParams.get("new") === "true";
   const crawlerId: number | undefined = params.crawlerId ? parseInt(params.crawlerId) : undefined;
   const crawler = crawlerList.find(c => c.id === crawlerId);
   const sourceItemGuid = crawler?.source_item;
@@ -92,7 +94,10 @@ export default function MetadataInheritancePage() {
 
   return <div style={{overflowY: "scroll", padding: "0px 24px 24px 24px"}}>
       <h2 style={{marginTop: 8}}>Metadatenvererbung</h2>
-      <p>Dein neuer Crawler wurde erstellt! Während im Hintergrund die Quelle analysiert wird, kannst du jetzt schon mal die Felder auswählen, die von dem Quelldatensatz übernommen werden sollen.</p>
+      {isNewCrawler
+        ? <p>Dein neuer Crawler wurde erstellt! Während im Hintergrund die Quelle analysiert wird, kannst du jetzt schon mal die Felder auswählen, die von dem Quelldatensatz übernommen werden sollen.</p>
+        : <p>Hier kannst du die Felder auswählen, die von dem Quelldatensatz an die gecrawlten Materialien vererbt werden sollen.</p>
+      }
       <Stack direction="row" justifyContent="center" gap={1} sx={{ mb: 2}}>
         <Button variant="outlined" onClick={selectAllRecommendedFields}>Alle empfohlenen Felder auswählen</Button>
       </Stack>
@@ -137,7 +142,10 @@ export default function MetadataInheritancePage() {
 
       <Stack direction="row" gap={1} sx={{ mt: 2}}>
         <Button variant="outlined" onClick={() => navigate(-1)}>Zurück</Button>
-        <Button variant="contained" style={{ marginLeft: 'auto' }} onClick={onSave}>Weiter</Button>
+        {isNewCrawler
+          ? <Button variant="contained" style={{ marginLeft: 'auto' }} onClick={async () => { await onSave(); navigate(`/crawlers/${crawlerId}`); }}>Weiter</Button>
+          : <Button variant="contained" style={{ marginLeft: 'auto' }} onClick={async () => { await onSave(); navigate(`/crawlers/${crawlerId}`); }}>Speichern</Button>
+        }
       </Stack>
 
       {/* <div className="wlo-button-group">

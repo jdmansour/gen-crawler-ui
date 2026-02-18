@@ -7,16 +7,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-export const defaultTheme = createTheme();
+const defaultTheme = createTheme();
 
-export const roundedTheme = createTheme({
+const roundedTheme = createTheme({
     // palette: {
     //     primary: {
     //         main: '#1976d2',
     //     },
     // },
     typography: {
-        fontFamily: 'Montserrat, Arial, sans-serif',
+        fontFamily: 'Open Sans, Arial, sans-serif',
         fontWeightRegular: 500,
     },
     components: {

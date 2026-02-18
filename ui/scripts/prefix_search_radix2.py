@@ -33,8 +33,15 @@ def main():
 def find_new_prefixes(filterset_id: int):
 
     filterset = FilterSet.objects.get(pk=filterset_id)
-    job = filterset.crawl_job
-    max_prefixes = 5
+    # get the latest crawl job with crawl_type="EXPLORATION" for this filterset
+    # Include both COMPLETED and CANCELED jobs, as canceled jobs may still have useful data
+    crawler = filterset.crawler
+    job = crawler.crawl_jobs.filter(
+        crawl_type="EXPLORATION",
+        state__in=["COMPLETED", "CANCELED"]
+    ).order_by('-created_at').first()
+    #job = filterset.crawl_job
+    max_prefixes = 10
 
     #job = CrawlJob.objects.get(pk=9)
     # job = CrawlJob.objects.get(pk=6)

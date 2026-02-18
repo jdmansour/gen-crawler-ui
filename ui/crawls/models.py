@@ -19,6 +19,8 @@ class SourceItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     data = models.JSONField()
+    # cclom:general_description
+    description = models.TextField(blank=True, default="")
 
     def __str__(self):
         return f"{self.title} ({self.guid})"
@@ -46,16 +48,72 @@ class Crawler(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class State(models.TextChoices):
+        EXPLORATION_REQUIRED = 'EXPLORATION_REQUIRED', 'Exploration Required'
+        EXPLORATION_REQUIRED_JOB_FAILED = 'EXPLORATION_REQUIRED_JOB_FAILED', 'Exploration Required (Job Failed)'
+        EXPLORATION_RUNNING = 'EXPLORATION_RUNNING', 'Exploration Running'
+        READY_FOR_CONTENT_CRAWL = 'READY_FOR_CONTENT_CRAWL', 'Ready for Content Crawl'
+        READY_FOR_CONTENT_CRAWL_JOB_FAILED = 'READY_FOR_CONTENT_CRAWL_JOB_FAILED', 'Ready for Content Crawl (Job Failed)'
+        CONTENT_CRAWL_RUNNING = 'CONTENT_CRAWL_RUNNING', 'Content Crawl Running'
+
+    class SimpleState(models.TextChoices):
+        DRAFT = 'draft', 'Draft'
+        RUNNING = 'running', 'Running'
+        IDLE = 'idle', 'Idle'
+        ERROR = 'error', 'Error'
+
+    STATE_TO_SIMPLE_STATE = {
+        'EXPLORATION_REQUIRED': 'draft',
+        'EXPLORATION_REQUIRED_JOB_FAILED': 'error',
+        'EXPLORATION_RUNNING': 'running',
+        'READY_FOR_CONTENT_CRAWL': 'idle',
+        'READY_FOR_CONTENT_CRAWL_JOB_FAILED': 'error',
+        'CONTENT_CRAWL_RUNNING': 'running',
+    }
+
+    def state(self) -> str:
+        """ Returns the current state of the crawler based on its crawl jobs. """
+        crawl_jobs = self.crawl_jobs.all()
+        if crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
+            return self.State.EXPLORATION_RUNNING
+        if not crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION, state__in=[CrawlJob.State.COMPLETED, CrawlJob.State.CANCELED]).exists():
+            latest = crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.EXPLORATION).order_by('-created_at').first()
+            if latest and latest.state == CrawlJob.State.FAILED:
+                return self.State.EXPLORATION_REQUIRED_JOB_FAILED
+            return self.State.EXPLORATION_REQUIRED
+        if crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.CONTENT, state__in=[CrawlJob.State.RUNNING, CrawlJob.State.PENDING]).exists():
+            return self.State.CONTENT_CRAWL_RUNNING
+        latest_content = crawl_jobs.filter(crawl_type=CrawlJob.CrawlType.CONTENT).order_by('-created_at').first()
+        if latest_content and latest_content.state == CrawlJob.State.FAILED:
+            return self.State.READY_FOR_CONTENT_CRAWL_JOB_FAILED
+        return self.State.READY_FOR_CONTENT_CRAWL
+
+    def simple_state(self) -> str:
+        """ Returns a simplified state for UI display. """
+        return self.STATE_TO_SIMPLE_STATE[self.state()]
+
+    def ensure_filter_set(self) -> FilterSet:
+        """Return the existing FilterSet or create one."""
+        try:
+            return self.filter_set
+        except FilterSet.DoesNotExist:
+            return FilterSet.objects.create(name=self.name, crawler=self)
 
 class CrawlJob(models.Model):
     """ A crawl job contains a start URL and references to all crawled URLs. """
 
-    # Crawl job state: pending, running, completed, failed
+    # Crawl job state: pending, running, completed, failed, canceled
     class State(models.TextChoices):
         PENDING = 'PENDING', 'Pending'
         RUNNING = 'RUNNING', 'Running'
         COMPLETED = 'COMPLETED', 'Completed'
         FAILED = 'FAILED', 'Failed'
+        CANCELED = 'CANCELED', 'Canceled'
+
+    class CrawlType(models.TextChoices):
+        EXPLORATION = 'EXPLORATION', 'Exploration'
+        CONTENT = 'CONTENT', 'Content'
 
     id = models.AutoField(primary_key=True)
     start_url = models.URLField()
@@ -69,6 +127,8 @@ class CrawlJob(models.Model):
     state = models.CharField(
         max_length=20, choices=State.choices, default=State.PENDING)
     scrapy_job_id = models.CharField(max_length=255, blank=True, null=True)
+    crawl_type = models.CharField(
+        max_length=20, choices=CrawlType.choices, default=CrawlType.EXPLORATION)
 
     def __str__(self):
         return f"#{self.id} {self.start_url} at {self.created_at.strftime('%Y-%m-%d %H:%M')}"
@@ -171,6 +231,19 @@ class FilterSet(models.Model):
             'updated_at': self.updated_at,
             'rules': results
         }
+    
+    def fix_rule_positions(self):
+        """ Fix the positions of the rules in this filter set. """
+        # Get a list of all positions and ids, ordered by position ascending.
+        # If a position is duplicate, the rules will be ordered arbitrarily (by id).
+        # Then, go through the list and reassign positions to be 1, 2, 3, ... in the order of the list.
+        rules = self.rules.order_by('position', 'id')
+        for i, rule in enumerate(rules):
+            if rule.position != i + 1:
+                log.info("Fixing position of rule %s from %d to %d",
+                         rule.rule, rule.position, i + 1)
+                rule.position = i + 1
+                rule.save(update_fields=['position'], force_update=True)        
 
 class FilterRule(models.Model):
     """ A rule to filter URLs in or out. """
@@ -207,7 +280,13 @@ class FilterRule(models.Model):
         """ Move the rule to the new position. If the position is already taken,
             increase the position of all rules above the new position by 1. """
         # TODO: We have to renumber the rules when one is deleted.
+        log.info("move_to called with new_position %d for rule %s at position %d",
+                 new_position, self.rule, self.position)
         if new_position == self.position:
+            # check for duplicates at this position and fix them
+            if self.filter_set.rules.filter(position=self.position).count() > 1:
+                log.info("Duplicate positions found for position %d, fixing positions", self.position)
+                self.filter_set.fix_rule_positions()
             return
         new_position = clamp(new_position, 1, self.filter_set.rules.count())
         log.info("Moving rule %s from %d to %d",

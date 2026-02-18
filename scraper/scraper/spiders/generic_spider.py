@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import datetime
 import logging
-import os
+import json
 import sqlite3
 from typing import Optional
 
-import scrapy.http
+import httpx
+import playwright.async_api
 import scrapy.signals
+from metadataenricher import metadata_enricher
+from metadataenricher.metadata_enricher import MetadataEnricher
+from scrapy.exceptions import CloseSpider
 from scrapy.http.response import Response
 from scrapy.http.response.text import TextResponse
 from scrapy.spiders import Spider
@@ -18,7 +22,8 @@ from scraper.es_connector import EduSharing
 
 from .. import env
 from ..util.generic_crawler_db import fetch_urls_passing_filterset
-from metadataenricher.metadata_enricher import MetadataEnricher
+from .state_helper import StateHelper
+from .utils import check_db
 
 log = logging.getLogger(__name__)
 
@@ -30,7 +35,6 @@ class GenericSpider(Spider):
     start_urls = []
     rules = [Rule(callback="parse")]
     custom_settings = {
-        "WEB_TOOLS": "playwright",
         "ROBOTSTXT_OBEY": False,
         "ITEM_PIPELINES": {
             "scraper.pipelines_edusharing.EduSharingCheckPipeline": 0,
@@ -41,13 +45,14 @@ class GenericSpider(Spider):
             "scraper.pipelines_edusharing.ConvertTimePipeline": 200,
             "scraper.pipelines_edusharing.ProcessValuespacePipeline": 250,
             "scraper.pipelines_edusharing.ProcessThumbnailPipeline": 300,
-            "scraper.pipelines_edusharing.JSONStorePipeline": 1000,
             "scraper.pipelines_edusharing.EduSharingStorePipeline": 1000,
         }
     }
 
-    def __init__(self, urltocrawl="", ai_enabled="True",
-                 max_urls="3", filter_set_id="", **kwargs):
+    def __init__(self, urltocrawl:str="", ai_enabled:str="True",
+                 max_urls:str="3", filter_set_id:str="",
+                 crawler_id:str|None=None, crawl_job_id:str|None=None,
+                 dry_run:str|None=None, **kwargs):
         EduSharing.resetVersion = True
         super().__init__(**kwargs)
 
@@ -57,6 +62,9 @@ class GenericSpider(Spider):
         log.info("  ai_enabled: %r", ai_enabled)
         log.info("  max_urls: %r", max_urls)
         log.info("  filter_set_id: %r", filter_set_id)
+        log.info("  crawler_id: %r", crawler_id)
+        log.info("  crawl_job_id: %r", crawl_job_id)
+        log.info("  dry_run: %r", dry_run)
         log.info("  kwargs: %r", kwargs)
         log.info("scraper module: %r", scraper)
         log.info("__file__: %r", __file__)
@@ -80,20 +88,44 @@ class GenericSpider(Spider):
             self.start_urls = urls[:self.max_urls]
 
         # logging.warning("self.start_urls=" + self.start_urls[0])
+        self.crawl_job_id: Optional[int] = int(crawl_job_id) if crawl_job_id else None
+        self.crawler_id: Optional[int] = int(crawler_id) if crawler_id else None
+        self.items_processed = 0
+        self.spider_failed = False
+        self.crawler_output_node: Optional[str] = None
+        self.dry_run = False if dry_run is None else to_bool(dry_run)
+        self.crawler_name: Optional[str] = None  # set in spider_opened
+
+        if crawler_id is None:
+            log.info("No crawler_id provided, this is a dry run without "
+                     "database updates or Redis status publishing.")
+            # dry_run=(unset) or dry_run=True is OK, but dry_run=False is not
+            if dry_run is not None and to_bool(dry_run) == False:
+                log.error("Error: If no crawler_id is provided, dry_run=False is not allowed.")
+                raise ValueError("Invalid arguments: If no crawler_id is provided, dry_run=False is not allowed.")
+            self.dry_run = True
+
+        if self.dry_run:
+            del self.custom_settings["ITEM_PIPELINES"]["scraper.pipelines_edusharing.EduSharingStorePipeline"]
 
         try:
-            ai_enabled = to_bool(ai_enabled)
+            ai_enabled_bool = to_bool(ai_enabled)
         except ValueError:
             log.error("Invalid value for ai_enabled: %s", ai_enabled)
             raise
 
-        self.enricher = MetadataEnricher(ai_enabled=ai_enabled)
+        self.enricher = MetadataEnricher(ai_enabled=ai_enabled_bool)
+        self.state_helper = StateHelper(self.dry_run,
+            int(crawler_id) if crawler_id else None,
+            int(crawl_job_id) if crawl_job_id else None)
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
+        # pylint: disable=E1101
         spider = super().from_crawler(crawler, *args, **kwargs)
-        crawler.signals.connect(
-            spider.spider_opened, signal=scrapy.signals.spider_opened)  # pylint: disable=no-member
+        crawler.signals.connect(spider.spider_opened, signal=scrapy.signals.spider_opened)
+        crawler.signals.connect(spider.spider_closed, signal=scrapy.signals.spider_closed)
+        crawler.signals.connect(spider.spider_error, signal=scrapy.signals.spider_error)
         return spider
 
     def spider_opened(self, spider: GenericSpider):
@@ -101,37 +133,123 @@ class GenericSpider(Spider):
             Open the database and get the list of URLs to crawl. """
 
         log.info("Opened spider %s version %s", spider.name, spider.version)
-        db_path = self.settings.get('GENERIC_CRAWLER_DB_PATH')
-        log.info("Using database at %s", db_path)
-        if db_path is not None:
-            log.info("File exists? %s", os.path.exists(db_path))
-        if db_path is None or not os.path.exists(db_path):
-            log.error(
-                "No database set or database not found. Please set GENERIC_CRAWLER_DB_PATH.")
-            return
-
-        if not self.filter_set_id:
-            return
+        check_db(self.settings)
+        self.state_helper.setup(self.settings)
 
         log.info("Filter set ID: %s", self.filter_set_id)
-        # List filter rules in this filter set
-        connection = sqlite3.connect(db_path)
+        log.info("GENERIC_CRAWLER_DB_PATH: %s", self.settings.get('GENERIC_CRAWLER_DB_PATH'))
+        log.info("DB_PATH: %s", self.settings.get('DB_PATH'))
+        db_path = self.settings.get('GENERIC_CRAWLER_DB_PATH')
 
-        matches = fetch_urls_passing_filterset(connection, self.filter_set_id, limit=self.max_urls)
+        # If we have a filter set id, we can load URLs from the DB.
+        if self.filter_set_id is not None:
+            try:
+                connection = sqlite3.connect(db_path)
 
-        log.info("Adding %d URLs to start_urls", len(matches))
-        for row in matches:
-            log.info("Adding URL to start_urls: %s", row.url)
-            self.start_urls.append(row.url)
+                # Load URLs from the latest exploration crawl passing this filter set
+                matches = fetch_urls_passing_filterset(
+                    connection, self.filter_set_id, limit=self.max_urls)
+                log.info("Adding %d URLs to start_urls", len(matches))
+                for row in matches:
+                    self.start_urls.append(row.url)
+
+                if not self.dry_run:
+                    # get crawler_id from FilterSet
+                    cursor = connection.cursor()
+                    cursor.execute(
+                        "SELECT crawler_id FROM crawls_filterset WHERE id=?", (self.filter_set_id,))
+                    if row := cursor.fetchone():
+                        self.state_helper.crawler_id = row[0]
+                    else:
+                        # Stop the crawl
+                        log.error("No crawler_id found for filter_set_id %s", self.filter_set_id)
+                        self.spider_failed = True
+                        raise CloseSpider(f"No crawler_id found for filter_set_id {self.filter_set_id}.")
+
+                    self.state_helper.spider_opened(spider, "", True, 'CONTENT')
+
+            except (sqlite3.Error, ValueError) as e:
+                log.error("Error while running crawler: %s", e)
+                self.spider_failed = True
+                raise CloseSpider(f"Error while running crawler: {e}") from e
+
+        if self.crawler_id is not None:
+            # get inherited metadata
+            source_item = None
+            inherited_fields = []
+            try:
+                connection = sqlite3.connect(db_path)
+                cursor = connection.cursor()
+                cursor.execute(
+                    "SELECT inherited_fields, source_item, name FROM crawls_crawler WHERE id=?", (self.crawler_id,))
+                if row := cursor.fetchone():
+                    inherited_fields_json = row[0]
+                    source_item = row[1]
+                    self.crawler_name = row[2]
+                    # self.enricher.set_inherited_fields(inherited_fields)
+                    inherited_fields = json.loads(inherited_fields_json) if inherited_fields_json else []
+                    log.info("Set inherited fields for enricher: %s", inherited_fields)
+                else:
+                    log.warning("No inherited fields found for crawler_id %s", self.crawler_id)
+            except (sqlite3.Error, ValueError) as e:
+                log.error("Error while fetching inherited fields: %s", e)
+                self.spider_failed = True
+                raise CloseSpider(f"Error while fetching inherited fields: {e}") from e
+            
+            if source_item:
+                EDU_SHARING_BASE_URL = spider.settings.get("EDU_SHARING_BASE_URL").rstrip("/")
+                res = httpx.get(f"{EDU_SHARING_BASE_URL}/rest/node/v1/nodes/-home-/{source_item}/metadata", params={'propertyFilter': '-all-'})
+                metadata = res.json()
+                properties = metadata['node']['properties']
+                inherited_fields_data = {}
+                for field in inherited_fields:
+                    if field == "license":
+                        # special case:
+                        # commonlicense_key = properties.get("ccm:commonlicense_key", [None])[0]
+                        # commonlicense_cc_version = properties.get("ccm:commonlicense_cc_version", [None])[0]
+                        # log.info("Inherited field 'license': commonlicense_key=%s, commonlicense_cc_version=%s", commonlicense_key, commonlicense_cc_version)
+                        licenseurl = properties.get("virtual:licenseurl", [None])[0]
+                        log.info("Inherited field 'license': licenseurl=%s", licenseurl)
+                        inherited_fields_data['virtual:licenseurl'] = licenseurl
+                        continue
+                    if value := properties.get(field, [None])[0]:
+                        log.info("Inherited field '%s': %s", field, value)
+                        inherited_fields_data[field] = value
+                    else:
+                        log.warning("Inherited field '%s' not found in source item metadata", field)
+                self.enricher.set_inherited_fields(inherited_fields_data)
 
         self.enricher.setup(self.settings)
+
+    def spider_closed(self, spider: GenericSpider, reason: str):
+        """ Called when the spider is closed. """
+        log.info("Closed spider %s, reason: %s", spider.name, reason)
+        if self.dry_run:
+            return
+
+        spider_cancelled = reason in ('cancelled', 'shutdown')
+
+        # Set final state based on flags
+        if self.spider_failed:
+            self.state_helper.update_spider_state(spider, 'FAILED')
+        elif spider_cancelled:
+            self.state_helper.update_spider_state(spider, 'CANCELED')
+        else:
+            self.state_helper.update_spider_state(spider, 'COMPLETED')
+
+    def spider_error(self, failure, response, spider: GenericSpider):  # pylint: disable=unused-argument
+        """ Called when the spider encounters an error. """
+        log.error("Spider %s encountered an error: %s", spider.name, failure)
+        self.spider_failed = True
+        # TODO: add "if not failed" check in database to update_spider_state
+        self.state_helper.update_spider_state(spider, 'FAILED')
 
     def getId(self, response: Optional[Response] = None) -> str:
         """Return a stable identifier (URI) of the crawled item"""
         assert response
         return response.url
 
-    def getHash(self, response: Optional[Response] = None) -> str:
+    def getHash(self, response: Optional[Response] = None) -> str:  # pylint: disable=unused-argument
         """
         Return a stable hash to detect content changes (for future crawls).
         """
@@ -153,16 +271,17 @@ class GenericSpider(Spider):
         db = EduSharing().find_item(self.getId(response), self)
         if db is None or db[1] != self.getHash(response):
             return True
-        else:
-            logging.info(f"Item {self.getId(response)} (uuid: {db[0]}) has not changed")
-            return False
+        logging.info("Item %s (uuid: %s) has not changed", self.getId(response), db[0])
+        return False
 
     async def parse(self, response: Response):
         if not self.hasChanged(response):
             return
-        
-        assert isinstance(response, TextResponse)
 
+        if not isinstance(response, TextResponse):
+            log.warning("Response is not a TextResponse, but %s, skipping: %s", type(response), response.url)
+            return
+        
         # Respect robots meta tags
         robot_meta_tags: list[str] = response.xpath(
             "//meta[@name='robots']/@content").getall()
@@ -195,11 +314,38 @@ class GenericSpider(Spider):
                 )
                 return
 
-        item = await self.enricher.parse_page(response_url=response.url)
+        try:
+            item = await self.enricher.parse_page(response_url=response.url)
+        except metadata_enricher.AuthenticationError as auth_error:
+            log.error("Authentication error while enriching metadata for %s: %s",
+                      response.url, auth_error)
+            self.spider_failed = True
+            raise CloseSpider(f"Authentication error: {auth_error}") from auth_error
+        except playwright.async_api.Error as e:
+            log.error("Playwright error while enriching metadata for %s: %s",
+                      response.url, e)
+            self.spider_failed = True
+            raise CloseSpider(f"Playwright error: {e}") from e
+
+        if not item:
+            log.warning("Could not extract metadata for %s", response.url)
+            return
+
+        # set ccm:replicationsourceorigin
+        # get crawler name from database
+        if self.crawler_name:
+            item['origin'] = self.crawler_name
 
         log.info("New URL processed:------------------------------------------")
         log.info(item)
         log.info("------------------------------------------------------------")
+
+        # Track processed items for progress updates
+        self.items_processed += 1
+
+        # Send progress update every 10 items
+        if self.items_processed % 10 == 0:
+            self.state_helper.publish_progress_update(response.url)
 
         yield item
 

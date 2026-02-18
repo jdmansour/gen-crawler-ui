@@ -1,0 +1,50 @@
+[project]
+name = "gen-crawler-ui"
+version = "0.1.0"
+description = "Generic Web Crawler UI for WLO"
+authors = [
+    { name = "Jason Mansour", email = "jason.mansour@gwdg.de" },
+]
+requires-python = ">=3.11"
+dependencies = [
+    "django==5.2.7",
+    "django-cors-headers==4.3.1",
+    "django-debug-toolbar==4.4.6",
+    "django-filter==24.2",
+    "django-reverse-admin==2.9.6",
+    "django-vite==3.0.4",
+    "djangorestframework>=3.16.1",
+    "djangorestframework-stubs>=3.16.8",
+    "gunicorn==22.0.0",
+    "python-decouple==3.8",
+    "redis==5.1.1",
+    "scrapy==2.11.2",
+    "whitenoise==6.7.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["crawler_ui", "crawls"]
+
+[dependency-groups]
+dev = [
+    "mypy==1.11.2",
+    "pip-chill==1.0.3",
+    "pylint-django==2.5.5",
+    "pylint-pytest>=1.1.7",
+    "pytest==8.2.2",
+    "pytest-django>=4.12.0",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "crawler_ui.settings"
+
+[tool.pylint.main]
+load-plugins = ["pylint_django"]
+django-settings-module = "crawler_ui.settings"
+
+[tool.pylint.typecheck]
+ignored-classes = ["too-many-ancestors"]

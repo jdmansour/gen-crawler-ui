@@ -1,6 +1,9 @@
+import AutoAwesome from '@mui/icons-material/AutoAwesome';
 import Cancel from '@mui/icons-material/Cancel';
 import Delete from '@mui/icons-material/Delete';
+import Explore from '@mui/icons-material/Explore';
 import MoreVertOutlined from "@mui/icons-material/MoreVertOutlined";
+import { CircularProgress, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -19,334 +22,266 @@ import TextField from '@mui/material/TextField';
 import { Stack } from '@mui/system';
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { Link, useOutletContext, useParams } from "react-router-dom";
+import Api from './api';
 import { Crawler, CrawlJob, SourceItem } from "./apitypes";
-import sourcePreviewPic from "./assets/source-preview.jpg";
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
-import { useCrawlerSSE } from "./hooks/useSSE";
-import { CrawlerDetailsPageContext } from "./RootContext";
+import { CrawlerDetailsContext, CrawlerDetailsPageContext } from "./RootContext";
+import SourceCard from './SourceCard';
 import { useStep } from "./steps";
 
 
 export default function CrawlerDetailsPage() {
-    const { crawlerId } = useParams();
-    const { crawlerList, sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
-    const { onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = useOutletContext<CrawlerDetailsPageContext>();
-    return <CrawlerDetails
-        crawlerId={crawlerId ? parseInt(crawlerId) : 0}
-        crawlerList={crawlerList}
-        sourceItems={sourceItems}
-        onCrawlJobAdded={onCrawlJobAdded}
-        onCrawlJobDeleted={onCrawlJobDeleted}
-        onCrawlJobLiveUpdate={onCrawlJobLiveUpdate}
-        onCrawlerDeleted={onCrawlerDeleted}
-    />; 
+  const { crawlerId } = useParams();
+  const { crawlerList, sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
+  return <CrawlerDetails
+    crawlerId={crawlerId ? parseInt(crawlerId) : 0}
+    crawlerList={crawlerList}
+    sourceItems={sourceItems}
+  />;
 }
 
-export function CrawlerDetails(params: {crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[], onCrawlJobAdded: (newJob: CrawlJob) => void, onCrawlJobDeleted: (crawlJobId: number) => void, onCrawlJobLiveUpdate: (sseData: SSEData) => void, onCrawlerDeleted: (crawlerId: number) => void}) {
-    const { crawlerId, crawlerList, sourceItems, onCrawlJobAdded, onCrawlJobDeleted, onCrawlJobLiveUpdate, onCrawlerDeleted } = params;
-    const crawler = crawlerList.find(c => c.id == crawlerId);
-    const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
+export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[] }) {
+  // todo: move onCrawlerDeleted from a param to context?
+  const { crawlerId } = params;
+  const { crawlerList, sourceItems, deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob, liveUpdatesConnected, liveUpdatesError, setObservedCrawlerId, crawlerListLoaded } = useOutletContext<CrawlerDetailsPageContext & CrawlerDetailsContext>();
+  const crawler = crawlerList.find(c => c.id === crawlerId);
+  // const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
+  // const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item + "x");
+  const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
+  useEffect(() => {
+    setObservedCrawlerId(crawlerId);
+  }, [crawlerId, setObservedCrawlerId]);
 
-    const [crawlerURL, setCrawlerURL] = useState<string>("");
-    const [crawlerName, setCrawlerName] = useState<string>("");
-    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [selectedJob, setSelectedJob] = useState<CrawlJob | null>(null);
-    const menuOpen = Boolean(anchorEl);
+  const [crawlerURL, setCrawlerURL] = useState<string>("");
+  const [crawlerName, setCrawlerName] = useState<string>("");
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedJob, setSelectedJob] = useState<CrawlJob | null>(null);
+  const menuOpen = Boolean(anchorEl);
 
-    const navigate = useNavigate();
-    
-    // Set initial form values when 'crawler' is loaded
-    useEffect(() => {
-        if (crawler) {
-            setCrawlerURL(crawler.start_url);
-            setCrawlerName(crawler.name);
-        }
-    }, [crawler]);
+  const api = new Api("http://localhost:8000/api");
 
-    useStep("crawler-details");
-
-    // SSE for real-time updates
-    const { data: sseData, isConnected, error: sseError } = useCrawlerSSE(crawlerId);
-
-    useEffect(() => {
-        if (!sseData) return;
-        
-        switch (sseData.type) {
-            case 'crawl_job_update':                
-                onCrawlJobLiveUpdate(sseData);
-                break;
-                
-            case 'error':
-                console.error('SSE Error:', sseData.message);
-                break;
-        }
-    }, [onCrawlJobLiveUpdate, sseData]);
-
-    // Callbacks for buttons & menus
-    // -----------------------------
-
-    async function deleteCrawler(crawlerId: number) {
-        // Delete crawler
-        const response = await fetch(`http://localhost:8000/api/crawlers/${crawlerId}/`, {
-            method: "DELETE",
-        });
-        if (response.ok) {
-            onCrawlerDeleted(crawlerId);
-        } else {
-            console.error("Failed to delete crawler:", response.status, response.statusText);
-        }
-        // redirect to dashboard or another page after deletion
-        navigate("/");
+  // Set initial form values when 'crawler' is loaded
+  useEffect(() => {
+    if (crawler) {
+      setCrawlerURL(crawler.start_url);
+      setCrawlerName(crawler.name);
     }
+  }, [crawler]);
 
-    async function startCrawlClicked() {
-        // Trigger a new crawl job
-        const response = await fetch(`http://localhost:8000/api/crawlers/${crawler.id}/start_crawl/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        if (!response.ok) {
-            console.error("Failed to start crawl job:", response.status, response.statusText);
-            return;
-        }
-        const newJob: CrawlJob = await response.json();
-        // Optimistically add the new job to the list
-        onCrawlJobAdded(newJob);
-    }
+  useStep("crawler-details");
 
-    async function startContentCrawlClicked() {
-        // Trigger a content crawl
-        const response = await fetch(`http://localhost:8000/api/crawlers/${crawler.id}/start_content_crawl/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        if (!response.ok) {
-            console.error("Failed to start content crawl:", response.status, response.statusText);
-            return;
-        }
-        const data = await response.json();
-        console.log("Content crawl started");
-        console.log("Response:", data);
-        // TODO: integrate content crawls into crawl job list
-    }
+  // Callbacks for buttons & menus
+  // -----------------------------
 
-    function handleMenuClick(event: React.MouseEvent<HTMLElement>, jobId: number) {
-        setAnchorEl(event.currentTarget);
-        const job = crawler?.crawl_jobs.find(j => j.id == jobId) || null;
-        setSelectedJob(job);
-    };
+  function handleMenuClick(event: React.MouseEvent<HTMLElement>, jobId: number) {
+    setAnchorEl(event.currentTarget);
+    const job = crawler?.crawl_jobs.find(j => j.id == jobId) || null;
+    setSelectedJob(job);
+  };
 
-    function handleMenuClose() {
-        setAnchorEl(null);
-    }
+  function close() {
+    setAnchorEl(null);
+  }
 
-    async function deleteCrawlClicked() {
-        // Delete the selected crawl job
-        if (!selectedJob) return;
-        const response = await fetch(`http://localhost:8000/api/crawl_jobs/${selectedJob.id}/`, {
-            method: "DELETE",
-        });
-        if (!response.ok) {
-            console.error("Failed to delete crawl job:", response.status, response.statusText);
-            return;
-        }
-        // Remove the job from the crawler's job list
-        onCrawlJobDeleted(selectedJob.id);
-        handleMenuClose();
-    }
+  if (!crawlerListLoaded) {
+    return <div className="main-content" style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <Stack spacing={2} alignItems="center" style={{ marginTop: -50 }}>
+        <CircularProgress />
+        <div>Loading crawler details...</div>
+      </Stack>
+    </div>;
+  }
 
-    async function cancelCrawlClicked() {
-        // Cancel the selected crawl job
-        if (!selectedJob) return;
-        const response = await fetch(`http://localhost:8000/api/crawl_jobs/${selectedJob.id}/cancel/`, {
-            method: "POST",
-        });
-        if (!response.ok) {
-            console.error("Failed to cancel crawl job:", response.status, response.statusText);
-            return;
-        }
-        console.log("Crawl job cancelled");
-        handleMenuClose();
-    }
+  if (!crawler) {
+    return <div className="main-content">
+      <p>Crawler not found</p>
+      <h3>Debug info:</h3>
+      <p>Crawler object: <code>{JSON.stringify(crawler)}</code></p>
+      <p>Crawler id: {crawlerId}</p>
+      <p>Crawler list: <code>{JSON.stringify(crawlerList)}</code></p>
+    </div>;
+  }
 
-    if (!crawler) {
-        return <div className="main-content">
-            <p>Crawler not found</p>
-        </div>;
-    }
+  const genericCrawlerOutputUrl = 'https://repository.staging.openeduhub.net/edu-sharing/components/workspace?root=MY_FILES&id=42865b9a-ea22-4cbd-81e4-4bd49601f382&mainnav=true&displayType=0';
 
-    return <div style={{overflowY: "scroll", padding: "0px 24px 24px 24px"}}>
-        <h2 style={{marginTop: 8}}>Crawler-Details</h2>
-        <p>Crawler ID: {crawler.id}</p>
+  return <div style={{ overflowY: "scroll", padding: "0px 24px 24px 24px" }}>
+    <h2 style={{ marginTop: 8 }}>Crawler-Details</h2>
 
-        {sourceItem ? <>
-        <div>Quelle:</div>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
-          <img
-            src={sourceItem.preview_url || sourcePreviewPic}
-            alt="Vorschau"
-            className="source-preview"
-            style={{
-              maxWidth: 80,
-              maxHeight: 60,
-            }} />
-          {sourceItem.title}
-        </div>
-        </>
-        : <p>Kein Quellobjekt gefunden</p>}
+    <Stack direction="row" alignItems="top" gap={2} sx={{ mb: 2, alignItems: 'flex-start', flexWrap: 'wrap' }} useFlexGap>
 
+      <div>
+        <Typography variant="body2" sx={{mb: 1}}>Crawler-Einstellungen:</Typography>
         <TextField
-            value={crawlerName}
-            onChange={(event) => setCrawlerName(event.target.value)}
-            fullWidth
-            label="Name des Crawlers"
-            style={{ marginBottom: "20px" }}
+          value={crawlerName}
+          onChange={(event) => setCrawlerName(event.target.value)}
+          fullWidth
+          label="Name des Crawlers"
+          style={{ marginBottom: "20px" }}
+          variant='filled'
         />
 
         <TextField
-            value={crawlerURL}
-            onChange={(event) => setCrawlerURL(event.target.value)}
-            fullWidth
-            label="Start-URL"
+          value={crawlerURL}
+          onChange={(event) => setCrawlerURL(event.target.value)}
+          fullWidth
+          label="Start-URL"
+          variant='filled'
         />
 
         <Stack direction="row" spacing={2} sx={{ marginTop: 2, marginBottom: 2 }}>
-            <Button variant="contained" color="primary" onClick={async () => {
-                // Save crawler details
-            }}>Speichern</Button>
+          <Button variant="contained" color="primary" onClick={async () => {
+            // Save crawler details
+          }}>Speichern</Button>
         </Stack>
+      </div>
 
-        <h3>Aktionen</h3>
+      <div style={{  flexBasis: 500, flexShrink: 1, flexGrow: 1  }}>
+        <Typography variant="body2" sx={{mb: 1}}>Verbundene Quelle:</Typography>
+        <SourceCard sourceItem={sourceItem} orientation='horizontal' />
+      </div>
 
-        <Stack direction="row" spacing={2} sx={{ marginTop: 2, marginBottom: 2, flexWrap: 'wrap' }} useFlexGap>
-            <Button variant="outlined" color="primary" onClick={startCrawlClicked}>Crawler starten</Button>
-            <Button variant="outlined" onClick={startContentCrawlClicked}>Content Crawl starten</Button>
-            <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/filters/`}>Filter bearbeiten</Button>
-            <Button variant="outlined" component="a" href={`http://localhost:8000/admin/crawls/crawler/${crawler.id}/change/`}>Im Admin-Bereich anzeigen</Button>
-            <Button variant="outlined" color="error" onClick={() => setConfirmDeleteOpen(true)}>Crawler löschen</Button>
-        </Stack>
+    </Stack>
 
-        <DeleteCrawlerDialog
-            open={confirmDeleteOpen}
-            onClose={() => setConfirmDeleteOpen(false)} 
-            onConfirm={() => { setConfirmDeleteOpen(false); deleteCrawler(crawler.id); }} />
-    
-        {/* Real-time status */}
-        <Box sx={{ mb: 2 }}>
-            <Chip 
-                label={isConnected ? "Live-Updates aktiv" : "Verbindung getrennt"} 
-                color={isConnected ? "success" : "error"}
-                sx={{ mr: 1 }}
-            />
-            {sseError && (
-                <Chip 
-                    label={`Fehler: ${sseError}`} 
-                    color="error"
-                    sx={{ mr: 1 }}
+    <h3>Debug</h3>
+    <p>Crawler ID: {crawler.id}</p>
+    <p>Status: {crawler.state}</p>
+    <Box sx={{ mb: 2 }}>
+      <Chip
+        label={liveUpdatesConnected ? "Live-Updates aktiv" : "Verbindung getrennt"}
+        color={liveUpdatesConnected ? "success" : "error"}
+        sx={{ mr: 1 }}
+      />
+      {liveUpdatesError && (
+        <Chip
+          label={`Fehler: ${liveUpdatesError}`}
+          color="error"
+          sx={{ mr: 1 }}
+        />
+      )}
+    </Box>
+
+    <h3>Aktionen</h3>
+    <Stack direction="row" spacing={2} sx={{ marginTop: 2, marginBottom: 2, flexWrap: 'wrap' }} useFlexGap>
+      <Button variant="outlined" color="primary" onClick={() => startSearchCrawl(crawler!.id)}>Crawler starten</Button>
+      <Button variant="outlined" onClick={() => startContentCrawl(crawler!.id)}>Content Crawl starten</Button>
+      <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/metadata-inheritance`}>Metadatenvererbung</Button>
+      <Button variant="outlined" component={Link} to={`/crawlers/${crawler.id}/filters/`}>Filter bearbeiten</Button>
+      <Button variant="outlined" component={Link} to={genericCrawlerOutputUrl}>Ergebnisse anzeigen</Button>
+      <Button variant="outlined" component="a" href={api.getAdminUrl(crawler.id)}>Im Admin-Bereich anzeigen</Button>
+      <Button variant="outlined" color="error" onClick={() => setConfirmDeleteOpen(true)}>Crawler löschen</Button>
+    </Stack>
+
+    <DeleteCrawlerDialog
+      open={confirmDeleteOpen}
+      onClose={() => setConfirmDeleteOpen(false)}
+      onConfirm={() => { setConfirmDeleteOpen(false); deleteCrawler(crawler.id); }} />
+
+    <h3>Läufe des Crawlers</h3>
+
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Typ</TableCell>
+            <TableCell>Start URL</TableCell>
+            <TableCell>Gecrawlte URLs</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Erstellt</TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {crawler.crawl_jobs.sort((a, b) => compareISODateDesc(a.created_at, b.created_at)).map(job => (
+            <TableRow key={job.id}>
+              <TableCell>{
+                (job.crawl_type === 'EXPLORATION') ?
+                  <Stack direction="row" alignContent="center" gap={1}><Explore sx={{ fontSize: 20 }} color='primary' />Sitemap</Stack> :
+                  <Stack direction="row" alignContent="center" gap={1}><AutoAwesome sx={{ fontSize: 20 }} color='primary' />Inhalte</Stack>
+              }</TableCell>
+              <TableCell>{job.start_url}</TableCell>
+              <TableCell>{job.crawled_url_count || '-'}</TableCell>
+              <TableCell>
+                <Chip
+                  label={job.state}
+                  color={
+                    job.state?.toUpperCase() === 'RUNNING' ? 'primary' :
+                      job.state?.toUpperCase() === 'COMPLETED' ? 'success' :
+                        job.state?.toUpperCase() === 'FAILED' ? 'error' :
+                          job.state?.toUpperCase() === 'CANCELED' ? 'warning' :
+                            'default'
+                  }
+                  size="small"
                 />
-            )}
-        </Box>
+              </TableCell>
+              <TableCell>{toRelativeDate(job.created_at)}</TableCell>
+              <TableCell>
+                <IconButton
+                  aria-controls={menuOpen ? 'crawler-job-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={menuOpen ? 'true' : undefined}
+                  onClick={(e) => handleMenuClick(e, job.id)}
+                >
+                  <MoreVertOutlined />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          ))}
+          {(crawler.crawl_jobs.length === 0) && (
+            <TableRow>
+              <TableCell colSpan={3}>No crawl jobs found.</TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    <Menu id="crawler-job-menu"
+      anchorEl={anchorEl}
+      open={menuOpen}
+      onClose={close}
+      slotProps={{ list: { 'aria-labelledby': 'crawler-job-button' }, }}
+      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+    >
+      <MenuItem sx={{ color: 'error.main' }} onClick={() => { close(); deleteCrawlJob(selectedJob!.id) }}>
+        <ListItemIcon sx={{ color: 'error.main' }}><Delete fontSize="small" /></ListItemIcon>
+        Crawl löschen
+      </MenuItem>
+      <MenuItem disabled={selectedJob?.state != 'RUNNING' && selectedJob?.state != 'PENDING'} onClick={() => { close(); cancelCrawlJob(selectedJob!.id) }}>
+        <ListItemIcon><Cancel fontSize="small" /></ListItemIcon>
+        Crawl abbrechen
+      </MenuItem>
+      <MenuItem disabled={!(selectedJob?.scrapy_job_id)} component="a" href={logUrl(selectedJob)}>
+        <ListItemIcon><MoreVertOutlined fontSize="small" /></ListItemIcon>
+        Show logs
+      </MenuItem>
+    </Menu>
 
-        <h3>Läufe des Crawlers</h3>
-
-        <TableContainer component={Paper}>
-        <Table>
-            <TableHead>
-                <TableRow>
-                    <TableCell>Start URL</TableCell>
-                    <TableCell>Gecrawlte URLs</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell>Erstellt</TableCell>
-                    <TableCell></TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {crawler.crawl_jobs.sort((a,b) => compareISODateDesc(a.created_at, b.created_at)).map(job => (
-                    <TableRow key={job.id}>
-                        <TableCell>{job.start_url}</TableCell>
-                        <TableCell>{job.crawled_url_count || '-'}</TableCell>
-                        <TableCell>
-                            <Chip 
-                                label={job.state} 
-                                color={
-                                    job.state?.toUpperCase() === 'RUNNING' ? 'primary' :
-                                    job.state?.toUpperCase() === 'COMPLETED' ? 'success' :
-                                    job.state?.toUpperCase() === 'FAILED' ? 'error' :
-                                    'default'
-                                }
-                                size="small"
-                            />
-                        </TableCell>
-                        <TableCell>{toRelativeDate(job.created_at)}</TableCell>
-                        <TableCell>
-                            <IconButton
-                                aria-controls={menuOpen ? 'crawler-job-menu' : undefined}
-                                aria-haspopup="true"
-                                aria-expanded={menuOpen ? 'true' : undefined}
-                                onClick={(e) => handleMenuClick(e, job.id)}
-                            >
-                            <MoreVertOutlined />
-                            </IconButton>
-                        </TableCell>
-                    </TableRow>
-                ))}
-                {(crawler.crawl_jobs.length === 0) && (
-                    <TableRow>
-                        <TableCell colSpan={3}>No crawl jobs found.</TableCell>
-                    </TableRow>
-                )}
-            </TableBody>
-        </Table>
-        </TableContainer>
-        <Menu id="crawler-job-menu"
-            anchorEl={anchorEl}
-            open={menuOpen}
-            onClose={handleMenuClose}
-            slotProps={{ list: {'aria-labelledby': 'crawler-job-button'}, }}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        >
-            <MenuItem sx={{ color: 'error.main' }} onClick={deleteCrawlClicked}>
-                <ListItemIcon sx={{ color: 'error.main' }}><Delete fontSize="small" /></ListItemIcon>
-                Crawl löschen
-            </MenuItem>
-            <MenuItem disabled={selectedJob?.state != 'RUNNING' && selectedJob?.state != 'PENDING'} onClick={cancelCrawlClicked}>
-                <ListItemIcon><Cancel fontSize="small" /></ListItemIcon>
-                Crawl abbrechen
-            </MenuItem>
-            <MenuItem disabled={!(selectedJob?.scrapy_job_id)} component="a" href={logUrl(selectedJob)}>
-                <ListItemIcon><MoreVertOutlined fontSize="small" /></ListItemIcon>
-                Show logs
-            </MenuItem>
-        </Menu>
-
-    </div>;
+  </div>;
 }
+
+
 
 // Gets the scrapy log URL for a crawl job
 function logUrl(crawlJob: CrawlJob | null): string {
-    if (!crawlJob?.scrapy_job_id) return "";
-    return `http://localhost:6800/logs/scraper/example/${crawlJob.scrapy_job_id}.log`;
+  if (!crawlJob?.scrapy_job_id) return "";
+  const scraperName = crawlJob.crawl_type === 'CONTENT' ? 'generic_spider' : 'example';
+  return `http://localhost:6800/logs/scraper/${scraperName}/${crawlJob.scrapy_job_id}.log`;
 }
 
 // comparer for two iso date strings
 function compareISODateDesc(a: string, b: string) {
-    const dateA = new Date(a);
-    const dateB = new Date(b);
-    return dateB.getTime() - dateA.getTime();
+  const dateA = new Date(a);
+  const dateB = new Date(b);
+  return dateB.getTime() - dateA.getTime();
 }
 
 // Makes a relative date string from an ISO timestamp
 function toRelativeDate(isoTimestamp: string) {
-    if (!isoTimestamp) return '-';
-    const result = DateTime.fromISO(isoTimestamp).toRelative();
-    if (result === 'vor 1 Tag') return 'Vor einem Tag';
-    if (result === 'vor 1 Stunde') return 'Vor einer Stunde';
-    return result || '-';
+  if (!isoTimestamp) return '-';
+  const result = DateTime.fromISO(isoTimestamp).toRelative();
+  if (result === 'vor 1 Tag') return 'Vor einem Tag';
+  if (result === 'vor 1 Stunde') return 'Vor einer Stunde';
+  return result || '-';
 }
