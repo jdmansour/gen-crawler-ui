@@ -3,6 +3,18 @@
 from django.db import migrations, models
 
 
+def delete_orphan_crawled_urls(apps, schema_editor):
+    """Delete CrawledURL rows whose crawl_job_id has no matching CrawlJob."""
+    db_alias = schema_editor.connection.alias
+    CrawledURL = apps.get_model('crawls', 'CrawledURL')
+    CrawlJob = apps.get_model('crawls', 'CrawlJob')
+    valid_ids = set(CrawlJob.objects.using(db_alias).values_list('id', flat=True))
+    orphans = CrawledURL.objects.using(db_alias).exclude(crawl_job_id__in=valid_ids)
+    deleted_count, _ = orphans.delete()
+    if deleted_count:
+        print(f"\n    Deleted {deleted_count} orphaned CrawledURL row(s)")
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,6 +22,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(delete_orphan_crawled_urls, migrations.RunPython.noop),
         migrations.AlterField(
             model_name='crawljob',
             name='state',
