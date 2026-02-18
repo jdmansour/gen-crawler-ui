@@ -4,7 +4,6 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import appCss from "../App.css?inline";
 import breadcrumbsCss from "../Breadcrumbs.css?inline";
-import buttonCss from "../Button.css?inline";
 import filterTabsCss from "../FilterTabs.css?inline";
 import filterTabsModuleCss from "../FilterTabs.module.css?inline";
 import indexCSS from "../index.css?inline";
@@ -52,7 +51,6 @@ class WLOGenCrawler extends HTMLElement {
     addGlobalStyle(appCss);
     addGlobalStyle(indexCSS);
     addGlobalStyle(listViewCss);
-    addGlobalStyle(buttonCss);
     addGlobalStyle(filterTabsCss);
     addGlobalStyle(filterTabsModuleCss);
     addGlobalStyle(inputWithButtonCss);
