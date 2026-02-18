@@ -30,52 +30,12 @@ const simpleStateColors: { [key in SimpleState]: "default" | "primary" | "succes
 };
 
 interface SourceDetailsSidebarProps {
-  sourceGuid: string;
-  /** Pre-loaded source item — if provided, skips fetching */
   sourceItem?: SourceItem;
-  /** Pre-loaded crawlers — if provided, skips fetching and filters by sourceGuid */
   crawlers?: Crawler[];
 }
 
-export default function SourceDetailsSidebar({ sourceGuid, sourceItem: sourceItemProp, crawlers: crawlersProp }: SourceDetailsSidebarProps) {
-  const apiUrl = useApiUrl();
-  const [sourceItem, setSourceItem] = useState<SourceItem | undefined>(sourceItemProp);
-  const [crawlers, setCrawlers] = useState<Crawler[] | undefined>(
-    crawlersProp?.filter(c => c.source_item === sourceGuid)
-  );
-  const [loading, setLoading] = useState(!sourceItemProp || !crawlersProp);
-
-  useEffect(() => {
-    if (sourceItemProp && crawlersProp) return;
-
-    const api = new Api(apiUrl);
-    const fetches: Promise<void>[] = [];
-
-    if (!sourceItemProp) {
-      fetches.push(
-        api.getSourceItem(sourceGuid).then(setSourceItem)
-      );
-    }
-
-    if (!crawlersProp) {
-      fetches.push(
-        api.listCrawlers().then(all => {
-          setCrawlers(all.filter(c => c.source_item === sourceGuid));
-        })
-      );
-    }
-
-    setLoading(true);
-    Promise.all(fetches).finally(() => setLoading(false));
-  }, [sourceGuid, apiUrl, sourceItemProp, crawlersProp]);
-
-  if (loading) {
-    return (
-      <Stack alignItems="center" justifyContent="center" sx={{ p: 4 }}>
-        <CircularProgress />
-      </Stack>
-    );
-  }
+export default function SourceDetailsSidebar(props: SourceDetailsSidebarProps) {
+  const { sourceItem, crawlers } = props;
 
   return (
     <Stack spacing={2} sx={{ p: 2 }}>

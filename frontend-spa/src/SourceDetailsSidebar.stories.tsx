@@ -57,7 +57,6 @@ type Story = StoryObj<typeof meta>;
 
 export const WithCrawlers: Story = {
   args: {
-    sourceGuid: SOURCE_GUID,
     sourceItem: sourceItem,
     crawlers: mockCrawlers,
   },
@@ -65,7 +64,6 @@ export const WithCrawlers: Story = {
 
 export const NoCrawlers: Story = {
   args: {
-    sourceGuid: SOURCE_GUID,
     sourceItem: sourceItem,
     crawlers: [],
   },
