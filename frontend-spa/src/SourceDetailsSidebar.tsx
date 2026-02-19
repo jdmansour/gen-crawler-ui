@@ -69,10 +69,10 @@ export default function SourceDetailsSidebar(props: SourceDetailsSidebarProps) {
               }}
               onPointerDown={e => { if (e.pointerType === "mouse" && e.button === 2) e.preventDefault(); }}
             >
-              <Box sx={{ px: 2, py: "6px" }}>
+              <Box sx={{ px: 2, py: "6px", flexShrink: 0, }}>
                 <Link to={`/crawlers/${crawler.id}`} style={{ textDecoration: "none", color: "inherit", fontWeight: 600, display: "flex", alignItems: "center", gap: 10 }} onClick={(e) => e.stopPropagation()}>
-                  <Robot style={{ color: "text.secondary" }} />
-                  {crawler.name}
+                  <Robot style={{ color: "text.secondary", flexShrink: 0 }} />
+                  <span style={{ textAlign: "left" }}>{crawler.name}</span>
                 </Link>
               </Box>
               <Box sx={{ px: 2, py: "6px", whiteSpace: "nowrap", color: "text.secondary" }}>
