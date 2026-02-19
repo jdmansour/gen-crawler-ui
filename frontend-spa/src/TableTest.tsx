@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 
 const defaultTheme = createTheme();
 
-const roundedTheme = createTheme({
+export const roundedTheme = createTheme({
     // palette: {
     //     primary: {
     //         main: '#1976d2',
@@ -17,7 +17,7 @@ const roundedTheme = createTheme({
     // },
     typography: {
         fontFamily: 'Open Sans, Arial, sans-serif',
-        fontWeightRegular: 500,
+        // fontWeightRegular: 500,
     },
     components: {
         MuiTableContainer: {

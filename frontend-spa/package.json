@@ -34,6 +34,7 @@
     "@mui/x-data-grid": "^8.16.0",
     "@mui/x-date-pickers": "^8.16.0",
     "@mui/x-tree-view": "^8.27.0",
+    "@nine-thirty-five/material-symbols-react": "^1.25.7",
     "luxon": "^3.7.2",
     "material-react-table": "^3.2.1",
     "react": "^19.0.0",
