@@ -37,6 +37,21 @@ const mockCrawlers: Crawler[] = [
     filter_set_id: 2,
     filter_set_url: null,
   },
+    {
+    id: 3,
+    name: "Klexikon Content mit super langem Titel, der eigentlich gar nicht in die Karte passen sollte",
+    simple_state: "running",
+    state: "CONTENT_CRAWL_RUNNING",
+    created_at: new Date(Date.now() - 86400000).toISOString(),
+    updated_at: new Date(Date.now() - 600000).toISOString(),
+    source_item: SOURCE_GUID,
+    start_url: "https://klexikon.zum.de/wiki/Hauptseite",
+    inherited_fields: ["title", "description"],
+    crawl_jobs: [],
+    url: "",
+    filter_set_id: 3,
+    filter_set_url: null,
+  },
 ];
 
 const meta = {
@@ -67,4 +82,18 @@ export const NoCrawlers: Story = {
     sourceItem: sourceItem,
     crawlers: [],
   },
+};
+
+export const FixedWidth: Story = {
+  args: {
+    sourceItem: sourceItem,
+    crawlers: mockCrawlers,
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: '340px', outline: '1px dotted #888' }}>
+        <Story />
+      </div>
+    ),
+  ],
 };

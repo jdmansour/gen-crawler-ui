@@ -10,10 +10,9 @@ import ThemeProvider from "@mui/system/ThemeProvider";
 import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
 import { Crawler, SourceItem } from "./apitypes";
-import SourceCard from "./SourceCard";
 import { wloThemeData } from "./wloTheme";
 import { Robot } from "@nine-thirty-five/material-symbols-react/outlined";
-import { ButtonBase, Card, CardActionArea, CardContent } from '@mui/material';
+import { ButtonBase } from '@mui/material';
 //import { RobotIcon } from "@mui/icons-material/RobotIco";
 
 // const simpleStateLabels: { [key in SimpleState]: string } = {
@@ -50,35 +49,40 @@ export default function SourceDetailsSidebar(props: SourceDetailsSidebarProps) {
 
       <Typography variant="body2">Bereits existierende Crawler zu dieser Quelle:</Typography>
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: "1px", p: "5px" }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: "1px" }}>
         {crawlers && crawlers.length > 0 ? (
           crawlers.map(crawler => (
             <ButtonBase
               key={crawler.id}
               sx={{
-                display: "grid",
-                gridTemplateColumns: "1fr auto auto",
+                display: "flex",
                 width: "100%",
                 alignItems: "center",
+                justifyContent: "stretch",
                 borderRadius: "12px",
                 overflow: "hidden",
                 backgroundColor: "background.paper",
                 boxShadow: 2,
+                gap: 2,
+                px: 2,
+                py: 1,
                 fontSize: "0.875rem",
                 "&:hover": { backgroundColor: "#efefef" },
+                // "& > *": { outline: "1px solid orange" },
+                // "& > * > *": { outline: "1px solid blue" },
               }}
               onPointerDown={e => { if (e.pointerType === "mouse" && e.button === 2) e.preventDefault(); }}
             >
-              <Box sx={{ px: 2, py: "6px", flexShrink: 0, }}>
-                <Link to={`/crawlers/${crawler.id}`} style={{ textDecoration: "none", color: "inherit", fontWeight: 600, display: "flex", alignItems: "center", gap: 10 }} onClick={(e) => e.stopPropagation()}>
-                  <Robot style={{ color: "text.secondary", flexShrink: 0 }} />
-                  <span style={{ textAlign: "left" }}>{crawler.name}</span>
-                </Link>
+              <Box sx={{ pt: "3px", pl: "2px" }}><Robot /></Box>
+              <Box style={{ textAlign: "left", flex: 1 }}>
+                <Typography variant="subtitle2">{crawler.name}</Typography>
               </Box>
-              <Box sx={{ px: 2, py: "6px", whiteSpace: "nowrap", color: "text.secondary" }}>
-                {DateTime.fromISO(crawler.updated_at).toRelative()}
+              <Box sx={{ color: "text.secondary" }}>
+                <Typography variant="caption" >
+                {DateTime.fromISO(crawler.updated_at).toRelative({style: "short"})}
+                </Typography>
               </Box>
-              <Box sx={{ py: "6px", pr: 1 }}>
+              <Box sx={{ m: -1, ml: -2 }}>
                 <IconButton onMouseDown={(e) => e.stopPropagation()}>
                   <MoreVertOutlined fontSize="medium" />
                 </IconButton>

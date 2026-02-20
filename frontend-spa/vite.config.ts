@@ -55,7 +55,7 @@ export default defineConfig(({ mode }) => {
       },
       build: {
         lib: {
-          entry: resolve(__dirname, 'src/elements/wlo-gen-crawler.tsx'),
+          entry: resolve(__dirname, 'src/elements/index.ts'),
           name: 'WloComponents',
           fileName: 'index',
           formats: ['es']
