@@ -3,15 +3,15 @@ var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { en
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 function _mergeNamespaces(n2, m) {
   for (var i = 0; i < m.length; i++) {
-    const e = m[i];
-    if (typeof e !== "string" && !Array.isArray(e)) {
-      for (const k in e) {
+    const e2 = m[i];
+    if (typeof e2 !== "string" && !Array.isArray(e2)) {
+      for (const k in e2) {
         if (k !== "default" && !(k in n2)) {
-          const d = Object.getOwnPropertyDescriptor(e, k);
+          const d = Object.getOwnPropertyDescriptor(e2, k);
           if (d) {
             Object.defineProperty(n2, k, d.get ? d : {
               enumerable: true,
-              get: () => e[k]
+              get: () => e2[k]
             });
           }
         }
@@ -523,10 +523,10 @@ function requireReact() {
   return react.exports;
 }
 var reactExports = requireReact();
-const React = /* @__PURE__ */ getDefaultExportFromCjs(reactExports);
-const React$1 = /* @__PURE__ */ _mergeNamespaces({
+const t = /* @__PURE__ */ getDefaultExportFromCjs(reactExports);
+const React = /* @__PURE__ */ _mergeNamespaces({
   __proto__: null,
-  default: React
+  default: t
 }, [reactExports]);
 var client = { exports: {} };
 var reactDomClient_production = {};
@@ -1790,7 +1790,7 @@ function requireReactDomClient_production() {
     if ("undefined" === typeof doc) return null;
     try {
       return doc.activeElement || doc.body;
-    } catch (e) {
+    } catch (e2) {
       return doc.body;
     }
   }
@@ -2132,7 +2132,7 @@ function requireReactDomClient_production() {
       });
       window.addEventListener("test", options, options);
       window.removeEventListener("test", options, options);
-    } catch (e) {
+    } catch (e2) {
       passiveBrowserEventsSupported = false;
     }
   var root = null, startText = null, fallbackText = null;
@@ -12219,7 +12219,7 @@ function requireDist() {
       return str;
     try {
       return decodeURIComponent(str);
-    } catch (e) {
+    } catch (e2) {
       return str;
     }
   }
@@ -12271,7 +12271,7 @@ function warning(cond, message) {
     if (typeof console !== "undefined") console.warn(message);
     try {
       throw new Error(message);
-    } catch (e) {
+    } catch (e2) {
     }
   }
 }
@@ -13503,7 +13503,7 @@ function isFormDataSubmitterSupported() {
         0
       );
       _formDataSupportsSubmitter = false;
-    } catch (e) {
+    } catch (e2) {
       _formDataSupportsSubmitter = true;
     }
   }
@@ -13964,7 +13964,7 @@ try {
   if (isBrowser$1) {
     window.__reactRouterVersion = "7.6.0";
   }
-} catch (e) {
+} catch (e2) {
 }
 function BrowserRouter({
   basename,
@@ -14030,7 +14030,7 @@ var Link = reactExports.forwardRef(
           } else {
             isExternal = true;
           }
-        } catch (e) {
+        } catch (e2) {
           warning(
             false,
             `<Link to="${to}"> contains an invalid URL which will probably break when clicked - please update to a valid URL path.`
@@ -15069,7 +15069,7 @@ var StyleSheet = /* @__PURE__ */ function() {
       var sheet = sheetForTag(tag);
       try {
         sheet.insertRule(rule, sheet.cssRules.length);
-      } catch (e) {
+      } catch (e2) {
       }
     } else {
       tag.appendChild(document.createTextNode(rule));
@@ -15796,9 +15796,9 @@ var createCache = function createCache2(options) {
 };
 function _extends() {
   return _extends = Object.assign ? Object.assign.bind() : function(n2) {
-    for (var e = 1; e < arguments.length; e++) {
-      var t = arguments[e];
-      for (var r2 in t) ({}).hasOwnProperty.call(t, r2) && (n2[r2] = t[r2]);
+    for (var e2 = 1; e2 < arguments.length; e2++) {
+      var t2 = arguments[e2];
+      for (var r2 in t2) ({}).hasOwnProperty.call(t2, r2) && (n2[r2] = t2[r2]);
     }
     return n2;
   }, _extends.apply(null, arguments);
@@ -15817,7 +15817,7 @@ var hasRequiredReactIs_production_min;
 function requireReactIs_production_min() {
   if (hasRequiredReactIs_production_min) return reactIs_production_min;
   hasRequiredReactIs_production_min = 1;
-  var b = "function" === typeof Symbol && Symbol.for, c = b ? Symbol.for("react.element") : 60103, d = b ? Symbol.for("react.portal") : 60106, e = b ? Symbol.for("react.fragment") : 60107, f = b ? Symbol.for("react.strict_mode") : 60108, g = b ? Symbol.for("react.profiler") : 60114, h = b ? Symbol.for("react.provider") : 60109, k = b ? Symbol.for("react.context") : 60110, l2 = b ? Symbol.for("react.async_mode") : 60111, m = b ? Symbol.for("react.concurrent_mode") : 60111, n2 = b ? Symbol.for("react.forward_ref") : 60112, p = b ? Symbol.for("react.suspense") : 60113, q = b ? Symbol.for("react.suspense_list") : 60120, r2 = b ? Symbol.for("react.memo") : 60115, t = b ? Symbol.for("react.lazy") : 60116, v = b ? Symbol.for("react.block") : 60121, w = b ? Symbol.for("react.fundamental") : 60117, x = b ? Symbol.for("react.responder") : 60118, y = b ? Symbol.for("react.scope") : 60119;
+  var b = "function" === typeof Symbol && Symbol.for, c = b ? Symbol.for("react.element") : 60103, d = b ? Symbol.for("react.portal") : 60106, e2 = b ? Symbol.for("react.fragment") : 60107, f = b ? Symbol.for("react.strict_mode") : 60108, g = b ? Symbol.for("react.profiler") : 60114, h = b ? Symbol.for("react.provider") : 60109, k = b ? Symbol.for("react.context") : 60110, l2 = b ? Symbol.for("react.async_mode") : 60111, m = b ? Symbol.for("react.concurrent_mode") : 60111, n2 = b ? Symbol.for("react.forward_ref") : 60112, p = b ? Symbol.for("react.suspense") : 60113, q = b ? Symbol.for("react.suspense_list") : 60120, r2 = b ? Symbol.for("react.memo") : 60115, t2 = b ? Symbol.for("react.lazy") : 60116, v = b ? Symbol.for("react.block") : 60121, w = b ? Symbol.for("react.fundamental") : 60117, x = b ? Symbol.for("react.responder") : 60118, y = b ? Symbol.for("react.scope") : 60119;
   function z(a) {
     if ("object" === typeof a && null !== a) {
       var u = a.$$typeof;
@@ -15826,7 +15826,7 @@ function requireReactIs_production_min() {
           switch (a = a.type, a) {
             case l2:
             case m:
-            case e:
+            case e2:
             case g:
             case f:
             case p:
@@ -15835,7 +15835,7 @@ function requireReactIs_production_min() {
               switch (a = a && a.$$typeof, a) {
                 case k:
                 case n2:
-                case t:
+                case t2:
                 case r2:
                 case h:
                   return a;
@@ -15857,8 +15857,8 @@ function requireReactIs_production_min() {
   reactIs_production_min.ContextProvider = h;
   reactIs_production_min.Element = c;
   reactIs_production_min.ForwardRef = n2;
-  reactIs_production_min.Fragment = e;
-  reactIs_production_min.Lazy = t;
+  reactIs_production_min.Fragment = e2;
+  reactIs_production_min.Lazy = t2;
   reactIs_production_min.Memo = r2;
   reactIs_production_min.Portal = d;
   reactIs_production_min.Profiler = g;
@@ -15881,10 +15881,10 @@ function requireReactIs_production_min() {
     return z(a) === n2;
   };
   reactIs_production_min.isFragment = function(a) {
-    return z(a) === e;
+    return z(a) === e2;
   };
   reactIs_production_min.isLazy = function(a) {
-    return z(a) === t;
+    return z(a) === t2;
   };
   reactIs_production_min.isMemo = function(a) {
     return z(a) === r2;
@@ -15902,7 +15902,7 @@ function requireReactIs_production_min() {
     return z(a) === p;
   };
   reactIs_production_min.isValidElementType = function(a) {
-    return "string" === typeof a || "function" === typeof a || a === e || a === m || a === g || a === f || a === p || a === q || "object" === typeof a && null !== a && (a.$$typeof === t || a.$$typeof === r2 || a.$$typeof === h || a.$$typeof === k || a.$$typeof === n2 || a.$$typeof === w || a.$$typeof === x || a.$$typeof === y || a.$$typeof === v);
+    return "string" === typeof a || "function" === typeof a || a === e2 || a === m || a === g || a === f || a === p || a === q || "object" === typeof a && null !== a && (a.$$typeof === t2 || a.$$typeof === r2 || a.$$typeof === h || a.$$typeof === k || a.$$typeof === n2 || a.$$typeof === w || a.$$typeof === x || a.$$typeof === y || a.$$typeof === v);
   };
   reactIs_production_min.typeOf = z;
   return reactIs_production_min;
@@ -15994,7 +15994,7 @@ function requireHoistNonReactStatics_cjs() {
           var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
           try {
             defineProperty(targetComponent, key, descriptor);
-          } catch (e) {
+          } catch (e2) {
           }
         }
       }
@@ -16293,7 +16293,7 @@ function serializeStyles(args, registered, mergedProps) {
 var syncFallback = function syncFallback2(create) {
   return create();
 };
-var useInsertionEffect = React$1["useInsertionEffect"] ? React$1["useInsertionEffect"] : false;
+var useInsertionEffect = React["useInsertionEffect"] ? React["useInsertionEffect"] : false;
 var useInsertionEffectAlwaysWithSyncFallback = useInsertionEffect || syncFallback;
 var useInsertionEffectWithLayoutFallback = useInsertionEffect || reactExports.useLayoutEffect;
 var EmotionCacheContext = /* @__PURE__ */ reactExports.createContext(
@@ -16564,17 +16564,17 @@ function requirePropTypes() {
 }
 var propTypesExports = /* @__PURE__ */ requirePropTypes();
 const PropTypes = /* @__PURE__ */ getDefaultExportFromCjs(propTypesExports);
-function r(e) {
-  var t, f, n2 = "";
-  if ("string" == typeof e || "number" == typeof e) n2 += e;
-  else if ("object" == typeof e) if (Array.isArray(e)) {
-    var o = e.length;
-    for (t = 0; t < o; t++) e[t] && (f = r(e[t])) && (n2 && (n2 += " "), n2 += f);
-  } else for (f in e) e[f] && (n2 && (n2 += " "), n2 += f);
+function r(e2) {
+  var t2, f, n2 = "";
+  if ("string" == typeof e2 || "number" == typeof e2) n2 += e2;
+  else if ("object" == typeof e2) if (Array.isArray(e2)) {
+    var o = e2.length;
+    for (t2 = 0; t2 < o; t2++) e2[t2] && (f = r(e2[t2])) && (n2 && (n2 += " "), n2 += f);
+  } else for (f in e2) e2[f] && (n2 && (n2 += " "), n2 += f);
   return n2;
 }
 function clsx() {
-  for (var e, t, f = 0, n2 = "", o = arguments.length; f < o; f++) (e = arguments[f]) && (t = r(e)) && (n2 && (n2 += " "), n2 += t);
+  for (var e2, t2, f = 0, n2 = "", o = arguments.length; f < o; f++) (e2 = arguments[f]) && (t2 = r(e2)) && (n2 && (n2 += " "), n2 += t2);
   return n2;
 }
 function composeClasses(slots, getUtilityClass, classes = void 0) {
@@ -18678,7 +18678,7 @@ function useMediaQueryOld(query, defaultMatches, matchMedia2, ssrMatchMedia, noS
   return match2;
 }
 const safeReact$1 = {
-  ...React$1
+  ...React
 };
 const maybeReactUseSyncExternalStore = safeReact$1.useSyncExternalStore;
 function useMediaQueryNew(query, defaultMatches, matchMedia2, ssrMatchMedia, noSsr) {
@@ -19038,7 +19038,7 @@ function useGlobalId(idOverride) {
   return id;
 }
 const safeReact = {
-  ...React$1
+  ...React
 };
 const maybeReactUseId = safeReact.useId;
 function useId(idOverride) {
@@ -22256,22 +22256,22 @@ function createControlledPromise() {
   p.reject = reject;
   return p;
 }
-function _objectWithoutPropertiesLoose(r2, e) {
+function _objectWithoutPropertiesLoose(r2, e2) {
   if (null == r2) return {};
-  var t = {};
+  var t2 = {};
   for (var n2 in r2) if ({}.hasOwnProperty.call(r2, n2)) {
-    if (-1 !== e.indexOf(n2)) continue;
-    t[n2] = r2[n2];
+    if (-1 !== e2.indexOf(n2)) continue;
+    t2[n2] = r2[n2];
   }
-  return t;
+  return t2;
 }
-function _setPrototypeOf(t, e) {
-  return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function(t2, e2) {
-    return t2.__proto__ = e2, t2;
-  }, _setPrototypeOf(t, e);
+function _setPrototypeOf(t2, e2) {
+  return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function(t3, e3) {
+    return t3.__proto__ = e3, t3;
+  }, _setPrototypeOf(t2, e2);
 }
-function _inheritsLoose(t, o) {
-  t.prototype = Object.create(o.prototype), t.prototype.constructor = t, _setPrototypeOf(t, o);
+function _inheritsLoose(t2, o) {
+  t2.prototype = Object.create(o.prototype), t2.prototype.constructor = t2, _setPrototypeOf(t2, o);
 }
 function hasClass(element, className) {
   if (element.classList) return !!className && element.classList.contains(className);
@@ -22297,7 +22297,7 @@ function removeClass$1(element, className) {
 const config = {
   disabled: false
 };
-const TransitionGroupContext = React.createContext(null);
+const TransitionGroupContext = t.createContext(null);
 var forceReflow = function forceReflow2(node2) {
   return node2.scrollTop;
 };
@@ -22524,13 +22524,13 @@ var Transition = /* @__PURE__ */ function(_React$Component) {
     var childProps = _objectWithoutPropertiesLoose(_this$props, ["children", "in", "mountOnEnter", "unmountOnExit", "appear", "enter", "exit", "timeout", "addEndListener", "onEnter", "onEntering", "onEntered", "onExit", "onExiting", "onExited", "nodeRef"]);
     return (
       // allows for nested Transitions
-      /* @__PURE__ */ React.createElement(TransitionGroupContext.Provider, {
+      /* @__PURE__ */ t.createElement(TransitionGroupContext.Provider, {
         value: null
-      }, typeof children === "function" ? children(status, childProps) : React.cloneElement(React.Children.only(children), childProps))
+      }, typeof children === "function" ? children(status, childProps) : t.cloneElement(t.Children.only(children), childProps))
     );
   };
   return Transition2;
-}(React.Component);
+}(t.Component);
 Transition.contextType = TransitionGroupContext;
 Transition.propTypes = {};
 function noop$3() {
@@ -22676,7 +22676,7 @@ var CSSTransition = /* @__PURE__ */ function(_React$Component) {
     var _this$props = this.props;
     _this$props.classNames;
     var props = _objectWithoutPropertiesLoose(_this$props, ["classNames"]);
-    return /* @__PURE__ */ React.createElement(Transition, _extends({}, props, {
+    return /* @__PURE__ */ t.createElement(Transition, _extends({}, props, {
       onEnter: this.onEnter,
       onEntered: this.onEntered,
       onEntering: this.onEntering,
@@ -22686,14 +22686,14 @@ var CSSTransition = /* @__PURE__ */ function(_React$Component) {
     }));
   };
   return CSSTransition2;
-}(React.Component);
+}(t.Component);
 CSSTransition.defaultProps = {
   classNames: ""
 };
 CSSTransition.propTypes = {};
-function _assertThisInitialized(e) {
-  if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  return e;
+function _assertThisInitialized(e2) {
+  if (void 0 === e2) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  return e2;
 }
 function getChildMapping(children, mapFn) {
   var mapper = function mapper2(child) {
@@ -22856,16 +22856,16 @@ var TransitionGroup = /* @__PURE__ */ function(_React$Component) {
     delete props.enter;
     delete props.exit;
     if (Component === null) {
-      return /* @__PURE__ */ React.createElement(TransitionGroupContext.Provider, {
+      return /* @__PURE__ */ t.createElement(TransitionGroupContext.Provider, {
         value: contextValue
       }, children);
     }
-    return /* @__PURE__ */ React.createElement(TransitionGroupContext.Provider, {
+    return /* @__PURE__ */ t.createElement(TransitionGroupContext.Provider, {
       value: contextValue
-    }, /* @__PURE__ */ React.createElement(Component, props, children));
+    }, /* @__PURE__ */ t.createElement(Component, props, children));
   };
   return TransitionGroup2;
-}(React.Component);
+}(t.Component);
 TransitionGroup.propTypes = {};
 TransitionGroup.defaultProps = defaultProps;
 const EMPTY = [];
@@ -28180,7 +28180,7 @@ function TabLabel(props) {
         event.preventDefault();
       },
       children: [
-        typeof props.icon === "string" ? /* @__PURE__ */ jsxRuntimeExports.jsx(CustomIcon, { iconName: props.icon }) : props.icon && React.createElement(props.icon, { className: styles$2.icon, height: 24 }),
+        typeof props.icon === "string" ? /* @__PURE__ */ jsxRuntimeExports.jsx(CustomIcon, { iconName: props.icon }) : props.icon && t.createElement(props.icon, { className: styles$2.icon, height: 24 }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: props.label })
       ]
     }
@@ -44228,7 +44228,7 @@ class IANAZone extends Zone {
     try {
       new Intl.DateTimeFormat("en-US", { timeZone: zone }).format();
       return true;
-    } catch (e) {
+    } catch (e2) {
       return false;
     }
   }
@@ -44419,7 +44419,7 @@ function parseLocaleString(localeStr) {
     try {
       options = getCachedDTF(localeStr).resolvedOptions();
       selectedStr = localeStr;
-    } catch (e) {
+    } catch (e2) {
       const smaller = localeStr.substring(0, uIndex);
       options = getCachedDTF(smaller).resolvedOptions();
       selectedStr = smaller;
@@ -45154,8 +45154,8 @@ class Settings {
    * Set whether Luxon will throw when it encounters invalid DateTimes, Durations, or Intervals
    * @type {boolean}
    */
-  static set throwOnInvalid(t) {
-    throwOnInvalid = t;
+  static set throwOnInvalid(t2) {
+    throwOnInvalid = t2;
   }
   /**
    * Reset Luxon's global caches. Should only be necessary in testing scenarios.
@@ -45331,14 +45331,14 @@ function isDate(o) {
 function hasRelative() {
   try {
     return typeof Intl !== "undefined" && !!Intl.RelativeTimeFormat;
-  } catch (e) {
+  } catch (e2) {
     return false;
   }
 }
 function hasLocaleWeekInfo() {
   try {
     return typeof Intl !== "undefined" && !!Intl.Locale && ("weekInfo" in Intl.Locale.prototype || "getWeekInfo" in Intl.Locale.prototype);
-  } catch (e) {
+  } catch (e2) {
     return false;
   }
 }
@@ -45981,7 +45981,7 @@ class Formatter {
     }, tokens = Formatter.parseFormat(fmt), realTokens = tokens.reduce(
       (found, { literal, val }) => literal ? found : found.concat(val),
       []
-    ), collapsed = dur.shiftTo(...realTokens.map(tokenToField).filter((t) => t)), durationInfo = {
+    ), collapsed = dur.shiftTo(...realTokens.map(tokenToField).filter((t2) => t2)), durationInfo = {
       isNegativeDuration: collapsed < 0,
       // this relies on "collapsed" being based on "shiftTo", which builds up the object
       // in order
@@ -47125,27 +47125,27 @@ class Interval {
    * @return {Interval}
    */
   static fromISO(text2, opts) {
-    const [s2, e] = (text2 || "").split("/", 2);
-    if (s2 && e) {
+    const [s2, e2] = (text2 || "").split("/", 2);
+    if (s2 && e2) {
       let start2, startIsValid;
       try {
         start2 = DateTime.fromISO(s2, opts);
         startIsValid = start2.isValid;
-      } catch (e2) {
+      } catch (e3) {
         startIsValid = false;
       }
       let end2, endIsValid;
       try {
-        end2 = DateTime.fromISO(e, opts);
+        end2 = DateTime.fromISO(e2, opts);
         endIsValid = end2.isValid;
-      } catch (e2) {
+      } catch (e3) {
         endIsValid = false;
       }
       if (startIsValid && endIsValid) {
         return Interval.fromDateTimes(start2, end2);
       }
       if (startIsValid) {
-        const dur = Duration.fromISO(e, opts);
+        const dur = Duration.fromISO(e2, opts);
         if (dur.isValid) {
           return Interval.after(start2, dur);
         }
@@ -47394,11 +47394,11 @@ class Interval {
    */
   intersection(other) {
     if (!this.isValid) return this;
-    const s2 = this.s > other.s ? this.s : other.s, e = this.e < other.e ? this.e : other.e;
-    if (s2 >= e) {
+    const s2 = this.s > other.s ? this.s : other.s, e2 = this.e < other.e ? this.e : other.e;
+    if (s2 >= e2) {
       return null;
     } else {
-      return Interval.fromDateTimes(s2, e);
+      return Interval.fromDateTimes(s2, e2);
     }
   }
   /**
@@ -47409,8 +47409,8 @@ class Interval {
    */
   union(other) {
     if (!this.isValid) return this;
-    const s2 = this.s < other.s ? this.s : other.s, e = this.e > other.e ? this.e : other.e;
-    return Interval.fromDateTimes(s2, e);
+    const s2 = this.s < other.s ? this.s : other.s, e2 = this.e > other.e ? this.e : other.e;
+    return Interval.fromDateTimes(s2, e2);
   }
   /**
    * Merge an array of Intervals into an equivalent minimal set of Intervals.
@@ -47852,11 +47852,11 @@ function escapeToken(value) {
   return value.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
 }
 function unitForToken(token2, loc) {
-  const one = digitRegex(loc), two = digitRegex(loc, "{2}"), three = digitRegex(loc, "{3}"), four = digitRegex(loc, "{4}"), six = digitRegex(loc, "{6}"), oneOrTwo = digitRegex(loc, "{1,2}"), oneToThree = digitRegex(loc, "{1,3}"), oneToSix = digitRegex(loc, "{1,6}"), oneToNine = digitRegex(loc, "{1,9}"), twoToFour = digitRegex(loc, "{2,4}"), fourToSix = digitRegex(loc, "{4,6}"), literal = (t) => ({ regex: RegExp(escapeToken(t.val)), deser: ([s2]) => s2, literal: true }), unitate = (t) => {
+  const one = digitRegex(loc), two = digitRegex(loc, "{2}"), three = digitRegex(loc, "{3}"), four = digitRegex(loc, "{4}"), six = digitRegex(loc, "{6}"), oneOrTwo = digitRegex(loc, "{1,2}"), oneToThree = digitRegex(loc, "{1,3}"), oneToSix = digitRegex(loc, "{1,6}"), oneToNine = digitRegex(loc, "{1,9}"), twoToFour = digitRegex(loc, "{2,4}"), fourToSix = digitRegex(loc, "{4,6}"), literal = (t2) => ({ regex: RegExp(escapeToken(t2.val)), deser: ([s2]) => s2, literal: true }), unitate = (t2) => {
     if (token2.literal) {
-      return literal(t);
+      return literal(t2);
     }
-    switch (t.val) {
+    switch (t2.val) {
       // era
       case "G":
         return oneOf(loc.eras("short"), 0);
@@ -47971,7 +47971,7 @@ function unitForToken(token2, loc) {
       case " ":
         return simple(/[^\S\n\r]/);
       default:
-        return literal(t);
+        return literal(t2);
     }
   };
   const unit = unitate(token2) || {
@@ -48170,15 +48170,15 @@ function maybeExpandMacroToken(token2, locale) {
   return tokens;
 }
 function expandMacroTokens(tokens, locale) {
-  return Array.prototype.concat(...tokens.map((t) => maybeExpandMacroToken(t, locale)));
+  return Array.prototype.concat(...tokens.map((t2) => maybeExpandMacroToken(t2, locale)));
 }
 class TokenParser {
   constructor(locale, format) {
     this.locale = locale;
     this.format = format;
     this.tokens = expandMacroTokens(Formatter.parseFormat(format), locale);
-    this.units = this.tokens.map((t) => unitForToken(t, locale));
-    this.disqualifyingUnit = this.units.find((t) => t.invalidReason);
+    this.units = this.tokens.map((t2) => unitForToken(t2, locale));
+    this.disqualifyingUnit = this.units.find((t2) => t2.invalidReason);
     if (!this.disqualifyingUnit) {
       const [regexString, handlers] = buildRegex(this.units);
       this.regex = RegExp(regexString, "i");
@@ -48974,7 +48974,7 @@ class DateTime {
    */
   static parseFormatForOpts(formatOpts, localeOpts = {}) {
     const tokenList = formatOptsToTokens(formatOpts, Locale.fromObject(localeOpts));
-    return !tokenList ? null : tokenList.map((t) => t ? t.val : null).join("");
+    return !tokenList ? null : tokenList.map((t2) => t2 ? t2.val : null).join("");
   }
   /**
    * Produce the the fully expanded format token for the locale
@@ -48985,7 +48985,7 @@ class DateTime {
    */
   static expandFormat(fmt, localeOpts = {}) {
     const expanded = expandMacroTokens(Formatter.parseFormat(fmt), Locale.fromObject(localeOpts));
-    return expanded.map((t) => t.val).join("");
+    return expanded.map((t2) => t2.val).join("");
   }
   static resetCache() {
     zoneOffsetTs = void 0;
@@ -50665,7 +50665,7 @@ function CrawlerDetails(params) {
                 "aria-controls": menuOpen ? "crawler-job-menu" : void 0,
                 "aria-haspopup": "true",
                 "aria-expanded": menuOpen ? "true" : void 0,
-                onClick: (e) => handleMenuClick(e, job.id),
+                onClick: (e2) => handleMenuClick(e2, job.id),
                 children: /* @__PURE__ */ jsxRuntimeExports.jsx(MoreVertOutlined, {})
               }
             ) })
@@ -50889,7 +50889,7 @@ function CrawlerTableRow(props) {
         "aria-controls": props.menuOpen ? "crawler-job-menu" : void 0,
         "aria-haspopup": "true",
         "aria-expanded": props.menuOpen ? "true" : void 0,
-        onClick: (e) => props.handleMenuClick(e, props.info.id),
+        onClick: (e2) => props.handleMenuClick(e2, props.info.id),
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(MoreVertOutlined, { fontSize: "medium" })
       }
     ) })
@@ -53082,19 +53082,19 @@ const ColumnSizing = {
     header.getResizeHandler = (_contextDocument) => {
       const column2 = table.getColumn(header.column.id);
       const canResize = column2 == null ? void 0 : column2.getCanResize();
-      return (e) => {
+      return (e2) => {
         if (!column2 || !canResize) {
           return;
         }
-        e.persist == null || e.persist();
-        if (isTouchStartEvent(e)) {
-          if (e.touches && e.touches.length > 1) {
+        e2.persist == null || e2.persist();
+        if (isTouchStartEvent(e2)) {
+          if (e2.touches && e2.touches.length > 1) {
             return;
           }
         }
         const startSize = header.getSize();
         const columnSizingStart = header ? header.getLeafHeaders().map((d) => [d.column.id, d.column.getSize()]) : [[column2.id, column2.getSize()]];
-        const clientX = isTouchStartEvent(e) ? Math.round(e.touches[0].clientX) : e.clientX;
+        const clientX = isTouchStartEvent(e2) ? Math.round(e2.touches[0].clientX) : e2.clientX;
         const newColumnSizing = {};
         const updateOffset = (eventType, clientXPos) => {
           if (typeof clientXPos !== "number") {
@@ -53137,37 +53137,37 @@ const ColumnSizing = {
         };
         const contextDocument = _contextDocument || typeof document !== "undefined" ? document : null;
         const mouseEvents = {
-          moveHandler: (e2) => onMove(e2.clientX),
-          upHandler: (e2) => {
+          moveHandler: (e22) => onMove(e22.clientX),
+          upHandler: (e22) => {
             contextDocument == null || contextDocument.removeEventListener("mousemove", mouseEvents.moveHandler);
             contextDocument == null || contextDocument.removeEventListener("mouseup", mouseEvents.upHandler);
-            onEnd(e2.clientX);
+            onEnd(e22.clientX);
           }
         };
         const touchEvents = {
-          moveHandler: (e2) => {
-            if (e2.cancelable) {
-              e2.preventDefault();
-              e2.stopPropagation();
+          moveHandler: (e22) => {
+            if (e22.cancelable) {
+              e22.preventDefault();
+              e22.stopPropagation();
             }
-            onMove(e2.touches[0].clientX);
+            onMove(e22.touches[0].clientX);
             return false;
           },
-          upHandler: (e2) => {
+          upHandler: (e22) => {
             var _e$touches$;
             contextDocument == null || contextDocument.removeEventListener("touchmove", touchEvents.moveHandler);
             contextDocument == null || contextDocument.removeEventListener("touchend", touchEvents.upHandler);
-            if (e2.cancelable) {
-              e2.preventDefault();
-              e2.stopPropagation();
+            if (e22.cancelable) {
+              e22.preventDefault();
+              e22.stopPropagation();
             }
-            onEnd((_e$touches$ = e2.touches[0]) == null ? void 0 : _e$touches$.clientX);
+            onEnd((_e$touches$ = e22.touches[0]) == null ? void 0 : _e$touches$.clientX);
           }
         };
         const passiveIfSupported = passiveEventSupported() ? {
           passive: false
         } : false;
-        if (isTouchStartEvent(e)) {
+        if (isTouchStartEvent(e2)) {
           contextDocument == null || contextDocument.addEventListener("touchmove", touchEvents.moveHandler, passiveIfSupported);
           contextDocument == null || contextDocument.addEventListener("touchend", touchEvents.upHandler, passiveIfSupported);
         } else {
@@ -53244,8 +53244,8 @@ function passiveEventSupported() {
   passiveSupported = supported;
   return passiveSupported;
 }
-function isTouchStartEvent(e) {
-  return e.type === "touchstart";
+function isTouchStartEvent(e2) {
+  return e2.type === "touchstart";
 }
 const ColumnVisibility = {
   getInitialState: (state) => {
@@ -53278,8 +53278,8 @@ const ColumnVisibility = {
       return ((_column$columnDef$ena = column2.columnDef.enableHiding) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableHiding) != null ? _table$options$enable : true);
     };
     column2.getToggleVisibilityHandler = () => {
-      return (e) => {
-        column2.toggleVisibility == null || column2.toggleVisibility(e.target.checked);
+      return (e2) => {
+        column2.toggleVisibility == null || column2.toggleVisibility(e2.target.checked);
       };
     };
   },
@@ -53316,9 +53316,9 @@ const ColumnVisibility = {
     table.getIsAllColumnsVisible = () => !table.getAllLeafColumns().some((column2) => !(column2.getIsVisible != null && column2.getIsVisible()));
     table.getIsSomeColumnsVisible = () => table.getAllLeafColumns().some((column2) => column2.getIsVisible == null ? void 0 : column2.getIsVisible());
     table.getToggleAllColumnsVisibilityHandler = () => {
-      return (e) => {
+      return (e2) => {
         var _target;
-        table.toggleAllColumnsVisible((_target = e.target) == null ? void 0 : _target.checked);
+        table.toggleAllColumnsVisible((_target = e2.target) == null ? void 0 : _target.checked);
       };
     };
   }
@@ -53443,8 +53443,8 @@ const RowExpanding = {
       return table.getPrePaginationRowModel().flatRows.some((row) => row.getCanExpand());
     };
     table.getToggleAllRowsExpandedHandler = () => {
-      return (e) => {
-        e.persist == null || e.persist();
+      return (e2) => {
+        e2.persist == null || e2.persist();
         table.toggleAllRowsExpanded();
       };
     };
@@ -53940,13 +53940,13 @@ const RowSelection = {
       return table.getIsAllPageRowsSelected() ? false : paginationFlatRows.filter((row) => row.getCanSelect()).some((d) => d.getIsSelected() || d.getIsSomeSelected());
     };
     table.getToggleAllRowsSelectedHandler = () => {
-      return (e) => {
-        table.toggleAllRowsSelected(e.target.checked);
+      return (e2) => {
+        table.toggleAllRowsSelected(e2.target.checked);
       };
     };
     table.getToggleAllPageRowsSelectedHandler = () => {
-      return (e) => {
-        table.toggleAllPageRowsSelected(e.target.checked);
+      return (e2) => {
+        table.toggleAllPageRowsSelected(e2.target.checked);
       };
     };
   },
@@ -54007,10 +54007,10 @@ const RowSelection = {
     };
     row.getToggleSelectedHandler = () => {
       const canSelect = row.getCanSelect();
-      return (e) => {
+      return (e2) => {
         var _target;
         if (!canSelect) return;
-        row.toggleSelected((_target = e.target) == null ? void 0 : _target.checked);
+        row.toggleSelected((_target = e2.target) == null ? void 0 : _target.checked);
       };
     };
   }
@@ -54185,8 +54185,8 @@ const RowSorting = {
   getDefaultOptions: (table) => {
     return {
       onSortingChange: makeStateUpdater("sorting", table),
-      isMultiSortEvent: (e) => {
-        return e.shiftKey;
+      isMultiSortEvent: (e2) => {
+        return e2.shiftKey;
       }
     };
   },
@@ -54325,10 +54325,10 @@ const RowSorting = {
     };
     column2.getToggleSortingHandler = () => {
       const canSort = column2.getCanSort();
-      return (e) => {
+      return (e2) => {
         if (!canSort) return;
-        e.persist == null || e.persist();
-        column2.toggleSorting == null || column2.toggleSorting(void 0, column2.getCanMultiSort() ? table.options.isMultiSortEvent == null ? void 0 : table.options.isMultiSortEvent(e) : false);
+        e2.persist == null || e2.persist();
+        column2.toggleSorting == null || column2.toggleSorting(void 0, column2.getCanMultiSort() ? table.options.isMultiSortEvent == null ? void 0 : table.options.isMultiSortEvent(e2) : false);
       };
     };
   },
@@ -71664,20 +71664,20 @@ const MRT_FilterFns = Object.assign(Object.assign({}, filterFns), {
   notEquals,
   startsWith
 });
-function __rest(s2, e) {
-  var t = {};
-  for (var p in s2) if (Object.prototype.hasOwnProperty.call(s2, p) && e.indexOf(p) < 0)
-    t[p] = s2[p];
+function __rest(s2, e2) {
+  var t2 = {};
+  for (var p in s2) if (Object.prototype.hasOwnProperty.call(s2, p) && e2.indexOf(p) < 0)
+    t2[p] = s2[p];
   if (s2 != null && typeof Object.getOwnPropertySymbols === "function")
     for (var i = 0, p = Object.getOwnPropertySymbols(s2); i < p.length; i++) {
-      if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s2, p[i]))
-        t[p[i]] = s2[p[i]];
+      if (e2.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s2, p[i]))
+        t2[p[i]] = s2[p[i]];
     }
-  return t;
+  return t2;
 }
 typeof SuppressedError === "function" ? SuppressedError : function(error, suppressed, message) {
-  var e = new Error(message);
-  return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+  var e2 = new Error(message);
+  return e2.name = "SuppressedError", e2.error = error, e2.suppressed = suppressed, e2;
 };
 const MRT_EditActionButtons = (_a) => {
   var { row, table, variant = "icon" } = _a, rest = __rest(_a, ["row", "table", "variant"]);
@@ -71721,7 +71721,7 @@ const MRT_EditActionButtons = (_a) => {
       });
     }
   };
-  return jsxRuntimeExports.jsx(Box, { onClick: (e) => e.stopPropagation(), sx: (theme) => Object.assign({ display: "flex", gap: "0.75rem" }, parseFromValuesOrFunc(rest === null || rest === void 0 ? void 0 : rest.sx, theme)), children: variant === "icon" ? jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(Tooltip, { title: localization.cancel, children: jsxRuntimeExports.jsx(IconButton, { "aria-label": localization.cancel, onClick: handleCancel, children: jsxRuntimeExports.jsx(CancelIcon2, {}) }) }), (isCreating && onCreatingRowSave || isEditing && onEditingRowSave) && jsxRuntimeExports.jsx(Tooltip, { title: localization.save, children: jsxRuntimeExports.jsx(IconButton, { "aria-label": localization.save, color: "info", disabled: isSaving, onClick: handleSubmitRow, children: isSaving ? jsxRuntimeExports.jsx(CircularProgress, { size: 18 }) : jsxRuntimeExports.jsx(SaveIcon2, {}) }) })] }) : jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(Button, { onClick: handleCancel, sx: { minWidth: "100px" }, children: localization.cancel }), jsxRuntimeExports.jsxs(Button, { disabled: isSaving, onClick: handleSubmitRow, sx: { minWidth: "100px" }, variant: "contained", children: [isSaving && jsxRuntimeExports.jsx(CircularProgress, { color: "inherit", size: 18 }), localization.save] })] }) });
+  return jsxRuntimeExports.jsx(Box, { onClick: (e2) => e2.stopPropagation(), sx: (theme) => Object.assign({ display: "flex", gap: "0.75rem" }, parseFromValuesOrFunc(rest === null || rest === void 0 ? void 0 : rest.sx, theme)), children: variant === "icon" ? jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(Tooltip, { title: localization.cancel, children: jsxRuntimeExports.jsx(IconButton, { "aria-label": localization.cancel, onClick: handleCancel, children: jsxRuntimeExports.jsx(CancelIcon2, {}) }) }), (isCreating && onCreatingRowSave || isEditing && onEditingRowSave) && jsxRuntimeExports.jsx(Tooltip, { title: localization.save, children: jsxRuntimeExports.jsx(IconButton, { "aria-label": localization.save, color: "info", disabled: isSaving, onClick: handleSubmitRow, children: isSaving ? jsxRuntimeExports.jsx(CircularProgress, { size: 18 }) : jsxRuntimeExports.jsx(SaveIcon2, {}) }) })] }) : jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(Button, { onClick: handleCancel, sx: { minWidth: "100px" }, children: localization.cancel }), jsxRuntimeExports.jsxs(Button, { disabled: isSaving, onClick: handleSubmitRow, sx: { minWidth: "100px" }, variant: "contained", children: [isSaving && jsxRuntimeExports.jsx(CircularProgress, { color: "inherit", size: 18 }), localization.save] })] }) });
 };
 const parseCSSVarId = (id) => id.replace(/[^a-zA-Z0-9]/g, "_");
 const getMRTTheme = (mrtTheme, muiTheme) => {
@@ -71877,10 +71877,10 @@ const MRT_GrabHandleButton = (_a) => {
   var _b, _c;
   var { location, table } = _a, rest = __rest(_a, ["location", "table"]);
   const { options: { icons: { DragHandleIcon: DragHandleIcon2 }, localization } } = table;
-  return jsxRuntimeExports.jsx(Tooltip, Object.assign({}, getCommonTooltipProps("top"), { title: (_b = rest === null || rest === void 0 ? void 0 : rest.title) !== null && _b !== void 0 ? _b : localization.move, children: jsxRuntimeExports.jsx(IconButton, Object.assign({ "aria-label": (_c = rest.title) !== null && _c !== void 0 ? _c : localization.move, disableRipple: true, draggable: "true", size: "small" }, rest, { onClick: (e) => {
+  return jsxRuntimeExports.jsx(Tooltip, Object.assign({}, getCommonTooltipProps("top"), { title: (_b = rest === null || rest === void 0 ? void 0 : rest.title) !== null && _b !== void 0 ? _b : localization.move, children: jsxRuntimeExports.jsx(IconButton, Object.assign({ "aria-label": (_c = rest.title) !== null && _c !== void 0 ? _c : localization.move, disableRipple: true, draggable: "true", size: "small" }, rest, { onClick: (e2) => {
     var _a2;
-    e.stopPropagation();
-    (_a2 = rest === null || rest === void 0 ? void 0 : rest.onClick) === null || _a2 === void 0 ? void 0 : _a2.call(rest, e);
+    e2.stopPropagation();
+    (_a2 = rest === null || rest === void 0 ? void 0 : rest.onClick) === null || _a2 === void 0 ? void 0 : _a2.call(rest, e2);
   }, sx: (theme) => Object.assign({ "&:active": {
     cursor: "grabbing"
   }, "&:hover": {
@@ -71900,8 +71900,8 @@ const MRT_TableBodyRowGrabHandle = (_a) => {
     (_a2 = iconButtonProps === null || iconButtonProps === void 0 ? void 0 : iconButtonProps.onDragStart) === null || _a2 === void 0 ? void 0 : _a2.call(iconButtonProps, event);
     try {
       event.dataTransfer.setDragImage(rowRef.current, 0, 0);
-    } catch (e) {
-      console.error(e);
+    } catch (e2) {
+      console.error(e2);
     }
     table.setDraggingRow(row);
   };
@@ -72062,10 +72062,10 @@ const MRT_SelectCheckbox = (_a) => {
   }, onChange: (event) => {
     event.stopPropagation();
     selectAll ? onSelectAllChange(event) : onSelectionChange(event);
-  }, size: density === "compact" ? "small" : "medium" }, checkboxProps), { onClick: (e) => {
+  }, size: density === "compact" ? "small" : "medium" }, checkboxProps), { onClick: (e2) => {
     var _a2;
-    e.stopPropagation();
-    (_a2 = checkboxProps === null || checkboxProps === void 0 ? void 0 : checkboxProps.onClick) === null || _a2 === void 0 ? void 0 : _a2.call(checkboxProps, e);
+    e2.stopPropagation();
+    (_a2 = checkboxProps === null || checkboxProps === void 0 ? void 0 : checkboxProps.onClick) === null || _a2 === void 0 ? void 0 : _a2.call(checkboxProps, e2);
   }, sx: (theme) => Object.assign({ height: density === "compact" ? "1.75rem" : "2.5rem", m: density !== "compact" ? "-0.4rem" : void 0, width: density === "compact" ? "1.75rem" : "2.5rem", zIndex: 0 }, parseFromValuesOrFunc(checkboxProps === null || checkboxProps === void 0 ? void 0 : checkboxProps.sx, theme)), title: void 0 });
   return jsxRuntimeExports.jsx(Tooltip, Object.assign({}, getCommonTooltipProps(), { title: (_b = checkboxProps === null || checkboxProps === void 0 ? void 0 : checkboxProps.title) !== null && _b !== void 0 ? _b : selectAll ? localization.toggleSelectAll : localization.toggleSelectRow, children: enableMultiRowSelection === false ? jsxRuntimeExports.jsx(Radio, Object.assign({}, commonProps)) : jsxRuntimeExports.jsx(Checkbox, Object.assign({ indeterminate: !isChecked && selectAll ? table.getIsSomeRowsSelected() : (row === null || row === void 0 ? void 0 : row.getIsSomeSelected()) && row.getCanSelectSubRows() }, commonProps)) }));
 };
@@ -72742,7 +72742,7 @@ const MRT_CopyButton = (_a) => {
     row,
     table
   })), rest);
-  return jsxRuntimeExports.jsx(Tooltip, Object.assign({}, getCommonTooltipProps("top"), { title: (_b = buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.title) !== null && _b !== void 0 ? _b : copied ? localization.copiedToClipboard : localization.clickToCopy, children: jsxRuntimeExports.jsx(Button, Object.assign({ onClick: (e) => handleCopy(e, cell.getValue()), size: "small", type: "button", variant: "text" }, buttonProps, { sx: (theme) => Object.assign({ backgroundColor: "transparent", border: "none", color: "inherit", cursor: "copy", fontFamily: "inherit", fontSize: "inherit", letterSpacing: "inherit", m: "-0.25rem", minWidth: "unset", py: 0, textAlign: "inherit", textTransform: "inherit" }, parseFromValuesOrFunc(buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.sx, theme)), title: void 0 })) }));
+  return jsxRuntimeExports.jsx(Tooltip, Object.assign({}, getCommonTooltipProps("top"), { title: (_b = buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.title) !== null && _b !== void 0 ? _b : copied ? localization.copiedToClipboard : localization.clickToCopy, children: jsxRuntimeExports.jsx(Button, Object.assign({ onClick: (e2) => handleCopy(e2, cell.getValue()), size: "small", type: "button", variant: "text" }, buttonProps, { sx: (theme) => Object.assign({ backgroundColor: "transparent", border: "none", color: "inherit", cursor: "copy", fontFamily: "inherit", fontSize: "inherit", letterSpacing: "inherit", m: "-0.25rem", minWidth: "unset", py: 0, textAlign: "inherit", textTransform: "inherit" }, parseFromValuesOrFunc(buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.sx, theme)), title: void 0 })) }));
 };
 const MRT_EditCellTextField = (_a) => {
   var _b, _c;
@@ -72816,10 +72816,10 @@ const MRT_EditCellTextField = (_a) => {
   }, label: ["custom", "modal"].includes(isCreating ? createDisplayMode : editDisplayMode) ? columnDef.header : void 0, margin: "none", name: column2.id, placeholder: !["custom", "modal"].includes(isCreating ? createDisplayMode : editDisplayMode) ? columnDef.header : void 0, select: isSelectEdit, size: "small", value: value !== null && value !== void 0 ? value : "", variant: "standard" }, textFieldProps, { InputProps: Object.assign(Object.assign(Object.assign({}, textFieldProps.variant !== "outlined" ? { disableUnderline: editDisplayMode === "table" } : {}), textFieldProps.InputProps), { sx: (theme) => {
     var _a2;
     return Object.assign({ mb: 0 }, parseFromValuesOrFunc((_a2 = textFieldProps === null || textFieldProps === void 0 ? void 0 : textFieldProps.InputProps) === null || _a2 === void 0 ? void 0 : _a2.sx, theme));
-  } }), SelectProps: Object.assign({ MenuProps: { disableScrollLock: true } }, textFieldProps.SelectProps), inputProps: Object.assign({ autoComplete: "off" }, textFieldProps.inputProps), onBlur: handleBlur, onChange: handleChange, onClick: (e) => {
+  } }), SelectProps: Object.assign({ MenuProps: { disableScrollLock: true } }, textFieldProps.SelectProps), inputProps: Object.assign({ autoComplete: "off" }, textFieldProps.inputProps), onBlur: handleBlur, onChange: handleChange, onClick: (e2) => {
     var _a2;
-    e.stopPropagation();
-    (_a2 = textFieldProps === null || textFieldProps === void 0 ? void 0 : textFieldProps.onClick) === null || _a2 === void 0 ? void 0 : _a2.call(textFieldProps, e);
+    e2.stopPropagation();
+    (_a2 = textFieldProps === null || textFieldProps === void 0 ? void 0 : textFieldProps.onClick) === null || _a2 === void 0 ? void 0 : _a2.call(textFieldProps, e2);
   }, onKeyDown: handleEnterKeyDown, onCompositionStart: () => setCompletesComposition(false), onCompositionEnd: () => setCompletesComposition(true), children: (_c = textFieldProps.children) !== null && _c !== void 0 ? _c : selectOptions === null || selectOptions === void 0 ? void 0 : selectOptions.map((option) => {
     const { label, value: value2 } = getValueAndLabel(option);
     return jsxRuntimeExports.jsx(MenuItem, { sx: {
@@ -72902,9 +72902,9 @@ const MRT_TableBodyCell = (_a) => {
     (_a2 = tableCellProps === null || tableCellProps === void 0 ? void 0 : tableCellProps.onDoubleClick) === null || _a2 === void 0 ? void 0 : _a2.call(tableCellProps, event);
     openEditingCell({ cell, table });
   };
-  const handleDragEnter = (e) => {
+  const handleDragEnter = (e2) => {
     var _a2;
-    (_a2 = tableCellProps === null || tableCellProps === void 0 ? void 0 : tableCellProps.onDragEnter) === null || _a2 === void 0 ? void 0 : _a2.call(tableCellProps, e);
+    (_a2 = tableCellProps === null || tableCellProps === void 0 ? void 0 : tableCellProps.onDragEnter) === null || _a2 === void 0 ? void 0 : _a2.call(tableCellProps, e2);
     if (enableGrouping && (hoveredColumn === null || hoveredColumn === void 0 ? void 0 : hoveredColumn.id) === "drop-zone") {
       setHoveredColumn(null);
     }
@@ -72912,18 +72912,18 @@ const MRT_TableBodyCell = (_a) => {
       setHoveredColumn(columnDef.enableColumnOrdering !== false ? column2 : null);
     }
   };
-  const handleDragOver = (e) => {
+  const handleDragOver = (e2) => {
     if (columnDef.enableColumnOrdering !== false) {
-      e.preventDefault();
+      e2.preventDefault();
     }
   };
-  const handleContextMenu = (e) => {
+  const handleContextMenu = (e2) => {
     var _a2;
-    (_a2 = tableCellProps === null || tableCellProps === void 0 ? void 0 : tableCellProps.onContextMenu) === null || _a2 === void 0 ? void 0 : _a2.call(tableCellProps, e);
+    (_a2 = tableCellProps === null || tableCellProps === void 0 ? void 0 : tableCellProps.onContextMenu) === null || _a2 === void 0 ? void 0 : _a2.call(tableCellProps, e2);
     if (isRightClickable) {
-      e.preventDefault();
+      e2.preventDefault();
       table.setActionCell(cell);
-      table.refs.actionCellRef.current = e.currentTarget;
+      table.refs.actionCellRef.current = e2.currentTarget;
     }
   };
   const handleKeyDown = (event) => {
@@ -73020,8 +73020,8 @@ const MRT_TableBodyRow = (_a) => {
       setHoveredRow(row);
     }
   };
-  const handleDragOver = (e) => {
-    e.preventDefault();
+  const handleDragOver = (e2) => {
+    e2.preventDefault();
   };
   const rowRef = reactExports.useRef(null);
   const cellHighlightColor = isRowSelected2 ? selectedRowBackgroundColor : isRowPinned ? pinnedRowBackgroundColor : void 0;
@@ -73515,14 +73515,14 @@ const MRT_FilterCheckbox = (_a) => {
     table
   })), rest);
   const filterLabel = (_b = localization.filterByColumn) === null || _b === void 0 ? void 0 : _b.replace("{column}", columnDef.header);
-  return jsxRuntimeExports.jsx(Tooltip, Object.assign({}, getCommonTooltipProps(), { title: (_c = checkboxProps === null || checkboxProps === void 0 ? void 0 : checkboxProps.title) !== null && _c !== void 0 ? _c : filterLabel, children: jsxRuntimeExports.jsx(FormControlLabel, { control: jsxRuntimeExports.jsx(Checkbox, Object.assign({ checked: column2.getFilterValue() === "true", color: column2.getFilterValue() === void 0 ? "default" : "primary", indeterminate: column2.getFilterValue() === void 0, size: density === "compact" ? "small" : "medium" }, checkboxProps, { onChange: (e, checked) => {
+  return jsxRuntimeExports.jsx(Tooltip, Object.assign({}, getCommonTooltipProps(), { title: (_c = checkboxProps === null || checkboxProps === void 0 ? void 0 : checkboxProps.title) !== null && _c !== void 0 ? _c : filterLabel, children: jsxRuntimeExports.jsx(FormControlLabel, { control: jsxRuntimeExports.jsx(Checkbox, Object.assign({ checked: column2.getFilterValue() === "true", color: column2.getFilterValue() === void 0 ? "default" : "primary", indeterminate: column2.getFilterValue() === void 0, size: density === "compact" ? "small" : "medium" }, checkboxProps, { onChange: (e2, checked) => {
     var _a2;
     column2.setFilterValue(column2.getFilterValue() === void 0 ? "true" : column2.getFilterValue() === "true" ? "false" : void 0);
-    (_a2 = checkboxProps === null || checkboxProps === void 0 ? void 0 : checkboxProps.onChange) === null || _a2 === void 0 ? void 0 : _a2.call(checkboxProps, e, checked);
-  }, onClick: (e) => {
+    (_a2 = checkboxProps === null || checkboxProps === void 0 ? void 0 : checkboxProps.onChange) === null || _a2 === void 0 ? void 0 : _a2.call(checkboxProps, e2, checked);
+  }, onClick: (e2) => {
     var _a2;
-    e.stopPropagation();
-    (_a2 = checkboxProps === null || checkboxProps === void 0 ? void 0 : checkboxProps.onClick) === null || _a2 === void 0 ? void 0 : _a2.call(checkboxProps, e);
+    e2.stopPropagation();
+    (_a2 = checkboxProps === null || checkboxProps === void 0 ? void 0 : checkboxProps.onClick) === null || _a2 === void 0 ? void 0 : _a2.call(checkboxProps, e2);
   }, sx: (theme) => Object.assign({ height: "2.5rem", width: "2.5rem" }, parseFromValuesOrFunc(checkboxProps === null || checkboxProps === void 0 ? void 0 : checkboxProps.sx, theme)) })), disableTypography: true, label: (_d = checkboxProps.title) !== null && _d !== void 0 ? _d : filterLabel, sx: { color: "text.secondary", fontWeight: "normal", mt: "-4px" }, title: void 0 }) }));
 };
 const MRT_FilterTextField = (_a) => {
@@ -73645,10 +73645,10 @@ const MRT_FilterTextField = (_a) => {
   } }, (_m = textFieldProps.slotProps) === null || _m === void 0 ? void 0 : _m.formHelperText), input: endAdornment ? Object.assign({ endAdornment, startAdornment }, (_o = textFieldProps.slotProps) === null || _o === void 0 ? void 0 : _o.input) : Object.assign({ startAdornment }, (_p = textFieldProps.slotProps) === null || _p === void 0 ? void 0 : _p.input), htmlInput: Object.assign({ "aria-label": filterPlaceholder, autoComplete: "off", disabled: !!filterChipLabel, sx: {
     textOverflow: "ellipsis",
     width: filterChipLabel ? 0 : void 0
-  }, title: filterPlaceholder }, (_q = textFieldProps.slotProps) === null || _q === void 0 ? void 0 : _q.htmlInput) }), onKeyDown: (e) => {
+  }, title: filterPlaceholder }, (_q = textFieldProps.slotProps) === null || _q === void 0 ? void 0 : _q.htmlInput) }), onKeyDown: (e2) => {
     var _a2;
-    e.stopPropagation();
-    (_a2 = textFieldProps.onKeyDown) === null || _a2 === void 0 ? void 0 : _a2.call(textFieldProps, e);
+    e2.stopPropagation();
+    (_a2 = textFieldProps.onKeyDown) === null || _a2 === void 0 ? void 0 : _a2.call(textFieldProps, e2);
   }, sx: (theme) => Object.assign({ minWidth: isDateFilter ? "160px" : enableColumnFilterModes && rangeFilterIndex === 0 ? "110px" : isRangeFilter ? "100px" : !filterChipLabel ? "120px" : "auto", mx: "-2px", p: 0, width: "calc(100% + 4px)" }, parseFromValuesOrFunc(textFieldProps === null || textFieldProps === void 0 ? void 0 : textFieldProps.sx, theme)) });
   const commonDatePickerProps = {
     onChange: (newDate) => {
@@ -73670,11 +73670,11 @@ const MRT_FilterTextField = (_a) => {
     return jsxRuntimeExports.jsx(TextField, Object.assign({}, commonTextFieldProps, builtinTextFieldProps, { slotProps: Object.assign(Object.assign(Object.assign({}, builtinTextFieldProps.slotProps), commonTextFieldProps.slotProps), { input: Object.assign(Object.assign(Object.assign({}, builtinTextFieldProps.InputProps), (_a2 = builtinTextFieldProps.slotProps) === null || _a2 === void 0 ? void 0 : _a2.input), { startAdornment: (
       //@ts-expect-error
       (_c2 = (_b2 = commonTextFieldProps === null || commonTextFieldProps === void 0 ? void 0 : commonTextFieldProps.slotProps) === null || _b2 === void 0 ? void 0 : _b2.input) === null || _c2 === void 0 ? void 0 : _c2.startAdornment
-    ) }), htmlInput: Object.assign(Object.assign(Object.assign({}, builtinTextFieldProps.inputProps), (_d2 = builtinTextFieldProps.slotProps) === null || _d2 === void 0 ? void 0 : _d2.htmlInput), (_f2 = commonTextFieldProps === null || commonTextFieldProps === void 0 ? void 0 : commonTextFieldProps.slotProps) === null || _f2 === void 0 ? void 0 : _f2.htmlInput) }), onClick: (e) => e.stopPropagation() }));
+    ) }), htmlInput: Object.assign(Object.assign(Object.assign({}, builtinTextFieldProps.inputProps), (_d2 = builtinTextFieldProps.slotProps) === null || _d2 === void 0 ? void 0 : _d2.htmlInput), (_f2 = commonTextFieldProps === null || commonTextFieldProps === void 0 ? void 0 : commonTextFieldProps.slotProps) === null || _f2 === void 0 ? void 0 : _f2.htmlInput) }), onClick: (e2) => e2.stopPropagation() }));
   }, value: autocompleteValue })) : jsxRuntimeExports.jsx(TextField, Object.assign({ select: isSelectFilter || isMultiSelectFilter }, commonTextFieldProps, { slotProps: Object.assign(Object.assign({}, commonTextFieldProps.slotProps), { inputLabel: Object.assign({ shrink: isSelectFilter || isMultiSelectFilter }, (_y = commonTextFieldProps.slotProps) === null || _y === void 0 ? void 0 : _y.inputLabel), select: Object.assign({ MenuProps: { disableScrollLock: true }, displayEmpty: true, multiple: isMultiSelectFilter, renderValue: isMultiSelectFilter ? (selected) => !Array.isArray(selected) || (selected === null || selected === void 0 ? void 0 : selected.length) === 0 ? jsxRuntimeExports.jsx(Box, { sx: { opacity: 0.5 }, children: filterPlaceholder }) : jsxRuntimeExports.jsx(Box, { sx: { display: "flex", flexWrap: "wrap", gap: "2px" }, children: selected.map((value) => {
     const selectedValue = dropdownOptions === null || dropdownOptions === void 0 ? void 0 : dropdownOptions.find((option) => getValueAndLabel(option).value === value);
     return jsxRuntimeExports.jsx(Chip, { label: getValueAndLabel(selectedValue).label }, value);
-  }) }) : void 0 }, (_z = commonTextFieldProps.slotProps) === null || _z === void 0 ? void 0 : _z.select) }), onChange: handleTextFieldChange, onClick: (e) => e.stopPropagation(), value: isMultiSelectFilter ? Array.isArray(filterValue) ? filterValue : [] : filterValue, children: (isSelectFilter || isMultiSelectFilter) && [
+  }) }) : void 0 }, (_z = commonTextFieldProps.slotProps) === null || _z === void 0 ? void 0 : _z.select) }), onChange: handleTextFieldChange, onClick: (e2) => e2.stopPropagation(), value: isMultiSelectFilter ? Array.isArray(filterValue) ? filterValue : [] : filterValue, children: (isSelectFilter || isMultiSelectFilter) && [
     jsxRuntimeExports.jsx(MenuItem, { disabled: true, divider: true, hidden: true, value: "", children: jsxRuntimeExports.jsx(Box, { sx: { opacity: 0.5 }, children: filterPlaceholder }) }, "p"),
     ...[
       (_0 = textFieldProps.children) !== null && _0 !== void 0 ? _0 : dropdownOptions === null || dropdownOptions === void 0 ? void 0 : dropdownOptions.map((option, index) => {
@@ -73819,8 +73819,8 @@ const MRT_TableHeadCellGrabHandle = (_a) => {
     setDraggingColumn(column2);
     try {
       event.dataTransfer.setDragImage(tableHeadCellRef.current, 0, 0);
-    } catch (e) {
-      console.error(e);
+    } catch (e2) {
+      console.error(e2);
     }
   };
   const handleDragEnd = (event) => {
@@ -73880,10 +73880,10 @@ const MRT_TableHeadCellSortLabel = (_a) => {
   const direction = isSorted ? column2.getIsSorted() : void 0;
   return jsxRuntimeExports.jsx(Tooltip, { placement: "top", title: sortTooltip, children: jsxRuntimeExports.jsx(Badge, { badgeContent: sorting.length > 1 ? column2.getSortIndex() + 1 : 0, overlap: "circular", children: jsxRuntimeExports.jsx(TableSortLabel, Object.assign({ IconComponent: !isSorted ? (props) => jsxRuntimeExports.jsx(SyncAltIcon2, Object.assign({}, props, { direction, style: {
     transform: "rotate(-90deg) scaleX(0.9) translateX(-1px)"
-  } })) : ArrowDownwardIcon2, active: true, "aria-label": sortTooltip, direction, onClick: (e) => {
+  } })) : ArrowDownwardIcon2, active: true, "aria-label": sortTooltip, direction, onClick: (e2) => {
     var _a2;
-    e.stopPropagation();
-    (_a2 = header.column.getToggleSortingHandler()) === null || _a2 === void 0 ? void 0 : _a2(e);
+    e2.stopPropagation();
+    (_a2 = header.column.getToggleSortingHandler()) === null || _a2 === void 0 ? void 0 : _a2(e2);
   } }, rest, { sx: (theme) => Object.assign({ ".MuiTableSortLabel-icon": {
     color: `${theme.palette.mode === "dark" ? theme.palette.text.primary : theme.palette.text.secondary} !important`
   }, flex: "0 0", opacity: isSorted ? 1 : 0.3, transition: "all 150ms ease-in-out", width: "3ch" }, parseFromValuesOrFunc(rest === null || rest === void 0 ? void 0 : rest.sx, theme)) })) }) });
@@ -73935,9 +73935,9 @@ const MRT_TableHeadCell = (_a) => {
       setHoveredColumn(columnDef.enableColumnOrdering !== false ? column2 : null);
     }
   };
-  const handleDragOver = (e) => {
+  const handleDragOver = (e2) => {
     if (columnDef.enableColumnOrdering !== false) {
-      e.preventDefault();
+      e2.preventDefault();
     }
   };
   const handleKeyDown = (event) => {
@@ -74178,7 +74178,7 @@ const MRT_EditRowModal = (_a) => {
     internalEditComponents,
     row,
     table
-  }))) !== null && _b !== void 0 ? _b : jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(DialogTitle, { sx: { textAlign: "center" }, children: localization.edit }), jsxRuntimeExports.jsx(DialogContent, { children: jsxRuntimeExports.jsx("form", { onSubmit: (e) => e.preventDefault(), children: jsxRuntimeExports.jsx(Stack, { sx: {
+  }))) !== null && _b !== void 0 ? _b : jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(DialogTitle, { sx: { textAlign: "center" }, children: localization.edit }), jsxRuntimeExports.jsx(DialogContent, { children: jsxRuntimeExports.jsx("form", { onSubmit: (e2) => e2.preventDefault(), children: jsxRuntimeExports.jsx(Stack, { sx: {
     gap: "32px",
     paddingTop: "16px",
     width: "100%"
@@ -74283,8 +74283,8 @@ const MRT_ToolbarDropZone = (_a) => {
   const handleDragEnter = (_event) => {
     setHoveredColumn({ id: "drop-zone" });
   };
-  const handleDragOver = (e) => {
-    e.preventDefault();
+  const handleDragOver = (e2) => {
+    e2.preventDefault();
   };
   reactExports.useEffect(() => {
     var _a2;
@@ -74355,12 +74355,12 @@ const MRT_ShowHideColumnsMenuItems = (_a) => {
   };
   const menuItemRef = reactExports.useRef(null);
   const [isDragging, setIsDragging] = reactExports.useState(false);
-  const handleDragStart = (e) => {
+  const handleDragStart = (e2) => {
     setIsDragging(true);
     try {
-      e.dataTransfer.setDragImage(menuItemRef.current, 0, 0);
-    } catch (e2) {
-      console.error(e2);
+      e2.dataTransfer.setDragImage(menuItemRef.current, 0, 0);
+    } catch (e3) {
+      console.error(e3);
     }
   };
   const handleDragEnd = (_e) => {
@@ -74592,7 +74592,7 @@ const MRT_TablePaper = (_a) => {
   const { isFullScreen } = getState();
   const paperProps = Object.assign(Object.assign({}, parseFromValuesOrFunc(muiTablePaperProps, { table })), rest);
   const theme = useTheme();
-  return jsxRuntimeExports.jsxs(Paper, Object.assign({ elevation: 2, onKeyDown: (e) => e.key === "Escape" && table.setIsFullScreen(false) }, paperProps, { ref: (ref) => {
+  return jsxRuntimeExports.jsxs(Paper, Object.assign({ elevation: 2, onKeyDown: (e2) => e2.key === "Escape" && table.setIsFullScreen(false) }, paperProps, { ref: (ref) => {
     tablePaperRef.current = ref;
     if (paperProps === null || paperProps === void 0 ? void 0 : paperProps.ref) {
       paperProps.ref.current = ref;
@@ -74693,9 +74693,9 @@ function FilterSetTable(props) {
         {
           checked: Boolean(cell.getValue()),
           sx: { m: -1, visibility: cell.row.original.id === -1 ? "hidden" : "visible" },
-          onChange: (e) => {
+          onChange: (e2) => {
             const row = cell.row.original;
-            updateFields(row.id, { include: e.target.checked });
+            updateFields(row.id, { include: e2.target.checked });
           }
         }
       )
@@ -75101,7 +75101,142 @@ class WLOGenCrawler extends HTMLElement {
   }
 }
 customElements.define("wlo-gen-crawler", WLOGenCrawler);
+const AddIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
+  d: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"
+}));
+const e = (e2) => t.createElement("svg", Object.assign({ xmlns: "http://www.w3.org/2000/svg", height: "24", width: "24", viewBox: "0 -960 960 960", fill: "currentColor" }, e2), t.createElement("path", { d: "M200-120q-33 0-56.5-23.5T120-200v-400q0-100 70-170t170-70h240q100 0 170 70t70 170v400q0 33-23.5 56.5T760-120H200Zm0-80h560v-400q0-66-47-113t-113-47H360q-66 0-113 47t-47 113v400Zm103.5-303.5Q280-527 280-560t23.5-56.5Q327-640 360-640t56.5 23.5Q440-593 440-560t-23.5 56.5Q393-480 360-480t-56.5-23.5Zm240 0Q520-527 520-560t23.5-56.5Q567-640 600-640t56.5 23.5Q680-593 680-560t-23.5 56.5Q633-480 600-480t-56.5-23.5ZM280-200v-80q0-33 23.5-56.5T360-360h240q33 0 56.5 23.5T680-280v80h-80v-80h-80v80h-80v-80h-80v80h-80Zm-80 0h560-560Z" }));
+function SourceDetailsSidebar(props) {
+  const { crawlers } = props;
+  const wloTheme = createTheme(wloThemeData);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Stack, { spacing: 2, sx: { p: 2 }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(ThemeProvider$1, { theme: wloTheme, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Typography, { variant: "body2", children: "Bereits existierende Crawler zu dieser Quelle:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: { display: "flex", flexDirection: "column", gap: "1px" }, children: crawlers && crawlers.length > 0 ? crawlers.map((crawler) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      ButtonBase,
+      {
+        sx: {
+          // display: "grid",
+          // gridTemplateColumns: "1fr auto auto",
+          display: "flex",
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "stretch",
+          borderRadius: "12px",
+          overflow: "hidden",
+          backgroundColor: "background.paper",
+          boxShadow: 2,
+          gap: 2,
+          px: 2,
+          py: 1,
+          fontSize: "0.875rem",
+          "&:hover": { backgroundColor: "#efefef" }
+          // "& > *": { outline: "1px solid orange" },
+          // "& > * > *": { outline: "1px solid blue" },
+        },
+        onPointerDown: (e2) => {
+          if (e2.pointerType === "mouse" && e2.button === 2) e2.preventDefault();
+        },
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: { pt: "3px", pl: "2px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(e, {}) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { style: { textAlign: "left", flex: 1 }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Typography, { variant: "subtitle2", children: crawler.name }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: { color: "text.secondary" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Typography, { variant: "caption", children: DateTime.fromISO(crawler.updated_at).toRelative({ style: "short" }) }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: { m: -1, ml: -2 }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(IconButton, { onMouseDown: (e2) => e2.stopPropagation(), children: /* @__PURE__ */ jsxRuntimeExports.jsx(MoreVertOutlined, { fontSize: "medium" }) }) })
+        ]
+      },
+      crawler.id
+    )) : /* @__PURE__ */ jsxRuntimeExports.jsx(Box, { sx: { py: 2, textAlign: "center", color: "text.secondary", fontSize: "0.875rem" }, children: "Keine Crawler für diese Quelle" }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Stack, { direction: "row", spacing: 1, justifyContent: "flex-end", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "contained", color: "primary", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(AddIcon, { sx: { mr: 1, ml: -1 } }),
+      "Crawler hinzufügen"
+    ] }) })
+  ] }) });
+}
+function SourceDetailsSidebarHost(params) {
+  const [sourceItem, setSourceItem] = reactExports.useState(void 0);
+  const [crawlers, setCrawlers] = reactExports.useState([]);
+  const sourceGuid = params.sourceGuid ?? "aa1f3e38-babf-42a9-9005-592b98bcb4ae";
+  console.log("SourceDetailsSidebarHost rendering with sourceGuid:", sourceGuid);
+  const loadData = reactExports.useCallback(async function() {
+    const apiUrl = "http://localhost:8000/api";
+    const api = new Api(apiUrl);
+    try {
+      console.log("SourceDetailsSidebarHost loadData triggered, fetching data...");
+      const [source, crawlers2] = await Promise.all([
+        api.getSourceItem(sourceGuid),
+        api.listCrawlers()
+      ]);
+      console.log("Fetched source item:", source);
+      console.log("Fetched crawlers:", crawlers2);
+      setSourceItem(source);
+      const filteredCrawlers = crawlers2.filter((c) => c.source_item === sourceGuid);
+      console.log("Filtered crawlers for sourceGuid:", filteredCrawlers);
+      setCrawlers(filteredCrawlers);
+    } catch (error) {
+      console.error("Error fetching crawlers:", error);
+      return [];
+    }
+  }, [sourceGuid]);
+  reactExports.useEffect(() => {
+    console.log("SourceDetailsSidebarHost useEffect triggered, loading data...");
+    loadData();
+  }, [loadData]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SourceDetailsSidebar, { sourceItem, crawlers }) });
+}
+class WLOGenCrawlerSidebar extends HTMLElement {
+  connectedCallback() {
+    console.log("WLOGenCrawlerSidebar connected");
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    const mountPoint = document.createElement("div");
+    mountPoint.style.boxSizing = "border-box";
+    mountPoint.style.height = "100%";
+    mountPoint.style.display = "flex";
+    mountPoint.style.flexDirection = "column";
+    shadowRoot.appendChild(mountPoint);
+    const cache = createCache({
+      key: "css",
+      prepend: true,
+      container: shadowRoot
+    });
+    function addGlobalStyle(css2) {
+      const style2 = document.createElement("style");
+      style2.textContent = css2;
+      shadowRoot.appendChild(style2);
+    }
+    addGlobalStyle(appCss);
+    addGlobalStyle(indexCSS);
+    addGlobalStyle(listViewCss);
+    addGlobalStyle(filterTabsCss);
+    addGlobalStyle(filterTabsModuleCss);
+    addGlobalStyle(inputWithButtonCss);
+    addGlobalStyle(sheetCss);
+    addGlobalStyle(siteLayoutCss);
+    addGlobalStyle(breadcrumbsCss);
+    const apiUrl = this.getAttribute("api-url") || "";
+    const sourceGuid = this.getAttribute("source-guid") || void 0;
+    const root = ReactDOM$1.createRoot(mountPoint);
+    root.render(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CacheProvider, { value: cache, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ApiUrlContext.Provider, { value: apiUrl, children: /* @__PURE__ */ jsxRuntimeExports.jsx(SourceDetailsSidebarHost, { sourceGuid }) }) }) })
+    );
+  }
+  disconnectedCallback() {
+  }
+  // handle attribute changed
+  static get observedAttributes() {
+    return ["source-guid"];
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    var _a;
+    if (name === "source-guid" && oldValue !== newValue) {
+      const sourceGuid = newValue || void 0;
+      const root = ReactDOM$1.createRoot((_a = this.shadowRoot) == null ? void 0 : _a.querySelector("div"));
+      root.render(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CacheProvider, { value: createCache({ key: "css", prepend: true, container: this.shadowRoot }), children: /* @__PURE__ */ jsxRuntimeExports.jsx(ApiUrlContext.Provider, { value: this.getAttribute("api-url") || "", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SourceDetailsSidebarHost, { sourceGuid }) }) }) })
+      );
+    }
+  }
+}
+customElements.define("wlo-gen-crawler-sidebar", WLOGenCrawlerSidebar);
 export {
-  WLOGenCrawler as default
+  WLOGenCrawler as WloGenCrawler,
+  WLOGenCrawlerSidebar as WloGenCrawlerSidebar
 };
 //# sourceMappingURL=index.js.map
