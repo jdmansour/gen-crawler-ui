@@ -22,7 +22,7 @@ button { outline: 1px solid green; }
   --wlo-sitelayout-spacing: 20px;
   --wlo-main-border-radius: 12px;
   --wlo-sidebar-border-radius: 12px;
-  --sidebar-width: 500px;
+  --sidebar-width: 440px;
 
   display: flex;
   flex-direction: row;
@@ -113,20 +113,27 @@ button { outline: 1px solid green; }
   align-items: center;
 
   margin: 0;
-  margin-left: 52px;
+  margin-left: 24px;
   padding: 0;
   overflow-x: hidden;
   white-space: nowrap;
 
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 17.6px;
+  font-weight: 500;
+  /* -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700; */
+  .wlo-sidebar-button {
+    right: 10px;
+  }
 }
 
 .wlo-sidebar-button {
   position: absolute;
   box-sizing: border-box;
   top: 10px;
-  right: 10px;
+  right: 30px;
   width: 40px;
   height: 40px;
   background-color: transparent;

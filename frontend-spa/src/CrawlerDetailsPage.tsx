@@ -107,7 +107,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
   const genericCrawlerOutputUrl = 'https://repository.staging.openeduhub.net/edu-sharing/components/workspace?root=MY_FILES&id=42865b9a-ea22-4cbd-81e4-4bd49601f382&mainnav=true&displayType=0';
 
   return <div style={{ overflowY: "scroll", padding: "0px 24px 24px 24px" }}>
-    <h2 style={{ marginTop: 8 }}>Crawler-Details</h2>
+    <Typography variant="h3" sx={{ mb: 2 }}>Crawler-Details</Typography>
 
     <Stack direction="row" alignItems="top" gap={2} sx={{ mb: 2, alignItems: 'flex-start', flexWrap: 'wrap' }} useFlexGap>
 
@@ -144,7 +144,8 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
 
     </Stack>
 
-    <h3>Debug</h3>
+    <Typography variant="h3" sx={{ mb: 2 }}>Debug</Typography>
+    {/* <h3>Debug</h3> */}
     <p>Crawler ID: {crawler.id}</p>
     <p>Status: {crawler.state}</p>
     <Box sx={{ mb: 2 }}>
@@ -161,8 +162,9 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
         />
       )}
     </Box>
-
-    <h3>Aktionen</h3>
+    
+    <Typography variant="h3" sx={{ mb: 2 }}>Aktionen</Typography>
+    {/* <h3>Aktionen</h3> */}
     <Stack direction="row" spacing={2} sx={{ marginTop: 2, marginBottom: 2, flexWrap: 'wrap' }} useFlexGap>
       <Button variant="outlined" color="primary" onClick={() => startSearchCrawl(crawler!.id)}>Crawler starten</Button>
       <Button variant="outlined" onClick={() => startContentCrawl(crawler!.id)}>Content Crawl starten</Button>
@@ -178,7 +180,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
       onClose={() => setConfirmDeleteOpen(false)}
       onConfirm={() => { setConfirmDeleteOpen(false); deleteCrawler(crawler.id); }} />
 
-    <h3>Läufe des Crawlers</h3>
+    <Typography variant="h3" sx={{ mb: 2 }}>Läufe des Crawlers</Typography  >
 
     <TableContainer component={Paper}>
       <Table>
