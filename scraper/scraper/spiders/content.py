@@ -28,9 +28,9 @@ from .utils import check_db
 log = logging.getLogger(__name__)
 
 
-class GenericSpider(Spider):
-    name = "generic_spider"
-    friendlyName = "generic_spider"  # name as shown in the search ui
+class ContentSpider(Spider):
+    name = "content"
+    friendlyName = "content"  # name as shown in the search ui
     version = "0.1.4"
     start_urls = []
     rules = [Rule(callback="parse")]
@@ -56,7 +56,7 @@ class GenericSpider(Spider):
         EduSharing.resetVersion = True
         super().__init__(**kwargs)
 
-        log.info("Initializing GenericSpider version %s", self.version)
+        log.info("Initializing ContentSpider version %s", self.version)
         log.info("Arguments:")
         log.info("  urltocrawl: %r", urltocrawl)
         log.info("  ai_enabled: %r", ai_enabled)
@@ -128,7 +128,7 @@ class GenericSpider(Spider):
         crawler.signals.connect(spider.spider_error, signal=scrapy.signals.spider_error)
         return spider
 
-    def spider_opened(self, spider: GenericSpider):
+    def spider_opened(self, spider: ContentSpider):
         """ Run when the spider is opened, before the crawl begins.
             Open the database and get the list of URLs to crawl. """
 
@@ -221,7 +221,7 @@ class GenericSpider(Spider):
 
         self.enricher.setup(self.settings)
 
-    def spider_closed(self, spider: GenericSpider, reason: str):
+    def spider_closed(self, spider: ContentSpider, reason: str):
         """ Called when the spider is closed. """
         log.info("Closed spider %s, reason: %s", spider.name, reason)
         if self.dry_run:
@@ -240,7 +240,7 @@ class GenericSpider(Spider):
         else:
             self.state_helper.update_spider_state(spider, 'COMPLETED')
 
-    def spider_error(self, failure, response, spider: GenericSpider):  # pylint: disable=unused-argument
+    def spider_error(self, failure, response, spider: ContentSpider):  # pylint: disable=unused-argument
         """ Called when the spider encounters an error. """
         log.error("Spider %s encountered an error: %s", spider.name, failure)
         self.spider_failed = True
@@ -346,9 +346,8 @@ class GenericSpider(Spider):
         # Track processed items for progress updates
         self.items_processed += 1
 
-        # Send progress update every 10 items
-        if self.items_processed % 10 == 0:
-            self.state_helper.publish_progress_update(response.url, self.items_processed)
+        # Send progress update
+        self.state_helper.publish_progress_update(response.url, self.items_processed)
 
         yield item
 

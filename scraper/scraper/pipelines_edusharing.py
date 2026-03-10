@@ -40,7 +40,7 @@ from scraper import env
 from scraper.constants import *
 from scraper.es_connector import EduSharing
 from scraper.items import BaseItem
-from scraper.spiders.generic_spider import GenericSpider
+from scraper.spiders.content import ContentSpider
 from scraper.util.edu_sharing_source_template_helper import EduSharingSourceTemplateHelper
 from scraper.util.language_mapper import LanguageMapper
 from metadataenricher.web_tools import get_url_data
@@ -647,7 +647,7 @@ class EduSharingStorePipeline(EduSharing, BasicPipeline):
         log.info(">>>>> processed item\n: %s", P().pformat(inserted))
         # todo: move this to a signal in the crawler?
         # todo: set the parent_id on the returned item?
-        if isinstance(spider, GenericSpider):
+        if isinstance(spider, ContentSpider):
             if spider.crawler_output_node is None:
                 parent_id = inserted.get("parent", {}).get("id", None)
                 spider.crawler_output_node = parent_id

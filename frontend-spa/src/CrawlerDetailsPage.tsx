@@ -268,7 +268,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
 // Gets the scrapy log URL for a crawl job
 function logUrl(crawlJob: CrawlJob | null): string {
   if (!crawlJob?.scrapy_job_id) return "";
-  const scraperName = crawlJob.crawl_type === 'CONTENT' ? 'generic_spider' : 'exploration';
+  const scraperName = crawlJob.crawl_type === 'CONTENT' ? 'content' : 'exploration';
   return `http://localhost:6800/logs/scraper/${scraperName}/${crawlJob.scrapy_job_id}.log`;
 }
 

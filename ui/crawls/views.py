@@ -126,13 +126,13 @@ class CrawlerViewSet(viewsets.ModelViewSet):
 
         parameters = {
             'project': 'scraper',
-            'spider': 'generic_spider',
+            'spider': 'content',
             'filter_set_id': str(crawler.filter_set.id),
             'crawler_id': str(crawler.id),
             'crawl_job_id': str(crawljob.id),
         }
 
-        ## TODO: implement the other path in generic_spider.py where we start a crawl and pass filter_set_id!!!
+        ## TODO: implement the other path in content.py where we start a crawl and pass filter_set_id!!!
 
         url = settings.SCRAPYD_URL + "/schedule.json"
         response = requests.post(url, data=parameters, timeout=5)

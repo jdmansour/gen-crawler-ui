@@ -91,7 +91,7 @@ Hier folgt der Text:
         self.valuespaces = Valuespaces()
         self.inherited_fields = {}
         if self.ai_enabled:
-            log.info("Starting generic_spider with ai_enabled flag!")
+            log.info("Starting content with ai_enabled flag!")
             self.zapi_client = zapi.AuthenticatedClient(
                 token=env.get("Z_API_KEY", False),
                 prefix='',
@@ -101,7 +101,7 @@ Hier folgt der Text:
             )
         else:
             log.info(
-                "Starting generic_spider with MINIMAL settings. AI Services are DISABLED!")
+                "Starting content with MINIMAL settings. AI Services are DISABLED!")
 
     def setup(self, settings):
         self.is_setup = True
