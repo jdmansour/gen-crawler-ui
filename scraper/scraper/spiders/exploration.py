@@ -49,8 +49,8 @@ class NoindexItem(scrapy.Item):
     url = scrapy.Field()
 
 
-class ExampleSpider(scrapy.Spider):
-    name = "example"
+class ExplorationSpider(scrapy.Spider):
+    name = "exploration"
     # allowed_domains = ["example.com"]
     start_urls = ["https://example.com"]
     # rules = [
@@ -120,7 +120,7 @@ class ExampleSpider(scrapy.Spider):
     @classmethod
     def from_crawler(cls, crawler: Crawler, *args, **kwargs):
         # pylint: disable=E1101
-        spider = super(ExampleSpider, cls).from_crawler(
+        spider = super(ExplorationSpider, cls).from_crawler(
             crawler, *args, **kwargs)
         crawler.signals.connect(spider.spider_opened,
                                 signal=scrapy.signals.spider_opened)
@@ -130,7 +130,7 @@ class ExampleSpider(scrapy.Spider):
                                 signal=scrapy.signals.spider_error)
         return spider
 
-    def spider_opened(self, spider: ExampleSpider):
+    def spider_opened(self, spider: ExplorationSpider):
         """ Called when the spider is opened. """
 
         log.info("Opened spider %s", spider.name)
@@ -151,7 +151,7 @@ class ExampleSpider(scrapy.Spider):
             self.spider_failed = True
             raise CloseSpider("Failed to initialize crawl job state") from e
 
-    def spider_closed(self, spider: ExampleSpider, reason: str):
+    def spider_closed(self, spider: ExplorationSpider, reason: str):
         """ Called when the spider is closed. """
         log.info("Closed spider %s, reason: %s", spider.name, reason)
         if self.dry_run:
@@ -182,7 +182,7 @@ class ExampleSpider(scrapy.Spider):
             log.warning("Crawl appears to have been blocked by robots.txt")
             self.state_helper.update_spider_state(spider, 'FAILED')
 
-    def spider_error(self, failure, response, spider: ExampleSpider):  # pylint: disable=W0613
+    def spider_error(self, failure, response, spider: ExplorationSpider):  # pylint: disable=W0613
         """ Called when the spider encounters an error. """
         log.error("Spider %s encountered an error: %s", spider.name, failure)
         self.state_helper.update_spider_state(spider, 'FAILED')

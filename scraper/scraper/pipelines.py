@@ -8,7 +8,7 @@ import sqlite3
 
 from scrapy.item import Item
 from scrapy.spiders import Spider
-from scraper.spiders.example import NoindexItem, CustomItem
+from scraper.spiders.exploration import NoindexItem, CustomItem
 
 log = logging.getLogger(__name__)
 

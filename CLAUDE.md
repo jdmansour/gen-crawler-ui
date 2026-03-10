@@ -46,7 +46,7 @@ Uses `uv` for package management. metadataenricher and valuespace-converter are 
 ```bash
 cd scraper
 uv sync
-uv run scrapy crawl example -a start_url=https://example.com
+uv run scrapy crawl exploration -a start_url=https://example.com
 uv run pytest
 uv run mypy .
 ```

@@ -83,7 +83,7 @@ class CrawlerViewSet(viewsets.ModelViewSet):
         # Start scrapy job
         parameters = {
             'project': 'scraper',
-            'spider': 'example',
+            'spider': 'exploration',
             'start_url': obj.start_url,
             'follow_links': True,
             'crawler_id': str(obj.id),

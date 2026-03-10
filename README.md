@@ -80,7 +80,7 @@ Later, you only have to activate the virtualenv with `source .venv/bin/activate`
 ```bash
 source .venv/bin/activate
 cd scraper
-scrapy crawl example -a start_url=https://klexikon.zum.de/ -a follow_links=True
+scrapy crawl exploration -a start_url=https://klexikon.zum.de/ -a follow_links=True
 ```
 
 ### Running the Django app
