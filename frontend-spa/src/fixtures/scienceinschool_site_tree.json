@@ -1,0 +1,212 @@
+[
+  {
+    "id": "root",
+    "label": "Home",
+    "url": "https://scienceinschool.org",
+    "children": [
+      {
+        "id": "translate-articles",
+        "label": "Translating articles",
+        "url": "https://scienceinschool.org/translate-articles"
+      },
+      {
+        "id": "review-articles",
+        "label": "Reviewing articles",
+        "url": "https://scienceinschool.org/review-articles"
+      },
+      {
+        "id": "safety",
+        "label": "Safety note – scienceinschool.org",
+        "url": "https://scienceinschool.org/safety"
+      },
+      {
+        "id": "imprint",
+        "label": "Imprint – scienceinschool.org",
+        "url": "https://scienceinschool.org/imprint"
+      },
+      {
+        "id": "pl-article",
+        "label": "SIS Articles",
+        "url": "https://scienceinschool.org/pl/article",
+        "children": [
+          {
+            "id": "it-article-2013-ocean-it",
+            "label": "Produttori e promotori: la fisica negli oceani",
+            "url": "https://scienceinschool.org/it/article/2013/ocean-it"
+          }
+        ]
+      },
+      {
+        "id": "issue",
+        "label": "All Issues",
+        "url": "https://scienceinschool.org/issue",
+        "children": [
+          {
+            "id": "issue-Issue-25",
+            "label": "Issue 25",
+            "url": "https://scienceinschool.org/issue/Issue-25",
+            "children": [
+              {
+                "id": "es-article-2013-ocean-es",
+                "label": "La fuerza que mueve las aguas: la física de los mares",
+                "url": "https://scienceinschool.org/es/article/2013/ocean-es"
+              },
+              {
+                "id": "article-2012-ocean",
+                "label": "Movers and shakers: physics in the oceans – scienceinschool.org",
+                "url": "https://scienceinschool.org/article/2012/ocean"
+              },
+              {
+                "id": "el-article-2016-ocean-el",
+                "label": "Κουνήματα και τραντάγματα: η φυσική στους ωκεανούς – scienceinschool.org",
+                "url": "https://scienceinschool.org/el/article/2016/ocean-el"
+              }
+            ]
+          },
+          {
+            "id": "issue-Issue-36",
+            "label": "Issue 36",
+            "url": "https://scienceinschool.org/issue/Issue-36",
+            "children": [
+              {
+                "id": "article-2016-making-laser-flashes-meet-their-mark",
+                "label": "Making laser flashes meet their mark – scienceinschool.org",
+                "url": "https://scienceinschool.org/article/2016/making-laser-flashes-meet-their-mark"
+              }
+            ]
+          },
+          {
+            "id": "issue-Issue-26",
+            "label": "Issue 26",
+            "url": "https://scienceinschool.org/issue/Issue-26",
+            "children": [
+              {
+                "id": "article-2013-fusion-4",
+                "label": "A thermometer that goes to 200 million degrees",
+                "url": "https://scienceinschool.org/article/2013/fusion-4"
+              },
+              {
+                "id": "pt-pt-article-2013-fusion-4-pt-pt",
+                "label": "Um termómetro que vai até 200 milhões de graus",
+                "url": "https://scienceinschool.org/pt-pt/article/2013/fusion-4-pt-pt",
+                "children": [
+                  {
+                    "id": "pt-pt-article-2013-fusion-4",
+                    "label": "Um termómetro que vai até 200 milhões de graus – scienceinschool.org",
+                    "url": "https://scienceinschool.org/pt-pt/article/2013/fusion-4"
+                  }
+                ]
+              },
+              {
+                "id": "article-2014-fusion-4-ro",
+                "label": "Un termometru care indică până la 200 milioane de grade",
+                "url": "https://scienceinschool.org/article/2014/fusion-4-ro",
+                "children": [
+                  {
+                    "id": "ro-article-2014-fusion-4-ro",
+                    "label": "Un termometru care indică până la 200 milioane de grade – scienceinschool.org",
+                    "url": "https://scienceinschool.org/ro/article/2014/fusion-4-ro"
+                  }
+                ]
+              },
+              {
+                "id": "article-2013-fusion-4-pl",
+                "label": "Jakim termometrem zmierzyć 200 milionów stopni",
+                "url": "https://scienceinschool.org/article/2013/fusion-4-pl",
+                "children": [
+                  {
+                    "id": "pl-article-2013-fusion-4",
+                    "label": "Jakim termometrem zmierzyć 200 milionów stopni – scienceinschool.org",
+                    "url": "https://scienceinschool.org/pl/article/2013/fusion-4"
+                  }
+                ]
+              },
+              {
+                "id": "de-article-2013-fusion-4-de",
+                "label": "Ein Thermometer, das bis 200 Millionen Grad geht",
+                "url": "https://scienceinschool.org/de/article/2013/fusion-4-de",
+                "children": [
+                  {
+                    "id": "de-article-2013-fusion-4",
+                    "label": "Ein Thermometer, das bis 200 Millionen Grad geht – scienceinschool.org",
+                    "url": "https://scienceinschool.org/de/article/2013/fusion-4"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "el-article-2014-fusion-4-el",
+            "label": "Ένα θερμόμετρο που φτάνει τους 200 εκατομμύρια βαθμούς",
+            "url": "https://scienceinschool.org/el/article/2014/fusion-4-el"
+          },
+          {
+            "id": "issue-Issue-75",
+            "label": "Issue 75",
+            "url": "https://scienceinschool.org/issue/Issue-75",
+            "children": [
+              {
+                "id": "article-2025-lets-make-a-chemical-clock",
+                "label": "Let's make a chemical clock – scienceinschool.org",
+                "url": "https://scienceinschool.org/article/2025/lets-make-a-chemical-clock"
+              },
+              {
+                "id": "article-2025-teach-radioactive-decay-radioisotopes-low-cost",
+                "label": "Teach radioisotopes and decay interdisciplinarily at a low cost",
+                "url": "https://scienceinschool.org/article/2025/teach-radioactive-decay-radioisotopes-low-cost"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "es--1",
+        "label": "Biology",
+        "url": "https://scienceinschool.org/es/?sis-editor-tags=biology"
+      },
+      {
+        "id": "root--1",
+        "label": "Earth science",
+        "url": "https://scienceinschool.org/?sis-categories=earth-science-understand",
+        "children": [
+          {
+            "id": "es--2",
+            "label": "Earth science – scienceinschool.org",
+            "url": "https://scienceinschool.org/es/?sis-categories=earth-science-understand"
+          }
+        ]
+      },
+      {
+        "id": "de",
+        "label": "Understand",
+        "url": "https://scienceinschool.org/de/?sis-categories=understand",
+        "children": [
+          {
+            "id": "de--1",
+            "label": "Engineering",
+            "url": "https://scienceinschool.org/de/?sis-categories=engineering-understand",
+            "children": [
+              {
+                "id": "root--2",
+                "label": "Engineering – scienceinschool.org",
+                "url": "https://scienceinschool.org/?sis-categories=engineering-understand"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "es",
+    "label": "Science in School",
+    "url": "https://scienceinschool.org/es",
+    "children": [
+      {
+        "id": "es-article-2013-fusion-4",
+        "label": "Un termómetro que alcanza los 200 millones de grados – scienceinschool.org",
+        "url": "https://scienceinschool.org/es/article/2013/fusion-4"
+      }
+    ]
+  }
+]

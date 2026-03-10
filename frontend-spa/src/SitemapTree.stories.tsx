@@ -3,6 +3,7 @@ import SitemapTree from './SitemapTree';
 import omatheSiteTree from './fixtures/omathe_site_tree.json';
 import serloSiteTree from './fixtures/serlo_site_tree.json';
 import lehrerOnlineSiteTree from './fixtures/lehrer-online_site_tree.json';
+import scienceInSchoolSiteTree from './fixtures/scienceinschool_site_tree.json';
 
 const meta = {
   component: SitemapTree,
@@ -27,5 +28,11 @@ export const Serlo: Story = {
 export const LehrerOnline: Story = {
   args: {
     items: lehrerOnlineSiteTree,
+  }
+};
+
+export const ScienceInSchoolOnline: Story = {
+  args: {
+    items: scienceInSchoolSiteTree,
   }
 };
