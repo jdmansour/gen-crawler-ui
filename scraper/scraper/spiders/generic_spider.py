@@ -227,6 +227,9 @@ class GenericSpider(Spider):
         if self.dry_run:
             return
 
+        # Persist the final processed URL count before updating state
+        self.state_helper.publish_progress_update("", self.items_processed)
+
         spider_cancelled = reason in ('cancelled', 'shutdown')
 
         # Set final state based on flags
@@ -345,7 +348,7 @@ class GenericSpider(Spider):
 
         # Send progress update every 10 items
         if self.items_processed % 10 == 0:
-            self.state_helper.publish_progress_update(response.url)
+            self.state_helper.publish_progress_update(response.url, self.items_processed)
 
         yield item
 

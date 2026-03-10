@@ -47,6 +47,7 @@ export type CrawlJob = {
     updated_at: string;
     state: CrawlJobState;
     crawled_url_count: number;
+    urls_processed: number;
     scrapy_job_id: string | null;
     crawler: number;
     crawl_type: 'EXPLORATION' | 'CONTENT';

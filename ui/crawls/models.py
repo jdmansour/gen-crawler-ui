@@ -129,6 +129,7 @@ class CrawlJob(models.Model):
     scrapy_job_id = models.CharField(max_length=255, blank=True, null=True)
     crawl_type = models.CharField(
         max_length=20, choices=CrawlType.choices, default=CrawlType.EXPLORATION)
+    urls_processed = models.IntegerField(default=0)
 
     def __str__(self):
         return f"#{self.id} {self.start_url} at {self.created_at.strftime('%Y-%m-%d %H:%M')}"

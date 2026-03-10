@@ -8,6 +8,7 @@ export type CrawlJobUpdate = {
         id: number;
         state: CrawlJobState;
         crawled_url_count: number;
+        urls_processed?: number;
     };
     items_processed: number;
     current_url: string;

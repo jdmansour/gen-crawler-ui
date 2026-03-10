@@ -60,17 +60,23 @@ class StateHelper:
                     connection = sqlite3.connect(
                         spider.settings.get('DB_PATH'))
                     cursor = connection.cursor()
-                    # select state and count of crawled urls
-                    cursor.execute("SELECT state, (SELECT COUNT(*) FROM crawls_crawledurl WHERE crawl_job_id=?) FROM crawls_crawljob WHERE id=?",
-                                   (self.crawl_job_id, self.crawl_job_id))
+                    # select state, count of crawled urls, and urls_processed
+                    cursor.execute(
+                        "SELECT state, "
+                        "(SELECT COUNT(*) FROM crawls_crawledurl WHERE crawl_job_id=?), "
+                        "urls_processed "
+                        "FROM crawls_crawljob WHERE id=?",
+                        (self.crawl_job_id, self.crawl_job_id))
                     row = cursor.fetchone()
                     connection.close()
                     if row:
                         crawl_job_state = row[0]
                         crawl_job_crawled_url_count = row[1]
+                        crawl_job_urls_processed = row[2]
                     else:
                         crawl_job_state = 'UNKNOWN'
                         crawl_job_crawled_url_count = 0
+                        crawl_job_urls_processed = 0
 
                     status_data = {
                         'type': 'crawl_job_update',
@@ -79,6 +85,7 @@ class StateHelper:
                             'id': self.crawl_job_id,
                             'state': crawl_job_state,
                             'crawled_url_count': crawl_job_crawled_url_count,
+                            'urls_processed': crawl_job_urls_processed,
                         },
                         'items_processed': self.items_processed,
                         'current_url': None,
@@ -143,25 +150,39 @@ class StateHelper:
             return 'READY_FOR_CONTENT_CRAWL_JOB_FAILED'
         return 'READY_FOR_CONTENT_CRAWL'
 
-    def publish_progress_update(self, current_url: str):
-        """ Publishes progress update to Redis. """
-        if self.redis_client:
-            try:
-                # TODO: can we use items_processed from the exploration scraper instead of hitting the database every time? 
-                # Count crawled URLs for this job
-                connection = sqlite3.connect(self.settings.get('DB_PATH'))
-                cursor = connection.cursor()
-                # select state and count of crawled urls
-                cursor.execute("SELECT state, (SELECT COUNT(*) FROM crawls_crawledurl WHERE crawl_job_id=?) FROM crawls_crawljob WHERE id=?",
-                               (self.crawl_job_id, self.crawl_job_id))
+    def publish_progress_update(self, current_url: str, items_processed: int | None = None):
+        """ Persists urls_processed to DB and publishes a progress update to Redis. """
+        if self.dry_run:
+            return
+
+        try:
+            connection = sqlite3.connect(self.settings.get('DB_PATH'))
+            cursor = connection.cursor()
+
+            # Always persist urls_processed to DB when provided (independent of Redis)
+            if items_processed is not None:
+                cursor.execute(
+                    "UPDATE crawls_crawljob SET urls_processed=? WHERE id=?",
+                    (items_processed, self.crawl_job_id))
+                connection.commit()
+
+            if self.redis_client:
+                # Fetch current state, crawled_url_count and urls_processed for SSE
+                cursor.execute(
+                    "SELECT state, "
+                    "(SELECT COUNT(*) FROM crawls_crawledurl WHERE crawl_job_id=?), "
+                    "urls_processed "
+                    "FROM crawls_crawljob WHERE id=?",
+                    (self.crawl_job_id, self.crawl_job_id))
                 row = cursor.fetchone()
-                connection.close()
                 if row:
                     crawl_job_state = row[0]
                     crawl_job_crawled_url_count = row[1]
+                    crawl_job_urls_processed = row[2]
                 else:
                     crawl_job_state = 'UNKNOWN'
                     crawl_job_crawled_url_count = 0
+                    crawl_job_urls_processed = 0
 
                 progress_data = {
                     'type': 'crawl_job_update',
@@ -170,17 +191,20 @@ class StateHelper:
                         'id': self.crawl_job_id,
                         'state': crawl_job_state,
                         'crawled_url_count': crawl_job_crawled_url_count,
+                        'urls_processed': crawl_job_urls_processed,
                     },
-                    'items_processed': self.items_processed,
+                    'items_processed': items_processed if items_processed is not None else self.items_processed,
                     'current_url': current_url,
                     'timestamp': time.time()
                 }
                 channel = f'crawler_status_{self.crawler_id}'
                 self.redis_client.publish(channel, json.dumps(progress_data))
-                log.debug(
-                    "Published progress update: %d items processed", self.items_processed)
-            except (sqlite3.Error, redis.RedisError) as e:
-                log.warning("Failed to publish progress update: %s", e)
+
+            connection.close()
+            log.debug(
+                "Published progress update: %d items processed", items_processed or self.items_processed)
+        except (sqlite3.Error, redis.RedisError) as e:
+            log.warning("Failed to publish progress update: %s", e)
 
     def spider_opened(self, spider: Spider, start_url: str, follow_links: bool, crawl_type: str):
         if self.dry_run:

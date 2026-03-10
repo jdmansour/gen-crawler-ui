@@ -203,7 +203,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
                   <Stack direction="row" alignContent="center" gap={1}><AutoAwesome sx={{ fontSize: 20 }} color='primary' />Inhalte</Stack>
               }</TableCell>
               <TableCell>{job.start_url}</TableCell>
-              <TableCell>{job.crawled_url_count || '-'}</TableCell>
+              <TableCell>{job.crawl_type === 'CONTENT' ? (job.urls_processed || '-') : (job.crawled_url_count || '-')}</TableCell>
               <TableCell>
                 <Chip
                   label={job.state}
