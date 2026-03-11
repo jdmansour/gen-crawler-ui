@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { Crawler } from './apitypes';
 import sourceItem from './fixtures/testSourceItem.json';
 import SourceDetailsSidebar from './SourceDetailsSidebar';
+import { SidebarComponentContext } from './SidebarComponentContext';
 
 const SOURCE_GUID = sourceItem.guid;
 
@@ -60,7 +61,9 @@ const meta = {
   decorators: [
     (Story) => (
       <MemoryRouter>
-        <Story />
+        <SidebarComponentContext.Provider value={{apiUrl: "http://localhost:8000/api", basePath: ""}}>
+          <Story />
+        </SidebarComponentContext.Provider>
       </MemoryRouter>
     ),
   ],

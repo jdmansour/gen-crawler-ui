@@ -2,18 +2,18 @@ import { Crawler, SourceItem } from "./apitypes";
 import SourceDetailsSidebar from './SourceDetailsSidebar';
 import { useCallback, useEffect, useState } from 'react';
 import Api from './api';
+import { useSidebarComponentContext } from "./SidebarComponentContext";
 
 
-export default function SourceDetailsSidebarHost(params: { basePath?: string, sourceGuid?: string }) {
+export default function SourceDetailsSidebarHost(params: { sourceGuid?: string }) {
   const [sourceItem, setSourceItem] = useState<SourceItem | undefined>(undefined);
   const [crawlers, setCrawlers] = useState<Crawler[]>([]);
   const sourceGuid = params.sourceGuid ?? "aa1f3e38-babf-42a9-9005-592b98bcb4ae";
-  const basePath = params.basePath ?? "";
+  const {apiUrl} = useSidebarComponentContext();
 
   console.log("SourceDetailsSidebarHost rendering with sourceGuid:", sourceGuid);
 
   const loadData = useCallback(async function() {
-    const apiUrl = "http://localhost:8000/api";
     const api = new Api(apiUrl);
   
     try {
@@ -32,7 +32,7 @@ export default function SourceDetailsSidebarHost(params: { basePath?: string, so
       console.error("Error fetching crawlers:", error);
       return [];
     }
-  }, [sourceGuid]);
+  }, [apiUrl, sourceGuid]);
 
   useEffect(() => {
     console.log("SourceDetailsSidebarHost useEffect triggered, loading data...");
@@ -43,7 +43,7 @@ export default function SourceDetailsSidebarHost(params: { basePath?: string, so
     <div>
       {/* <p>Crawler name: {sourceItem?.title}</p>
       <p>GUID: {sourceGuid}</p> */}
-      <SourceDetailsSidebar sourceItem={sourceItem} crawlers={crawlers} basePath={basePath} />
+      <SourceDetailsSidebar sourceItem={sourceItem} crawlers={crawlers} />
     </div>
   );
   

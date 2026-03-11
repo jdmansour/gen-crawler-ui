@@ -12,6 +12,7 @@ import { Robot } from "@nine-thirty-five/material-symbols-react/outlined";
 import { DateTime } from "luxon";
 import { Crawler, SourceItem } from "./apitypes";
 import { wloThemeData } from "./wloTheme";
+import { useSidebarComponentContext } from './SidebarComponentContext';
 //import { RobotIcon } from "@mui/icons-material/RobotIco";
 
 // const simpleStateLabels: { [key in SimpleState]: string } = {
@@ -31,11 +32,11 @@ import { wloThemeData } from "./wloTheme";
 interface SourceDetailsSidebarProps {
   sourceItem?: SourceItem;
   crawlers?: Crawler[];
-  basePath?: string;
 }
 
 export default function SourceDetailsSidebar(props: SourceDetailsSidebarProps) {
-  const { crawlers, basePath="" } = props;
+  const { crawlers } = props;
+  const { basePath } = useSidebarComponentContext();
   const wloTheme = createTheme(wloThemeData);
 
   console.log("In SourceDetailsSidebar, basePath:", basePath);

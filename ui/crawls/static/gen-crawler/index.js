@@ -75172,13 +75172,19 @@ class WLOGenCrawler extends HTMLElement {
   }
 }
 customElements.define("wlo-gen-crawler", WLOGenCrawler);
+const SidebarComponentContext = reactExports.createContext({});
+const useSidebarComponentContext = () => {
+  const { apiUrl = "http://localhost:8000/api", basePath = "" } = reactExports.useContext(SidebarComponentContext);
+  return { apiUrl, basePath };
+};
 const AddIcon = createSvgIcon(/* @__PURE__ */ jsxRuntimeExports.jsx("path", {
   d: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"
 }));
 const e = (e2) => t.createElement("svg", Object.assign({ xmlns: "http://www.w3.org/2000/svg", height: "24", width: "24", viewBox: "0 -960 960 960", fill: "currentColor" }, e2), t.createElement("path", { d: "M200-120q-33 0-56.5-23.5T120-200v-400q0-100 70-170t170-70h240q100 0 170 70t70 170v400q0 33-23.5 56.5T760-120H200Zm0-80h560v-400q0-66-47-113t-113-47H360q-66 0-113 47t-47 113v400Zm103.5-303.5Q280-527 280-560t23.5-56.5Q327-640 360-640t56.5 23.5Q440-593 440-560t-23.5 56.5Q393-480 360-480t-56.5-23.5Zm240 0Q520-527 520-560t23.5-56.5Q567-640 600-640t56.5 23.5Q680-593 680-560t-23.5 56.5Q633-480 600-480t-56.5-23.5ZM280-200v-80q0-33 23.5-56.5T360-360h240q33 0 56.5 23.5T680-280v80h-80v-80h-80v80h-80v-80h-80v80h-80Zm-80 0h560-560Z" }));
 function SourceDetailsSidebar(props) {
   var _a;
-  const { crawlers, basePath = "" } = props;
+  const { crawlers } = props;
+  const { basePath } = useSidebarComponentContext();
   const wloTheme = createTheme(wloThemeData);
   console.log("In SourceDetailsSidebar, basePath:", basePath);
   const addCrawlerForSourcePath = joinPath(basePath, `add-crawler?sourceGuid=${(_a = props.sourceItem) == null ? void 0 : _a.guid}`);
@@ -75242,10 +75248,9 @@ function SourceDetailsSidebarHost(params) {
   const [sourceItem, setSourceItem] = reactExports.useState(void 0);
   const [crawlers, setCrawlers] = reactExports.useState([]);
   const sourceGuid = params.sourceGuid ?? "aa1f3e38-babf-42a9-9005-592b98bcb4ae";
-  const basePath = params.basePath ?? "";
+  const { apiUrl } = useSidebarComponentContext();
   console.log("SourceDetailsSidebarHost rendering with sourceGuid:", sourceGuid);
   const loadData = reactExports.useCallback(async function() {
-    const apiUrl = "http://localhost:8000/api";
     const api = new Api(apiUrl);
     try {
       console.log("SourceDetailsSidebarHost loadData triggered, fetching data...");
@@ -75263,12 +75268,12 @@ function SourceDetailsSidebarHost(params) {
       console.error("Error fetching crawlers:", error);
       return [];
     }
-  }, [sourceGuid]);
+  }, [apiUrl, sourceGuid]);
   reactExports.useEffect(() => {
     console.log("SourceDetailsSidebarHost useEffect triggered, loading data...");
     loadData();
   }, [loadData]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SourceDetailsSidebar, { sourceItem, crawlers, basePath }) });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SourceDetailsSidebar, { sourceItem, crawlers }) });
 }
 class WLOGenCrawlerSidebar extends HTMLElement {
   constructor() {
@@ -75325,7 +75330,7 @@ class WLOGenCrawlerSidebar extends HTMLElement {
     const apiUrl = this.getAttribute("api-url") ?? "";
     const sourceGuid = this.getAttribute("source-guid") ?? void 0;
     this.root.render(
-      /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CacheProvider, { value: this.cache, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ApiUrlContext.Provider, { value: apiUrl, children: /* @__PURE__ */ jsxRuntimeExports.jsx(SourceDetailsSidebarHost, { sourceGuid, basePath }) }) }) })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CacheProvider, { value: this.cache, children: /* @__PURE__ */ jsxRuntimeExports.jsx(SidebarComponentContext.Provider, { value: { apiUrl, basePath }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(SourceDetailsSidebarHost, { sourceGuid }) }) }) })
     );
   }
 }

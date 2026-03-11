@@ -1,4 +1,6 @@
 // Custom element wrapping the SourceDetailsSidebarHost component
+import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import appCss from "../App.css?inline";
@@ -9,10 +11,8 @@ import indexCSS from "../index.css?inline";
 import inputWithButtonCss from "../InputWithButton.css?inline";
 import listViewCss from "../ListView.css?inline";
 import sheetCss from "../Sheet.css?inline";
+import { SidebarComponentContext } from "../SidebarComponentContext";
 import siteLayoutCss from "../SiteLayout.css?inline";
-import createCache from '@emotion/cache';
-import { CacheProvider } from '@emotion/react';
-import { ApiUrlContext } from "../ApiUrlContext";
 import SourceDetailsSidebarHost from "../SourceDetailsSidebarHost.tsx";
 
 
@@ -79,9 +79,9 @@ class WLOGenCrawlerSidebar extends HTMLElement {
     this.root!.render(
       <StrictMode>
         <CacheProvider value={this.cache!}>
-          <ApiUrlContext.Provider value={apiUrl}>
-            <SourceDetailsSidebarHost sourceGuid={sourceGuid} basePath={basePath} />
-          </ApiUrlContext.Provider>
+          <SidebarComponentContext.Provider value={{apiUrl, basePath}}>
+            <SourceDetailsSidebarHost sourceGuid={sourceGuid} />
+          </SidebarComponentContext.Provider>
         </CacheProvider>
       </StrictMode>
     );
