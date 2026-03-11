@@ -28,6 +28,21 @@ export default function AddCrawlerPage() {
   const navigate = useNavigate();
   const sidebarOutlet = document.getElementById("sidebar-outlet");
   const [searchParams] = useSearchParams();
+
+  // We can get sent here from the sidebar webcomponent. In that case we will get a sourceGuid in the URL
+  const sourceGuid = searchParams.get("sourceGuid");
+  useEffect(() => {
+    if (sourceGuid && !sourceItem && sourceItems.length > 0) {
+      const foundSourceItem = sourceItems.find(item => item.guid === sourceGuid);
+      if (foundSourceItem) {
+        setSourceItem(foundSourceItem);
+      } else {
+        console.error("Could not find source item for guid from URL:", sourceGuid);
+      }
+    }
+  }, [sourceGuid, sourceItem, sourceItems, setSourceItem]);
+
+
   // if we go back to add-crawler from a later step, we might have an existing crawlerId
   const crawlerIdString = searchParams.get("crawlerId");
   const existingCrawlerId = crawlerIdString ? parseInt(crawlerIdString) : undefined;
