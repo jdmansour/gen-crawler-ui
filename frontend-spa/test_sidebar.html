@@ -40,7 +40,7 @@
         display: grid;
         place-items: center;
       }
-      .sidebar {
+      #sidebar {
         min-width: 340px;
         flex-shrink: 0;
         flex-grow: 0;
@@ -54,12 +54,7 @@
     <!-- <script type="module" src="index.js"></script> -->
     <div class="container">
       <header>
-      <h1>Test Sidebarrr</h1>
-      <form id="source-guid-form">
-        <label for="source-guid-input">Source GUID:</label>
-        <input type="text" id="source-guid-input" name="source-guid-input" placeholder="Enter source GUID" style="width: 300px;" />
-        <button type="submit" onclick="document.querySelector('wlo-gen-crawler-sidebar').setAttribute('source-guid', document.getElementById('source-guid-input').value); event.preventDefault();">Load</button>
-      </form>
+      <h1>Test Sidebar</h1>
       <div id="error-message">
         <p>Error: Cannot load JS module from file:// protocol. In order to test the
         webcomponent, please load this file via a web server. For example:</p>
@@ -74,8 +69,22 @@
     </header>
     <!-- <wlo-gen-crawler base-path="test_sidebar.html"/> -->
     <div class="layout">
-      <div class="content">Main content placeholder</div>
-      <wlo-gen-crawler-sidebar class="sidebar" source-guid="aa1f3e38-babf-42a9-9005-592b98bcb4ae"/>
+      <div id="content" class="content">
+        <div class="content-form">
+          <form id="source-guid-form">
+            <label for="source-guid-input">source-guid=</label>
+            <input type="text" id="source-guid-input" name="source-guid-input" placeholder="Enter source GUID" style="width: 300px;" />
+            <button type="submit" onclick="onSubmitClick(); event.preventDefault();">Load</button>
+          </form>
+          <p>
+            <a href="#" onclick="document.getElementById('source-guid-input').value='aa1f3e38-babf-42a9-9005-592b98bcb4ae'; onSubmitClick(); event.preventDefault();">Planet Schule</a> |
+            <a href="#" onclick="document.getElementById('source-guid-input').value='b23cf2a4-a0cc-4272-b5f2-3a398dd7c27e'; onSubmitClick(); event.preventDefault();">BPB</a>
+          </p>
+          <p>Sidebar tag:</p>
+          <code id="sidebar-code"></code>
+        </div>
+      </div>
+      <wlo-gen-crawler-sidebar id="sidebar" source-guid="aa1f3e38-babf-42a9-9005-592b98bcb4ae"/>
     </div>
     </div>
     <script>
@@ -83,6 +92,20 @@
       if (location.protocol === 'file:') {
         document.getElementById('error-message').style.display = 'block';
       }
+      function update() {
+        const sidebar = document.getElementById('sidebar');
+        const sourceGuid = sidebar.getAttribute('source-guid');
+        const sidebarCode = document.getElementById('sidebar-code');
+        sidebarCode.innerText = `<wlo-gen-crawler-sidebar source-guid="${sourceGuid}" />`;
+      }
+      function onSubmitClick() {
+        const input = document.getElementById('source-guid-input');
+        const value = input.value;
+        const sidebar = document.getElementById('sidebar');
+        sidebar.setAttribute('source-guid', value);
+        update();
+      }
+      update();
     </script>
   </body>
 </html>
