@@ -1,73 +1,51 @@
-import { HTMLProps, useRef } from "react";
+import { createContext, HTMLProps, useContext, useRef } from "react";
 import "./SiteLayout.css";
 import CloseIcon from "./assets/icons/close.svg?react";
 import ShowSidebarIcon from "./assets/icons/show-sidebar.svg?react";
 
+const SidebarContext = createContext<{ onClose?: () => void }>({});
+
+export function SidebarCloseButton() {
+  const { onClose } = useContext(SidebarContext);
+  return (
+    <button onClick={onClose} className="wlo-sidebar-button">
+      <CloseIcon width={24} />
+    </button>
+  );
+}
+
+export function SidebarTitle(props: { children: React.ReactNode }) {
+  return (
+    <h2 className="wlo-sidebar-title">
+      {props.children}
+      <SidebarCloseButton />
+    </h2>
+  );
+}
+
 export default function SiteLayout(props: {
   children: React.ReactNode;
-  sidebar?: React.ReactNode;
   sidebarVisible: boolean;
   onSidebarClose?: () => void;
 } & HTMLProps<HTMLDivElement>) {
-  const { children, sidebar, onSidebarClose, sidebarVisible, ...otherProps } = props;
+  const { children, onSidebarClose, sidebarVisible, ...otherProps } = props;
   const siteLayoutRef = useRef<HTMLDivElement>(null);
-
-  //const sidebarHeight = siteLayoutRef?.current?.clientHeight ? siteLayoutRef?.current?.clientHeight / 3 : undefined;
-  // const [sidebarHeight, setSidebarHeight] = useState<number | undefined>(undefined);
-
-  // useEffect(() => {
-  //   if (siteLayoutRef.current) {
-  //     const documentHeight = document.documentElement.clientHeight;
-  //     const height = documentHeight - siteLayoutRef.current.clientTop;
-  //     console.log("Setting sidebar height to:", height);
-  //     setSidebarHeight(height);
-  //   }
-  // }, [siteLayoutRef]);
 
   let className = "wlo-sitelayout";
   if (sidebarVisible) {
     className += " wlo-sitelayout-sidebar-visible";
   }
-  // // if we are on the metadata-inheritance route, add a special class
-  // const matches = useMatches();
-  // const isMetadataInheritance = matches.some(match => match.id === "metadata-inheritance");
-
-  // if (isMetadataInheritance) {
-  //   className += " wlo-sitelayout-tall-content";
-  // }
 
   return (
-    <div
-      className={className}
-      {...otherProps}
-      ref={siteLayoutRef}
-    >
-      <main className="wlo-main">
-        {children}
-      </main>
-      <Sidebar onClose={onSidebarClose} title="Generischer Crawler">
-        {sidebar}
-      </Sidebar>
-    </div>
-  );
-}
-
-export function Sidebar(
-  props: {
-    title: string;
-    onClose?: () => void;
-    children: React.ReactNode;
-  } & React.HTMLAttributes<HTMLDivElement>,
-) {
-  return (
-    <div className="wlo-sidebar" style={props.style} {...props}>
-      <h2 className="wlo-sidebar-title">
-        {props.title}
-        <button onClick={props.onClose} className="wlo-sidebar-button">
-          <CloseIcon width={24} />
-        </button>
-      </h2>
-      <div>{props.children}</div>
+    <div className={className} {...otherProps} ref={siteLayoutRef}>
+      <SidebarContext.Provider value={{ onClose: onSidebarClose }}>
+        <main className="wlo-main">
+          {children}
+        </main>
+        <div className="wlo-sidebar">
+          <div id="sidebar-outlet"></div>
+        </div>
+      </SidebarContext.Provider>
     </div>
   );
 }

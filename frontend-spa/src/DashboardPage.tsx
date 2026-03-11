@@ -1,23 +1,24 @@
 import Delete from '@mui/icons-material/Delete';
 import ErrorOutlineOutlined from '@mui/icons-material/ErrorOutlineOutlined';
 import MoreVertOutlined from '@mui/icons-material/MoreVertOutlined';
+import { Box, Stack } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Skeleton from '@mui/material/Skeleton';
 import { useState } from "react";
+import { createPortal } from 'react-dom';
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import "./App.css";
+import { CrawlerDetails } from './CrawlerDetailsPage';
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import FilterTabs, { TabInfo } from "./FilterTabs";
 import ListView from "./ListView";
 import { CrawlerDetailsContext, CrawlerDetailsPageContext, DashboardPageContext } from "./RootContext";
+import { SidebarTitle } from './SiteLayout';
 import { Crawler, SimpleState } from "./apitypes";
 import { useStep } from "./steps";
-import { CrawlerDetails } from './CrawlerDetailsPage';
-import { createPortal } from 'react-dom';
-import Skeleton from '@mui/material/Skeleton';
-import { Stack } from '@mui/material';
 
 const simpleStateLabels: { [key in SimpleState]: string } = {
   draft: "Entwurf",
@@ -146,14 +147,23 @@ export default function DashboardPage() {
         {filteredCrawlerList.length} Crawler angezeigt, insgesamt {crawlerList.length} Crawler.
       </div> */}
 
-      {sidebarOutlet && (createPortal((
-        (selectedCrawlerId === null) ?
-        <div style={{ padding: "20px" }}>Kein Crawler ausgewählt</div> :
-        <CrawlerDetails
-          crawlerId={selectedCrawlerId}
-          crawlerList={crawlerList}
-          sourceItems={sourceItems}
-        />), sidebarOutlet))}
+      {sidebarOutlet && createPortal(
+        <>
+          {selectedCrawlerId === null
+            ? <>
+              <SidebarTitle>Dashboard</SidebarTitle>
+              <Box sx={{ px: 3 }}>Kein Crawler ausgewählt</Box></>
+            : <>
+              <SidebarTitle>Crawler Details</SidebarTitle>
+              <CrawlerDetails
+                crawlerId={selectedCrawlerId}
+                crawlerList={crawlerList}
+                sourceItems={sourceItems}
+                showTitle={false}
+              /></>}
+        </>,
+        sidebarOutlet
+      )}
     </>
   );
 }

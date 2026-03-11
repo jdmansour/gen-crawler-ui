@@ -3,7 +3,10 @@ import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Grid from "@mui/system/Grid";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, useOutletContext, useParams, useSearchParams } from "react-router-dom";
+import { SidebarTitle } from "./SiteLayout";
+import WizardSidebarTabs from "./WizardSidebarTabs";
 import MdsEditor from "./MdsEditor";
 import { MetadataInheritancePageContext } from "./RootContext";
 import WloFieldGroupSet from "./WloFieldGroupSet";
@@ -38,6 +41,8 @@ export default function MetadataInheritancePage() {
   }, [crawler]);
 
   useStep("metadata-inheritance");
+
+  const sidebarOutlet = document.getElementById("sidebar-outlet");
 
   async function onSave() {
       if (crawlerId === null) {
@@ -92,7 +97,14 @@ export default function MetadataInheritancePage() {
     setSelectedFields(tmp);
   }
 
-  return <div style={{overflowY: "scroll", padding: "0px 24px 24px 24px"}}>
+  return <><div style={{overflowY: "scroll", padding: "0px 24px 24px 24px"}}>
+    {sidebarOutlet && createPortal(
+      <>
+        <SidebarTitle>Generischer Crawler</SidebarTitle>
+        <WizardSidebarTabs step="metadata-inheritance" />
+      </>,
+      sidebarOutlet
+    )}
       <h2 style={{marginTop: 8}}>Metadatenvererbung</h2>
       {isNewCrawler
         ? <p>Dein neuer Crawler wurde erstellt! Während im Hintergrund die Quelle analysiert wird, kannst du jetzt schon mal die Felder auswählen, die von dem Quelldatensatz übernommen werden sollen.</p>
@@ -152,5 +164,5 @@ export default function MetadataInheritancePage() {
         <Button leftAlign onClick={() => navigate(-1)}>Zurück</Button>
         <Button default onClick={onSave}>Weiter</Button>
       </div> */}
-  </div>
+  </div></>;
 }

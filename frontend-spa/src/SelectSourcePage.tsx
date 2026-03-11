@@ -1,12 +1,16 @@
 import { Button as MuiButton } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import ListView from "./ListView";
-import { SelectSourcePageContext } from "./RootContext";
 import { SourceItem } from "./apitypes";
 import sourcePreviewPic from "./assets/source-preview.jpg";
+import ListView from "./ListView";
+import { SelectSourcePageContext } from "./RootContext";
+import { SidebarTitle } from "./SiteLayout";
 import { useStep } from "./steps";
+import WizardSidebarTabs from "./WizardSidebarTabs";
+
 export default function SelectSourcePage() {
 
   const { sourceItems, onSourceSelected } = useOutletContext<SelectSourcePageContext>();
@@ -15,8 +19,18 @@ export default function SelectSourcePage() {
   const navigate = useNavigate();
 
   useStep("select-source");
+
+  const sidebarOutlet = document.getElementById("sidebar-outlet");
   
-  return (<div style={{ display: "flex", flexDirection: "column", flex: 1,
+  return (<>
+    {sidebarOutlet && createPortal(
+      <>
+        <SidebarTitle>Generischer Crawler</SidebarTitle>
+        <WizardSidebarTabs step="select-source" />
+      </>,
+      sidebarOutlet
+    )}
+    <div style={{ display: "flex", flexDirection: "column", flex: 1,
                         padding: "16px", gap: "16px" }}>
         <div>Für welches Quellobjekt soll ein Crawler erstellt werden?</div>
 
@@ -47,7 +61,7 @@ export default function SelectSourcePage() {
           </MuiButton>
         </Stack>
     </div>
-  );
+  </>);
 }
 
 export function InheritanceTableRow(props: {

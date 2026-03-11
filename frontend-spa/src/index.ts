@@ -6,7 +6,6 @@ export { default as FilterTabs } from './FilterTabs';
 export { default as InputWithButton } from './InputWithButton';
 export { default as ListView } from './ListView';
 export { default as Sheet } from './Sheet';
-export { default as GenCrawlerSidebar } from './GenCrawlerSidebar';
 export { default as DashboardPage } from './DashboardPage';
 export { default as SelectSourcePage } from './SelectSourcePage';
 export { default as SiteLayout } from './SiteLayout';

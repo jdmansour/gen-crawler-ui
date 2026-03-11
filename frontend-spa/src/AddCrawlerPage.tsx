@@ -1,13 +1,16 @@
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, useOutletContext, useSearchParams } from "react-router";
 // import Button from "./Button";
-import { AddCrawlerPageContext } from "./RootContext";
-import sourcePreviewPic from "./assets/source-preview.jpg";
-import { useStep } from "./steps";
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Api from './api';
+import sourcePreviewPic from "./assets/source-preview.jpg";
+import { AddCrawlerPageContext } from "./RootContext";
+import { SidebarTitle } from "./SiteLayout";
+import { useStep } from "./steps";
+import WizardSidebarTabs from './WizardSidebarTabs';
 
 
 export default function AddCrawlerPage() {
@@ -23,6 +26,7 @@ export default function AddCrawlerPage() {
   useStep("add-crawler");
 
   const navigate = useNavigate();
+  const sidebarOutlet = document.getElementById("sidebar-outlet");
   const [searchParams] = useSearchParams();
   // if we go back to add-crawler from a later step, we might have an existing crawlerId
   const crawlerIdString = searchParams.get("crawlerId");
@@ -66,11 +70,20 @@ export default function AddCrawlerPage() {
     navigate(`/crawlers/${newCrawler.id}/metadata-inheritance?new=true`);
   }
 
+  const sidebarPortal = sidebarOutlet && createPortal(
+    <>
+      <SidebarTitle>Generischer Crawler</SidebarTitle>
+      <WizardSidebarTabs step="add-crawler" />
+    </>,
+    sidebarOutlet
+  );
+
   if (!sourceItem) {
-    return <div>Kein Quellobjekt ausgewählt</div>;
+    return <>{sidebarPortal}<div>Kein Quellobjekt ausgewählt</div></>;
   }
 
   return (
+    <>{sidebarPortal}
     <div style={{overflowY: "scroll", padding: "0px 24px 24px 24px"}}>
       <div>
         <h2 style={{marginTop: 8}}>Neuen Crawler erstellen</h2>
@@ -116,5 +129,6 @@ export default function AddCrawlerPage() {
 
       </div>
     </div>
+    </>
   );
 }

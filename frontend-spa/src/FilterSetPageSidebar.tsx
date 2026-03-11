@@ -7,6 +7,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from "react";
 import { Rule, UnmatchedResponse } from "./schema";
+import { Box } from '@mui/material';
+import { SidebarTitle } from "./SiteLayout";
 
 const apiBase = "http://localhost:8000/api";
 
@@ -61,15 +63,14 @@ async function showDetails(selectedFilterRuleId: number, crawlJobId: number) {
   }
 
   return <div>
-    <div style={{ position: 'sticky' }}>
-      <h3>Details</h3>
-
+    <SidebarTitle>Filter Details</SidebarTitle>
+    <Box sx={{ px: 3, mb: 2 }}>
       {selectedFilterRuleId ? (
-      <><p>Ausgewählter Filter:</p><p>Regel: <code>{selectedFilterRule?.rule}</code></p><p>Treffer: <code>{selectedFilterRule?.count}</code></p><p>Davon nicht durch vorherige Regeln erfasst: <code>{selectedFilterRule?.cumulative_count}</code></p></>
+      <><div>Ausgewählter Filter:</div><div>Regel: <code>{selectedFilterRule?.rule}</code></div><div>Treffer: <code>{selectedFilterRule?.count}</code></div><div>Davon nicht durch vorherige Regeln erfasst: <code>{selectedFilterRule?.cumulative_count}</code></div></>
       ) : (
-      <p>URLs, die durch keine Regel erfasst wurden:</p>
+      <div>URLs, die durch keine Regel erfasst wurden:</div>
       )}
-    </div>
+    </Box>
 
     <TableContainer component={Paper}>
       <Table stickyHeader size="small">

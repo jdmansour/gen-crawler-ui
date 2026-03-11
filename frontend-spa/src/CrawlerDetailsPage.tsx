@@ -22,11 +22,13 @@ import TextField from '@mui/material/TextField';
 import { Stack } from '@mui/system';
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link, useOutletContext, useParams } from "react-router-dom";
 import Api from './api';
 import { Crawler, CrawlJob, SourceItem } from "./apitypes";
 import DeleteCrawlerDialog from './DeleteCrawlerDialog';
 import { CrawlerDetailsContext, CrawlerDetailsPageContext } from "./RootContext";
+import { SidebarTitle } from "./SiteLayout";
 import SourceCard from './SourceCard';
 import { useStep } from "./steps";
 
@@ -34,16 +36,23 @@ import { useStep } from "./steps";
 export default function CrawlerDetailsPage() {
   const { crawlerId } = useParams();
   const { crawlerList, sourceItems } = useOutletContext<CrawlerDetailsPageContext>();
-  return <CrawlerDetails
-    crawlerId={crawlerId ? parseInt(crawlerId) : 0}
-    crawlerList={crawlerList}
-    sourceItems={sourceItems}
-  />;
+  const sidebarOutlet = document.getElementById("sidebar-outlet");
+  return <>
+    {sidebarOutlet && createPortal(<>
+      <SidebarTitle>Crawler Details Sidebar</SidebarTitle>
+      <Box sx={{px: 3}}>Lorem Ipsum dolor</Box>
+    </>, sidebarOutlet)}
+    <CrawlerDetails
+      crawlerId={crawlerId ? parseInt(crawlerId) : 0}
+      crawlerList={crawlerList}
+      sourceItems={sourceItems}
+    />
+  </>;
 }
 
-export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[] }) {
+export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler[], sourceItems: SourceItem[], showTitle?: boolean }) {
   // todo: move onCrawlerDeleted from a param to context?
-  const { crawlerId } = params;
+  const { crawlerId, showTitle = true } = params;
   const { crawlerList, sourceItems, deleteCrawler, startSearchCrawl, startContentCrawl, cancelCrawlJob, deleteCrawlJob, liveUpdatesConnected, liveUpdatesError, setObservedCrawlerId, crawlerListLoaded } = useOutletContext<CrawlerDetailsPageContext & CrawlerDetailsContext>();
   const crawler = crawlerList.find(c => c.id === crawlerId);
   // const sourceItem = sourceItems.find(s => s.guid === crawler?.source_item);
@@ -107,7 +116,7 @@ export function CrawlerDetails(params: { crawlerId: number, crawlerList: Crawler
   const genericCrawlerOutputUrl = 'https://repository.staging.openeduhub.net/edu-sharing/components/workspace?root=MY_FILES&id=42865b9a-ea22-4cbd-81e4-4bd49601f382&mainnav=true&displayType=0';
 
   return <div style={{ overflowY: "scroll", padding: "0px 24px 24px 24px" }}>
-    <Typography variant="h3" sx={{ mb: 2 }}>Crawler-Details</Typography>
+    {showTitle && <Typography variant="h3" sx={{ mb: 2 }}>Crawler-Details</Typography>}
 
     <Stack direction="row" alignItems="top" gap={2} sx={{ mb: 2, alignItems: 'flex-start', flexWrap: 'wrap' }} useFlexGap>
 

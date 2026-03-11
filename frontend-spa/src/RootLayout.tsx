@@ -6,8 +6,7 @@ import Api from "./api.ts";
 import { Crawler, CrawlJob, SourceItem } from "./apitypes";
 import { useApiUrl } from "./ApiUrlContext.tsx";
 import Breadcrumbs, { Breadcrumb } from "./Breadcrumbs";
-import GenCrawlerSidebar from "./GenCrawlerSidebar";
-import { CrawlerUpdate, CrawlJobUpdate, SSEData, useCrawlerSSE } from "./hooks/useSSE";
+import { CrawlerUpdate, CrawlJobUpdate, useCrawlerSSE } from "./hooks/useSSE";
 import { RootContext } from "./RootContext";
 import SiteLayout, { ShowSidebarButton } from "./SiteLayout";
 import { CrawlerDashboardStep } from "./steps";
@@ -209,7 +208,6 @@ export default function RootLayout() {
     <div style={{ display: "flex", flexDirection: "column", flex: "1" }} >
       <SiteLayout
         style={{ }}
-        sidebar={<GenCrawlerSidebar step={step} />}
         sidebarVisible={sidebarVisible}
         onSidebarClose={() => setSidebarVisible(false)} >
         {!sidebarVisible && (
