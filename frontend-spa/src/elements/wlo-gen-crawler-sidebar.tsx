@@ -61,7 +61,7 @@ class WLOGenCrawlerSidebar extends HTMLElement {
     addGlobalStyle(siteLayoutCss);
     addGlobalStyle(breadcrumbsCss);
 
-    // const basePath = this.getAttribute("base-path") || "";
+    const basePath = this.getAttribute("base-path") || "";
     const apiUrl = this.getAttribute("api-url") || "";
 
     const sourceGuid = this.getAttribute("source-guid") || undefined;
@@ -72,7 +72,7 @@ class WLOGenCrawlerSidebar extends HTMLElement {
         <StrictMode>
           <CacheProvider value={cache}>
             <ApiUrlContext.Provider value={apiUrl}>
-              <SourceDetailsSidebarHost sourceGuid={sourceGuid} />
+              <SourceDetailsSidebarHost sourceGuid={sourceGuid} basePath={basePath} />
             </ApiUrlContext.Provider>
           </CacheProvider>
         </StrictMode>,
@@ -83,17 +83,22 @@ class WLOGenCrawlerSidebar extends HTMLElement {
   }
   // handle attribute changed
   static get observedAttributes() {
-    return ["source-guid"];
+    return ["base-path", "source-guid"];
   }
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
-    if (name === "source-guid" && oldValue !== newValue) {
-      const sourceGuid = newValue || undefined;
-      const root = ReactDOM.createRoot(this.shadowRoot?.querySelector("div") as HTMLElement);
+    if ((name === "source-guid" || name === "base-path") && oldValue !== newValue) {
+      const sourceGuid = this.getAttribute("source-guid") || undefined;
+      const basePath = this.getAttribute("base-path") || "";
+      const apiUrl = this.getAttribute("api-url") || "";
+      const mountPoint = this.shadowRoot?.querySelector("div") as HTMLElement
+      const cache = createCache({ key: 'css', prepend: true, container: this.shadowRoot });
+
+      const root = ReactDOM.createRoot(mountPoint);
       root.render(
         <StrictMode>
-          <CacheProvider value={createCache({ key: 'css', prepend: true, container: this.shadowRoot })}>
-            <ApiUrlContext.Provider value={this.getAttribute("api-url") || ""}>
-              <SourceDetailsSidebarHost sourceGuid={sourceGuid} />
+          <CacheProvider value={cache}>
+            <ApiUrlContext.Provider value={apiUrl}>
+              <SourceDetailsSidebarHost sourceGuid={sourceGuid} basePath={basePath} />
             </ApiUrlContext.Provider>
           </CacheProvider>
         </StrictMode>,

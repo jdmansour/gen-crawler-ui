@@ -1,5 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import MoreVertOutlined from "@mui/icons-material/MoreVertOutlined";
+import { ButtonBase } from '@mui/material';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -7,12 +8,10 @@ import Stack from "@mui/material/Stack";
 import { createTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import ThemeProvider from "@mui/system/ThemeProvider";
+import { Robot } from "@nine-thirty-five/material-symbols-react/outlined";
 import { DateTime } from "luxon";
-import { Link } from "react-router-dom";
 import { Crawler, SourceItem } from "./apitypes";
 import { wloThemeData } from "./wloTheme";
-import { Robot } from "@nine-thirty-five/material-symbols-react/outlined";
-import { ButtonBase } from '@mui/material';
 //import { RobotIcon } from "@mui/icons-material/RobotIco";
 
 // const simpleStateLabels: { [key in SimpleState]: string } = {
@@ -32,11 +31,15 @@ import { ButtonBase } from '@mui/material';
 interface SourceDetailsSidebarProps {
   sourceItem?: SourceItem;
   crawlers?: Crawler[];
+  basePath?: string;
 }
 
 export default function SourceDetailsSidebar(props: SourceDetailsSidebarProps) {
-  const { crawlers } = props;
+  const { crawlers, basePath="" } = props;
   const wloTheme = createTheme(wloThemeData);
+
+  console.log("In SourceDetailsSidebar, basePath:", basePath);
+  const addCrawlerForSourcePath = joinPath(basePath, `add-crawler?sourceGuid=${props.sourceItem?.guid}`);
 
   return (
     <Stack spacing={2} sx={{ p: 2 }}>
@@ -71,6 +74,14 @@ export default function SourceDetailsSidebar(props: SourceDetailsSidebarProps) {
                 // "& > *": { outline: "1px solid orange" },
                 // "& > * > *": { outline: "1px solid blue" },
               }}
+              component={"a"}
+              href={joinPath(basePath, `crawlers/${crawler.id}`)}
+              // if the click is on the more button, do not navigate
+              onClick={(e) => {
+                if ((e.target as HTMLElement).closest("button")) {
+                  e.preventDefault();
+                }
+              }}
               onPointerDown={e => { if (e.pointerType === "mouse" && e.button === 2) e.preventDefault(); }}
             >
               <Box sx={{ pt: "3px", pl: "2px" }}><Robot /></Box>
@@ -98,7 +109,7 @@ export default function SourceDetailsSidebar(props: SourceDetailsSidebarProps) {
 
       {/* Button bar */}
         <Stack direction="row" spacing={1} justifyContent="flex-end">
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" component={"a"} href={addCrawlerForSourcePath}>
             <AddIcon sx={{ mr: 1, ml: -1 }} />
             Crawler hinzufügen
           </Button>
@@ -108,4 +119,17 @@ export default function SourceDetailsSidebar(props: SourceDetailsSidebarProps) {
 
     </Stack>
   );
+}
+
+// joinPath("base/", "/add-crawler") => "base/add-crawler"
+// joinPath("", "add-crawler") => "add-crawler"
+// joinPath("/", "/add-crawler") => "/add-crawler"
+function joinPath(...parts: string[]) {
+  return parts.map((part, index) => {
+    if (index === 0) {
+      return part.replace(/\/+$/, ""); // remove trailing slashes from the first part
+    } else {
+      return part.replace(/^\/+/, ""); // remove leading slashes from subsequent parts
+    }
+  }).filter(part => part.length > 0).join("/");
 }

@@ -4,10 +4,11 @@ import { useCallback, useEffect, useState } from 'react';
 import Api from './api';
 
 
-export default function SourceDetailsSidebarHost(params: { sourceGuid?: string }) {
+export default function SourceDetailsSidebarHost(params: { basePath?: string, sourceGuid?: string }) {
   const [sourceItem, setSourceItem] = useState<SourceItem | undefined>(undefined);
   const [crawlers, setCrawlers] = useState<Crawler[]>([]);
   const sourceGuid = params.sourceGuid ?? "aa1f3e38-babf-42a9-9005-592b98bcb4ae";
+  const basePath = params.basePath ?? "";
 
   console.log("SourceDetailsSidebarHost rendering with sourceGuid:", sourceGuid);
 
@@ -42,7 +43,7 @@ export default function SourceDetailsSidebarHost(params: { sourceGuid?: string }
     <div>
       {/* <p>Crawler name: {sourceItem?.title}</p>
       <p>GUID: {sourceGuid}</p> */}
-      <SourceDetailsSidebar sourceItem={sourceItem} crawlers={crawlers} />
+      <SourceDetailsSidebar sourceItem={sourceItem} crawlers={crawlers} basePath={basePath} />
     </div>
   );
   

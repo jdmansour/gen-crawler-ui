@@ -40,7 +40,7 @@
         display: grid;
         place-items: center;
       }
-      #sidebar {
+      wlo-gen-crawler-sidebar {
         min-width: 340px;
         flex-shrink: 0;
         flex-grow: 0;
@@ -84,7 +84,10 @@
           <code id="sidebar-code"></code>
         </div>
       </div>
-      <wlo-gen-crawler-sidebar id="sidebar" source-guid="aa1f3e38-babf-42a9-9005-592b98bcb4ae"/>
+      <wlo-gen-crawler-sidebar
+        source-guid="aa1f3e38-babf-42a9-9005-592b98bcb4ae"
+        base-path="/"
+        />
     </div>
     </div>
     <script>
@@ -93,15 +96,18 @@
         document.getElementById('error-message').style.display = 'block';
       }
       function update() {
-        const sidebar = document.getElementById('sidebar');
+        //const sidebar = document.getElementById('sidebar');
+        const sidebar = document.querySelector('wlo-gen-crawler-sidebar');
         const sourceGuid = sidebar.getAttribute('source-guid');
         const sidebarCode = document.getElementById('sidebar-code');
-        sidebarCode.innerText = `<wlo-gen-crawler-sidebar source-guid="${sourceGuid}" />`;
+        const basePath = sidebar.getAttribute('base-path') || "";
+        // sidebarCode.innerText = `<wlo-gen-crawler-sidebar source-guid="${sourceGuid}" base-path="${basePath}" />`;
+        sidebarCode.innerText = sidebar.outerHTML;
       }
       function onSubmitClick() {
         const input = document.getElementById('source-guid-input');
         const value = input.value;
-        const sidebar = document.getElementById('sidebar');
+        const sidebar = document.querySelector('wlo-gen-crawler-sidebar');
         sidebar.setAttribute('source-guid', value);
         update();
       }
