@@ -75271,6 +75271,11 @@ function SourceDetailsSidebarHost(params) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SourceDetailsSidebar, { sourceItem, crawlers, basePath }) });
 }
 class WLOGenCrawlerSidebar extends HTMLElement {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "root", null);
+    __publicField(this, "cache", null);
+  }
   connectedCallback() {
     console.log("WLOGenCrawlerSidebar connected");
     const shadowRoot = this.attachShadow({ mode: "open" });
@@ -75280,7 +75285,7 @@ class WLOGenCrawlerSidebar extends HTMLElement {
     mountPoint.style.display = "flex";
     mountPoint.style.flexDirection = "column";
     shadowRoot.appendChild(mountPoint);
-    const cache = createCache({
+    this.cache = createCache({
       key: "css",
       prepend: true,
       container: shadowRoot
@@ -75299,33 +75304,29 @@ class WLOGenCrawlerSidebar extends HTMLElement {
     addGlobalStyle(sheetCss);
     addGlobalStyle(siteLayoutCss);
     addGlobalStyle(breadcrumbsCss);
-    const basePath = this.getAttribute("base-path") || "";
-    const apiUrl = this.getAttribute("api-url") || "";
-    const sourceGuid = this.getAttribute("source-guid") || void 0;
-    const root = ReactDOM$1.createRoot(mountPoint);
-    root.render(
-      /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CacheProvider, { value: cache, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ApiUrlContext.Provider, { value: apiUrl, children: /* @__PURE__ */ jsxRuntimeExports.jsx(SourceDetailsSidebarHost, { sourceGuid, basePath }) }) }) })
-    );
+    this.root = ReactDOM$1.createRoot(mountPoint);
+    this.renderComponent();
   }
   disconnectedCallback() {
-  }
-  // handle attribute changed
-  static get observedAttributes() {
-    return ["base-path", "source-guid"];
-  }
-  attributeChangedCallback(name, oldValue, newValue) {
     var _a;
-    if ((name === "source-guid" || name === "base-path") && oldValue !== newValue) {
-      const sourceGuid = this.getAttribute("source-guid") || void 0;
-      const basePath = this.getAttribute("base-path") || "";
-      const apiUrl = this.getAttribute("api-url") || "";
-      const mountPoint = (_a = this.shadowRoot) == null ? void 0 : _a.querySelector("div");
-      const cache = createCache({ key: "css", prepend: true, container: this.shadowRoot });
-      const root = ReactDOM$1.createRoot(mountPoint);
-      root.render(
-        /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CacheProvider, { value: cache, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ApiUrlContext.Provider, { value: apiUrl, children: /* @__PURE__ */ jsxRuntimeExports.jsx(SourceDetailsSidebarHost, { sourceGuid, basePath }) }) }) })
-      );
+    (_a = this.root) == null ? void 0 : _a.unmount();
+    this.root = null;
+  }
+  static get observedAttributes() {
+    return ["base-path", "source-guid", "api-url"];
+  }
+  attributeChangedCallback(_name, oldValue, newValue) {
+    if (oldValue !== newValue && this.root) {
+      this.renderComponent();
     }
+  }
+  renderComponent() {
+    const basePath = this.getAttribute("base-path") ?? "";
+    const apiUrl = this.getAttribute("api-url") ?? "";
+    const sourceGuid = this.getAttribute("source-guid") ?? void 0;
+    this.root.render(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CacheProvider, { value: this.cache, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ApiUrlContext.Provider, { value: apiUrl, children: /* @__PURE__ */ jsxRuntimeExports.jsx(SourceDetailsSidebarHost, { sourceGuid, basePath }) }) }) })
+    );
   }
 }
 customElements.define("wlo-gen-crawler-sidebar", WLOGenCrawlerSidebar);
