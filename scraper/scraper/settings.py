@@ -146,6 +146,7 @@ default_db_path = Path(__file__).resolve().parents[2] / "ui" / "db.sqlite3"
 DB_PATH = config("DB_PATH", default_db_path)
 
 LOG_LEVEL = "INFO"
+LOG_FORMATTER = "scraper.log_utils.PrettyLogFormatter"
 
 GENERIC_CRAWLER_DB_PATH = env.get("GENERIC_CRAWLER_DB_PATH", allow_null=True)
 GENERIC_CRAWLER_USE_LLM_API = env.get_bool("GENERIC_CRAWLER_USE_LLM_API", default=False)

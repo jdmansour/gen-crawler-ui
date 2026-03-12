@@ -24,6 +24,7 @@ from .. import env
 from ..util.generic_crawler_db import fetch_urls_passing_filterset
 from .state_helper import StateHelper
 from .utils import check_db
+from ..log_utils import format_item
 
 log = logging.getLogger(__name__)
 
@@ -340,7 +341,7 @@ class ContentSpider(Spider):
             item['origin'] = self.crawler_name
 
         log.info("New URL processed:------------------------------------------")
-        log.info(item)
+        log.info(format_item(item))
         log.info("------------------------------------------------------------")
 
         # Track processed items for progress updates

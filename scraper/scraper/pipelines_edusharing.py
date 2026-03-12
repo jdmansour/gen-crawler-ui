@@ -45,6 +45,7 @@ from scraper.util.edu_sharing_source_template_helper import EduSharingSourceTemp
 from scraper.util.language_mapper import LanguageMapper
 from metadataenricher.web_tools import get_url_data
 from valuespace_converter.valuespaces import Valuespaces
+from scraper.log_utils import format_item
 
 log = logging.getLogger(__name__)
 
@@ -643,8 +644,8 @@ class EduSharingStorePipeline(EduSharing, BasicPipeline):
         inserted = await self.insert_item(spider, entryUUID, item)
         log.info("item " + entryUUID + " inserted/updated")
         log.info("type(inserted): " + str(type(inserted)))
-        log.info(">>>>> raw item:\n %s", P().pformat(raw_item))
-        log.info(">>>>> processed item\n: %s", P().pformat(inserted))
+        log.info(">>>>> raw item:\n %s", format_item(raw_item))
+        log.info(">>>>> processed item\n: %s", format_item(inserted))
         # todo: move this to a signal in the crawler?
         # todo: set the parent_id on the returned item?
         if isinstance(spider, ContentSpider):
