@@ -29,13 +29,14 @@ from PIL import Image
 from async_lru import alru_cache
 from itemadapter import ItemAdapter
 from scrapy import settings
-from scrapy.exceptions import DropItem
+from scrapy.exceptions import DropItem, CloseSpider
 from scrapy.exporters import JsonItemExporter
 from scrapy.http.request import NO_CALLBACK
 from scrapy.utils.defer import maybe_deferred_to_future
 from scrapy.utils.project import get_project_settings
 from twisted.internet.defer import Deferred
 
+import edu_sharing_client.rest
 from scraper import env
 from scraper.constants import *
 from scraper.es_connector import EduSharing
@@ -641,7 +642,12 @@ class EduSharingStorePipeline(EduSharing, BasicPipeline):
         if "title" in item["lom"]["general"]:
             title = str(item["lom"]["general"]["title"])
         entryUUID = EduSharing.build_uuid(item["response"]["url"] if "url" in item["response"] else item["hash"])
-        inserted = await self.insert_item(spider, entryUUID, item)
+        log.info("Inserting item %s (%s) into edu-sharing repository..." % (title, entryUUID))
+        try:
+            inserted = await self.insert_item(spider, entryUUID, item)
+        except edu_sharing_client.rest.ApiException as e:
+            log.error(f"An error occurred while inserting/updating item {entryUUID} into the edu-sharing repository: {str(e)}")
+            raise CloseSpider(reason="edu-sharing API error")
         log.info("item " + entryUUID + " inserted/updated")
         log.info("type(inserted): " + str(type(inserted)))
         log.info(">>>>> raw item:\n %s", format_item(raw_item))
@@ -689,17 +695,6 @@ class EduSharingStorePipeline(EduSharing, BasicPipeline):
         #         json,
         #     ))
         return raw_item
-
-
-class P(pprint.PrettyPrinter):
-    def __init__(self, indent=1, width=80, depth=None, stream=None, *, compact=True, sort_dicts=True, underscore_numbers=False):
-        super().__init__(indent, width, depth, stream, compact=compact, sort_dicts=sort_dicts, underscore_numbers=underscore_numbers)
-
-    def _format(self, object, *args, **kwargs):
-        if isinstance(object, str):
-            if len(object) > 40:
-                object = object[:19] + '...' + object[-18:]
-        return pprint.PrettyPrinter._format(self, object, *args, **kwargs)
 
 
 class DummyPipeline(BasicPipeline):

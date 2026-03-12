@@ -32,6 +32,22 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def _build_curl_command(method, url, query_params, headers, body, post_params):
+    curl_url = url
+    if query_params and method in ['GET', 'HEAD']:
+        curl_url = url + '?' + urlencode(query_params)
+    curl_headers = ' '.join(
+        "-H '{}: {}'".format(k, v) for k, v in headers.items()
+    )
+    if body is not None:
+        curl_body = " -d '{}'".format(json.dumps(body))
+    elif post_params:
+        curl_body = " --data-urlencode '{}'".format(urlencode(post_params))
+    else:
+        curl_body = ''
+    return "curl -X {} '{}' {}{}".format(method, curl_url, curl_headers, curl_body)
+
+
 class RESTResponse(io.IOBase):
 
     def __init__(self, resp):
@@ -224,6 +240,9 @@ class RESTClientObject(object):
             logger.debug("response body: %s", r.data)
 
         if not 200 <= r.status <= 299:
+            logger.info("type(r): %s", type(r))
+            curl_command = _build_curl_command(method, url, query_params, headers, body, post_params)
+            logger.error("API error %s – %s", r.status, curl_command)
             raise ApiException(http_resp=r)
 
         return r
