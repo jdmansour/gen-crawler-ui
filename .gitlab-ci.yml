@@ -1,0 +1,48 @@
+stages:
+  - build
+  - publish
+
+variables:
+  IMAGE_BASE: $DOCKER_REGISTRY/projects/wlo/generic-crawler
+
+.dind:
+  image: $DIND_IMAGE
+  variables:
+    DOCKER_HOST: $DIND_HOST
+    DOCKER_DRIVER: $DIND_DRIVER
+    DOCKER_TLS_CERTDIR: $DIND_TLS_CERTDIR
+  services:
+    - name: $DIND_IMAGE
+      alias: docker
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+  before_script:
+    - docker --version
+    - docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'main'
+    - if: $CI_COMMIT_BRANCH == 'testing'
+
+build:
+  extends: .dind
+  stage: build
+  script:
+    - docker buildx build --tag $IMAGE_BASE/web:$CI_COMMIT_SHA         -f web.Dockerfile .
+    - docker push $IMAGE_BASE/web:$CI_COMMIT_SHA
+    - docker buildx build --tag $IMAGE_BASE/metadataapi:$CI_COMMIT_SHA  -f metadataapi.Dockerfile .
+    - docker push $IMAGE_BASE/metadataapi:$CI_COMMIT_SHA
+    - docker buildx build --tag $IMAGE_BASE/scrapyd:$CI_COMMIT_SHA      -f scraper.Dockerfile .
+    - docker push $IMAGE_BASE/scrapyd:$CI_COMMIT_SHA
+
+publish:
+  extends: .dind
+  stage: publish
+  needs: [build]
+  script:
+    - |
+      for service in web metadataapi scrapyd; do
+        docker pull $IMAGE_BASE/$service:$CI_COMMIT_SHA
+        docker tag  $IMAGE_BASE/$service:$CI_COMMIT_SHA \
+                    $IMAGE_BASE/$service:$CI_COMMIT_REF_SLUG
+        docker push $IMAGE_BASE/$service:$CI_COMMIT_REF_SLUG
+      done
