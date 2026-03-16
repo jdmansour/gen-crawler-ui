@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "metadataenricher"
+		},
+		{
+			"path": "ui"
+		},
+		{
+			"path": "scraper"
+		},
+		{
+			"path": "frontend-spa"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/__pycache__": true,
+			"**/.*": true
+		}
+	}
+}
