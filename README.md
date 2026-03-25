@@ -135,7 +135,7 @@ python manage.py collectstatic
 
 ## Web Component
 
-To build the generic crawler web component:
+To build the generic crawler web components:
 
 ```bash
 cd frontend-spa
@@ -143,14 +143,7 @@ npx vite build --mode library
 # output in dist/
 ```
 
-To test the web component:
-
-```bash
-cd frontend-spa
-npx vite serve
-```
-
-Now you can view it at http://localhost:5174/test_component.html .
+To test the web component, we have special html files. Just run the web app (docker for backend and npx for frontend, [see above](#usage)). Now you can view the main component at http://localhost:5173/test_component.html and the sidebar at http://localhost:5173/test_sidebar.html .
 
 The component can be used as follows:
 
