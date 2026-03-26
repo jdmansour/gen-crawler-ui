@@ -33,7 +33,7 @@ build:
     - docker push $IMAGE_BASE/metadataapi:$CI_COMMIT_SHA
     - docker buildx build --tag $IMAGE_BASE/scrapyd:$CI_COMMIT_SHA      -f scraper.Dockerfile .
     - docker push $IMAGE_BASE/scrapyd:$CI_COMMIT_SHA
-    - docker buildx build --tag $IMAGE_BASE/browser:$CI_COMMIT_SHA      -f browser/browser.Dockerfile .
+    - docker buildx build --tag $IMAGE_BASE/browser:$CI_COMMIT_SHA      -f browser/browser.Dockerfile browser
     - docker push $IMAGE_BASE/browser:$CI_COMMIT_SHA
 
 publish:
