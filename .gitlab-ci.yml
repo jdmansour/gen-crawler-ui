@@ -33,6 +33,8 @@ build:
     - docker push $IMAGE_BASE/metadataapi:$CI_COMMIT_SHA
     - docker buildx build --tag $IMAGE_BASE/scrapyd:$CI_COMMIT_SHA      -f scraper.Dockerfile .
     - docker push $IMAGE_BASE/scrapyd:$CI_COMMIT_SHA
+    - docker buildx build --tag $IMAGE_BASE/browser:$CI_COMMIT_SHA      -f browser/browser.Dockerfile .
+    - docker push $IMAGE_BASE/browser:$CI_COMMIT_SHA
 
 publish:
   extends: .dind
@@ -40,7 +42,7 @@ publish:
   needs: [build]
   script:
     - |
-      for service in web metadataapi scrapyd; do
+      for service in web metadataapi scrapyd browser; do
         docker pull $IMAGE_BASE/$service:$CI_COMMIT_SHA
         docker tag  $IMAGE_BASE/$service:$CI_COMMIT_SHA \
                     $IMAGE_BASE/$service:$CI_COMMIT_REF_SLUG

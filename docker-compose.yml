@@ -91,6 +91,7 @@ services:
   #   #   - scrapy
 
   browser:
+    image: jdmansour/generic-crawler-browser:${DC_IMAGE_VERSION:-main}
     build:
       context: browser
       dockerfile: browser.Dockerfile
